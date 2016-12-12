@@ -1,0 +1,129 @@
+<#include "managehtmldocs_tabs.html" />
+<@tabs tab="htmldoc" />
+
+<@rowBox>
+  <@boxHeader i18nTitleKey="htmldocs.manage_htmldocs.title">
+    <@headerButtons>
+      
+      <form class="form-inline pull-right" method="post" name="manage_htmldocs" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+        <!-- Add pull-right to class1 -->
+        <@actionButtons button1Name="view_createHtmlDoc" icon1="icon-plus icon-white" i18nValue1Key="htmldocs.manage_htmldocs.buttonAdd" />
+      </form>
+      
+    </@headerButtons>
+  </@boxHeader>
+  <@boxBody>    
+    <@messages infos=infos />
+    <@paginationAdmin paginator=paginator combo=1 />
+    <#assign idx = 0/>
+    <div class="box-body table-responsive no-padding">
+      <@table>
+	<thead>
+	  <tr>
+            <input type="hidden" id="id" name="id"/>
+            <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
+	    <th>
+	      #i18n{htmldocs.manage_htmldocs.columnContentLabel}
+	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="contentLabel" />
+	    </th>
+            <th>
+	      #i18n{htmldocs.manage_htmldocs.columnCreationDate}
+	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="creationDate" />
+	    </th>
+            <th>
+	      #i18n{htmldocs.manage_htmldocs.columnUpdateDate}
+	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="updateDate" />
+	    </th>
+            <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
+            <th>#i18n{portal.util.labelActions}</th>
+	  </tr>  
+	  <label class="btn btn-primary active">
+            <input type="checkbox" autocomplete="off" ${is_checked}><a style="color:#FFFFFF" href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?current_user=true">#i18n{htmldocs.manage_htmldocs.sortByUserButton}</a></input>
+         </label>
+	</thead>
+	<tbody>
+	  <#list htmldoc_list as htmldoc >
+            <r>
+              <input type="hidden" id="id" name="id"/>
+              <td>
+		${htmldoc.version}
+              </td>
+              <td>
+		${htmldoc.contentLabel}
+              </td>
+              <td>
+		${htmldoc.creationDate}
+              </td>
+              <td>
+		${htmldoc.updateDate}
+              </td>
+              <td>
+		${htmldoc.user}
+              </td>
+              <td>
+		<!-- Button trigger modal -->
+		<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#${idx}-modal-lg">
+		  <i class="fa fa-pencil"></i>
+		</button>
+		
+		<!-- Modal -->
+		<div class="modal fade ${idx}-modal-fg" id="${idx}-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title" id="myModalLabel">#i18n{htmldocs.manage_htmldocs.modifyModalTitle}</h4>
+		      </div>
+		      
+		      <div class="modal-body">
+			<form  class="form-horizontal" role="form" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?action=modifyHtmlDoc&id=${htmldoc.id}" method="post">
+			  <br />
+			  <br />
+			  <br />
+			  <#include "/admin/util/editor/editor.html" />
+			  <div class="richtext" id="html_content" name="html_content" value="${htmldoc.htmlContent}">
+                            ${htmldoc.htmlContent}
+                          </div>
+			  <@initEditor type='inlite'/>
+			  <br />
+			  <br />
+			  <div class="modal-footer">
+			    <@actionButtons button1Name="action_modifyHtmlDoc"/>
+			    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			  </div>
+			</form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<a  href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?action=confirmRemoveHtmlDoc&id=${htmldoc.id}"
+		    class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
+		  <i class="fa fa-trash"></i>
+		</a>
+		<form method="post" class="form-inline" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=previousVersionHtmlDoc&id=${htmldoc.id}&actual_version=${htmldoc.version}">
+		  <div class="form-group">
+		    <select class="selectpicker pull-right" id="${htmldoc.id}" name="htmldoc_version">
+		      <#assign version_idx = 1/>
+		      <option label=" ">Versions</option>
+		      <#list htmldoc_version_list as htmldoc_version>
+			<#if htmldoc.contentLabel == htmldoc_version.contentLabel>
+			  <option>${version_idx}</option>
+			  <#assign version_idx = version_idx + 1/>
+			</#if>
+		      </#list>
+		    </select>
+		    <button type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"/></button>
+		  </div>
+		</form>
+	      </td>
+</tr>
+<#assign idx = idx + 1/>
+</#list>
+</tbody>
+</@table>
+</div>
+<@paginationAdmin paginator=paginator />
+
+</@boxBody>
+</@rowBox>

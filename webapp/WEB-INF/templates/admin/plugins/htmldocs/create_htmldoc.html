@@ -1,0 +1,19 @@
+<#include "managehtmldocs_tabs.html" />
+<@tabs tab="htmldoc" />
+
+<@rowBoxHeader i18nTitleKey="htmldocs.create_htmldoc.title">
+    <form class="form-horizontal" method="post" name="create_htmldoc" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+        <@messages errors=errors />
+        <input type="hidden" id="id" name="id"/>
+
+        <@fieldInputText i18nLabelKey="htmldocs.create_htmldoc.labelContentLabel" inputName="content_label" mandatory=true value="${htmldoc.contentLabel!''}" i18nHelpBlockKey="htmldocs.create_htmldoc.labelContentLabel.help" />
+
+        <legend>#i18n{htmldocs.create_htmldoc.labelEditContent}</legend>
+        <div class="richtext" name="html_content" id="html_content" value="html_content">
+
+        </div>
+        <#include "/admin/util/editor/editor.html" />
+        <@initEditor type='inlite'/>
+        <@actionButtons button1Name="action_createHtmlDoc" button2Name="view_manageHtmlDocs"/>
+    </form>
+</@rowBoxHeader>
