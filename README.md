@@ -1,0 +1,1 @@
+# lutece-cms-plugin-htmldocs
