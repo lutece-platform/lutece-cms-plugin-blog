@@ -1,0 +1,11 @@
+<#macro tabs tab >
+<div>
+    <ul class="nav nav-tabs">
+        <li <#if tab="htmldoc">class="active"</#if>>
+            <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+                #i18n{htmldocs.manage_htmldocs.pageTitle}
+            </a>
+        </li>
+    </ul>
+</div>
+</#macro>
