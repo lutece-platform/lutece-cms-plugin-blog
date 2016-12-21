@@ -62,7 +62,6 @@ public class HtmldocsPortletJspBean extends PortletJspBean
     public static final String PARAMETER_HTML_CONTENT = "html_content";
     public static final String PARAMETER_PORTLET_NAME = "portlet_name";
     public static final String PARAMETER_HTMLDOC_SELECTED = "htmldoc_selected";
-    public static final String PARAMETER_HTMLDOC_NAME = "htmldoc_name";
 
     private int nVersion = 1;
 
@@ -138,7 +137,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
 	HtmlDoc htmldoc = new HtmlDoc( );
 	if ( strSelectedHtmldoc.compareTo( "Htmldocs" ) == 0 )
 	    {
-		htmldoc.setContentLabel( request.getParameter( PARAMETER_HTMLDOC_NAME ) );
+		htmldoc.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
 		htmldoc.setVersion( nVersion );
 		htmldoc.setCreationDate( getSqlDate( ) );
 		htmldoc.setUpdateDate( getSqlDate( ) );
