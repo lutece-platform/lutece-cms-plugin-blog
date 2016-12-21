@@ -349,6 +349,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 	int nActualVersion = Integer.parseInt( request.getParameter( PARAMETER_ACTUAL_VERSION ) );
 	
 	_htmldoc = HtmlDocHome.findVersion( nId, nVersion );
+	_htmldoc.setVersion( nVersion++ );
 	
 	Map<String, Object> model = getModel(  );
 	model.put( MARK_HTMLDOC, _htmldoc );
@@ -375,13 +376,13 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
         }
 
-	HtmlDocHome.createVersion( _htmldoc );
-	populate( _htmldoc, request );
 	if ( strVersion != null )
 	    {
 		int nVersion = Integer.parseInt( strVersion );
 		_htmldoc.setVersion( nVersion );
 	    }
+	HtmlDocHome.createVersion( _htmldoc );
+	populate( _htmldoc, request );
 		
 
         // Check constraints
