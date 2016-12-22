@@ -70,6 +70,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     // Parameters
     private static final String PARAMETER_ID_HTMLDOC = "id";
     private static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
+    private static final String PARAMETER_HTML_CONTENT = "html_content";
     private static final String PARAMETER_ACTUAL_VERSION = "actual_version";
 
     // Properties for page titles
@@ -370,6 +371,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
 	String strVersion = request.getParameter( PARAMETER_ACTUAL_VERSION );
+	String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
 
         if ( _htmldoc == null || ( _htmldoc.getId(  ) != nId ))
         {
@@ -382,8 +384,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 		_htmldoc.setVersion( nVersion );
 	    }
 	HtmlDocHome.createVersion( _htmldoc );
-	populate( _htmldoc, request );
-		
+	_htmldoc.setHtmlContent( strHtmlContent );
 
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
