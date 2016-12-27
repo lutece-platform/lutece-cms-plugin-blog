@@ -1,3 +1,7 @@
+--
+-- Dumping data for table core_portlet_type
+--
+INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES ('HTMLDOCS_PORTLET','htmldocs.portlet.htmldocsHtmldocsPortlet.name','plugins/htmldocs/CreatePortletHtmldocs.jsp','plugins/htmldocs/ModifyPortletHtmldocs.jsp','fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletHome','htmldocs','plugins/htmldocs/DoCreatePortletHtmldocs.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/htmldocs/portlet/create_portlethtmldocs.html','','plugins/htmldocs/DoModifyPortletHtmldocs.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/htmldocs/portlet/modify_portlethtmldocs.html','');
 
 --
 -- Data for table core_admin_right
