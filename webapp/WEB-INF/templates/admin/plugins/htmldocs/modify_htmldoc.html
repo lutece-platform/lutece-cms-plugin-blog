@@ -1,0 +1,16 @@
+B1;2802;0c<#include "managehtmldocs_tabs.html" />
+<@tabs tab="htmldoc" />
+
+<@rowBoxHeader i18nTitleKey="htmldocs.modify_htmldoc.title">
+    <form class="form-horizontal" method="post" name="modify_htmldoc" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+        <@messages errors=errors />
+        <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>
+	<input type="hidden" id="acutal_version" name="actual_version" value="${actual_version}"/>
+
+	<#include "/admin/util/editor/editor.html" />
+	<textarea id="html_content" class="richtext" name="html_content" rows="12">   ${htmldoc.htmlContent}      </textarea>
+	<@initEditor/>
+        <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>
+    </form>
+</@rowBoxHeader>
+
