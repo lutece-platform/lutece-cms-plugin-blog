@@ -11,13 +11,24 @@
             </p>
             -->
             <subsection name="Introduction">
-                <p></p>
+                <p>
+		  Htmldocs plugin allows to create portlets linked with objects that are manageable in the associated admin feature.
+		</p>
             </subsection>
-            <subsection name="Configuration">
-                <p></p>
-            </subsection>
+	    <subsection name="Goal">
+	      <p>
+		The Hmtldocs plugin's goal is to simplify the site administration page.
+		In fact it allows to create and edit portlets content with the tinyMCE "inlite" theme editor, which permits to paste tabs, images, lutece links and of course html content.
+		The Htmldoc object contains the author name and all previous versions that can be easily restored at any moment.
+	      </p>
+	    </subsection>
             <subsection name="Usage">
-                <p></p>
+                <p>
+		  There is two ways to create an htmldoc portlet :
+		    - Create an Htmldoc document in the admin feature then link it to a new portlet
+		    - Dynamically create an htmldoc portlet on the "site administration" page, and directly fill it in with the content of your choice
+		  Moreover, every changes applied to either the portlet or it's linked Htmldoc is applied to the other.
+		</p>
             </subsection>
         </section>
     </body>

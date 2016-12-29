@@ -59,7 +59,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
     {
         // Initialize an object
         HtmlDoc htmlDoc = new HtmlDoc();
-        htmlDoc.setContentId( CONTENTID1 );
+        htmlDoc.setId( CONTENTID1 );
         htmlDoc.setVersion( VERSION1 );
         htmlDoc.setContentLabel( CONTENTLABEL1 );
         htmlDoc.setCreationDate( CREATIONDATE1 );
@@ -70,7 +70,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         // Create test
         HtmlDocHome.create( htmlDoc );
         HtmlDoc htmlDocStored = HtmlDocHome.findByPrimaryKey( htmlDoc.getId( ) );
-        assertEquals( htmlDocStored.getContentId() , htmlDoc.getContentId( ) );
+        assertEquals( htmlDocStored.getId() , htmlDoc.getId( ) );
         assertEquals( htmlDocStored.getVersion() , htmlDoc.getVersion( ) );
         assertEquals( htmlDocStored.getContentLabel() , htmlDoc.getContentLabel( ) );
         assertEquals( htmlDocStored.getCreationDate() , htmlDoc.getCreationDate( ) );
@@ -79,7 +79,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         assertEquals( htmlDocStored.getUser() , htmlDoc.getUser( ) );
 
         // Update test
-        htmlDoc.setContentId( CONTENTID2 );
+        htmlDoc.setId( CONTENTID2 );
         htmlDoc.setVersion( VERSION2 );
         htmlDoc.setContentLabel( CONTENTLABEL2 );
         htmlDoc.setCreationDate( CREATIONDATE2 );
@@ -88,7 +88,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         htmlDoc.setUser( USER2 );
         HtmlDocHome.update( htmlDoc );
         htmlDocStored = HtmlDocHome.findByPrimaryKey( htmlDoc.getId( ) );
-        assertEquals( htmlDocStored.getContentId() , htmlDoc.getContentId( ) );
+        assertEquals( htmlDocStored.getId() , htmlDoc.getId( ) );
         assertEquals( htmlDocStored.getVersion() , htmlDoc.getVersion( ) );
         assertEquals( htmlDocStored.getContentLabel() , htmlDoc.getContentLabel( ) );
         assertEquals( htmlDocStored.getCreationDate() , htmlDoc.getCreationDate( ) );
