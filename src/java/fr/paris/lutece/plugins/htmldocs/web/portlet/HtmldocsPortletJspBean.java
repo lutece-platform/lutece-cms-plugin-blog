@@ -68,7 +68,8 @@ public class HtmldocsPortletJspBean extends PortletJspBean
     /**
      * Returns the HtmldocsPortlet form of creation
      *
-     * @param request The Http rquest
+     * @param request
+     *            The Http rquest
      * @return the html code of the HtmldocsPortlet portlet form
      */
     @Override
@@ -76,18 +77,20 @@ public class HtmldocsPortletJspBean extends PortletJspBean
     {
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-	List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList(  );
-	HashMap<String, Object> model = new HashMap<String, Object>(  );
-	model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-	model.put( MARK_LIST_HTMLDOC, listHtmlDocs );
-	HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
+        List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
+        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        model.put( MARK_LIST_HTMLDOC, listHtmlDocs );
+        HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
      * Returns the HtmldocsPortlet form for update
-     * @param request The Http request
+     * 
+     * @param request
+     *            The Http request
      * @return the html code of the HtmldocsPortlet form
      */
     @Override
@@ -96,13 +99,13 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );
         HtmldocsPortlet portlet = (HtmldocsPortlet) PortletHome.findByPrimaryKey( nPortletId );
-	HtmlDoc htmlDoc = HtmlDocHome.findByPrimaryKey( portlet.getContentId() );
-	HashMap<String, Object> model = new HashMap<String, Object>(  );
-	model.put( MARK_HTML_CONTENT, htmlDoc.getHtmlContent( ) );
-	model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        HtmlDoc htmlDoc = HtmlDocHome.findByPrimaryKey( portlet.getContentId( ) );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
+        model.put( MARK_HTML_CONTENT, htmlDoc.getHtmlContent( ) );
+        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         HtmlTemplate template = getModifyTemplate( portlet, model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -110,46 +113,47 @@ public class HtmldocsPortletJspBean extends PortletJspBean
      *
      * @return the current date in sql format
      */
-    public java.sql.Date getSqlDate(  )
+    public java.sql.Date getSqlDate( )
     {
-	java.util.Date utilDate = new java.util.Date( );
-	java.sql.Date sqlDate = new java.sql.Date( utilDate.getTime( ) );
-	
-	return ( sqlDate );
+        java.util.Date utilDate = new java.util.Date( );
+        java.sql.Date sqlDate = new java.sql.Date( utilDate.getTime( ) );
+
+        return ( sqlDate );
     }
 
     /**
      * Treats the creation form of a new HtmldocsPortlet portlet
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return The jsp URL which displays the view of the created HtmldocsPortlet portlet
      */
     @Override
     public String doCreate( HttpServletRequest request )
     {
-        HtmldocsPortlet portlet = new HtmldocsPortlet(  );
-	AdminUser user = AdminUserService.getAdminUser( request );
-	String strSelectedHtmldoc = request.getParameter( PARAMETER_HTMLDOC_SELECTED );
-	nVersion = 1;
+        HtmldocsPortlet portlet = new HtmldocsPortlet( );
+        AdminUser user = AdminUserService.getAdminUser( request );
+        String strSelectedHtmldoc = request.getParameter( PARAMETER_HTMLDOC_SELECTED );
+        nVersion = 1;
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         int nPageId = Integer.parseInt( strPageId );
-	HtmlDoc htmldoc = new HtmlDoc( );
-	if ( strSelectedHtmldoc.compareTo( "Htmldocs" ) == 0 )
-	    {
-		htmldoc.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
-		htmldoc.setVersion( nVersion );
-		htmldoc.setCreationDate( getSqlDate( ) );
-		htmldoc.setUpdateDate( getSqlDate( ) );
-		htmldoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
-		htmldoc.setUser( user.getFirstName(  ) );
-		HtmlDocHome.create( htmldoc );
-	    }
-	else
-	    {
-		htmldoc = HtmlDocHome.findByName( strSelectedHtmldoc );
-	    }
-	int nContentId = htmldoc.getId( );
+        HtmlDoc htmldoc = new HtmlDoc( );
+        if ( strSelectedHtmldoc.compareTo( "Htmldocs" ) == 0 )
+        {
+            htmldoc.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
+            htmldoc.setVersion( nVersion );
+            htmldoc.setCreationDate( getSqlDate( ) );
+            htmldoc.setUpdateDate( getSqlDate( ) );
+            htmldoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
+            htmldoc.setUser( user.getFirstName( ) );
+            HtmlDocHome.create( htmldoc );
+        }
+        else
+        {
+            htmldoc = HtmlDocHome.findByName( strSelectedHtmldoc );
+        }
+        int nContentId = htmldoc.getId( );
 
         // get portlet common attributes
         String strErrorUrl = setPortletCommonData( request, portlet );
@@ -160,22 +164,23 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         }
 
         portlet.setPageId( nPageId );
-	portlet.setContentId( nContentId );
-	portlet.setPortletName( request.getParameter( PARAMETER_PORTLET_NAME ) );
+        portlet.setContentId( nContentId );
+        portlet.setPortletName( request.getParameter( PARAMETER_PORTLET_NAME ) );
 
         // Creates the portlet
-        HtmldocsPortletHome.getInstance(  ).create( portlet );
-	htmldoc.setAttachedPortletId( portlet.getId( ) );
-	HtmlDocHome.update( htmldoc );
+        HtmldocsPortletHome.getInstance( ).create( portlet );
+        htmldoc.setAttachedPortletId( portlet.getId( ) );
+        HtmlDocHome.update( htmldoc );
 
-        //Displays the page with the new Portlet
+        // Displays the page with the new Portlet
         return getPageUrl( nPageId );
     }
 
     /**
      * Treats the update form of the HtmldocsPortlet portlet whose identifier is in the http request
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return The jsp URL which displays the view of the updated portlet
      */
     @Override
@@ -185,7 +190,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );
         HtmldocsPortlet portlet = (HtmldocsPortlet) PortletHome.findByPrimaryKey( nPortletId );
-	HtmlDoc htmlDoc = HtmlDocHome.findByPrimaryKey( portlet.getContentId(  ) );
+        HtmlDoc htmlDoc = HtmlDocHome.findByPrimaryKey( portlet.getContentId( ) );
 
         // retrieve portlet common attributes
         String strErrorUrl = setPortletCommonData( request, portlet );
@@ -195,16 +200,16 @@ public class HtmldocsPortletJspBean extends PortletJspBean
             return strErrorUrl;
         }
 
-	//updates the HtmlDoc
-	htmlDoc.setHtmlContent(request.getParameter( PARAMETER_HTML_CONTENT ) );
-	htmlDoc.setUpdateDate( getSqlDate( ) );
-	htmlDoc.setVersion( nVersion++ );
-	HtmlDocHome.update( htmlDoc );
+        // updates the HtmlDoc
+        htmlDoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
+        htmlDoc.setUpdateDate( getSqlDate( ) );
+        htmlDoc.setVersion( nVersion++ );
+        HtmlDocHome.update( htmlDoc );
 
         // updates the portlet
-        portlet.update(  );
+        portlet.update( );
 
         // displays the page with the updated portlet
-        return getPageUrl( portlet.getPageId(  ) );
+        return getPageUrl( portlet.getPageId( ) );
     }
 }

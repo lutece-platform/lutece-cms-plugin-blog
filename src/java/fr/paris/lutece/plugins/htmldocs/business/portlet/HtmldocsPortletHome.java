@@ -52,7 +52,7 @@ public class HtmldocsPortletHome extends PortletHome
     /**
      * Constructor
      */
-    public HtmldocsPortletHome(  )
+    public HtmldocsPortletHome( )
     {
         if ( _singleton == null )
         {
@@ -65,9 +65,9 @@ public class HtmldocsPortletHome extends PortletHome
      *
      * @return the portlet type identifier
      */
-    public String getPortletTypeId(  )
+    public String getPortletTypeId( )
     {
-        String strCurrentClassName = this.getClass(  ).getName(  );
+        String strCurrentClassName = this.getClass( ).getName( );
         String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
         return strPortletTypeId;
@@ -78,11 +78,11 @@ public class HtmldocsPortletHome extends PortletHome
      *
      * @return the HtmldocsPortlet Portlet instance
      */
-    public static PortletHome getInstance(  )
+    public static PortletHome getInstance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new HtmldocsPortletHome(  );
+            _singleton = new HtmldocsPortletHome( );
         }
 
         return _singleton;
@@ -93,7 +93,7 @@ public class HtmldocsPortletHome extends PortletHome
      *
      * @return the instance of the DAO singleton
      */
-    public IPortletInterfaceDAO getDAO(  )
+    public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
     }

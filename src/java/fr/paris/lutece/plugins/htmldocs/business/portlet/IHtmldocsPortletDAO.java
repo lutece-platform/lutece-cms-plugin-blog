@@ -44,21 +44,24 @@ public interface IHtmldocsPortletDAO extends IPortletInterfaceDAO
     /**
      * Delete record from table
      *
-     * @param nPortletId The indentifier of the Portlet
+     * @param nPortletId
+     *            The indentifier of the Portlet
      */
     void delete( int nPortletId );
 
     /**
      * Insert a new record in the table.
      *
-     * @param portlet The Instance of the Portlet
+     * @param portlet
+     *            The Instance of the Portlet
      */
     void insert( Portlet portlet );
 
     /**
      * load the data of dbpagePortlet from the table
      *
-     * @param nIdPortlet The identifier of the portlet
+     * @param nIdPortlet
+     *            The identifier of the portlet
      * @return portlet The instance of the object portlet
      */
     Portlet load( int nIdPortlet );
@@ -66,7 +69,8 @@ public interface IHtmldocsPortletDAO extends IPortletInterfaceDAO
     /**
      * Update the record in the table
      *
-     * @param portlet The reference of the portlet
+     * @param portlet
+     *            The reference of the portlet
      */
     void store( Portlet portlet );
 }

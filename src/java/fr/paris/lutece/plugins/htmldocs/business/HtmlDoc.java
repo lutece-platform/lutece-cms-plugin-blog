@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * License 1.0
- */ 
+ */
 package fr.paris.lutece.plugins.htmldocs.business;
 
 import javax.validation.constraints.*;
@@ -41,36 +41,37 @@ import java.sql.Date;
 
 /**
  * This is the business class for the object HtmlDoc
- */ 
+ */
 public class HtmlDoc extends ReferenceItem implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    // Variables declarations 
+    // Variables declarations
     private int _nId;
 
     private int _nAttachedPortletId;
-    
+
     private int _nVersion;
-    
+
     @NotEmpty( message = "#i18n{htmldocs.validation.htmldoc.ContentLabel.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{htmldocs.validation.htmldoc.ContentLabel.size}" ) 
+    @Size( max = 50, message = "#i18n{htmldocs.validation.htmldoc.ContentLabel.size}" )
     private String _strContentLabel;
-    
+
     private Date _dateCreationDate;
-    
+
     private Date _dateUpdateDate;
-    
+
     @NotEmpty( message = "#i18n{htmldocs.validation.htmldoc.HtmlContent.notEmpty}" )
-    @Size( message = "#i18n{htmldocs.validation.htmldoc.HtmlContent.size}" ) 
+    @Size( message = "#i18n{htmldocs.validation.htmldoc.HtmlContent.size}" )
     private String _strHtmlContent;
-    
+
     @NotEmpty( message = "#i18n{htmldocs.validation.htmldoc.User.notEmpty}" )
-    @Size( max = 50 , message = "#i18n{htmldocs.validation.htmldoc.User.size}" ) 
+    @Size( max = 50, message = "#i18n{htmldocs.validation.htmldoc.User.size}" )
     private String _strUser;
 
     /**
      * Returns the Id
+     * 
      * @return The Id
      */
     public int getId( )
@@ -80,18 +81,20 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     public String getName( )
     {
-	return _strContentLabel;
+        return _strContentLabel;
     }
 
     public String getCode( )
     {
-	return "TOTO";
+        return "TOTO";
     }
 
     /**
      * Sets the Id
-     * @param nId The Id
-     */ 
+     * 
+     * @param nId
+     *            The Id
+     */
     public void setId( int nId )
     {
         _nId = nId;
@@ -99,6 +102,7 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     /**
      * Returns the Version
+     * 
      * @return The Version
      */
     public int getVersion( )
@@ -108,15 +112,18 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     /**
      * Sets the Version
-     * @param nVersion The Version
-     */ 
+     * 
+     * @param nVersion
+     *            The Version
+     */
     public void setVersion( int nVersion )
     {
         _nVersion = nVersion;
     }
-    
+
     /**
      * Returns the ContentLabel
+     * 
      * @return The ContentLabel
      */
     public String getContentLabel( )
@@ -126,15 +133,18 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     /**
      * Sets the ContentLabel
-     * @param strContentLabel The ContentLabel
-     */ 
+     * 
+     * @param strContentLabel
+     *            The ContentLabel
+     */
     public void setContentLabel( String strContentLabel )
     {
         _strContentLabel = strContentLabel;
     }
-    
+
     /**
      * Returns the CreationDate
+     * 
      * @return The CreationDate
      */
     public Date getCreationDate( )
@@ -144,15 +154,18 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     /**
      * Sets the CreationDate
-     * @param dateCreationDate The CreationDate
-     */ 
+     * 
+     * @param dateCreationDate
+     *            The CreationDate
+     */
     public void setCreationDate( Date dateCreationDate )
     {
         _dateCreationDate = dateCreationDate;
     }
-    
+
     /**
      * Returns the UpdateDate
+     * 
      * @return The UpdateDate
      */
     public Date getUpdateDate( )
@@ -162,15 +175,18 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     /**
      * Sets the UpdateDate
-     * @param dateUpdateDate The UpdateDate
-     */ 
+     * 
+     * @param dateUpdateDate
+     *            The UpdateDate
+     */
     public void setUpdateDate( Date dateUpdateDate )
     {
         _dateUpdateDate = dateUpdateDate;
     }
-    
+
     /**
      * Returns the HtmlContent
+     * 
      * @return The HtmlContent
      */
     public String getHtmlContent( )
@@ -180,15 +196,18 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     /**
      * Sets the HtmlContent
-     * @param strHtmlContent The HtmlContent
-     */ 
+     * 
+     * @param strHtmlContent
+     *            The HtmlContent
+     */
     public void setHtmlContent( String strHtmlContent )
     {
         _strHtmlContent = strHtmlContent;
     }
-    
+
     /**
      * Returns the User
+     * 
      * @return The User
      */
     public String getUser( )
@@ -198,8 +217,10 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     /**
      * Sets the User
-     * @param strUser The User
-     */ 
+     * 
+     * @param strUser
+     *            The User
+     */
     public void setUser( String strUser )
     {
         _strUser = strUser;
@@ -207,11 +228,11 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     public void setAttachedPortletId( int nAttachedPortletId )
     {
-	_nAttachedPortletId = nAttachedPortletId;
+        _nAttachedPortletId = nAttachedPortletId;
     }
 
-    public int getAttachedPortletId(  )
+    public int getAttachedPortletId( )
     {
-	return _nAttachedPortletId;
+        return _nAttachedPortletId;
     }
 }

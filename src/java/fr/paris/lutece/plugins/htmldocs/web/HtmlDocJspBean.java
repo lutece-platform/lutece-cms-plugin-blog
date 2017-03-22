@@ -5,7 +5,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
-  *
+ *
  *  1. Redistributions of source code must retain the above copyright notice
  *     and the following disclaimer.
  *
@@ -121,91 +121,95 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String MARK_HTMLDOC_FILTER_NAME = "Nom";
     private static final String MARK_HTMLDOC_FILTER_DATE = "Date";
     private static final String MARK_HTMLDOC_FILTER_USER = "Utilisateur";
-    
+
     // Session variable to store working values
     private HtmlDoc _htmldoc;
     private boolean _bIsSorted = false;
     private String _strSortedAttributeName;
     private boolean _bIsChecked = false;
-    
+
     /**
      * Build the Manage View
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The page
      */
     @View( value = VIEW_MANAGE_HTMLDOCS, defaultView = true )
     public String getManageHtmlDocs( HttpServletRequest request )
     {
         _htmldoc = null;
-        List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList(  );
-	List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList(  );
+        List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
+        List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList( );
 
-	//SORT
-	String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
-	String strAscSort = null;
+        // SORT
+        String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
+        String strAscSort = null;
 
-	if ( strSortedAttributeName != null || _bIsSorted == true )
-	    {
-		if ( strSortedAttributeName == null )
-		    {
-			strSortedAttributeName = _strSortedAttributeName;
-		    }
-		strAscSort = request.getParameter( MARK_ASC_SORT );
+        if ( strSortedAttributeName != null || _bIsSorted == true )
+        {
+            if ( strSortedAttributeName == null )
+            {
+                strSortedAttributeName = _strSortedAttributeName;
+            }
+            strAscSort = request.getParameter( MARK_ASC_SORT );
 
-		boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
+            boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
 
-		Collections.sort( listHtmlDocs, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
+            Collections.sort( listHtmlDocs, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
 
-		_bIsSorted = true;
+            _bIsSorted = true;
 
-		_strSortedAttributeName = strSortedAttributeName;
-	    }
+            _strSortedAttributeName = strSortedAttributeName;
+        }
 
-	//CURRENT USER
-	String strCurrentUser = request.getParameter( MARK_CURRENT_USER );
-	String strIsChecked = null;
-	AdminUser user = AdminUserService.getAdminUser( request );
+        // CURRENT USER
+        String strCurrentUser = request.getParameter( MARK_CURRENT_USER );
+        String strIsChecked = null;
+        AdminUser user = AdminUserService.getAdminUser( request );
 
-	if ( strCurrentUser != null )
-	    {
-		if ( _bIsChecked == true )
-		    _bIsChecked = false;
-		else if ( _bIsChecked == false )
-		    {
-			_bIsChecked = true;
-			Iterator<HtmlDoc> iterator = listHtmlDocs.iterator(  );
-			while ( iterator.hasNext(  ) )
-			    {
-				HtmlDoc doc = iterator.next(  );
-				if ( doc.getUser(  ).compareTo( user.getFirstName(  ) ) != 0 )
-				    {
-					iterator.remove(  );
-				    }
-			    }
-		    }
-	    }
-	else if ( _bIsChecked == true )
-	    {
-		Iterator<HtmlDoc> iterator = listHtmlDocs.iterator(  );
-		while ( iterator.hasNext(  ) )
-		    {
-			HtmlDoc doc = iterator.next(  );
-			if ( doc.getUser(  ).compareTo( user.getFirstName(  ) ) != 0 )
-			    {
-				iterator.remove(  );
-			    }
-		    }	
-	    }
-	if ( _bIsChecked == false )
-	    strIsChecked = MARK_UNCHECKED;
-	else
-	    strIsChecked = MARK_CHECKED;
+        if ( strCurrentUser != null )
+        {
+            if ( _bIsChecked == true )
+                _bIsChecked = false;
+            else
+                if ( _bIsChecked == false )
+                {
+                    _bIsChecked = true;
+                    Iterator<HtmlDoc> iterator = listHtmlDocs.iterator( );
+                    while ( iterator.hasNext( ) )
+                    {
+                        HtmlDoc doc = iterator.next( );
+                        if ( doc.getUser( ).compareTo( user.getFirstName( ) ) != 0 )
+                        {
+                            iterator.remove( );
+                        }
+                    }
+                }
+        }
+        else
+            if ( _bIsChecked == true )
+            {
+                Iterator<HtmlDoc> iterator = listHtmlDocs.iterator( );
+                while ( iterator.hasNext( ) )
+                {
+                    HtmlDoc doc = iterator.next( );
+                    if ( doc.getUser( ).compareTo( user.getFirstName( ) ) != 0 )
+                    {
+                        iterator.remove( );
+                    }
+                }
+            }
+        if ( _bIsChecked == false )
+            strIsChecked = MARK_UNCHECKED;
+        else
+            strIsChecked = MARK_CHECKED;
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocs, JSP_MANAGE_HTMLDOCS );
-	model.put( MARK_HTMLDOC_FILTER_LIST, getHtmldocFilterList(  ) );
-	model.put( MARK_HTMLDOC_VERSION_LIST, listHtmlDocsVersions );
-	model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-	model.put( MARK_IS_CHECKED, strIsChecked );
+        model.put( MARK_HTMLDOC_FILTER_LIST, getHtmldocFilterList( ) );
+        model.put( MARK_HTMLDOC_VERSION_LIST, listHtmlDocsVersions );
+        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        model.put( MARK_IS_CHECKED, strIsChecked );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS, TEMPLATE_MANAGE_HTMLDOCS, model );
     }
@@ -213,27 +217,28 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     /**
      * Returns the form to create a htmldoc
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return the html code of the htmldoc form
      */
     @View( VIEW_CREATE_HTMLDOC )
     public String getCreateHtmlDoc( HttpServletRequest request )
     {
-        _htmldoc = ( _htmldoc != null ) ? _htmldoc : new HtmlDoc(  );
+        _htmldoc = ( _htmldoc != null ) ? _htmldoc : new HtmlDoc( );
 
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
-	model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_HTMLDOC, TEMPLATE_CREATE_HTMLDOC, model );
     }
 
     /**
-     * Gets the current 
+     * Gets the current
      *
-     * @return the current date in sql format 
+     * @return the current date in sql format
      */
-    public java.sql.Date getSqlDate(  )
+    public java.sql.Date getSqlDate( )
     {
         java.util.Date utilDate = new java.util.Date( );
         java.sql.Date sqlDate = new java.sql.Date( utilDate.getTime( ) );
@@ -241,22 +246,22 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         return ( sqlDate );
     }
 
-
     /**
      * Process the data capture form of a new htmldoc
      *
-     * @param request The Http Request
+     * @param request
+     *            The Http Request
      * @return The Jsp URL of the process result
      */
     @Action( ACTION_CREATE_HTMLDOC )
     public String doCreateHtmlDoc( HttpServletRequest request )
     {
-	_htmldoc.setCreationDate( getSqlDate(  ) );
-	_htmldoc.setUpdateDate( getSqlDate(  ) );
-	_htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName(  ) );
-	_htmldoc.setVersion( 1 );
-	_htmldoc.setAttachedPortletId( 0 );
-	populate( _htmldoc, request );
+        _htmldoc.setCreationDate( getSqlDate( ) );
+        _htmldoc.setUpdateDate( getSqlDate( ) );
+        _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _htmldoc.setVersion( 1 );
+        _htmldoc.setAttachedPortletId( 0 );
+        populate( _htmldoc, request );
 
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -265,17 +270,16 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         HtmlDocHome.create( _htmldoc );
-        addInfo( INFO_HTMLDOC_CREATED, getLocale(  ) );
+        addInfo( INFO_HTMLDOC_CREATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
     }
 
-
     /**
-     * Manages the removal form of a htmldoc whose identifier is in the http
-     * request
+     * Manages the removal form of a htmldoc whose identifier is in the http request
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return the html code to confirm
      */
     @Action( ACTION_CONFIRM_REMOVE_HTMLDOC )
@@ -285,7 +289,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_HTMLDOC ) );
         url.addParameter( PARAMETER_ID_HTMLDOC, nId );
 
-        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_HTMLDOC, url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_HTMLDOC, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
 
         return redirect( request, strMessageUrl );
     }
@@ -293,22 +297,23 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     /**
      * Handles the removal form of a htmldoc
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return the jsp URL to display the form to manage htmldocs
      */
     @Action( ACTION_REMOVE_HTMLDOC )
     public String doRemoveHtmlDoc( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-	HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( nId );
-	int nAttachedPortletId = htmldoc.getAttachedPortletId( );
-	if ( nAttachedPortletId != 0 )
-	    {
-		HtmldocsPortletHome.getInstance(  ).remove( HtmldocsPortletHome.findByPrimaryKey( nAttachedPortletId ) );
-	    }
+        HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+        int nAttachedPortletId = htmldoc.getAttachedPortletId( );
+        if ( nAttachedPortletId != 0 )
+        {
+            HtmldocsPortletHome.getInstance( ).remove( HtmldocsPortletHome.findByPrimaryKey( nAttachedPortletId ) );
+        }
         HtmlDocHome.remove( nId );
-	HtmlDocHome.removeVersions( nId );
-        addInfo( INFO_HTMLDOC_REMOVED, getLocale(  ) );
+        HtmlDocHome.removeVersions( nId );
+        addInfo( INFO_HTMLDOC_REMOVED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
     }
@@ -316,7 +321,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     /**
      * Returns the form to update info about a htmldoc
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return The HTML form to update info
      */
     @View( VIEW_MODIFY_HTMLDOC )
@@ -324,67 +330,69 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
 
-        if ( _htmldoc == null || ( _htmldoc.getId(  ) != nId ))
+        if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
             _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
         }
 
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
-	model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
-         return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
+        return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
     }
 
     /**
      * Returns the form to update info about a htmldoc
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return The HTML form to update info
      */
     @View( VIEW_PREVIOUS_VERSION_HTMLDOC )
     public String getPreviousVersionHtmlDoc( HttpServletRequest request )
     {
-	int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-	int nVersion = Integer.parseInt( request.getParameter( PARAMETER_VERSION_HTMLDOC ) );
-	int nActualVersion = Integer.parseInt( request.getParameter( PARAMETER_ACTUAL_VERSION ) );
-	
-	_htmldoc = HtmlDocHome.findVersion( nId, nVersion );
-	_htmldoc.setVersion( nVersion++ );
-	
-	Map<String, Object> model = getModel(  );
-	model.put( MARK_HTMLDOC, _htmldoc );
-	model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-	model.put( MARK_ACTUAL_VERSION, nActualVersion );
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
+        int nVersion = Integer.parseInt( request.getParameter( PARAMETER_VERSION_HTMLDOC ) );
+        int nActualVersion = Integer.parseInt( request.getParameter( PARAMETER_ACTUAL_VERSION ) );
 
-         return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
+        _htmldoc = HtmlDocHome.findVersion( nId, nVersion );
+        _htmldoc.setVersion( nVersion++ );
+
+        Map<String, Object> model = getModel( );
+        model.put( MARK_HTMLDOC, _htmldoc );
+        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        model.put( MARK_ACTUAL_VERSION, nActualVersion );
+
+        return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
     }
 
     /**
      * Process the change form of a htmldoc
      *
-     * @param request The Http request
+     * @param request
+     *            The Http request
      * @return The Jsp URL of the process result
      */
     @Action( ACTION_MODIFY_HTMLDOC )
     public String doModifyHtmlDoc( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-	String strVersion = request.getParameter( PARAMETER_ACTUAL_VERSION );
-	String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
+        String strVersion = request.getParameter( PARAMETER_ACTUAL_VERSION );
+        String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
 
-        if ( _htmldoc == null || ( _htmldoc.getId(  ) != nId ))
+        if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
             _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
         }
 
-	if ( strVersion != null )
-	    {
-		int nVersion = Integer.parseInt( strVersion );
-		_htmldoc.setVersion( nVersion );
-	    }
-	HtmlDocHome.createVersion( _htmldoc );
-	_htmldoc.setHtmlContent( strHtmlContent );
+        if ( strVersion != null )
+        {
+            int nVersion = Integer.parseInt( strVersion );
+            _htmldoc.setVersion( nVersion );
+        }
+        HtmlDocHome.createVersion( _htmldoc );
+        _htmldoc.setHtmlContent( strHtmlContent );
 
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -392,20 +400,20 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             return redirect( request, VIEW_MODIFY_HTMLDOC, PARAMETER_ID_HTMLDOC, _htmldoc.getId( ) );
         }
 
-	_htmldoc.setVersion( _htmldoc.getVersion(  ) + 1 );
+        _htmldoc.setVersion( _htmldoc.getVersion( ) + 1 );
         HtmlDocHome.update( _htmldoc );
-        addInfo( INFO_HTMLDOC_UPDATED, getLocale(  ) );
-	
-	return redirectView( request, VIEW_MANAGE_HTMLDOCS );
+        addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
+
+        return redirectView( request, VIEW_MANAGE_HTMLDOCS );
     }
 
-    private ReferenceList getHtmldocFilterList(  )
+    private ReferenceList getHtmldocFilterList( )
     {
-	ReferenceList list = new ReferenceList(  );
-	list.addItem( MARK_HTMLDOC_FILTER_NAME, "Nom" );
-	list.addItem( MARK_HTMLDOC_FILTER_DATE, "Date" );
-	list.addItem( MARK_HTMLDOC_FILTER_USER, "Utilisateur" );
+        ReferenceList list = new ReferenceList( );
+        list.addItem( MARK_HTMLDOC_FILTER_NAME, "Nom" );
+        list.addItem( MARK_HTMLDOC_FILTER_DATE, "Date" );
+        list.addItem( MARK_HTMLDOC_FILTER_USER, "Utilisateur" );
 
-	return list;
+        return list;
     }
 }

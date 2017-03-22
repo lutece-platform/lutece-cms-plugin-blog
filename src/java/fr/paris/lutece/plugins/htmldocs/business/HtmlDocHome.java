@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
- package fr.paris.lutece.plugins.htmldocs.business;
+package fr.paris.lutece.plugins.htmldocs.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -52,14 +52,16 @@ public final class HtmlDocHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private HtmlDocHome(  )
+    private HtmlDocHome( )
     {
     }
 
     /**
      * Create an instance of the htmlDoc class
-     * @param htmlDoc The instance of the HtmlDoc which contains the informations to store
-     * @return The  instance of htmlDoc which has been created with its primary key.
+     * 
+     * @param htmlDoc
+     *            The instance of the HtmlDoc which contains the informations to store
+     * @return The instance of htmlDoc which has been created with its primary key.
      */
     public static HtmlDoc create( HtmlDoc htmlDoc )
     {
@@ -70,8 +72,10 @@ public final class HtmlDocHome
 
     /**
      * Create an instance of the htmlDoc class
-     * @param htmlDoc The instance of the HtmlDoc which contains the informations to store
-     * @return The  instance of htmlDoc which has been created with its primary key.
+     * 
+     * @param htmlDoc
+     *            The instance of the HtmlDoc which contains the informations to store
+     * @return The instance of htmlDoc which has been created with its primary key.
      */
     public static HtmlDoc createVersion( HtmlDoc htmlDoc )
     {
@@ -82,8 +86,10 @@ public final class HtmlDocHome
 
     /**
      * Update of the htmlDoc which is specified in parameter
-     * @param htmlDoc The instance of the HtmlDoc which contains the data to store
-     * @return The instance of the  htmlDoc which has been updated
+     * 
+     * @param htmlDoc
+     *            The instance of the HtmlDoc which contains the data to store
+     * @return The instance of the htmlDoc which has been updated
      */
     public static HtmlDoc update( HtmlDoc htmlDoc )
     {
@@ -94,7 +100,9 @@ public final class HtmlDocHome
 
     /**
      * Remove the htmlDoc whose identifier is specified in parameter
-     * @param nKey The htmlDoc Id
+     * 
+     * @param nKey
+     *            The htmlDoc Id
      */
     public static void remove( int nKey )
     {
@@ -103,7 +111,9 @@ public final class HtmlDocHome
 
     /**
      * Remove the htmlDoc's versions whose identifier is specified in parameter
-     * @param nKey The htmlDoc Id
+     * 
+     * @param nKey
+     *            The htmlDoc Id
      */
     public static void removeVersions( int nKey )
     {
@@ -112,36 +122,43 @@ public final class HtmlDocHome
 
     /**
      * Returns an instance of a htmlDoc whose identifier is specified in parameter
-     * @param nKey The htmlDoc primary key
+     * 
+     * @param nKey
+     *            The htmlDoc primary key
      * @return an instance of HtmlDoc
      */
     public static HtmlDoc findByPrimaryKey( int nKey )
     {
-        return _dao.load( nKey, _plugin);
+        return _dao.load( nKey, _plugin );
     }
 
     /**
      * Returns an instance of a htmlDoc whose identifier is specified in parameter
-     * @param nKey The htmlDoc primary key
+     * 
+     * @param nKey
+     *            The htmlDoc primary key
      * @return an instance of HtmlDoc
      */
     public static HtmlDoc findByName( String strName )
     {
-        return _dao.loadByName( strName, _plugin);
+        return _dao.loadByName( strName, _plugin );
     }
 
     /**
      * Returns an instance of a htmlDoc whose identifier is specified in parameter
-     * @param nKey The htmlDoc primary key
+     * 
+     * @param nKey
+     *            The htmlDoc primary key
      * @return an instance of HtmlDoc
      */
     public static HtmlDoc findVersion( int nId, int nVersion )
     {
-        return _dao.loadVersion( nId, nVersion,  _plugin);
+        return _dao.loadVersion( nId, nVersion, _plugin );
     }
 
     /**
      * Load the data of all the htmlDoc objects and returns them as a list
+     * 
      * @return the list which contains the data of all the htmlDoc objects
      */
     public static List<HtmlDoc> getHtmlDocsList( )
@@ -151,29 +168,31 @@ public final class HtmlDocHome
 
     /**
      * Load the data of all the htmlDoc objects and returns them as a list
+     * 
      * @return the list which contains the data of all the htmlDoc objects
      */
     public static List<HtmlDoc> getHtmlDocsVersionsList( )
     {
         return _dao.selectHtmlDocsVersionsList( _plugin );
     }
-    
+
     /**
      * Load the id of all the htmlDoc objects and returns them as a list
+     * 
      * @return the list which contains the id of all the htmlDoc objects
      */
     public static List<Integer> getIdHtmlDocsList( )
     {
         return _dao.selectIdHtmlDocsList( _plugin );
     }
-    
+
     /**
      * Load the data of all the htmlDoc objects and returns them as a referenceList
+     * 
      * @return the referenceList which contains the data of all the htmlDoc objects
      */
     public static ReferenceList getHtmlDocsReferenceList( )
     {
-        return _dao.selectHtmlDocsReferenceList(_plugin );
+        return _dao.selectHtmlDocsReferenceList( _plugin );
     }
 }
-

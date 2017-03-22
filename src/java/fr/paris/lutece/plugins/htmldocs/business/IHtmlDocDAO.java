@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
- 
+
 package fr.paris.lutece.plugins.htmldocs.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -45,90 +45,122 @@ public interface IHtmlDocDAO
 {
     /**
      * Insert a new record in the table.
-     * @param htmlDoc instance of the HtmlDoc object to insert
-     * @param plugin the Plugin
+     * 
+     * @param htmlDoc
+     *            instance of the HtmlDoc object to insert
+     * @param plugin
+     *            the Plugin
      */
     void insert( HtmlDoc htmlDoc, Plugin plugin );
 
     /**
      * Insert a new record in the table.
-     * @param htmlDoc instance of the HtmlDoc object to insert
-     * @param plugin the Plugin
+     * 
+     * @param htmlDoc
+     *            instance of the HtmlDoc object to insert
+     * @param plugin
+     *            the Plugin
      */
     void insertVersion( HtmlDoc htmlDoc, Plugin plugin );
 
     /**
      * Update the record in the table
-     * @param htmlDoc the reference of the HtmlDoc
-     * @param plugin the Plugin
+     * 
+     * @param htmlDoc
+     *            the reference of the HtmlDoc
+     * @param plugin
+     *            the Plugin
      */
     void store( HtmlDoc htmlDoc, Plugin plugin );
 
     /**
      * Delete a record from the table
-     * @param nKey The identifier of the HtmlDoc to delete
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the HtmlDoc to delete
+     * @param plugin
+     *            the Plugin
      */
     void delete( int nKey, Plugin plugin );
 
     /**
      * Delete a record from the table
-     * @param nKey The identifier of the HtmlDoc to delete
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the HtmlDoc to delete
+     * @param plugin
+     *            the Plugin
      */
     void deleteVersions( int nKey, Plugin plugin );
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
      * Load the data from the table
-     * @param nKey The identifier of the htmlDoc
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the htmlDoc
+     * @param plugin
+     *            the Plugin
      * @return The instance of the htmlDoc
      */
     HtmlDoc load( int nKey, Plugin plugin );
 
     /**
      * Load the data from the table
-     * @param nKey The identifier of the htmlDoc
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the htmlDoc
+     * @param plugin
+     *            the Plugin
      * @return The instance of the htmlDoc
      */
     HtmlDoc loadByName( String strName, Plugin plugin );
 
     /**
      * Load the data from the table
-     * @param nKey The identifier of the htmlDoc
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the htmlDoc
+     * @param plugin
+     *            the Plugin
      * @return The instance of the htmlDoc
      */
     HtmlDoc loadVersion( int nId, int nVersion, Plugin plugin );
 
     /**
      * Load the data of all the htmlDoc objects and returns them as a list
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return The list which contains the data of all the htmlDoc objects
      */
     List<HtmlDoc> selectHtmlDocsList( Plugin plugin );
 
     /**
      * Load the data of all the htmlDoc objects and returns them as a list
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return The list which contains the data of all the htmlDoc objects
      */
     List<HtmlDoc> selectHtmlDocsVersionsList( Plugin plugin );
-    
+
     /**
      * Load the id of all the htmlDoc objects and returns them as a list
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return The list which contains the id of all the htmlDoc objects
      */
     List<Integer> selectIdHtmlDocsList( Plugin plugin );
-    
+
     /**
      * Load the data of all the htmlDoc objects and returns them as a referenceList
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return The referenceList which contains the data of all the htmlDoc objects
      */
     ReferenceList selectHtmlDocsReferenceList( Plugin plugin );

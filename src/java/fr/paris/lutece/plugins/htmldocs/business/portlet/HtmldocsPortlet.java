@@ -47,9 +47,9 @@ public class HtmldocsPortlet extends PortletHtmlContent
     /**
      * Sets the identifier of the portlet type to value specified
      */
-    public HtmldocsPortlet(  )
+    public HtmldocsPortlet( )
     {
-        setPortletTypeId( HtmldocsPortletHome.getInstance(  ).getPortletTypeId(  ) );
+        setPortletTypeId( HtmldocsPortletHome.getInstance( ).getPortletTypeId( ) );
     }
 
     private int _nContentId;
@@ -59,43 +59,45 @@ public class HtmldocsPortlet extends PortletHtmlContent
     /**
      * Returns the HTML code of the HtmldocsPortlet portlet with XML heading
      *
-     * @param request The HTTP servlet request
+     * @param request
+     *            The HTTP servlet request
      * @return the HTML code of the HtmldocsPortlet portlet
      */
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-	HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId(  ) );
+        HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
 
-        return htmldoc.getHtmlContent(  );
+        return htmldoc.getHtmlContent( );
     }
 
     /**
      * Updates the current instance of the HtmldocsPortlet object
      */
-    public void update(  )
+    public void update( )
     {
-        HtmldocsPortletHome.getInstance(  ).update( this );
+        HtmldocsPortletHome.getInstance( ).update( this );
     }
 
     /**
      * Removes the current instance of the HtmldocsPortlet object
      */
     @Override
-    public void remove(  )
+    public void remove( )
     {
-	HtmlDocHome.remove( this.getContentId( ) );
-        HtmldocsPortletHome.getInstance(  ).remove( this );
+        HtmlDocHome.remove( this.getContentId( ) );
+        HtmldocsPortletHome.getInstance( ).remove( this );
     }
 
     /**
      * Sets the id of the html document
      *
-     * @param the id of the document
+     * @param the
+     *            id of the document
      */
     public void setContentId( int nContentId )
     {
-    	_nContentId = nContentId;
+        _nContentId = nContentId;
     }
 
     /**
@@ -103,19 +105,20 @@ public class HtmldocsPortlet extends PortletHtmlContent
      *
      * @return the id of the document
      */
-    public int getContentId(  )
+    public int getContentId( )
     {
-    	return _nContentId;
+        return _nContentId;
     }
 
     /**
      * Sets the name of the html document
      *
-     * @param the name of the document
+     * @param the
+     *            name of the document
      */
     public void setPortletName( String strName )
     {
-    	_strName = strName;
+        _strName = strName;
     }
 
     /**
@@ -123,9 +126,8 @@ public class HtmldocsPortlet extends PortletHtmlContent
      *
      * @return the name of the document
      */
-    public String getPortletName(  )
+    public String getPortletName( )
     {
-    	return _strName;
+        return _strName;
     }
 }
-

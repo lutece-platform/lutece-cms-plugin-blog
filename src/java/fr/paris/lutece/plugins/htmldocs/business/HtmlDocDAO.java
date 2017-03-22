@@ -63,41 +63,45 @@ public final class HtmlDocDAO implements IHtmlDocDAO
 
     /**
      * Generates a new primary key
-     * @param plugin The Plugin
+     * 
+     * @param plugin
+     *            The Plugin
      * @return The new primary key
      */
-    public int newPrimaryKey( Plugin plugin)
+    public int newPrimaryKey( Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK , plugin  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
         daoUtil.executeQuery( );
         int nKey = 1;
 
-        if( daoUtil.next( ) )
+        if ( daoUtil.next( ) )
         {
             nKey = daoUtil.getInt( 1 ) + 1;
         }
 
-        daoUtil.free();
+        daoUtil.free( );
         return nKey;
     }
 
     /**
      * Generates a new primary key
-     * @param plugin The Plugin
+     * 
+     * @param plugin
+     *            The Plugin
      * @return The new primary key
      */
     public int newVersionPrimaryKey( Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK_VERSION , plugin  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK_VERSION, plugin );
         daoUtil.executeQuery( );
         int nKey = 1;
 
-        if( daoUtil.next( ) )
+        if ( daoUtil.next( ) )
         {
             nKey = daoUtil.getInt( 1 ) + 1;
         }
 
-        daoUtil.free();
+        daoUtil.free( );
         return nKey;
     }
 
@@ -110,15 +114,15 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
         htmlDoc.setId( newPrimaryKey( plugin ) );
         int nIndex = 1;
-        
-        daoUtil.setInt( nIndex++ , htmlDoc.getId( ) );
-        daoUtil.setInt( nIndex++ , htmlDoc.getVersion( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getContentLabel( ) );
-        daoUtil.setDate( nIndex++ , htmlDoc.getCreationDate( ) );
-        daoUtil.setDate( nIndex++ , htmlDoc.getUpdateDate( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getHtmlContent( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getUser( ) );
-	daoUtil.setInt( nIndex++ , htmlDoc.getAttachedPortletId( ) );
+
+        daoUtil.setInt( nIndex++, htmlDoc.getId( ) );
+        daoUtil.setInt( nIndex++, htmlDoc.getVersion( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getContentLabel( ) );
+        daoUtil.setDate( nIndex++, htmlDoc.getCreationDate( ) );
+        daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
+        daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -126,19 +130,19 @@ public final class HtmlDocDAO implements IHtmlDocDAO
 
     public void insertVersion( HtmlDoc htmlDoc, Plugin plugin )
     {
-	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_VERSION, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_VERSION, plugin );
         int nVersion = newVersionPrimaryKey( plugin );
         int nIndex = 1;
-        
-	daoUtil.setInt( nIndex++ , nVersion );
-        daoUtil.setInt( nIndex++ , htmlDoc.getId( ) );
-        daoUtil.setInt( nIndex++ , htmlDoc.getVersion( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getContentLabel( ) );
-        daoUtil.setDate( nIndex++ , htmlDoc.getCreationDate( ) );
-        daoUtil.setDate( nIndex++ , htmlDoc.getUpdateDate( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getHtmlContent( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getUser( ) );
-	daoUtil.setInt( nIndex++ , htmlDoc.getAttachedPortletId( ) );
+
+        daoUtil.setInt( nIndex++, nVersion );
+        daoUtil.setInt( nIndex++, htmlDoc.getId( ) );
+        daoUtil.setInt( nIndex++, htmlDoc.getVersion( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getContentLabel( ) );
+        daoUtil.setDate( nIndex++, htmlDoc.getCreationDate( ) );
+        daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
+        daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -151,15 +155,15 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     public HtmlDoc load( int nKey, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
-        daoUtil.setInt( 1 , nKey );
+        daoUtil.setInt( 1, nKey );
         daoUtil.executeQuery( );
         HtmlDoc htmlDoc = null;
 
         if ( daoUtil.next( ) )
         {
-            htmlDoc = new HtmlDoc();
+            htmlDoc = new HtmlDoc( );
             int nIndex = 1;
-            
+
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
@@ -167,7 +171,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
-	    htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
         }
 
         daoUtil.free( );
@@ -181,15 +185,15 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     public HtmlDoc loadByName( String strName, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_NAME, plugin );
-        daoUtil.setString( 1 , strName );
+        daoUtil.setString( 1, strName );
         daoUtil.executeQuery( );
         HtmlDoc htmlDoc = null;
 
         if ( daoUtil.next( ) )
         {
-            htmlDoc = new HtmlDoc();
+            htmlDoc = new HtmlDoc( );
             int nIndex = 1;
-            
+
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
@@ -197,7 +201,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
-	    htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
         }
 
         daoUtil.free( );
@@ -208,19 +212,19 @@ public final class HtmlDocDAO implements IHtmlDocDAO
      * {@inheritDoc }
      */
     @Override
-    public HtmlDoc loadVersion( int nId, int nVersion,  Plugin plugin )
+    public HtmlDoc loadVersion( int nId, int nVersion, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_VERSION, plugin );
-        daoUtil.setInt( 1 , nId );
-	daoUtil.setInt( 2 , nVersion );
+        daoUtil.setInt( 1, nId );
+        daoUtil.setInt( 2, nVersion );
         daoUtil.executeQuery( );
         HtmlDoc htmlDoc = null;
 
         if ( daoUtil.next( ) )
         {
-            htmlDoc = new HtmlDoc();
+            htmlDoc = new HtmlDoc( );
             int nIndex = 1;
-            
+
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
@@ -228,7 +232,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
-	    htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
         }
 
         daoUtil.free( );
@@ -242,7 +246,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     public void delete( int nKey, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1 , nKey );
+        daoUtil.setInt( 1, nKey );
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
@@ -254,7 +258,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     public void deleteVersions( int nKey, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_VERSIONS, plugin );
-        daoUtil.setInt( 1 , nKey );
+        daoUtil.setInt( 1, nKey );
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
@@ -267,16 +271,16 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
         int nIndex = 1;
-        
-        daoUtil.setInt( nIndex++ , htmlDoc.getId( ) );
-        daoUtil.setInt( nIndex++ , htmlDoc.getVersion( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getContentLabel( ) );
-        daoUtil.setDate( nIndex++ , htmlDoc.getCreationDate( ) );
-        daoUtil.setDate( nIndex++ , htmlDoc.getUpdateDate( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getHtmlContent( ) );
-        daoUtil.setString( nIndex++ , htmlDoc.getUser( ) );
-	daoUtil.setInt( nIndex++ , htmlDoc.getAttachedPortletId( ) );
-        daoUtil.setInt( nIndex , htmlDoc.getId( ) );
+
+        daoUtil.setInt( nIndex++, htmlDoc.getId( ) );
+        daoUtil.setInt( nIndex++, htmlDoc.getVersion( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getContentLabel( ) );
+        daoUtil.setDate( nIndex++, htmlDoc.getCreationDate( ) );
+        daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
+        daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
+        daoUtil.setInt( nIndex, htmlDoc.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -288,15 +292,15 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     @Override
     public List<HtmlDoc> selectHtmlDocsList( Plugin plugin )
     {
-        List<HtmlDoc> htmlDocList = new ArrayList<HtmlDoc>(  );
+        List<HtmlDoc> htmlDocList = new ArrayList<HtmlDoc>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            HtmlDoc htmlDoc = new HtmlDoc(  );
+            HtmlDoc htmlDoc = new HtmlDoc( );
             int nIndex = 1;
-            
+
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
@@ -304,7 +308,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
-	    htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
 
             htmlDocList.add( htmlDoc );
         }
@@ -319,15 +323,15 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     @Override
     public List<HtmlDoc> selectHtmlDocsVersionsList( Plugin plugin )
     {
-        List<HtmlDoc> htmlDocVersionsList = new ArrayList<HtmlDoc>(  );
+        List<HtmlDoc> htmlDocVersionsList = new ArrayList<HtmlDoc>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_VERSION, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            HtmlDoc htmlDoc = new HtmlDoc(  );
+            HtmlDoc htmlDoc = new HtmlDoc( );
             int nIndex = 1;
-            
+
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
@@ -335,7 +339,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
-	    htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
 
             htmlDocVersionsList.add( htmlDoc );
         }
@@ -343,7 +347,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.free( );
         return htmlDocVersionsList;
     }
-    
+
     /**
      * {@inheritDoc }
      */
@@ -352,9 +356,9 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     {
         List<Integer> htmlDocList = new ArrayList<Integer>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             htmlDocList.add( daoUtil.getInt( 1 ) );
         }
@@ -362,20 +366,20 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.free( );
         return htmlDocList;
     }
-    
+
     /**
      * {@inheritDoc }
      */
     @Override
     public ReferenceList selectHtmlDocsReferenceList( Plugin plugin )
     {
-        ReferenceList htmlDocList = new ReferenceList();
+        ReferenceList htmlDocList = new ReferenceList( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            htmlDocList.addItem( daoUtil.getInt( 1 ) , daoUtil.getString( 2 ) );
+            htmlDocList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
         }
 
         daoUtil.free( );

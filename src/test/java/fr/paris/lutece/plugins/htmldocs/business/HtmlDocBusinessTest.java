@@ -46,19 +46,19 @@ public class HtmlDocBusinessTest extends LuteceTestCase
     private final static int VERSION2 = 2;
     private final static String CONTENTLABEL1 = "ContentLabel1";
     private final static String CONTENTLABEL2 = "ContentLabel2";
-	private final static Date CREATIONDATE1 = new Date( 1000000l );
+    private final static Date CREATIONDATE1 = new Date( 1000000l );
     private final static Date CREATIONDATE2 = new Date( 2000000l );
-	private final static Date UPDATEDATE1 = new Date( 1000000l );
+    private final static Date UPDATEDATE1 = new Date( 1000000l );
     private final static Date UPDATEDATE2 = new Date( 2000000l );
     private final static String HTMLCONTENT1 = "HtmlContent1";
     private final static String HTMLCONTENT2 = "HtmlContent2";
     private final static String USER1 = "User1";
     private final static String USER2 = "User2";
 
-    public void testBusiness(  )
+    public void testBusiness( )
     {
         // Initialize an object
-        HtmlDoc htmlDoc = new HtmlDoc();
+        HtmlDoc htmlDoc = new HtmlDoc( );
         htmlDoc.setId( CONTENTID1 );
         htmlDoc.setVersion( VERSION1 );
         htmlDoc.setContentLabel( CONTENTLABEL1 );
@@ -70,13 +70,13 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         // Create test
         HtmlDocHome.create( htmlDoc );
         HtmlDoc htmlDocStored = HtmlDocHome.findByPrimaryKey( htmlDoc.getId( ) );
-        assertEquals( htmlDocStored.getId() , htmlDoc.getId( ) );
-        assertEquals( htmlDocStored.getVersion() , htmlDoc.getVersion( ) );
-        assertEquals( htmlDocStored.getContentLabel() , htmlDoc.getContentLabel( ) );
-        assertEquals( htmlDocStored.getCreationDate() , htmlDoc.getCreationDate( ) );
-        assertEquals( htmlDocStored.getUpdateDate() , htmlDoc.getUpdateDate( ) );
-        assertEquals( htmlDocStored.getHtmlContent() , htmlDoc.getHtmlContent( ) );
-        assertEquals( htmlDocStored.getUser() , htmlDoc.getUser( ) );
+        assertEquals( htmlDocStored.getId( ), htmlDoc.getId( ) );
+        assertEquals( htmlDocStored.getVersion( ), htmlDoc.getVersion( ) );
+        assertEquals( htmlDocStored.getContentLabel( ), htmlDoc.getContentLabel( ) );
+        assertEquals( htmlDocStored.getCreationDate( ), htmlDoc.getCreationDate( ) );
+        assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
+        assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
+        assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
 
         // Update test
         htmlDoc.setId( CONTENTID2 );
@@ -88,22 +88,22 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         htmlDoc.setUser( USER2 );
         HtmlDocHome.update( htmlDoc );
         htmlDocStored = HtmlDocHome.findByPrimaryKey( htmlDoc.getId( ) );
-        assertEquals( htmlDocStored.getId() , htmlDoc.getId( ) );
-        assertEquals( htmlDocStored.getVersion() , htmlDoc.getVersion( ) );
-        assertEquals( htmlDocStored.getContentLabel() , htmlDoc.getContentLabel( ) );
-        assertEquals( htmlDocStored.getCreationDate() , htmlDoc.getCreationDate( ) );
-        assertEquals( htmlDocStored.getUpdateDate() , htmlDoc.getUpdateDate( ) );
-        assertEquals( htmlDocStored.getHtmlContent() , htmlDoc.getHtmlContent( ) );
-        assertEquals( htmlDocStored.getUser() , htmlDoc.getUser( ) );
+        assertEquals( htmlDocStored.getId( ), htmlDoc.getId( ) );
+        assertEquals( htmlDocStored.getVersion( ), htmlDoc.getVersion( ) );
+        assertEquals( htmlDocStored.getContentLabel( ), htmlDoc.getContentLabel( ) );
+        assertEquals( htmlDocStored.getCreationDate( ), htmlDoc.getCreationDate( ) );
+        assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
+        assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
+        assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
 
         // List test
-        HtmlDocHome.getHtmlDocsList();
+        HtmlDocHome.getHtmlDocsList( );
 
         // Delete test
         HtmlDocHome.remove( htmlDoc.getId( ) );
         htmlDocStored = HtmlDocHome.findByPrimaryKey( htmlDoc.getId( ) );
         assertNull( htmlDocStored );
-        
+
     }
 
 }

@@ -50,75 +50,80 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
     /**
      * Insert a new record in the table.
      *
-     * @param portlet The Instance of the Portlet
+     * @param portlet
+     *            The Instance of the Portlet
      */
     @Override
     public void insert( Portlet portlet )
     {
         HtmldocsPortlet p = (HtmldocsPortlet) portlet;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId(  ) );
-	daoUtil.setString( 2, p.getPortletName(  ) );
-	daoUtil.setInt( 3, p.getContentId(  ) );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.setInt( 1, p.getId( ) );
+        daoUtil.setString( 2, p.getPortletName( ) );
+        daoUtil.setInt( 3, p.getContentId( ) );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Delete record from table
      *
-     * @param nPortletId The indentifier of the Portlet
+     * @param nPortletId
+     *            The indentifier of the Portlet
      */
     @Override
     public void delete( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Update the record in the table
      *
-     * @param portlet The reference of the portlet
+     * @param portlet
+     *            The reference of the portlet
      */
     @Override
     public void store( Portlet portlet )
     {
         HtmldocsPortlet p = (HtmldocsPortlet) portlet;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getId(  ) );
-	daoUtil.setString( 2, p.getPortletName (  ) );
-	daoUtil.setInt( 3, p.getContentId(  ) );
-        daoUtil.setInt( 4, p.getId(  ) );
+        daoUtil.setInt( 1, p.getId( ) );
+        daoUtil.setString( 2, p.getPortletName( ) );
+        daoUtil.setInt( 3, p.getContentId( ) );
+        daoUtil.setInt( 4, p.getId( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * load the data of dbpagePortlet from the table
+     * 
      * @return portlet The instance of the object portlet
-     * @param nIdPortlet The identifier of the portlet
+     * @param nIdPortlet
+     *            The identifier of the portlet
      */
     @Override
     public Portlet load( int nIdPortlet )
     {
-        HtmldocsPortlet portlet = new HtmldocsPortlet(  );
+        HtmldocsPortlet portlet = new HtmldocsPortlet( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nIdPortlet );
-	
-        daoUtil.executeQuery(  );
 
-        if ( daoUtil.next(  ) )
+        daoUtil.executeQuery( );
+
+        if ( daoUtil.next( ) )
         {
             portlet.setId( daoUtil.getInt( 1 ) );
-	    portlet.setPortletName( daoUtil.getString( 2 ) );
-	    portlet.setContentId( daoUtil.getInt( 3 ) );
+            portlet.setPortletName( daoUtil.getString( 2 ) );
+            portlet.setContentId( daoUtil.getInt( 3 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return portlet;
     }
