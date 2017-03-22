@@ -66,8 +66,12 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     private String _strHtmlContent;
 
     @NotEmpty( message = "#i18n{htmldocs.validation.htmldoc.User.notEmpty}" )
-    @Size( max = 50, message = "#i18n{htmldocs.validation.htmldoc.User.size}" )
+    @Size( max = 100, message = "#i18n{htmldocs.validation.htmldoc.User.size}" )
     private String _strUser;
+
+    @NotEmpty( message = "#i18n{htmldocs.validation.htmldoc.UserCreator.notEmpty}" )
+    @Size( max = 100, message = "#i18n{htmldocs.validation.htmldoc.UserCreator.size}" )
+    private String _strUserCreator;
 
     /**
      * Returns the Id
@@ -224,6 +228,27 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     public void setUser( String strUser )
     {
         _strUser = strUser;
+    }
+
+    /**
+     * Returns the UserCreator
+     * 
+     * @return The UserCreator
+     */
+    public String getUserCreator( )
+    {
+        return _strUserCreator;
+    }
+
+    /**
+     * Sets the UserCreator
+     * 
+     * @param strUserCreator
+     *            The UserCreator
+     */
+    public void setUserCreator( String strUserCreator )
+    {
+        _strUserCreator = strUserCreator;
     }
 
     public void setAttachedPortletId( int nAttachedPortletId )

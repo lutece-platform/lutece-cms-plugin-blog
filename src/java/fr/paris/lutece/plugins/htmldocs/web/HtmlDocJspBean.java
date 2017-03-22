@@ -259,6 +259,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         _htmldoc.setCreationDate( getSqlDate( ) );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _htmldoc.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
         _htmldoc.setVersion( 1 );
         _htmldoc.setAttachedPortletId( 0 );
         populate( _htmldoc, request );
@@ -393,6 +394,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
         HtmlDocHome.createVersion( _htmldoc );
         _htmldoc.setHtmlContent( strHtmlContent );
+        _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
 
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )

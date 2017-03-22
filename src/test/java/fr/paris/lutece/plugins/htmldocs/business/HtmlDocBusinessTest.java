@@ -54,6 +54,8 @@ public class HtmlDocBusinessTest extends LuteceTestCase
     private final static String HTMLCONTENT2 = "HtmlContent2";
     private final static String USER1 = "User1";
     private final static String USER2 = "User2";
+    private final static String USER3 = "User3";
+    private final static String USER4 = "User4";
 
     public void testBusiness( )
     {
@@ -66,6 +68,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         htmlDoc.setUpdateDate( UPDATEDATE1 );
         htmlDoc.setHtmlContent( HTMLCONTENT1 );
         htmlDoc.setUser( USER1 );
+        htmlDoc.setUserCreator( USER3 );
 
         // Create test
         HtmlDocHome.create( htmlDoc );
@@ -77,6 +80,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
         assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
         assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
+        assertEquals( htmlDocStored.getUserCreator( ), htmlDoc.getUserCreator( ) );
 
         // Update test
         htmlDoc.setId( CONTENTID2 );
@@ -86,6 +90,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         htmlDoc.setUpdateDate( UPDATEDATE2 );
         htmlDoc.setHtmlContent( HTMLCONTENT2 );
         htmlDoc.setUser( USER2 );
+        htmlDoc.setUserCreator( USER4 );
         HtmlDocHome.update( htmlDoc );
         htmlDocStored = HtmlDocHome.findByPrimaryKey( htmlDoc.getId( ) );
         assertEquals( htmlDocStored.getId( ), htmlDoc.getId( ) );
@@ -95,6 +100,7 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
         assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
         assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
+        assertEquals( htmlDocStored.getUserCreator( ), htmlDoc.getUserCreator( ) );
 
         // List test
         HtmlDocHome.getHtmlDocsList( );

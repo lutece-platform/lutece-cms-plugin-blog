@@ -147,6 +147,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
             htmldoc.setUpdateDate( getSqlDate( ) );
             htmldoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
             htmldoc.setUser( user.getFirstName( ) );
+            htmldoc.setUserCreator( user.getFirstName( ) );
             HtmlDocHome.create( htmldoc );
         }
         else

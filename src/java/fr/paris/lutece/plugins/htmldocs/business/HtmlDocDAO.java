@@ -49,17 +49,17 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_html_doc ) FROM htmldocs";
     private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM htmldocs_versions";
-    private static final String SQL_QUERY_SELECT = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs WHERE id_html_doc = ?";
-    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs WHERE content_label = ?";
-    private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs_versions WHERE id_html_doc = ? AND version = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs ( id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs WHERE content_label = ?";
+    private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs_versions WHERE id_html_doc = ? AND version = ? ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs ( id_html_doc,  version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs WHERE id_html_doc = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM htmldocs_versions WHERE id_html_doc = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs SET id_html_doc = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user = ?, attached_portlet_id = ? WHERE id_html_doc = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs";
+    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs SET id_html_doc = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user = ?, user_creator = ?, attached_portlet_id = ? WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_html_doc FROM htmldocs";
-    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs_versions";
-    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs_versions";
+    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
     /**
      * Generates a new primary key
@@ -122,6 +122,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
         daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getUserCreator( ) );
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
 
         daoUtil.executeUpdate( );
@@ -142,6 +143,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
         daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getUserCreator( ) );
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
 
         daoUtil.executeUpdate( );
@@ -171,6 +173,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
         }
 
@@ -201,6 +204,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
         }
 
@@ -232,6 +236,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
         }
 
@@ -279,6 +284,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
         daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
+        daoUtil.setString( nIndex++, htmlDoc.getUserCreator( ) );
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
         daoUtil.setInt( nIndex, htmlDoc.getId( ) );
 
@@ -308,6 +314,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
 
             htmlDocList.add( htmlDoc );
@@ -339,6 +346,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
 
             htmlDocVersionsList.add( htmlDoc );

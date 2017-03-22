@@ -11,7 +11,8 @@ content_label varchar(50) default '' NOT NULL,
 creation_date date NOT NULL,
 update_date date NOT NULL,
 html_content LONG VARCHAR,
-user varchar(50) default '' NOT NULL,
+user varchar(100) default '' NOT NULL,
+user_creator varchar(100) default '' NOT NULL,
 attached_portlet_id int(6) NOT NULL,
 PRIMARY KEY (id_html_doc)
 );
@@ -42,7 +43,8 @@ content_label varchar(50) default '' NOT NULL,
 creation_date date NOT NULL,
 update_date date NOT NULL,
 html_content LONG VARCHAR,
-user varchar(50) default '' NOT NULL,
+user varchar(100) default '' NOT NULL,
+user_creator varchar(100) default '' NOT NULL,
 attached_portlet_id int(6) NOT NULL,
 PRIMARY KEY (id_version)
 );
