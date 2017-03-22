@@ -1,10 +1,10 @@
 
 --
--- Structure for table htmldocs_database
+-- Structure for table htmldocs
 --
 
-DROP TABLE IF EXISTS htmldocs_database;
-CREATE TABLE htmldocs_database (
+DROP TABLE IF EXISTS htmldocs;
+CREATE TABLE htmldocs (
 id_html_doc int(6) NOT NULL,
 version int(11) default '0' NOT NULL,
 content_label varchar(50) default '' NOT NULL,

@@ -47,17 +47,17 @@ import java.util.List;
 public final class HtmlDocDAO implements IHtmlDocDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_html_doc ) FROM htmldocs_database";
+    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_html_doc ) FROM htmldocs";
     private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM htmldocs_versions";
-    private static final String SQL_QUERY_SELECT = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs_database WHERE id_html_doc = ?";
-    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs_database WHERE content_label = ?";
+    private static final String SQL_QUERY_SELECT = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs WHERE content_label = ?";
     private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs_versions WHERE id_html_doc = ? AND version = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs_database ( id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ";
-    private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_database WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs ( id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs WHERE id_html_doc = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM htmldocs_versions WHERE id_html_doc = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_database SET id_html_doc = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user = ?, attached_portlet_id = ? WHERE id_html_doc = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs_database";
-    private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_html_doc FROM htmldocs_database";
+    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs SET id_html_doc = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user = ?, attached_portlet_id = ? WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs";
+    private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_html_doc FROM htmldocs";
     private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, attached_portlet_id FROM htmldocs_versions";
     private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
