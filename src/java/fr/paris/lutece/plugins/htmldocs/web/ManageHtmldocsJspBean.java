@@ -71,6 +71,7 @@ public abstract class ManageHtmldocsJspBean extends MVCAdminJspBean
     private int _nItemsPerPage;
     private boolean _bIsSorted = false;
     private String _strSortedAttributeName;
+    private Boolean _bIsAscSort;
 
     /**
      * Return a model that contains the list and paginator infos
@@ -107,12 +108,17 @@ public abstract class ManageHtmldocsJspBean extends MVCAdminJspBean
             strAscSort = request.getParameter( MARK_ASC_SORT );
 
             boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
+            if ( strAscSort == null )
+            {
+                bIsAscSort = _bIsAscSort;
+            }
 
             Collections.sort( list, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
 
             _bIsSorted = true;
 
             _strSortedAttributeName = strSortedAttributeName;
+            _bIsAscSort = bIsAscSort;
         }
 
         // PAGINATOR
