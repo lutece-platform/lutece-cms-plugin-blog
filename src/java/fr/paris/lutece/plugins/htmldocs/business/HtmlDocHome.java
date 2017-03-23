@@ -195,4 +195,36 @@ public final class HtmlDocHome
     {
         return _dao.selectHtmlDocsReferenceList( _plugin );
     }
+
+    /**
+     * Create an initial version of an htmlDoc
+     *
+     * @param htmlDoc
+     *            The instance of the HtmlDoc which contains the informations to store
+     * @return The instance of htmlDoc which has been created with its primary key.
+     */
+    public static HtmlDoc addInitialVersion( HtmlDoc htmlDoc )
+    {
+        //TODO handle errors
+        HtmlDocHome.create( htmlDoc );
+        HtmlDocHome.createVersion( htmlDoc );
+
+        return htmlDoc;
+    }
+
+    /**
+     * Adds a new version of an htmlDoc
+     *
+     * @param htmlDoc
+     *            The instance of the HtmlDoc which contains the informations to store
+     * @return The instance of the htmlDoc which has been updated
+     */
+    public static HtmlDoc addNewVersion( HtmlDoc htmlDoc )
+    {
+        //TODO handle errors
+        HtmlDocHome.update( htmlDoc );
+        HtmlDocHome.createVersion( htmlDoc );
+
+        return htmlDoc;
+    }
 }

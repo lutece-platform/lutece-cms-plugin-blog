@@ -261,8 +261,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             return redirectView( request, VIEW_CREATE_HTMLDOC );
         }
 
-        HtmlDocHome.create( _htmldoc );
-        HtmlDocHome.createVersion( _htmldoc );
+        HtmlDocHome.addInitialVersion( _htmldoc );
         addInfo( INFO_HTMLDOC_CREATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
@@ -386,8 +385,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setVersion( _htmldoc.getVersion( ) + 1 );
-        HtmlDocHome.createVersion( _htmldoc );
-        HtmlDocHome.update( _htmldoc );
+        HtmlDocHome.addNewVersion( _htmldoc );
         addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );

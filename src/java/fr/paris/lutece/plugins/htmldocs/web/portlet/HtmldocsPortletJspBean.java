@@ -148,7 +148,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
             htmldoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
             htmldoc.setUser( user.getFirstName( ) );
             htmldoc.setUserCreator( user.getFirstName( ) );
-            HtmlDocHome.create( htmldoc );
+            HtmlDocHome.addInitialVersion( htmldoc );
         }
         else
         {
@@ -205,7 +205,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         htmlDoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
         htmlDoc.setUpdateDate( getSqlDate( ) );
         htmlDoc.setVersion( nVersion++ );
-        HtmlDocHome.update( htmlDoc );
+        HtmlDocHome.addNewVersion( htmlDoc );
 
         // updates the portlet
         portlet.update( );
