@@ -1,9 +1,14 @@
 <@rowBox>
   <@boxHeader title="#i18n{htmldocs.manage_htmldocs.title}" boxTools=true>
       
-      <form class="form-inline pull-right" method="post" name="manage_htmldocs" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
-        <@actionButtons button1Name="view_createHtmlDoc" icon1="icon-plus icon-white" i18nValue1Key="htmldocs.manage_htmldocs.buttonAdd" />
+  <@headerButtons>
+      <form class="form-inline" method="post" name="manage_htmldocs" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+        <button class="btn btn-primary btn-xs btn-flat" type="submit" name="view_createHtmlDoc" >
+            <i class="fa fa-plus"></i>
+            <span class="hidden-xs">#i18n{htmldocs.manage_htmldocs.buttonAdd}</span>
+        </button>
       </form>
+  </@headerButtons>
       
   </@boxHeader>
   <@boxBody>    
