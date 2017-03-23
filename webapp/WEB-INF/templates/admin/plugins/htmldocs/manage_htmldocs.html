@@ -62,42 +62,10 @@
 		${htmldoc.userCreator}
               </td>
               <td>
-		<!-- Button trigger modal -->
-		<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#${idx}-modal-lg">
+		<a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}"
+		    class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}" >
 		  <i class="fa fa-pencil"></i>
-		</button>
-		
-		<!-- Modal -->
-		<div class="modal fade ${idx}-modal-fg" id="${idx}-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		  <div class="modal-dialog modal-lg" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title" id="myModalLabel">#i18n{htmldocs.manage_htmldocs.modifyModalTitle}</h4>
-		      </div>
-		      
-		      <div class="modal-body">
-			<form  class="form-horizontal" role="form" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?action=modifyHtmlDoc&id=${htmldoc.id}" method="post">
-			  <br />
-			  <br />
-			  <br />
-			  <#include "/admin/util/editor/editor.html" />
-			  <div class="richtext" id="html_content" name="html_content" value="${htmldoc.htmlContent}">
-                            ${htmldoc.htmlContent}
-                          </div>
-			  <@initEditor type='inlite'/>
-			  <br />
-			  <br />
-			  <div class="modal-footer">
-			    <@actionButtons button1Name="action_modifyHtmlDoc"/>
-			    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			  </div>
-			</form>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-		
+		</a>
 		<a  href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?action=confirmRemoveHtmlDoc&id=${htmldoc.id}"
 		    class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
 		  <i class="fa fa-trash"></i>
