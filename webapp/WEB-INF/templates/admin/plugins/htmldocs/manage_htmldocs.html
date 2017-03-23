@@ -91,7 +91,6 @@
 			  <div class="modal-footer">
 			    <@actionButtons button1Name="action_modifyHtmlDoc"/>
 			    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			    <input type="hidden" name="actual_version" value="${htmldoc.version}"/>
 			  </div>
 			</form>
 		      </div>
@@ -103,7 +102,7 @@
 		    class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
 		  <i class="fa fa-trash"></i>
 		</a>
-		<form method="post" class="form-inline" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=previousVersionHtmlDoc&id=${htmldoc.id}&actual_version=${htmldoc.version}">
+		<form method="post" class="form-inline" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=previousVersionHtmlDoc&id=${htmldoc.id}">
 		  <div class="form-group">
 		    <select class="selectpicker pull-right" id="${htmldoc.id}" name="htmldoc_version">
 		      <#assign version_idx = 1/>

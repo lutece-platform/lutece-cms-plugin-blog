@@ -71,7 +71,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PARAMETER_ID_HTMLDOC = "id";
     private static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
     private static final String PARAMETER_HTML_CONTENT = "html_content";
-    private static final String PARAMETER_ACTUAL_VERSION = "actual_version";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS = "htmldocs.manage_htmldocs.pageTitle";
@@ -89,7 +88,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String MARK_CHECKED = "checked";
     private static final String MARK_UNCHECKED = "unchecked";
     private static final String MARK_CURRENT_USER = "current_user";
-    private static final String MARK_ACTUAL_VERSION = "actual_version";
 
     private static final String JSP_MANAGE_HTMLDOCS = "jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp";
 
@@ -356,7 +354,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
         int nVersion = Integer.parseInt( request.getParameter( PARAMETER_VERSION_HTMLDOC ) );
-        int nActualVersion = Integer.parseInt( request.getParameter( PARAMETER_ACTUAL_VERSION ) );
 
         _htmldoc = HtmlDocHome.findVersion( nId, nVersion );
         _htmldoc.setVersion( nVersion++ );
@@ -364,7 +361,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_ACTUAL_VERSION, nActualVersion );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
     }
@@ -380,7 +376,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String doModifyHtmlDoc( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-        String strVersion = request.getParameter( PARAMETER_ACTUAL_VERSION );
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
 
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
@@ -388,11 +383,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
         }
 
-        if ( strVersion != null )
-        {
-            int nVersion = Integer.parseInt( strVersion );
-            _htmldoc.setVersion( nVersion );
-        }
         _htmldoc.setHtmlContent( strHtmlContent );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
 
