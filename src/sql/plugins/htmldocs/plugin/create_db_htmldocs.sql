@@ -26,7 +26,6 @@ CREATE TABLE htmldocs_portlet (
 id_portlet int(6) NOT NULL,
 name varchar(50) default '' NOT NULL,
 content_id int(6) NOT NULL,
-htmldocs_feed_if int(6) NULL,
 PRIMARY KEY (id_portlet)
 );
 
