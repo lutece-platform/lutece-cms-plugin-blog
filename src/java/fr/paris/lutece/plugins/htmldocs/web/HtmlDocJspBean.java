@@ -271,6 +271,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         HtmlDocHome.create( _htmldoc );
+        HtmlDocHome.createVersion( _htmldoc );
         addInfo( INFO_HTMLDOC_CREATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
@@ -392,7 +393,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             int nVersion = Integer.parseInt( strVersion );
             _htmldoc.setVersion( nVersion );
         }
-        HtmlDocHome.createVersion( _htmldoc );
         _htmldoc.setHtmlContent( strHtmlContent );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
 
@@ -403,6 +403,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setVersion( _htmldoc.getVersion( ) + 1 );
+        HtmlDocHome.createVersion( _htmldoc );
         HtmlDocHome.update( _htmldoc );
         addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
 
