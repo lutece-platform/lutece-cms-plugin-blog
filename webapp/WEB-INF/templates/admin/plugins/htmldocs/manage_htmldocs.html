@@ -66,25 +66,14 @@
 		    class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}" >
 		  <i class="fa fa-pencil"></i>
 		</a>
+		<a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${htmldoc.id}"
+		    class="btn btn-primary btn-sm" title="#i18n{htmldocs.manage_htmldocs.labelHistory}" >
+		  <i class="fa fa-history"></i>
+		</a>
 		<a  href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?action=confirmRemoveHtmlDoc&id=${htmldoc.id}"
 		    class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
 		  <i class="fa fa-trash"></i>
 		</a>
-		<form method="post" class="form-inline" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=previousVersionHtmlDoc&id=${htmldoc.id}">
-		  <div class="form-group">
-		    <select class="selectpicker pull-right" id="${htmldoc.id}" name="htmldoc_version">
-		      <#assign version_idx = 1/>
-		      <option label=" ">Versions</option>
-		      <#list htmldoc_version_list as htmldoc_version>
-			<#if htmldoc.contentLabel == htmldoc_version.contentLabel>
-			  <option>${version_idx}</option>
-			  <#assign version_idx = version_idx + 1/>
-			</#if>
-		      </#list>
-		    </select>
-		    <button type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-refresh" aria-hidden="true"/></button>
-		  </div>
-		</form>
 	      </td>
 </tr>
 <#assign idx = idx + 1/>

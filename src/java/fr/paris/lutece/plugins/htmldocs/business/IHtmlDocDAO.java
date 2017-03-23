@@ -145,7 +145,7 @@ public interface IHtmlDocDAO
      *            the Plugin
      * @return The list which contains the data of all the htmlDoc objects
      */
-    List<HtmlDoc> selectHtmlDocsVersionsList( Plugin plugin );
+    List<HtmlDoc> selectHtmlDocsVersionsList( int nId, Plugin plugin );
 
     /**
      * Load the id of all the htmlDoc objects and returns them as a list

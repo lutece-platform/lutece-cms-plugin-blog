@@ -58,7 +58,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs SET id_html_doc = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user = ?, user_creator = ?, attached_portlet_id = ? WHERE id_html_doc = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_html_doc FROM htmldocs";
-    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs_versions";
+    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id FROM htmldocs_versions where id_html_doc = ?";
     private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user, user_creator, attached_portlet_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
     /**
@@ -328,10 +328,11 @@ public final class HtmlDocDAO implements IHtmlDocDAO
      * {@inheritDoc }
      */
     @Override
-    public List<HtmlDoc> selectHtmlDocsVersionsList( Plugin plugin )
+    public List<HtmlDoc> selectHtmlDocsVersionsList( int nId, Plugin plugin )
     {
         List<HtmlDoc> htmlDocVersionsList = new ArrayList<HtmlDoc>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_VERSION, plugin );
+        daoUtil.setInt( 1, nId );
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )

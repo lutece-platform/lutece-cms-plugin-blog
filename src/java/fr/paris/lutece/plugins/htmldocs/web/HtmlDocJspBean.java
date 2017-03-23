@@ -44,7 +44,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -52,7 +51,6 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Collections;
 import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
 
@@ -66,28 +64,30 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String TEMPLATE_MANAGE_HTMLDOCS = "/admin/plugins/htmldocs/manage_htmldocs.html";
     private static final String TEMPLATE_CREATE_HTMLDOC = "/admin/plugins/htmldocs/create_htmldoc.html";
     private static final String TEMPLATE_MODIFY_HTMLDOC = "/admin/plugins/htmldocs/modify_htmldoc.html";
+    private static final String TEMPLATE_HISTORY_HTMLDOC = "admin/plugins/htmldocs/history_htmldoc.html";
 
     // Parameters
     private static final String PARAMETER_ID_HTMLDOC = "id";
     private static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
     private static final String PARAMETER_HTML_CONTENT = "html_content";
+    private static final String PARAMETER_VIEW = "view";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS = "htmldocs.manage_htmldocs.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC = "htmldocs.modify_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_HTMLDOC = "htmldocs.create_htmldoc.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC = "htmldocs.history_htmldoc.pageTitle";
 
     // Markers
     private static final String MARK_HTMLDOC_LIST = "htmldoc_list";
     private static final String MARK_HTMLDOC_VERSION_LIST = "htmldoc_version_list";
     private static final String MARK_HTMLDOC = "htmldoc";
     private static final String MARK_WEBAPP_URL = "webapp_url";
-    private static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
-    private static final String MARK_ASC_SORT = "asc_sort";
     private static final String MARK_IS_CHECKED = "is_checked";
     private static final String MARK_CHECKED = "checked";
     private static final String MARK_UNCHECKED = "unchecked";
     private static final String MARK_CURRENT_USER = "current_user";
+    private static final String MARK_ID_HTMLDOC = "id";
 
     private static final String JSP_MANAGE_HTMLDOCS = "jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp";
 
@@ -102,6 +102,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String VIEW_CREATE_HTMLDOC = "createHtmlDoc";
     private static final String VIEW_MODIFY_HTMLDOC = "modifyHtmlDoc";
     private static final String VIEW_PREVIOUS_VERSION_HTMLDOC = "previousVersionHtmlDoc";
+    private static final String VIEW_HISTORY_HTMLDOC = "historyHtmlDoc";
 
     // Actions
     private static final String ACTION_CREATE_HTMLDOC = "createHtmlDoc";
@@ -122,8 +123,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
     // Session variable to store working values
     private HtmlDoc _htmldoc;
-    private boolean _bIsSorted = false;
-    private String _strSortedAttributeName;
     private boolean _bIsChecked = false;
 
     /**
@@ -138,28 +137,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     {
         _htmldoc = null;
         List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
-        List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList( );
-
-        // SORT
-        String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
-        String strAscSort = null;
-
-        if ( strSortedAttributeName != null || _bIsSorted == true )
-        {
-            if ( strSortedAttributeName == null )
-            {
-                strSortedAttributeName = _strSortedAttributeName;
-            }
-            strAscSort = request.getParameter( MARK_ASC_SORT );
-
-            boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
-
-            Collections.sort( listHtmlDocs, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
-
-            _bIsSorted = true;
-
-            _strSortedAttributeName = strSortedAttributeName;
-        }
 
         // CURRENT USER
         String strCurrentUser = request.getParameter( MARK_CURRENT_USER );
@@ -205,11 +182,27 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocs, JSP_MANAGE_HTMLDOCS );
         model.put( MARK_HTMLDOC_FILTER_LIST, getHtmldocFilterList( ) );
-        model.put( MARK_HTMLDOC_VERSION_LIST, listHtmlDocsVersions );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_IS_CHECKED, strIsChecked );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS, TEMPLATE_MANAGE_HTMLDOCS, model );
+    }
+
+    @View( value = VIEW_HISTORY_HTMLDOC )
+    public String getHistoryHtmlDoc( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
+        List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList( nId );
+
+        UrlItem urlHistory = new UrlItem( JSP_MANAGE_HTMLDOCS );
+        urlHistory.addParameter( PARAMETER_VIEW , VIEW_HISTORY_HTMLDOC );
+        urlHistory.addParameter( PARAMETER_ID_HTMLDOC , nId );
+
+        Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocsVersions, urlHistory.getUrl( ) );
+
+        model.put( MARK_ID_HTMLDOC, nId );
+
+        return getPage( PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC, TEMPLATE_HISTORY_HTMLDOC, model );
     }
 
     /**

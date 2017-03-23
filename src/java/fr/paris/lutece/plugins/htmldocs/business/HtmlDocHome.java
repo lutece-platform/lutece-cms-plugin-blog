@@ -171,9 +171,9 @@ public final class HtmlDocHome
      * 
      * @return the list which contains the data of all the htmlDoc objects
      */
-    public static List<HtmlDoc> getHtmlDocsVersionsList( )
+    public static List<HtmlDoc> getHtmlDocsVersionsList( int nId )
     {
-        return _dao.selectHtmlDocsVersionsList( _plugin );
+        return _dao.selectHtmlDocsVersionsList( nId, _plugin );
     }
 
     /**

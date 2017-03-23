@@ -37,8 +37,10 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.Paginator;
+import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -60,11 +62,15 @@ public abstract class ManageHtmldocsJspBean extends MVCAdminJspBean
     // Markers
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
+    private static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
+    private static final String MARK_ASC_SORT = "asc_sort";
 
     // Variables
     private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
     private int _nItemsPerPage;
+    private boolean _bIsSorted = false;
+    private String _strSortedAttributeName;
 
     /**
      * Return a model that contains the list and paginator infos
@@ -87,6 +93,27 @@ public abstract class ManageHtmldocsJspBean extends MVCAdminJspBean
 
         UrlItem url = new UrlItem( strManageJsp );
         String strUrl = url.getUrl( );
+
+        // SORT
+        String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
+        String strAscSort = null;
+
+        if ( strSortedAttributeName != null || _bIsSorted == true )
+        {
+            if ( strSortedAttributeName == null )
+            {
+                strSortedAttributeName = _strSortedAttributeName;
+            }
+            strAscSort = request.getParameter( MARK_ASC_SORT );
+
+            boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
+
+            Collections.sort( list, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
+
+            _bIsSorted = true;
+
+            _strSortedAttributeName = strSortedAttributeName;
+        }
 
         // PAGINATOR
         LocalizedPaginator paginator = new LocalizedPaginator( list, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
