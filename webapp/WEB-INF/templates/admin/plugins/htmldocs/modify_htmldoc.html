@@ -1,7 +1,4 @@
-<#include "managehtmldocs_tabs.html" />
-<@tabs tab="htmldoc" />
-
-<@rowBoxHeader i18nTitleKey="htmldocs.modify_htmldoc.title">
+<@rowBoxHeader i18nTitleKey="#i18n{htmldocs.modify_htmldoc.title}">
     <form class="form-horizontal" method="post" name="modify_htmldoc" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
         <@messages errors=errors />
         <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>
