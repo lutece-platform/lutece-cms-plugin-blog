@@ -12,12 +12,12 @@
 	<thead>
 	  <tr>
         <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
-        <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
         <th>
 	      #i18n{htmldocs.manage_htmldocs.columnUpdateDate}
 	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${id}" attribute="updateDate" />
 	    </th>
         <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
+        <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
         <th>#i18n{portal.util.labelActions}</th>
 	  </tr>  
 	</thead>
@@ -28,13 +28,13 @@
 		${htmldoc.version}
               </td>
               <td>
-		${htmldoc.editComment}
-              </td>
-              <td>
 		${htmldoc.updateDate}
               </td>
               <td>
 		${htmldoc.user}
+              </td>
+              <td>
+		${htmldoc.editComment}
               </td>
               <td>
               <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
