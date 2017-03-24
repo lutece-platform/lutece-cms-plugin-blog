@@ -1,13 +1,13 @@
 <@rowBoxHeader i18nTitleKey="#i18n{htmldocs.modify_htmldoc.title}">
-    <form class="form-horizontal" method="post" name="modify_htmldoc" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
-        <@messages errors=errors />
-        <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>
+  <form class="form-horizontal" method="post" name="modify_htmldoc" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+    <@messages errors=errors />
+    <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>
 
-	<#include "/admin/util/editor/editor.html" />
-	<textarea id="html_content" class="richtext" name="html_content" rows="12">   ${htmldoc.htmlContent}      </textarea>
-	<@initEditor/>
-	<@fieldInputText i18nLabelKey="htmldocs.modify_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${htmldoc.editComment}" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelEditComment.help" />
-        <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>
-    </form>
+    <#include "/admin/util/editor/editor.html" />
+    <textarea id="html_content" class="richtext" name="html_content" rows="12">   ${htmldoc.htmlContent}      </textarea>
+    <@initEditor/>
+    <@fieldInputText i18nLabelKey="htmldocs.modify_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${htmldoc.editComment}" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelEditComment.help" />
+    <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>
+  </form>
 </@rowBoxHeader>
 

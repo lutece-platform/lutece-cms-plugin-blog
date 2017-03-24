@@ -1,53 +1,53 @@
 <@rowBox>
   <@boxHeader title="#i18n{htmldocs.history_htmldoc.title}" boxTools=true>
-      
-      <form class="form-inline pull-right" method="post" name="manage_htmldocs" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
-      </form>
-      
+
+    <form class="form-inline pull-right" method="post" name="manage_htmldocs" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+    </form>
+
   </@boxHeader>
-  <@boxBody>    
+  <@boxBody>
     <@paginationAdmin paginator=paginator combo=1 />
     <div class="box-body table-responsive no-padding">
       <@table>
-	<thead>
-	  <tr>
-        <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
-        <th>
-	      #i18n{htmldocs.manage_htmldocs.columnUpdateDate}
-	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${id}" attribute="updateDate" />
-	    </th>
-        <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
-        <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
-        <th>#i18n{portal.util.labelActions}</th>
-	  </tr>  
-	</thead>
-	<tbody>
-	  <#list htmldoc_list as htmldoc >
-            <tr>
-              <td>
-		${htmldoc.version}
-              </td>
-              <td>
-		${htmldoc.updateDate}
-              </td>
-              <td>
-		${htmldoc.user}
-              </td>
-              <td>
-		${htmldoc.editComment}
-              </td>
-              <td>
-              <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
-                      class="btn btn-primary btn-sm" title="#i18n{htmldocs.history_htmldoc.labelReset}" >
-                  <i class="fa fa-undo"></i>
-              </a>
-              </td>
-</tr>
-</#list>
-</tbody>
-</@table>
-</div>
-<@paginationAdmin paginator=paginator />
+      <thead>
+        <tr>
+          <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
+          <th>
+            #i18n{htmldocs.manage_htmldocs.columnUpdateDate}
+            <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${id}" attribute="updateDate" />
+          </th>
+          <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
+          <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
+          <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <#list htmldoc_list as htmldoc >
+        <tr>
+          <td>
+            ${htmldoc.version}
+          </td>
+          <td>
+            ${htmldoc.updateDate}
+          </td>
+          <td>
+            ${htmldoc.user}
+          </td>
+          <td>
+            ${htmldoc.editComment}
+          </td>
+          <td>
+            <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
+                class="btn btn-primary btn-sm" title="#i18n{htmldocs.history_htmldoc.labelReset}" >
+              <i class="fa fa-undo"></i>
+            </a>
+          </td>
+        </tr>
+        </#list>
+      </tbody>
+      </@table>
+    </div>
+    <@paginationAdmin paginator=paginator />
 
-</@boxBody>
+  </@boxBody>
 </@rowBox>

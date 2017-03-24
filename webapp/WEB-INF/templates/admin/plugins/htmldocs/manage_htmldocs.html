@@ -1,91 +1,91 @@
 <@rowBox>
   <@boxHeader title="#i18n{htmldocs.manage_htmldocs.title}" boxTools=true>
-      
-  <@headerButtons>
+
+    <@headerButtons>
       <form class="form-inline" method="post" name="manage_htmldocs" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
         <button class="btn btn-primary btn-xs btn-flat" type="submit" name="view_createHtmlDoc" >
-            <i class="fa fa-plus"></i>
-            <span class="hidden-xs">#i18n{htmldocs.manage_htmldocs.buttonAdd}</span>
+          <i class="fa fa-plus"></i>
+          <span class="hidden-xs">#i18n{htmldocs.manage_htmldocs.buttonAdd}</span>
         </button>
       </form>
-  </@headerButtons>
-      
+    </@headerButtons>
+
   </@boxHeader>
-  <@boxBody>    
+  <@boxBody>
     <@messages infos=infos />
     <@paginationAdmin paginator=paginator combo=1 />
     <#assign idx = 0/>
     <div class="box-body table-responsive no-padding">
       <@table>
-	<thead>
-	  <tr>
-	    <th>
-	      #i18n{htmldocs.manage_htmldocs.columnContentLabel}
-	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="contentLabel" />
-	    </th>
-        <th>#i18n{htmldocs.manage_htmldocs.columnUserCreator}</th>
-        <th>
-	      #i18n{htmldocs.manage_htmldocs.columnCreationDate}
-	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="creationDate" />
-	    </th>
-        <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
-        <th>
-	      #i18n{htmldocs.manage_htmldocs.columnUpdateDate}
-	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="updateDate" />
-	    </th>
-        <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
-	    <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
-        <th>#i18n{portal.util.labelActions}</th>
-	  </tr>  
-	  <label class="btn btn-primary active">
-            <input type="checkbox" autocomplete="off" ${is_checked}><a style="color:#FFFFFF" href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?current_user=true">#i18n{htmldocs.manage_htmldocs.sortByUserButton}</a></input>
-         </label>
-	</thead>
-	<tbody>
-	  <#list htmldoc_list as htmldoc >
-            <tr>
-              <td>
-		${htmldoc.contentLabel}
-              </td>
-              <td>
-		${htmldoc.userCreator}
-              </td>
-              <td>
-		${htmldoc.creationDate}
-              </td>
-              <td>
-		${htmldoc.version}
-              </td>
-              <td>
-		${htmldoc.updateDate}
-              </td>
-              <td>
-		${htmldoc.user}
-              </td>
-              <td>
-		${htmldoc.editComment}
-              </td>
-              <td>
-		<a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}"
-		    class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}" >
-		  <i class="fa fa-pencil"></i>
-		</a>
-		<a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${htmldoc.id}"
-		    class="btn btn-primary btn-sm" title="#i18n{htmldocs.manage_htmldocs.labelHistory}" >
-		  <i class="fa fa-history"></i>
-		</a>
-		<a  href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?action=confirmRemoveHtmlDoc&id=${htmldoc.id}"
-		    class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
-		  <i class="fa fa-trash"></i>
-		</a>
-	      </td>
-</tr>
-<#assign idx = idx + 1/>
-</#list>
-</tbody>
-</@table>
-</div>
-<@paginationAdmin paginator=paginator />
+      <thead>
+        <tr>
+          <th>
+            #i18n{htmldocs.manage_htmldocs.columnContentLabel}
+            <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="contentLabel" />
+          </th>
+          <th>#i18n{htmldocs.manage_htmldocs.columnUserCreator}</th>
+          <th>
+            #i18n{htmldocs.manage_htmldocs.columnCreationDate}
+            <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="creationDate" />
+          </th>
+          <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
+          <th>
+            #i18n{htmldocs.manage_htmldocs.columnUpdateDate}
+            <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="updateDate" />
+          </th>
+          <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
+          <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
+          <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+        <label class="btn btn-primary active">
+          <input type="checkbox" autocomplete="off" ${is_checked}><a style="color:#FFFFFF" href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?current_user=true">#i18n{htmldocs.manage_htmldocs.sortByUserButton}</a></input>
+        </label>
+      </thead>
+      <tbody>
+        <#list htmldoc_list as htmldoc >
+        <tr>
+          <td>
+            ${htmldoc.contentLabel}
+          </td>
+          <td>
+            ${htmldoc.userCreator}
+          </td>
+          <td>
+            ${htmldoc.creationDate}
+          </td>
+          <td>
+            ${htmldoc.version}
+          </td>
+          <td>
+            ${htmldoc.updateDate}
+          </td>
+          <td>
+            ${htmldoc.user}
+          </td>
+          <td>
+            ${htmldoc.editComment}
+          </td>
+          <td>
+            <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}"
+                class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}" >
+              <i class="fa fa-pencil"></i>
+            </a>
+            <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${htmldoc.id}"
+                class="btn btn-primary btn-sm" title="#i18n{htmldocs.manage_htmldocs.labelHistory}" >
+              <i class="fa fa-history"></i>
+            </a>
+            <a  href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?action=confirmRemoveHtmlDoc&id=${htmldoc.id}"
+                class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
+              <i class="fa fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        <#assign idx = idx + 1/>
+        </#list>
+      </tbody>
+      </@table>
+    </div>
+    <@paginationAdmin paginator=paginator />
 
-</@boxBody>
+  </@boxBody>
 </@rowBox>
