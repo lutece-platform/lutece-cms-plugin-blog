@@ -18,6 +18,7 @@
 	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${id}" attribute="updateDate" />
 	    </th>
         <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
+        <th>#i18n{portal.util.labelActions}</th>
 	  </tr>  
 	</thead>
 	<tbody>
@@ -34,6 +35,12 @@
               </td>
               <td>
 		${htmldoc.user}
+              </td>
+              <td>
+              <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
+                      class="btn btn-primary btn-sm" title="#i18n{htmldocs.history_htmldoc.labelReset}" >
+                  <i class="fa fa-undo"></i>
+              </a>
               </td>
 </tr>
 </#list>

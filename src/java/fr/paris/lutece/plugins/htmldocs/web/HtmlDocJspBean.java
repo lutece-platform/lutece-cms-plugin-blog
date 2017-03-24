@@ -192,6 +192,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     @View( value = VIEW_HISTORY_HTMLDOC )
     public String getHistoryHtmlDoc( HttpServletRequest request )
     {
+        _htmldoc = null;
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
         List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList( nId );
 
@@ -322,35 +323,24 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String getModifyHtmlDoc( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-
-        if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
+        String strResetVersion = request.getParameter( PARAMETER_VERSION_HTMLDOC );
+        int nVersion = -1;
+        if (strResetVersion != null )
         {
-            _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
-            _htmldoc.setEditComment("");
+            nVersion = Integer.parseInt( strResetVersion );
         }
 
-        Map<String, Object> model = getModel( );
-        model.put( MARK_HTMLDOC, _htmldoc );
-        model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-
-        return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
-    }
-
-    /**
-     * Returns the form to update info about a htmldoc
-     *
-     * @param request
-     *            The Http request
-     * @return The HTML form to update info
-     */
-    @View( VIEW_PREVIOUS_VERSION_HTMLDOC )
-    public String getPreviousVersionHtmlDoc( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-        int nVersion = Integer.parseInt( request.getParameter( PARAMETER_VERSION_HTMLDOC ) );
-
-        _htmldoc = HtmlDocHome.findVersion( nId, nVersion );
-        _htmldoc.setVersion( nVersion++ );
+        if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) || ( strResetVersion != null && _htmldoc.getVersion( ) != nVersion ) )
+        {
+            if ( strResetVersion != null )
+            {
+                _htmldoc = HtmlDocHome.findVersion( nId, nVersion );
+            } else
+            {
+                _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+            }
+            _htmldoc.setEditComment("");
+        }
 
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
@@ -373,9 +363,10 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
 
+        HtmlDoc latestVersionHtmlDoc = HtmlDocHome.findByPrimaryKey( nId );
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
-            _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+            _htmldoc = latestVersionHtmlDoc;
         }
 
         _htmldoc.setHtmlContent( strHtmlContent );
@@ -389,7 +380,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             return redirect( request, VIEW_MODIFY_HTMLDOC, PARAMETER_ID_HTMLDOC, _htmldoc.getId( ) );
         }
 
-        _htmldoc.setVersion( _htmldoc.getVersion( ) + 1 );
+        _htmldoc.setVersion( latestVersionHtmlDoc.getVersion( ) + 1 );
         HtmlDocHome.addNewVersion( _htmldoc );
         addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
 
