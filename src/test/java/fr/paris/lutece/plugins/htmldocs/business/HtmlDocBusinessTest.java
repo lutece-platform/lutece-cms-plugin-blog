@@ -40,8 +40,6 @@ import java.sql.Date;
 
 public class HtmlDocBusinessTest extends LuteceTestCase
 {
-    private final static int CONTENTID1 = 1;
-    private final static int CONTENTID2 = 2;
     private final static int VERSION1 = 1;
     private final static int VERSION2 = 2;
     private final static String CONTENTLABEL1 = "ContentLabel1";
@@ -63,7 +61,6 @@ public class HtmlDocBusinessTest extends LuteceTestCase
     {
         // Initialize an object
         HtmlDoc htmlDoc = new HtmlDoc( );
-        htmlDoc.setId( CONTENTID1 );
         htmlDoc.setVersion( VERSION1 );
         htmlDoc.setContentLabel( CONTENTLABEL1 );
         htmlDoc.setCreationDate( CREATIONDATE1 );
@@ -79,15 +76,14 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         assertEquals( htmlDocStored.getId( ), htmlDoc.getId( ) );
         assertEquals( htmlDocStored.getVersion( ), htmlDoc.getVersion( ) );
         assertEquals( htmlDocStored.getContentLabel( ), htmlDoc.getContentLabel( ) );
-        assertEquals( htmlDocStored.getCreationDate( ), htmlDoc.getCreationDate( ) );
-        assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
+        assertEquals( htmlDocStored.getCreationDate( ).toString(), htmlDoc.getCreationDate( ).toString() );
+        assertEquals( htmlDocStored.getUpdateDate( ).toString(), htmlDoc.getUpdateDate( ).toString() );
         assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
         assertEquals( htmlDocStored.getEditComment( ), htmlDoc.getEditComment( ) );
         assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
         assertEquals( htmlDocStored.getUserCreator( ), htmlDoc.getUserCreator( ) );
 
         // Update test
-        htmlDoc.setId( CONTENTID2 );
         htmlDoc.setVersion( VERSION2 );
         htmlDoc.setContentLabel( CONTENTLABEL2 );
         htmlDoc.setCreationDate( CREATIONDATE2 );
@@ -101,8 +97,8 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         assertEquals( htmlDocStored.getId( ), htmlDoc.getId( ) );
         assertEquals( htmlDocStored.getVersion( ), htmlDoc.getVersion( ) );
         assertEquals( htmlDocStored.getContentLabel( ), htmlDoc.getContentLabel( ) );
-        assertEquals( htmlDocStored.getCreationDate( ), htmlDoc.getCreationDate( ) );
-        assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
+        assertEquals( htmlDocStored.getCreationDate( ).toString(), htmlDoc.getCreationDate( ).toString() );
+        assertEquals( htmlDocStored.getUpdateDate( ).toString(), htmlDoc.getUpdateDate( ).toString() );
         assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
         assertEquals( htmlDocStored.getEditComment( ), htmlDoc.getEditComment( ) );
         assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
