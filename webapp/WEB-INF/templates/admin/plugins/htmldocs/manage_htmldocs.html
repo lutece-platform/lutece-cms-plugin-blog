@@ -19,7 +19,6 @@
       <@table>
 	<thead>
 	  <tr>
-            <input type="hidden" id="id" name="id"/>
             <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
 	    <th>
 	      #i18n{htmldocs.manage_htmldocs.columnContentLabel}
@@ -45,7 +44,6 @@
 	<tbody>
 	  <#list htmldoc_list as htmldoc >
             <tr>
-              <input type="hidden" id="id" name="id"/>
               <td>
 		${htmldoc.version}
               </td>
