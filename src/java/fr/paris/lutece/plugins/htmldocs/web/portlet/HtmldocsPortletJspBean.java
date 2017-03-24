@@ -65,8 +65,6 @@ public class HtmldocsPortletJspBean extends PortletJspBean
     public static final String PARAMETER_PORTLET_NAME = "portlet_name";
     public static final String PARAMETER_HTMLDOC_SELECTED = "htmldoc_selected";
 
-    private int nVersion = 1;
-
     /**
      * Returns the HtmldocsPortlet form of creation
      *
@@ -139,7 +137,6 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         HtmldocsPortlet portlet = new HtmldocsPortlet( );
         AdminUser user = AdminUserService.getAdminUser( request );
         String strSelectedHtmldoc = request.getParameter( PARAMETER_HTMLDOC_SELECTED );
-        nVersion = 1;
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         int nPageId = Integer.parseInt( strPageId );
@@ -147,7 +144,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         if ( strSelectedHtmldoc.compareTo( "Htmldocs" ) == 0 )
         {
             htmldoc.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
-            htmldoc.setVersion( nVersion );
+            htmldoc.setVersion( 1 );
             htmldoc.setCreationDate( getSqlDate( ) );
             htmldoc.setUpdateDate( getSqlDate( ) );
             htmldoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
@@ -213,7 +210,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         //TODO error validation on edit comment length
         htmlDoc.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
         htmlDoc.setUpdateDate( getSqlDate( ) );
-        htmlDoc.setVersion( nVersion++ );
+        htmlDoc.setVersion( htmlDoc.getVersion() + 1 );
         HtmlDocHome.addNewVersion( htmlDoc );
 
         // updates the portlet
