@@ -70,6 +70,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PARAMETER_ID_HTMLDOC = "id";
     private static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
     private static final String PARAMETER_HTML_CONTENT = "html_content";
+    private static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     private static final String PARAMETER_VIEW = "view";
 
     // Properties for page titles
@@ -325,6 +326,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
             _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+            _htmldoc.setEditComment("");
         }
 
         Map<String, Object> model = getModel( );
@@ -369,6 +371,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
+        String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
 
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
@@ -376,6 +379,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setHtmlContent( strHtmlContent );
+        _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
 

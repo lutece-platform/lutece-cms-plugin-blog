@@ -25,6 +25,7 @@
 	      #i18n{htmldocs.manage_htmldocs.columnContentLabel}
 	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="contentLabel" />
 	    </th>
+	    <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
             <th>
 	      #i18n{htmldocs.manage_htmldocs.columnCreationDate}
 	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp" attribute="creationDate" />
@@ -50,6 +51,9 @@
               </td>
               <td>
 		${htmldoc.contentLabel}
+              </td>
+              <td>
+		${htmldoc.editComment}
               </td>
               <td>
 		${htmldoc.creationDate}

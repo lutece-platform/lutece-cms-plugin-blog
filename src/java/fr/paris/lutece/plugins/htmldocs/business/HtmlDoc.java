@@ -73,6 +73,9 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     @Size( max = 100, message = "#i18n{htmldocs.validation.htmldoc.UserCreator.size}" )
     private String _strUserCreator;
 
+    @Size( max = 100, message = "#i18n{htmldocs.validation.htmldoc.EditComment.size}" )
+    private String _strEditComment;
+
     /**
      * Returns the Id
      * 
@@ -259,5 +262,26 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     public int getAttachedPortletId( )
     {
         return _nAttachedPortletId;
+    }
+
+    /**
+     * Returns the EditComment
+     *
+     * @return The EditComment
+     */
+    public String getEditComment( )
+    {
+        return _strEditComment;
+    }
+
+    /**
+     * Sets the EditComment
+     *
+     * @param strEditComment
+     *            The EditComment
+     */
+    public void setEditComment( String strEditComment )
+    {
+        _strEditComment = strEditComment;
     }
 }

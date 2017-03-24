@@ -3,4 +3,5 @@
 <legend>#i18n{htmldocs.modify_htmldoc.labelEditorLegend}</legend>
 <#include "/admin/util/editor/editor.html" />
 <div id="html_content" class="richtext" name="html_content" rows="12">${htmlcontent}</div>
+<@fieldInputText i18nLabelKey="htmldocs.modify_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${edit_comment!''}" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelEditComment.help" />
 <@initEditor type='inlite'/>

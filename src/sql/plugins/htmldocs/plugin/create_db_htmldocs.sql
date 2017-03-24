@@ -14,6 +14,7 @@ html_content LONG VARCHAR,
 user varchar(100) default '' NOT NULL,
 user_creator varchar(100) default '' NOT NULL,
 attached_portlet_id int(6) NOT NULL,
+edit_comment varchar(100) default '' NOT NULL,
 PRIMARY KEY (id_html_doc)
 );
 
@@ -45,5 +46,6 @@ html_content LONG VARCHAR,
 user varchar(100) default '' NOT NULL,
 user_creator varchar(100) default '' NOT NULL,
 attached_portlet_id int(6) NOT NULL,
+edit_comment varchar(100) default '' NOT NULL,
 PRIMARY KEY (id_version)
 );

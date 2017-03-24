@@ -12,6 +12,7 @@
 	<thead>
 	  <tr>
         <th>#i18n{htmldocs.manage_htmldocs.columnVersion}</th>
+        <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
         <th>
 	      #i18n{htmldocs.manage_htmldocs.columnUpdateDate}
 	      <@sort jsp_url="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${id}" attribute="updateDate" />
@@ -24,6 +25,9 @@
             <tr>
               <td>
 		${htmldoc.version}
+              </td>
+              <td>
+		${htmldoc.editComment}
               </td>
               <td>
 		${htmldoc.updateDate}
