@@ -141,45 +141,27 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         // CURRENT USER
         String strCurrentUser = request.getParameter( MARK_CURRENT_USER );
-        String strIsChecked = null;
         AdminUser user = AdminUserService.getAdminUser( request );
 
         if ( strCurrentUser != null )
         {
-            if ( _bIsChecked == true )
-                _bIsChecked = false;
-            else
-                if ( _bIsChecked == false )
-                {
-                    _bIsChecked = true;
-                    Iterator<HtmlDoc> iterator = listHtmlDocs.iterator( );
-                    while ( iterator.hasNext( ) )
-                    {
-                        HtmlDoc doc = iterator.next( );
-                        if ( doc.getUser( ).compareTo( user.getFirstName( ) ) != 0 )
-                        {
-                            iterator.remove( );
-                        }
-                    }
-                }
+            _bIsChecked = !_bIsChecked;
         }
-        else
-            if ( _bIsChecked == true )
+
+        if ( _bIsChecked == true )
+        {
+            Iterator<HtmlDoc> iterator = listHtmlDocs.iterator( );
+            while ( iterator.hasNext( ) )
             {
-                Iterator<HtmlDoc> iterator = listHtmlDocs.iterator( );
-                while ( iterator.hasNext( ) )
+                HtmlDoc doc = iterator.next( );
+                if ( doc.getUser( ).compareTo( user.getFirstName( ) ) != 0 )
                 {
-                    HtmlDoc doc = iterator.next( );
-                    if ( doc.getUser( ).compareTo( user.getFirstName( ) ) != 0 )
-                    {
-                        iterator.remove( );
-                    }
+                    iterator.remove( );
                 }
             }
-        if ( _bIsChecked == false )
-            strIsChecked = MARK_UNCHECKED;
-        else
-            strIsChecked = MARK_CHECKED;
+        }
+
+        String strIsChecked = _bIsChecked ? MARK_CHECKED : MARK_UNCHECKED;
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocs, JSP_MANAGE_HTMLDOCS );
         model.put( MARK_HTMLDOC_FILTER_LIST, getHtmldocFilterList( ) );
