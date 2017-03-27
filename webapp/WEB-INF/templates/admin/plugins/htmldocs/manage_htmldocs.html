@@ -15,6 +15,10 @@
     <@messages infos=infos />
     <@paginationAdmin paginator=paginator combo=1 />
     <form class="form-inline" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+      <div class="form-group">
+        <label for="search_text">#i18n{htmldocs.manage_htmldocs.labelSearchText}</label>
+        <input type="text" class="form-control" id="search_text" name="search_text" value="${search_text!''}">
+      </div>
       <div class="checkbox">
         <label>
           <input type="checkbox" name="current_user" value="true" <#if is_checked> checked="checked" </#if> >#i18n{htmldocs.manage_htmldocs.sortByUserButton}
