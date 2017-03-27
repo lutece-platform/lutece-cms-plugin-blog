@@ -72,6 +72,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PARAMETER_HTML_CONTENT = "html_content";
     private static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     private static final String PARAMETER_VIEW = "view";
+    private static final String PARAMETER_BUTTON_SEARCH = "button_search";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS = "htmldocs.manage_htmldocs.pageTitle";
@@ -85,8 +86,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String MARK_HTMLDOC = "htmldoc";
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_IS_CHECKED = "is_checked";
-    private static final String MARK_CHECKED = "checked";
-    private static final String MARK_UNCHECKED = "unchecked";
     private static final String MARK_CURRENT_USER = "current_user";
     private static final String MARK_ID_HTMLDOC = "id";
 
@@ -139,13 +138,12 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         _htmldoc = null;
         List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
 
-        // CURRENT USER
-        String strCurrentUser = request.getParameter( MARK_CURRENT_USER );
         AdminUser user = AdminUserService.getAdminUser( request );
 
-        if ( strCurrentUser != null )
-        {
-            _bIsChecked = !_bIsChecked;
+        String strButtonSearch = request.getParameter ( PARAMETER_BUTTON_SEARCH );
+        if ( strButtonSearch != null ) {
+            // CURRENT USER
+            _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
         }
 
         if ( _bIsChecked == true )
@@ -161,12 +159,10 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             }
         }
 
-        String strIsChecked = _bIsChecked ? MARK_CHECKED : MARK_UNCHECKED;
-
         Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocs, JSP_MANAGE_HTMLDOCS );
         model.put( MARK_HTMLDOC_FILTER_LIST, getHtmldocFilterList( ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_IS_CHECKED, strIsChecked );
+        model.put( MARK_IS_CHECKED, _bIsChecked );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS, TEMPLATE_MANAGE_HTMLDOCS, model );
     }
