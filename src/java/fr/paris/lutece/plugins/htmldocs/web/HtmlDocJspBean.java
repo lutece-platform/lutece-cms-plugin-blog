@@ -171,7 +171,13 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             while ( iterator.hasNext( ) )
             {
                 HtmlDoc doc = iterator.next( );
-                if ( !doc.getHtmlContent( ).contains( _strSearchText ) )
+                if ( !(
+                     doc.getHtmlContent( ).contains( _strSearchText )
+                  || doc.getContentLabel( ).contains( _strSearchText )
+                  || doc.getEditComment( ).contains( _strSearchText )
+                  || doc.getUser( ).contains( _strSearchText )
+                  || doc.getUserCreator( ).contains( _strSearchText )
+                ) )
                 {
                     iterator.remove( );
                 }
