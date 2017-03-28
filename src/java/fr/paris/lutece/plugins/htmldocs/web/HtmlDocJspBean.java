@@ -76,6 +76,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String TEMPLATE_CREATE_HTMLDOC = "/admin/plugins/htmldocs/create_htmldoc.html";
     private static final String TEMPLATE_MODIFY_HTMLDOC = "/admin/plugins/htmldocs/modify_htmldoc.html";
     private static final String TEMPLATE_HISTORY_HTMLDOC = "admin/plugins/htmldocs/history_htmldoc.html";
+    private static final String TEMPLATE_PREVIEW_HTMLDOC = "admin/plugins/htmldocs/preview_htmldoc.html";
 
     // Parameters
     private static final String PARAMETER_ID_HTMLDOC = "id";
@@ -91,6 +92,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC = "htmldocs.modify_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_HTMLDOC = "htmldocs.create_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC = "htmldocs.history_htmldoc.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC = "htmldocs.preview_htmldoc.pageTitle";
 
     // Markers
     private static final String MARK_HTMLDOC_LIST = "htmldoc_list";
@@ -116,6 +118,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String VIEW_MODIFY_HTMLDOC = "modifyHtmlDoc";
     private static final String VIEW_PREVIOUS_VERSION_HTMLDOC = "previousVersionHtmlDoc";
     private static final String VIEW_HISTORY_HTMLDOC = "historyHtmlDoc";
+    private static final String VIEW_PREVIEW_HTMLDOC = "previewHtmlDoc";
 
     // Actions
     private static final String ACTION_CREATE_HTMLDOC = "createHtmlDoc";
@@ -412,6 +415,39 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
+    }
+
+    /**
+     * Returns the preview of an htmldoc
+     *
+     * @param request
+     *            The Http request
+     * @return The HTML form to update info
+     */
+    @View( VIEW_PREVIEW_HTMLDOC )
+    public String getPreviewHtmlDoc( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
+        String strVersion = request.getParameter( PARAMETER_VERSION_HTMLDOC );
+        int nVersion = -1;
+        if (strVersion != null )
+        {
+            nVersion = Integer.parseInt( strVersion );
+        }
+
+        HtmlDoc htmldoc;
+        if ( strVersion != null )
+        {
+            htmldoc = HtmlDocHome.findVersion( nId, nVersion );
+        } else
+        {
+            htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+        }
+
+        Map<String, Object> model = getModel( );
+        model.put( MARK_HTMLDOC, htmldoc );
+
+        return getPage( PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC, TEMPLATE_PREVIEW_HTMLDOC, model );
     }
 
     private ReferenceList getHtmldocFilterList( )
