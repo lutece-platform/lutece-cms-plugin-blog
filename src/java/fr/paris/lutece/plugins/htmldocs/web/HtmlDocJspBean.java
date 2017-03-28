@@ -51,7 +51,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
-import java.sql.Date;
+import java.sql.Timestamp;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -229,10 +229,10 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
      *
      * @return the current date in sql format
      */
-    public java.sql.Date getSqlDate( )
+    public java.sql.Timestamp getSqlDate( )
     {
         java.util.Date utilDate = new java.util.Date( );
-        java.sql.Date sqlDate = new java.sql.Date( utilDate.getTime( ) );
+        java.sql.Timestamp sqlDate = new java.sql.Timestamp( utilDate.getTime( ) );
 
         return ( sqlDate );
     }

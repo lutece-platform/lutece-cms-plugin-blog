@@ -118,8 +118,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getId( ) );
         daoUtil.setInt( nIndex++, htmlDoc.getVersion( ) );
         daoUtil.setString( nIndex++, htmlDoc.getContentLabel( ) );
-        daoUtil.setDate( nIndex++, htmlDoc.getCreationDate( ) );
-        daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
+        daoUtil.setTimestamp( nIndex++, htmlDoc.getCreationDate( ) );
+        daoUtil.setTimestamp( nIndex++, htmlDoc.getUpdateDate( ) );
         daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUserCreator( ) );
@@ -140,8 +140,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getId( ) );
         daoUtil.setInt( nIndex++, htmlDoc.getVersion( ) );
         daoUtil.setString( nIndex++, htmlDoc.getContentLabel( ) );
-        daoUtil.setDate( nIndex++, htmlDoc.getCreationDate( ) );
-        daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
+        daoUtil.setTimestamp( nIndex++, htmlDoc.getCreationDate( ) );
+        daoUtil.setTimestamp( nIndex++, htmlDoc.getUpdateDate( ) );
         daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUserCreator( ) );
@@ -171,8 +171,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
-            htmlDoc.setCreationDate( daoUtil.getDate( nIndex++ ) );
-            htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
+            htmlDoc.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
@@ -203,8 +203,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
-            htmlDoc.setCreationDate( daoUtil.getDate( nIndex++ ) );
-            htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
+            htmlDoc.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
@@ -236,8 +236,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
-            htmlDoc.setCreationDate( daoUtil.getDate( nIndex++ ) );
-            htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
+            htmlDoc.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
@@ -285,8 +285,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getId( ) );
         daoUtil.setInt( nIndex++, htmlDoc.getVersion( ) );
         daoUtil.setString( nIndex++, htmlDoc.getContentLabel( ) );
-        daoUtil.setDate( nIndex++, htmlDoc.getCreationDate( ) );
-        daoUtil.setDate( nIndex++, htmlDoc.getUpdateDate( ) );
+        daoUtil.setTimestamp( nIndex++, htmlDoc.getCreationDate( ) );
+        daoUtil.setTimestamp( nIndex++, htmlDoc.getUpdateDate( ) );
         daoUtil.setString( nIndex++, htmlDoc.getHtmlContent( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUser( ) );
         daoUtil.setString( nIndex++, htmlDoc.getUserCreator( ) );
@@ -316,8 +316,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
-            htmlDoc.setCreationDate( daoUtil.getDate( nIndex++ ) );
-            htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
+            htmlDoc.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
@@ -350,8 +350,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
-            htmlDoc.setCreationDate( daoUtil.getDate( nIndex++ ) );
-            htmlDoc.setUpdateDate( daoUtil.getDate( nIndex++ ) );
+            htmlDoc.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
             htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
             htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );

@@ -37,7 +37,7 @@ import javax.validation.constraints.*;
 import org.hibernate.validator.constraints.*;
 import java.io.Serializable;
 import fr.paris.lutece.util.ReferenceItem;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * This is the business class for the object HtmlDoc
@@ -57,9 +57,9 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     @Size( max = 50, message = "#i18n{htmldocs.validation.htmldoc.ContentLabel.size}" )
     private String _strContentLabel;
 
-    private Date _dateCreationDate;
+    private Timestamp _dateCreationDate;
 
-    private Date _dateUpdateDate;
+    private Timestamp _dateUpdateDate;
 
     @NotEmpty( message = "#i18n{htmldocs.validation.htmldoc.HtmlContent.notEmpty}" )
     @Size( message = "#i18n{htmldocs.validation.htmldoc.HtmlContent.size}" )
@@ -154,7 +154,7 @@ public class HtmlDoc extends ReferenceItem implements Serializable
      * 
      * @return The CreationDate
      */
-    public Date getCreationDate( )
+    public Timestamp getCreationDate( )
     {
         return _dateCreationDate;
     }
@@ -165,7 +165,7 @@ public class HtmlDoc extends ReferenceItem implements Serializable
      * @param dateCreationDate
      *            The CreationDate
      */
-    public void setCreationDate( Date dateCreationDate )
+    public void setCreationDate( Timestamp dateCreationDate )
     {
         _dateCreationDate = dateCreationDate;
     }
@@ -175,7 +175,7 @@ public class HtmlDoc extends ReferenceItem implements Serializable
      * 
      * @return The UpdateDate
      */
-    public Date getUpdateDate( )
+    public Timestamp getUpdateDate( )
     {
         return _dateUpdateDate;
     }
@@ -186,7 +186,7 @@ public class HtmlDoc extends ReferenceItem implements Serializable
      * @param dateUpdateDate
      *            The UpdateDate
      */
-    public void setUpdateDate( Date dateUpdateDate )
+    public void setUpdateDate( Timestamp dateUpdateDate )
     {
         _dateUpdateDate = dateUpdateDate;
     }

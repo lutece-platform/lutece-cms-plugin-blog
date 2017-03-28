@@ -116,10 +116,10 @@ public class HtmldocsPortletJspBean extends PortletJspBean
      *
      * @return the current date in sql format
      */
-    public java.sql.Date getSqlDate( )
+    public java.sql.Timestamp getSqlDate( )
     {
         java.util.Date utilDate = new java.util.Date( );
-        java.sql.Date sqlDate = new java.sql.Date( utilDate.getTime( ) );
+        java.sql.Timestamp sqlDate = new java.sql.Timestamp( utilDate.getTime( ) );
 
         return ( sqlDate );
     }

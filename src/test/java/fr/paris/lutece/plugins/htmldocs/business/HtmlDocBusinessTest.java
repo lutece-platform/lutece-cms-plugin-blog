@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.htmldocs.business;
 
 import fr.paris.lutece.test.LuteceTestCase;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class HtmlDocBusinessTest extends LuteceTestCase
 {
@@ -44,10 +44,10 @@ public class HtmlDocBusinessTest extends LuteceTestCase
     private final static int VERSION2 = 2;
     private final static String CONTENTLABEL1 = "ContentLabel1";
     private final static String CONTENTLABEL2 = "ContentLabel2";
-    private final static Date CREATIONDATE1 = new Date( 1000000l );
-    private final static Date CREATIONDATE2 = new Date( 2000000l );
-    private final static Date UPDATEDATE1 = new Date( 1000000l );
-    private final static Date UPDATEDATE2 = new Date( 2000000l );
+    private final static Timestamp CREATIONDATE1 = new Timestamp( 1000000l );
+    private final static Timestamp CREATIONDATE2 = new Timestamp( 2000000l );
+    private final static Timestamp UPDATEDATE1 = new Timestamp( 1000000l );
+    private final static Timestamp UPDATEDATE2 = new Timestamp( 2000000l );
     private final static String HTMLCONTENT1 = "HtmlContent1";
     private final static String HTMLCONTENT2 = "HtmlContent2";
     private final static String USER1 = "User1";
@@ -76,8 +76,8 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         assertEquals( htmlDocStored.getId( ), htmlDoc.getId( ) );
         assertEquals( htmlDocStored.getVersion( ), htmlDoc.getVersion( ) );
         assertEquals( htmlDocStored.getContentLabel( ), htmlDoc.getContentLabel( ) );
-        assertEquals( htmlDocStored.getCreationDate( ).toString(), htmlDoc.getCreationDate( ).toString() );
-        assertEquals( htmlDocStored.getUpdateDate( ).toString(), htmlDoc.getUpdateDate( ).toString() );
+        assertEquals( htmlDocStored.getCreationDate( ), htmlDoc.getCreationDate( ) );
+        assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
         assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
         assertEquals( htmlDocStored.getEditComment( ), htmlDoc.getEditComment( ) );
         assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
@@ -97,8 +97,8 @@ public class HtmlDocBusinessTest extends LuteceTestCase
         assertEquals( htmlDocStored.getId( ), htmlDoc.getId( ) );
         assertEquals( htmlDocStored.getVersion( ), htmlDoc.getVersion( ) );
         assertEquals( htmlDocStored.getContentLabel( ), htmlDoc.getContentLabel( ) );
-        assertEquals( htmlDocStored.getCreationDate( ).toString(), htmlDoc.getCreationDate( ).toString() );
-        assertEquals( htmlDocStored.getUpdateDate( ).toString(), htmlDoc.getUpdateDate( ).toString() );
+        assertEquals( htmlDocStored.getCreationDate( ), htmlDoc.getCreationDate( ) );
+        assertEquals( htmlDocStored.getUpdateDate( ), htmlDoc.getUpdateDate( ) );
         assertEquals( htmlDocStored.getHtmlContent( ), htmlDoc.getHtmlContent( ) );
         assertEquals( htmlDocStored.getEditComment( ), htmlDoc.getEditComment( ) );
         assertEquals( htmlDocStored.getUser( ), htmlDoc.getUser( ) );
