@@ -44,6 +44,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -51,9 +52,17 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.html.HtmlParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.xml.sax.SAXException;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -171,8 +180,22 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             while ( iterator.hasNext( ) )
             {
                 HtmlDoc doc = iterator.next( );
+                BodyContentHandler handler = new BodyContentHandler( );
+                HtmlParser htmlparser = new HtmlParser( );
+                Metadata metadata = new Metadata( );
+                ParseContext parseContext = new ParseContext( );
+                String strContent;
+                try {
+                    htmlparser.parse(new ByteArrayInputStream(doc.getHtmlContent().getBytes("UTF-8")), handler, metadata, parseContext);
+                    strContent = handler.toString();
+                } catch (IOException | SAXException | TikaException e) {
+                    AppLogService.error( "Error parsing htmldoc content, not fatal but defaulting to raw html for search (docId: "
+                            + doc.getId() + " , title: " + doc.getContentLabel() + ": exception: "+e , e);
+                    strContent = doc.getHtmlContent();
+                }
+
                 if ( !(
-                     doc.getHtmlContent( ).contains( _strSearchText )
+                     strContent.contains( _strSearchText )
                   || doc.getContentLabel( ).contains( _strSearchText )
                   || doc.getEditComment( ).contains( _strSearchText )
                   || doc.getUser( ).contains( _strSearchText )
