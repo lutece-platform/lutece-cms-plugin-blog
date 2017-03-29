@@ -45,6 +45,12 @@
                 class="btn btn-primary btn-sm" title="#i18n{htmldocs.history_htmldoc.labelReset}" >
               <i class="fa fa-undo"></i>
             </a>
+            <#if htmldoc.version != 1>
+            <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=diffHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
+                class="btn btn-primary btn-sm" title="#i18n{htmldocs.history_htmldoc.labelDiffPrevious}" >
+              <i class="fa fa-pencil-square-o"></i>
+            </a>
+            </#if>
           </td>
         </tr>
         </#list>

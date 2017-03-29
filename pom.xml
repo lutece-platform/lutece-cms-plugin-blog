@@ -29,6 +29,30 @@
             <version>[5.0.0,)</version>
             <type>lutece-core</type>
         </dependency>
+        <dependency>
+            <!-- Needed by daisydiff -->
+            <groupId>org.outerj.daisy</groupId>
+            <artifactId>daisydiff</artifactId>
+            <version>1.2-NX1</version>
+        </dependency>
+        <dependency>
+            <!-- Needed by daisydiff -->
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+            <version>1.9.22</version>
+        </dependency>
+        <dependency>
+            <!-- Needed by daisydiff -->
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>common</artifactId>
+            <version>3.6.200-v20130402-1505</version>
+        </dependency>
+        <dependency>
+            <!-- Needed by daisydiff -->
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.11.0</version>
+        </dependency>
     </dependencies>
 
     <properties>

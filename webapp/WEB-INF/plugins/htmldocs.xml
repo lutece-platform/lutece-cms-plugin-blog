@@ -32,6 +32,11 @@
       </admin-feature>
     </admin-features>    
 
+    <!-- Specific plugin CSS stylesheet -->
+    <admin-css-stylesheets>
+        <admin-css-stylesheet>css/admin/plugins/htmldocs/diff.css</admin-css-stylesheet>
+    </admin-css-stylesheets>
+
     <!-- XPages parameters -->
     <applications>
     </applications>

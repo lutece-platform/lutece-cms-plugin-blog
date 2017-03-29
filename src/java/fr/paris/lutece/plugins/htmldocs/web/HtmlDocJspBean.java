@@ -50,18 +50,33 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Iterator;
 import java.util.Map;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Timestamp;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.outerj.daisy.diff.DaisyDiff;
+import org.outerj.daisy.diff.HtmlCleaner;
+import org.outerj.daisy.diff.html.HTMLDiffer;
+import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
+import org.outerj.daisy.diff.html.TextNodeComparator;
+import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.apache.commons.lang.StringUtils;
 
@@ -77,10 +92,12 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String TEMPLATE_MODIFY_HTMLDOC = "/admin/plugins/htmldocs/modify_htmldoc.html";
     private static final String TEMPLATE_HISTORY_HTMLDOC = "admin/plugins/htmldocs/history_htmldoc.html";
     private static final String TEMPLATE_PREVIEW_HTMLDOC = "admin/plugins/htmldocs/preview_htmldoc.html";
+    private static final String TEMPLATE_DIFF_HTMLDOC = "admin/plugins/htmldocs/diff_htmldoc.html";
 
     // Parameters
     private static final String PARAMETER_ID_HTMLDOC = "id";
     private static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
+    private static final String PARAMETER_VERSION_HTMLDOC2 = "htmldoc_version2";
     private static final String PARAMETER_HTML_CONTENT = "html_content";
     private static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     private static final String PARAMETER_VIEW = "view";
@@ -93,6 +110,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PROPERTY_PAGE_TITLE_CREATE_HTMLDOC = "htmldocs.create_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC = "htmldocs.history_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC = "htmldocs.preview_htmldoc.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_DIFF_HTMLDOC = "htmldocs.diff_htmldoc.pageTitle";
 
     // Markers
     private static final String MARK_HTMLDOC_LIST = "htmldoc_list";
@@ -103,6 +121,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String MARK_CURRENT_USER = "current_user";
     private static final String MARK_ID_HTMLDOC = "id";
     private static final String MARK_SEARCH_TEXT = "search_text";
+    private static final String MARK_DIFF = "htmldoc_diff";
+    private static final String MARK_HTMLDOC2 = "htmldoc2";
 
     private static final String JSP_MANAGE_HTMLDOCS = "jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp";
 
@@ -119,6 +139,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String VIEW_PREVIOUS_VERSION_HTMLDOC = "previousVersionHtmlDoc";
     private static final String VIEW_HISTORY_HTMLDOC = "historyHtmlDoc";
     private static final String VIEW_PREVIEW_HTMLDOC = "previewHtmlDoc";
+    private static final String VIEW_DIFF_HTMLDOC = "diffHtmlDoc";
 
     // Actions
     private static final String ACTION_CREATE_HTMLDOC = "createHtmlDoc";
@@ -448,6 +469,89 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         model.put( MARK_HTMLDOC, htmldoc );
 
         return getPage( PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC, TEMPLATE_PREVIEW_HTMLDOC, model );
+    }
+
+    /**
+     * Returns the diff of two htmldocs versions
+     *
+     * @param request
+     *            The Http request
+     * @return The HTML form to update info
+     */
+    @View( VIEW_DIFF_HTMLDOC )
+    public String getDiffHtmlDoc( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
+        String strVersion = request.getParameter( PARAMETER_VERSION_HTMLDOC );
+        int nVersion = -1;
+        if (strVersion != null )
+        {
+            nVersion = Integer.parseInt( strVersion );
+        }
+        String strVersion2 = request.getParameter( PARAMETER_VERSION_HTMLDOC2 );
+
+        HtmlDoc htmldoc;
+        if ( strVersion != null )
+        {
+            htmldoc = HtmlDocHome.findVersion( nId, nVersion );
+        } else
+        {
+            htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+        }
+
+        int nVersion2 = htmldoc.getVersion( ) - 1;
+        if ( strVersion2 != null )
+        {
+            nVersion2 = Integer.parseInt( strVersion2 );
+        }
+
+        HtmlDoc htmldoc2 = HtmlDocHome.findVersion( nId, nVersion2 );
+        if ( htmldoc2 == null ) {
+            htmldoc2 = HtmlDocHome.findByPrimaryKey( nId );
+        }
+
+        if ( htmldoc2.getVersion() > htmldoc.getVersion() ) {
+            HtmlDoc tmp = htmldoc2;
+            htmldoc2 = htmldoc;
+            htmldoc = tmp;
+        }
+
+        String strDiff = null;
+        HtmlCleaner cleaner = new HtmlCleaner();
+        try {
+          SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
+          TransformerHandler result = tf.newTransformerHandler();
+          result.getTransformer().setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
+          StringWriter resultWriter = new StringWriter();
+          result.setResult(new StreamResult(resultWriter));
+          Locale locale = getLocale();
+
+          DomTreeBuilder oldHandler = new DomTreeBuilder();
+          cleaner.cleanAndParse(new InputSource(new ByteArrayInputStream(htmldoc2.getHtmlContent().getBytes("UTF-8"))), oldHandler);
+          TextNodeComparator leftComparator = new TextNodeComparator( oldHandler, locale );
+
+          DomTreeBuilder newHandler = new DomTreeBuilder();
+          cleaner.cleanAndParse(new InputSource(new ByteArrayInputStream(htmldoc.getHtmlContent().getBytes("UTF-8"))), newHandler);
+          TextNodeComparator rightComparator = new TextNodeComparator( newHandler, locale );
+
+          HtmlSaxDiffOutput output = new HtmlSaxDiffOutput(result, "");
+          HTMLDiffer differ = new HTMLDiffer(output);
+          differ.diff(leftComparator, rightComparator);
+
+          strDiff = resultWriter.toString();
+        } catch (Exception e) {
+          AppLogService.error( "Error generating daisy diff for htmldoc " + nId + ":" + htmldoc.getContentLabel() + "; versions ("+ htmldoc.getVersion() + "," + htmldoc2.getVersion() + ")", e);
+        }
+
+        List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList( nId );
+
+        Map<String, Object> model = getModel( );
+        model.put( MARK_HTMLDOC, htmldoc );
+        model.put( MARK_HTMLDOC2, htmldoc2 );
+        model.put( MARK_DIFF, strDiff );
+        model.put( MARK_HTMLDOC_VERSION_LIST, listHtmlDocsVersions );
+
+        return getPage( PROPERTY_PAGE_TITLE_DIFF_HTMLDOC, TEMPLATE_DIFF_HTMLDOC, model );
     }
 
     private ReferenceList getHtmldocFilterList( )

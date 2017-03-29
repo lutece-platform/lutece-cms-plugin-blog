@@ -91,6 +91,12 @@
                 class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
               <i class="fa fa-trash"></i>
             </a>
+            <#if htmldoc.version != 1>
+            <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=diffHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
+                class="btn btn-primary btn-sm" title="#i18n{htmldocs.history_htmldoc.labelDiffPrevious}" >
+              <i class="fa fa-pencil-square-o"></i>
+            </a>
+            </#if>
           </td>
         </tr>
         <#assign idx = idx + 1/>
