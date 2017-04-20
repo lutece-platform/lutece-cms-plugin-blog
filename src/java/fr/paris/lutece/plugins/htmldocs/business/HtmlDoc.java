@@ -75,6 +75,9 @@ public class HtmlDoc extends ReferenceItem implements Serializable
 
     @Size( max = 100, message = "#i18n{htmldocs.validation.htmldoc.EditComment.size}" )
     private String _strEditComment;
+    
+    @Size( message = "#i18n{htmldocs.validation.description.size}" )
+    private String _strDescription;
 
     /**
      * Returns the Id
@@ -283,5 +286,26 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     public void setEditComment( String strEditComment )
     {
         _strEditComment = strEditComment;
+    }
+    
+    /**
+     * Returns the Description
+     *
+     * @return The Description
+     */
+    public String getDescription( )
+    {
+        return _strDescription;
+    }
+
+    /**
+     * Sets the Description
+     *
+     * @param strDescription
+     *            The Description
+     */
+    public void setDescription( String strDescription )
+    {
+    	_strDescription = strDescription;
     }
 }

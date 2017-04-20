@@ -5,7 +5,23 @@
 
     <#include "/admin/util/editor/editor.html" />
     <@fieldInputText i18nLabelKey="htmldocs.modify_htmldoc.labelContentLabel" inputName="content_label" mandatory=false value="${htmldoc.contentLabel}" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelContentLabel.help" />
-    <textarea id="html_content" class="richtext" name="html_content" rows="12">   ${htmldoc.htmlContent}      </textarea>
+
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">#i18n{htmldocs.modify_htmldoc.labelDescription}&nbsp;&nbsp;:</label>
+		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+			 <textarea id="description" class="richtext" name="description" rows="">  ${htmldoc.description}      </textarea> 
+			<p class="help-block">#i18n{htmldocs.modify_htmldoc.labelDescription.help} (help text)</p>
+		</div>
+    </div>
+    <div class="form-group">
+		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">#i18n{htmldocs.modify_htmldoc.labelHtmlContent}&nbsp;&nbsp;:</label>
+		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+    			<textarea id="html_content" class="richtext" name="html_content" rows="12">   ${htmldoc.htmlContent}      </textarea>
+			<p class="help-block">#i18n{htmldocs.modify_htmldoc.labelHtmlContent.help} (help text)</p>
+		</div>
+    </div>
+   
+
     <@initEditor/>
     <@fieldInputText i18nLabelKey="htmldocs.modify_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${htmldoc.editComment}" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelEditComment.help" />
     <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>

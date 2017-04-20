@@ -101,6 +101,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PARAMETER_CONTENT_LABEL = "content_label";
     private static final String PARAMETER_HTML_CONTENT = "html_content";
     private static final String PARAMETER_EDIT_COMMENT = "edit_comment";
+    private static final String PARAMETER_DESCRIPTION = "description";
     private static final String PARAMETER_VIEW = "view";
     private static final String PARAMETER_BUTTON_SEARCH = "button_search";
     private static final String PARAMETER_SEARCH_TEXT = "search_text";
@@ -225,6 +226,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
                   || doc.getEditComment( ).contains( _strSearchText )
                   || doc.getUser( ).contains( _strSearchText )
                   || doc.getUserCreator( ).contains( _strSearchText )
+                  || doc.getDescription( ).contains( _strSearchText )
                 ) )
                 {
                     iterator.remove( );
@@ -415,7 +417,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
         String strContentLabel = request.getParameter( PARAMETER_CONTENT_LABEL );
-
+        String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
+        
         HtmlDoc latestVersionHtmlDoc = HtmlDocHome.findByPrimaryKey( nId );
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
@@ -423,6 +426,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setContentLabel( strContentLabel );
+        _htmldoc.setDescription(strDescription);
         _htmldoc.setHtmlContent( strHtmlContent );
         _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );

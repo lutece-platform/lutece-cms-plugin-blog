@@ -15,6 +15,7 @@ user_editor varchar(100) default '' NOT NULL,
 user_creator varchar(100) default '' NOT NULL,
 attached_portlet_id int NOT NULL,
 edit_comment varchar(100) default '' NOT NULL,
+description long varchar,
 PRIMARY KEY (id_html_doc)
 );
 
@@ -47,5 +48,6 @@ user_editor varchar(100) default '' NOT NULL,
 user_creator varchar(100) default '' NOT NULL,
 attached_portlet_id int NOT NULL,
 edit_comment varchar(100) default '' NOT NULL,
+description long varchar,
 PRIMARY KEY (id_version)
 );
