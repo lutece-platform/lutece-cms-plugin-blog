@@ -98,6 +98,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PARAMETER_ID_HTMLDOC = "id";
     private static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
     private static final String PARAMETER_VERSION_HTMLDOC2 = "htmldoc_version2";
+    private static final String PARAMETER_CONTENT_LABEL = "content_label";
     private static final String PARAMETER_HTML_CONTENT = "html_content";
     private static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     private static final String PARAMETER_VIEW = "view";
@@ -413,6 +414,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
+        String strContentLabel = request.getParameter( PARAMETER_CONTENT_LABEL );
 
         HtmlDoc latestVersionHtmlDoc = HtmlDocHome.findByPrimaryKey( nId );
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
@@ -420,6 +422,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             _htmldoc = latestVersionHtmlDoc;
         }
 
+        _htmldoc.setContentLabel( strContentLabel );
         _htmldoc.setHtmlContent( strHtmlContent );
         _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );
