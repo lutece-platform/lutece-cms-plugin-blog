@@ -1,5 +1,5 @@
 <@rowBoxHeader i18nTitleKey="#i18n{htmldocs.modify_htmldoc.title} : ${htmldoc.contentLabel}">
-  <form class="form-horizontal" method="post" name="modify_htmldoc" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+  <form class="form-horizontal" method="post" name="modify_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
     <@messages errors=errors />
     <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>
 
@@ -22,9 +22,26 @@
     </div>
    
 
+
+
     <@initEditor/>
     <@fieldInputText i18nLabelKey="htmldocs.modify_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${htmldoc.editComment}" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelEditComment.help" />
+
+
+   <div class="form-group">
+	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="attachment">Piece jointe</label>
+	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+		<input name="attachment" id="attachment" type="file" value="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}">
+		<a href="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}" title="preview"> <#if htmldoc.docContent ??>${htmldoc.docContent.textValue!}</#if></a>
+	</div>
+    </div>
+    <div class="form-group">
+	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="attachment"></label>
+	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+		   <input name="update_attachment" id="update_attachment" value="1" type="checkbox"> Supprimer la pièce jointe
+	</div>
+    </div>
+
     <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>
   </form>
 </@rowBoxHeader>
-

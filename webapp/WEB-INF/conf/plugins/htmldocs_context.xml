@@ -5,7 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
 
     <bean id="htmldocs.htmlDocDAO" class="fr.paris.lutece.plugins.htmldocs.business.HtmlDocDAO" />
+    <bean id="htmldocs.docContentDAO" class="fr.paris.lutece.plugins.htmldocs.business.DocContentDAO" />    
+    
 
 
     <bean id="htmldocs.HtmldocsPortletDAO" class="fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletDAO" />    
+    
 </beans>

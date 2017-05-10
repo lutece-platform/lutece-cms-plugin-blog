@@ -1,5 +1,5 @@
 <@rowBoxHeader i18nTitleKey="#i18n{htmldocs.create_htmldoc.title}">
-  <form class="form-horizontal" method="post" name="create_htmldoc" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
+  <form class="form-horizontal" method="post" name="create_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
     <@messages errors=errors />
     <input type="hidden" id="id" name="id"/>
 
@@ -9,19 +9,32 @@
     <div class="form-group">
 		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">#i18n{htmldocs.create_htmldoc.labelDescription}&nbsp;&nbsp;:</label>
 		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-			 <div class="richtext" name="description" id="description" value="description"></div>
+
+			   <textarea id="description" class="richtext" name="description" rows="12">       </textarea>
+
 			<p class="help-block">#i18n{htmldocs.create_htmldoc.labelDescription.help} (help text)</p>
 		</div>
     </div>
-    	
-   
-    <legend>#i18n{htmldocs.create_htmldoc.labelEditContent}</legend>
-    <div class="richtext" name="html_content" id="html_content" value="html_content">
-    </div>
-    
-    <@initEditor type='inlite'/>
-    <@fieldInputText i18nLabelKey="htmldocs.create_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${htmldoc.editComment!''}" i18nHelpBlockKey="htmldocs.create_htmldoc.labelEditComment.help" />
+     <div class="form-group">
+		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">#i18n{htmldocs.create_htmldoc.labelEditContent}&nbsp;&nbsp;:</label>
+		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 
+    	<textarea id="html_content" class="richtext" name="html_content" rows="12">       </textarea>
+
+			<p class="help-block"></p>
+		</div>
+    </div>
+
+    
+    <@initEditor />
+    <@fieldInputText i18nLabelKey="htmldocs.create_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${htmldoc.editComment!''}" i18nHelpBlockKey="htmldocs.create_htmldoc.labelEditComment.help" />
+	<div class="form-group">
+	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="attachment">Piece jointe</label>
+	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+		<input tabindex="-1" style="position: absolute; clip: rect(0px, 0px, 0px, 0px);" class="filestyle" name="attachment" id="attachment" type="file">
+		
+	</div>
+    </div>
     <@actionButtons button1Name="action_createHtmlDoc" button2Name="view_manageHtmlDocs"/>
   </form>
 </@rowBoxHeader>

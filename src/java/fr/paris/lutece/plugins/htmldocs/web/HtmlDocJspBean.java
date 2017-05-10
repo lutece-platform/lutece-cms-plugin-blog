@@ -33,20 +33,24 @@
  */
 package fr.paris.lutece.plugins.htmldocs.web;
 
+import fr.paris.lutece.plugins.htmldocs.business.DocContent;
+import fr.paris.lutece.plugins.htmldocs.business.DocContentHome;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
-import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortlet;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletHome;
+import fr.paris.lutece.plugins.htmldocs.service.HtmlDocService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
 import java.util.List;
@@ -56,7 +60,6 @@ import java.util.Map;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
@@ -78,6 +81,9 @@ import org.outerj.daisy.diff.html.TextNodeComparator;
 import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -105,6 +111,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PARAMETER_VIEW = "view";
     private static final String PARAMETER_BUTTON_SEARCH = "button_search";
     private static final String PARAMETER_SEARCH_TEXT = "search_text";
+    private static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS = "htmldocs.manage_htmldocs.pageTitle";
@@ -113,6 +120,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC = "htmldocs.history_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC = "htmldocs.preview_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_DIFF_HTMLDOC = "htmldocs.diff_htmldoc.pageTitle";
+    private static final String PROPERTY_RESOURCE_TYPE = "htmldoc";
+
 
     // Markers
     private static final String MARK_HTMLDOC_LIST = "htmldoc_list";
@@ -276,6 +285,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        // additionnal create info
+        ResourceEnhancer.getCreateResourceModelAddOn( model );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_HTMLDOC, TEMPLATE_CREATE_HTMLDOC, model );
     }
@@ -316,8 +327,12 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         {
             return redirectView( request, VIEW_CREATE_HTMLDOC );
         }
+        
+        //HtmlDocHome.addInitialVersion( _htmldoc );
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        DocContent docContent= setContent( multipartRequest, request.getLocale( ) );
+        HtmlDocService.getInstance().createDocument(_htmldoc, docContent);
 
-        HtmlDocHome.addInitialVersion( _htmldoc );
         addInfo( INFO_HTMLDOC_CREATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
@@ -359,8 +374,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         {
             HtmldocsPortletHome.getInstance( ).remove( HtmldocsPortletHome.findByPrimaryKey( nAttachedPortletId ) );
         }
-        HtmlDocHome.remove( nId );
-        HtmlDocHome.removeVersions( nId );
+        HtmlDocService.getInstance().deleteDocument(nId);
+
         addInfo( INFO_HTMLDOC_REMOVED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
@@ -391,9 +406,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
                 _htmldoc = HtmlDocHome.findVersion( nId, nVersion );
             } else
             {
-                _htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+                _htmldoc = HtmlDocService.getInstance().loadDocument(nId);
             }
-            _htmldoc.setEditComment("");
+          //  _htmldoc.setEditComment("");
         }
 
         Map<String, Object> model = getModel( );
@@ -418,7 +433,10 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
         String strContentLabel = request.getParameter( PARAMETER_CONTENT_LABEL );
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
-        
+        String strUpdate_attachment= request.getParameter( PARAMETER_UPDATE_ATTACHMENT );
+        boolean bIsUpdatable = ( ( strUpdate_attachment == null ) || strUpdate_attachment.equals( "" ) ) ? false : true;
+
+
         HtmlDoc latestVersionHtmlDoc = HtmlDocHome.findByPrimaryKey( nId );
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
@@ -439,7 +457,23 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setVersion( latestVersionHtmlDoc.getVersion( ) + 1 );
-        HtmlDocHome.addNewVersion( _htmldoc );
+       
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        DocContent docContent= setContent( multipartRequest, request.getLocale( ) );
+        if(bIsUpdatable && docContent == null){
+        	
+        	DocContentHome.remove(nId);
+        	docContent = null;
+        }
+        else if(docContent == null ){
+        	
+        	docContent = _htmldoc.getDocContent();
+        
+        }
+        
+        HtmlDocService.getInstance().updateDocument(_htmldoc, docContent);
+        
+
         addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
@@ -469,7 +503,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             htmldoc = HtmlDocHome.findVersion( nId, nVersion );
         } else
         {
-            htmldoc = HtmlDocHome.findByPrimaryKey( nId );
+            htmldoc = HtmlDocService.getInstance().loadDocument(nId);
         }
 
         Map<String, Object> model = getModel( );
@@ -569,5 +603,35 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         list.addItem( MARK_HTMLDOC_FILTER_USER, "Utilisateur" );
 
         return list;
+    }
+    
+    public DocContent setContent( MultipartHttpServletRequest mRequest, Locale locale )
+    {
+    	
+        FileItem fileParameterBinaryValue = mRequest.getFile( "attachment" );
+        //boolean bToResize = ( ( strToResize == null ) || strToResize.equals( "" ) ) ? false : true;
+
+      
+       if ( fileParameterBinaryValue != null ) // If the field is a file
+        {
+           
+            String strContentType = fileParameterBinaryValue.getContentType(  );
+            byte[] bytes = fileParameterBinaryValue.get(  );
+            String strFileName = fileParameterBinaryValue.getName(  );
+            String strExtension = FilenameUtils.getExtension( strFileName );
+           
+            if(!ArrayUtils.isEmpty( bytes )){
+            	
+            	  DocContent docContent= new DocContent();
+                  docContent.setBinaryValue( bytes );
+                  docContent.setValueContentType( strContentType );
+                  docContent.setTextValue( strFileName );
+                
+                  return docContent;
+            }
+          
+        }
+
+        return null;
     }
 }

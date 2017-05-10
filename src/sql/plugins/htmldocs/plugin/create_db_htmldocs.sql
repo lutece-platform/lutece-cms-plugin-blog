@@ -20,6 +20,21 @@ PRIMARY KEY (id_html_doc)
 );
 
 --
+-- Structure for table document_content
+--
+DROP TABLE IF EXISTS htmldocs_content;
+CREATE TABLE htmldocs_content (
+	id_html_doc int NOT NULL,
+	id_document int default 0 NOT NULL,
+	text_value long varchar,
+	mime_type varchar(255) default NULL,
+	binary_value long varbinary,
+	PRIMARY KEY (id_document)
+);
+
+--
+
+--
 -- Structure for table htmldocs_portlet
 --
 

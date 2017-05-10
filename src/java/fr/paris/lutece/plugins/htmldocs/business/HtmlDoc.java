@@ -34,9 +34,13 @@
 package fr.paris.lutece.plugins.htmldocs.business;
 
 import javax.validation.constraints.*;
+
 import org.hibernate.validator.constraints.*;
+
 import java.io.Serializable;
+
 import fr.paris.lutece.util.ReferenceItem;
+
 import java.sql.Timestamp;
 
 /**
@@ -78,6 +82,9 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     
     @Size( message = "#i18n{htmldocs.validation.description.size}" )
     private String _strDescription;
+    
+    private DocContent _docContent;
+
 
     /**
      * Returns the Id
@@ -307,5 +314,26 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     public void setDescription( String strDescription )
     {
     	_strDescription = strDescription;
+    }
+    
+    /**
+     * Returns the DocContent
+     *
+     * @return The DocContent
+     */
+    public DocContent getDocContent( )
+    {
+        return _docContent;
+    }
+
+    /**
+     * Sets the DocContent
+     *
+     * @param DocContent
+     *            The DocContent
+     */
+    public void setDocContent( DocContent docContent )
+    {
+    	_docContent = docContent;
     }
 }

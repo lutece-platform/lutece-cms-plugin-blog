@@ -40,7 +40,15 @@
     <!-- XPages parameters -->
     <applications>
     </applications>
-
+     <!-- servlets -->
+    <servlets>
+        <servlet>
+            <servlet-name>FileServlet</servlet-name>
+            <url-pattern>/servlet/plugins/htmldocs/file</url-pattern>
+            <servlet-class>fr.paris.lutece.plugins.htmldocs.web.HtmlDocFileServlet</servlet-class>
+        </servlet>
+    </servlets>
+    
     <!-- Portlet parameters -->
     <portlets>
      <portlet>
