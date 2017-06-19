@@ -66,3 +66,43 @@ edit_comment varchar(100) default '' NOT NULL,
 description long varchar,
 PRIMARY KEY (id_version)
 );
+
+--
+-- Structure for table htmldocs_tag
+--
+
+DROP TABLE IF EXISTS htmldocs_tag;
+CREATE TABLE htmldocs_tag (
+id_tag int NOT NULL,
+name varchar(50) NOT NULL,
+PRIMARY KEY (id_tag)
+);
+
+
+--
+-- Structure for table htmldocs_tag
+--
+
+DROP TABLE IF EXISTS htmldocs_tag_document;
+CREATE TABLE htmldocs_tag_document (
+id_tag int NOT NULL,
+id_html_doc int NOT NULL,
+CONSTRAINT `fk_htmldocs` FOREIGN KEY(`id_html_doc`) references htmldocs (`id_html_doc`),
+CONSTRAINT `fk_id_tag` FOREIGN KEY(`id_tag`) references htmldocs_tag(`id_tag`),
+
+PRIMARY KEY (id_tag, id_html_doc)
+);
+
+/*==============================================================*/
+/* Table structure for table htmldocs_indexer_action				*/
+/*==============================================================*/
+DROP TABLE IF EXISTS htmldocs_indexer_action;
+CREATE TABLE htmldocs_indexer_action (
+  id_action INT DEFAULT 0 NOT NULL,
+  id_htmldoc INT DEFAULT 0 NOT NULL,
+  id_task INT DEFAULT 0 NOT NULL ,
+  PRIMARY KEY (id_action)
+  );
+CREATE INDEX htmldocs_id_indexer_task ON htmldocs_indexer_action (id_task);
+
+

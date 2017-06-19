@@ -1,0 +1,55 @@
+<@rowBox>
+  <@boxHeader title="#i18n{htmldocs.manage_tags.title}" boxTools=true>
+
+    <@headerButtons>
+      <form class="form-inline" method="post" name="manage_htmldocs" action="jsp/admin/plugins/htmldocs/ManageTags.jsp">
+        <button class="btn btn-primary btn-xs btn-flat" type="submit" name="view_createTag" >
+          <i class="fa fa-plus"></i>
+          <span class="hidden-xs">#i18n{htmldocs.manage_tags.buttonAdd}</span>
+        </button>
+      </form>
+    </@headerButtons>
+
+  </@boxHeader>
+  <@boxBody>
+    <@messages infos=infos />
+    <@paginationAdmin paginator=paginator combo=1 />
+   
+    <div class="box-body table-responsive no-padding">
+      <@table>
+      <thead>
+        <tr>
+          <th>
+            #i18n{htmldocs.manage_tags.columnTagLabel}
+          </th>
+          <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <#list tag_list as tag >
+        <tr>
+          <td>
+            ${tag.name}
+          </td>
+         
+          <td>
+            
+            <a href="jsp/admin/plugins/htmldocs/ManageTags.jsp?view=modifyTag&id=${tag.idTag}"
+                class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}" >
+              <i class="fa fa-pencil"></i>
+            </a>
+      
+            <a  href="jsp/admin/plugins/htmldocs/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}"
+                class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
+              <i class="fa fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        </#list>
+      </tbody>
+      </@table>
+    </div>
+    <@paginationAdmin paginator=paginator />
+
+  </@boxBody>
+</@rowBox>

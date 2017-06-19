@@ -47,6 +47,7 @@
           </th>
           <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
           <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
+	  <th>TAG</th>
           <th>#i18n{portal.util.labelActions}</th>
         </tr>
       </thead>
@@ -73,6 +74,16 @@
           </td>
           <td>
             ${htmldoc.editComment}
+          </td>
+	  <td>
+            <#list htmldoc.tag as tg>
+		<#list list_tag as tgName>
+			<#if tgName.code == tg.idTag?string > 
+				<div>${tgName.name!}</div>
+				  <#break>
+			</#if>
+		</#list>
+		</#list>
           </td>
           <td>
             <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=previewHtmlDoc&id=${htmldoc.id}"

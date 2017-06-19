@@ -2,6 +2,8 @@
   <form class="form-horizontal" method="post" name="modify_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
     <@messages errors=errors />
     <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>
+    <input type="hidden" id="action" name="action" value="modifyHtmlDoc"/>
+    <input id="tag_remove" type="hidden" name="tag_remove" value="" ></input>
 
     <#include "/admin/util/editor/editor.html" />
     <@fieldInputText i18nLabelKey="htmldocs.modify_htmldoc.labelContentLabel" inputName="content_label" mandatory=false value="${htmldoc.contentLabel}" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelContentLabel.help" />
@@ -41,7 +43,34 @@
 		   <input name="update_attachment" id="update_attachment" value="1" type="checkbox"> Supprimer la pièce jointe
 	</div>
     </div>
+    <div class="form-group">
+	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">Tag&nbsp;&nbsp;:</label>
+	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+  		<@comboWithParams name="tag_doc" default_value="" additionalParameters="class=\"input-xxlarge\"" items=list_tag />
+		<button type="submit" value="addTag" name="addTag" class="btn btn-primary btn-sm btn-flat">
+			<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
+		</button>
 
+    		<p class="help-block"></p>
+		 <#list htmldoc.tag as tg>
+		<#list list_tag as tgName>
+			<#if tgName.code == tg.idTag?string > 
+				${tgName.name!}
+				<button type="submit" value="removeTag" name="removeTag" class="btn btn-danger btn-small" onClick="updateIdEntry(${tg.idTag});">
+					<i class="fa fa-trash"></i>&nbsp;
+	   			</button>
+				  <#break>
+			</#if>
+		</#list>
+		</#list>
+	</div>
+    </div>
+    
     <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>
   </form>
 </@rowBoxHeader>
+<script>
+function updateIdEntry(idEntry){
+	$('#tag_remove').val(idEntry);
+}
+</script>  

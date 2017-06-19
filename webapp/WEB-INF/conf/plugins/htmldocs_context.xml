@@ -6,9 +6,17 @@
 
     <bean id="htmldocs.htmlDocDAO" class="fr.paris.lutece.plugins.htmldocs.business.HtmlDocDAO" />
     <bean id="htmldocs.docContentDAO" class="fr.paris.lutece.plugins.htmldocs.business.DocContentDAO" />    
+    <bean id="htmldocs.tagDAO" class="fr.paris.lutece.plugins.htmldocs.business.TagDAO" />
+    <bean id="htmldocs.htmldocIndexerActionDAO" class="fr.paris.lutece.plugins.htmldocs.business.IndexerActionDAO" />    
     
 
 
-    <bean id="htmldocs.HtmldocsPortletDAO" class="fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletDAO" />    
+    <bean id="htmldocs.HtmldocsPortletDAO" class="fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletDAO" /> 
+    
+    
+    <bean id="htmldocs.htmldocIndexer" class="fr.paris.lutece.plugins.htmldocs.service.docsearch.DefaultHtmldocIndexer" />    
+	<bean id="htmldocs.htmldocSearchEngine" class="fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmldocLuceneSearchEngine" />
+	    
+       
     
 </beans>

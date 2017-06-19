@@ -36,7 +36,14 @@
     <admin-css-stylesheets>
         <admin-css-stylesheet>css/admin/plugins/htmldocs/diff.css</admin-css-stylesheet>
     </admin-css-stylesheets>
-
+	  <!-- Search Indexer Service -->
+    <search-indexers>
+        <search-indexer>
+            <search-indexer-class>
+                fr.paris.lutece.plugins.htmldocs.service.search.HtmlDocsSearchIndexer
+            </search-indexer-class>
+        </search-indexer>
+    </search-indexers>
     <!-- XPages parameters -->
     <applications>
     </applications>

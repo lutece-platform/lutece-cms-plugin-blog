@@ -34,10 +34,16 @@
 package fr.paris.lutece.plugins.htmldocs.service;
 
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import fr.paris.lutece.plugins.htmldocs.business.DocContent;
 import fr.paris.lutece.plugins.htmldocs.business.DocContentHome;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
+import fr.paris.lutece.plugins.htmldocs.business.Tag;
+import fr.paris.lutece.plugins.htmldocs.business.TagHome;
 
 
 
@@ -66,10 +72,15 @@ public class HtmlDocService
         
     {
     	HtmlDocHome.addInitialVersion(htmlDoc);
+    	for(Tag tag:htmlDoc.getTag()){
+			
+			TagHome.create(tag.getIdTag( ),htmlDoc.getId( ) );
+		}
     	if(docContent != null ){
     	
     		docContent.setIdHtmlDocument(htmlDoc.getId( ));
-    		DocContentHome.create(docContent);        
+    		DocContentHome.create(docContent);   
+    		
     	 
     	}
     }
@@ -98,6 +109,11 @@ public class HtmlDocService
     		docContent.setIdHtmlDocument(htmlDoc.getId( ));
         	DocContentHome.create(docContent);
     	}
+    	TagHome.removeTagDoc(htmlDoc.getId( ));
+    	for(Tag tag:htmlDoc.getTag()){
+			
+			TagHome.create(tag.getIdTag( ),htmlDoc.getId( ) );
+		}
         
     }
     
@@ -107,10 +123,58 @@ public class HtmlDocService
 	   HtmlDoc htmlDoc=HtmlDocHome.findByPrimaryKey( nIdDocument );
        DocContent docContent= DocContentHome.getDocsContent(nIdDocument);
        htmlDoc.setDocContent(docContent);
+       Map<Integer,Integer> listTag= TagHome.loadByDoc(nIdDocument);
+       for(Entry<Integer,Integer> entry: listTag.entrySet() ){
+    	   Integer cle = entry.getKey();
+    	   htmlDoc.addTag(new Tag(cle));
+       }
        
        return htmlDoc;
 	   
     }
+   public HtmlDoc findByPrimaryKeyWithoutBinaries( int nIdDocument)
+   
+   {
+	   HtmlDoc htmlDoc=HtmlDocHome.findByPrimaryKey( nIdDocument );
+      Map<Integer,Integer> listTag= TagHome.loadByDoc(nIdDocument);
+      for(Entry<Integer,Integer> entry: listTag.entrySet() ){
+   	   Integer cle = entry.getKey();
+   	   htmlDoc.addTag(new Tag(cle));
+      }
+      
+      return htmlDoc;
+	   
+   }
+   
+   public List<HtmlDoc> getListDoc()
+   
+   {
+	  List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
+	   
+     
+      for(HtmlDoc doc:listHtmlDocs){
+   	   
+    	  doc.setTag(TagHome.getTagListByDoc(doc.getId( )));
+      }
+      
+      return listHtmlDocs;
+	   
+   }
+   
+	 public List<HtmlDoc> searchListDocByTag( Tag tag )
+	   
+	   {
+		  List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
+		   
+	     
+	      for(HtmlDoc doc:listHtmlDocs){
+	   	   
+	    	  doc.setTag(TagHome.getTagListByDoc(doc.getId( )));
+	      }
+	      
+	      return listHtmlDocs;
+		   
+	   }
 
 
    

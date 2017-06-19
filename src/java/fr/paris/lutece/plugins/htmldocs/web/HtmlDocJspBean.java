@@ -37,28 +37,37 @@ import fr.paris.lutece.plugins.htmldocs.business.DocContent;
 import fr.paris.lutece.plugins.htmldocs.business.DocContentHome;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
+import fr.paris.lutece.plugins.htmldocs.business.HtmldocSearchFilter;
+import fr.paris.lutece.plugins.htmldocs.business.Tag;
+import fr.paris.lutece.plugins.htmldocs.business.TagHome;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletHome;
 import fr.paris.lutece.plugins.htmldocs.service.HtmlDocService;
+import fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmlDocSearchService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
+import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.html.Paginator;
+import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
-import fr.paris.lutece.portal.business.resourceenhancer.ResourceEnhancer;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Iterator;
 import java.util.Map;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,21 +77,13 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.outerj.daisy.diff.DaisyDiff;
 import org.outerj.daisy.diff.HtmlCleaner;
 import org.outerj.daisy.diff.html.HTMLDiffer;
 import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
 import org.outerj.daisy.diff.html.TextNodeComparator;
 import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -112,6 +113,10 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PARAMETER_BUTTON_SEARCH = "button_search";
     private static final String PARAMETER_SEARCH_TEXT = "search_text";
     private static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
+    private static final String PARAMETER_TAG = "tag_doc";
+    private static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
+
+
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS = "htmldocs.manage_htmldocs.pageTitle";
@@ -120,6 +125,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC = "htmldocs.history_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC = "htmldocs.preview_htmldoc.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_DIFF_HTMLDOC = "htmldocs.diff_htmldoc.pageTitle";
+    // Properties
+    private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "htmldocs.listItems.itemsPerPage";
+
     private static final String PROPERTY_RESOURCE_TYPE = "htmldoc";
 
 
@@ -134,6 +142,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String MARK_SEARCH_TEXT = "search_text";
     private static final String MARK_DIFF = "htmldoc_diff";
     private static final String MARK_HTMLDOC2 = "htmldoc2";
+    private static final String MARK_LIST_TAG = "list_tag";
+    private static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
+
 
     private static final String JSP_MANAGE_HTMLDOCS = "jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp";
 
@@ -157,7 +168,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String ACTION_MODIFY_HTMLDOC = "modifyHtmlDoc";
     private static final String ACTION_REMOVE_HTMLDOC = "removeHtmlDoc";
     private static final String ACTION_CONFIRM_REMOVE_HTMLDOC = "confirmRemoveHtmlDoc";
-
+    private static final String ACTION_ADD_TAG = "addTag";
+    private static final String ACTION_REMOVE_TAG = "removeTag";
     // Infos
     private static final String INFO_HTMLDOC_CREATED = "htmldocs.info.htmldoc.created";
     private static final String INFO_HTMLDOC_UPDATED = "htmldocs.info.htmldoc.updated";
@@ -168,11 +180,23 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String MARK_HTMLDOC_FILTER_NAME = "Nom";
     private static final String MARK_HTMLDOC_FILTER_DATE = "Date";
     private static final String MARK_HTMLDOC_FILTER_USER = "Utilisateur";
+    private static final String MARK_PAGINATOR = "paginator";
+    private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
+    private static final String MARK_ASC_SORT = "asc_sort";
+
+
 
     // Session variable to store working values
     private HtmlDoc _htmldoc;
     private boolean _bIsChecked = false;
     private String _strSearchText;
+    private String _strCurrentPageIndex;
+    private int _nItemsPerPage;
+    private int _nDefaultItemsPerPage;
+    private boolean _bIsSorted = false;
+    private String _strSortedAttributeName;
+    private Boolean _bIsAscSort;
+
 
     /**
      * Build the Manage View
@@ -185,10 +209,16 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String getManageHtmlDocs( HttpServletRequest request )
     {
         _htmldoc = null;
-        List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
-
+        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex ); 
+        _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
+        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        
+        // SORT
+        String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
+        String strAscSort = null;
+        
         AdminUser user = AdminUserService.getAdminUser( request );
-
+        List<Integer> listHtmlDocsId= new ArrayList<Integer>();
         String strButtonSearch = request.getParameter ( PARAMETER_BUTTON_SEARCH );
         if ( strButtonSearch != null ) {
             // CURRENT USER
@@ -196,9 +226,39 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
         }
 
+      
+
+        if ( StringUtils.isNotBlank( _strSearchText ) )
+        {
+        	HtmldocSearchFilter filter= new HtmldocSearchFilter();
+        	filter.setKeywords(_strSearchText);
+        	HtmlDocSearchService.getInstance().getSearchResults(filter, listHtmlDocsId);
+        	
+        }else{
+        	
+        	listHtmlDocsId= HtmlDocHome.getIdHtmlDocsList();
+        }
+        
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( (List<Integer>) listHtmlDocsId,
+                _nItemsPerPage, getHomeUrl( request ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex,
+                getLocale(  ) );
+
+        List<HtmlDoc> listDocuments = new ArrayList<HtmlDoc>(  );
+
+        for ( Integer documentId : paginator.getPageItems(  ) )
+        {
+        	HtmlDoc document = HtmlDocService.getInstance().findByPrimaryKeyWithoutBinaries( documentId );
+
+            if ( document != null )
+            {
+                listDocuments.add( document );
+            }
+        }
+        
+        
         if ( _bIsChecked == true )
         {
-            Iterator<HtmlDoc> iterator = listHtmlDocs.iterator( );
+            Iterator<HtmlDoc> iterator = listDocuments.iterator( );
             while ( iterator.hasNext( ) )
             {
                 HtmlDoc doc = iterator.next( );
@@ -208,46 +268,39 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
                 }
             }
         }
-
-        if ( StringUtils.isNotBlank( _strSearchText ) )
+        
+        if ( strSortedAttributeName != null || _bIsSorted == true )
         {
-            Iterator<HtmlDoc> iterator = listHtmlDocs.iterator( );
-            while ( iterator.hasNext( ) )
+            if ( strSortedAttributeName == null )
             {
-                HtmlDoc doc = iterator.next( );
-                BodyContentHandler handler = new BodyContentHandler( );
-                HtmlParser htmlparser = new HtmlParser( );
-                Metadata metadata = new Metadata( );
-                ParseContext parseContext = new ParseContext( );
-                String strContent;
-                try {
-                    htmlparser.parse(new ByteArrayInputStream(doc.getHtmlContent().getBytes("UTF-8")), handler, metadata, parseContext);
-                    strContent = handler.toString();
-                } catch (IOException | SAXException | TikaException e) {
-                    AppLogService.error( "Error parsing htmldoc content, not fatal but defaulting to raw html for search (docId: "
-                            + doc.getId() + " , title: " + doc.getContentLabel() + ": exception: "+e , e);
-                    strContent = doc.getHtmlContent();
-                }
-
-                if ( !(
-                     strContent.contains( _strSearchText )
-                  || doc.getContentLabel( ).contains( _strSearchText )
-                  || doc.getEditComment( ).contains( _strSearchText )
-                  || doc.getUser( ).contains( _strSearchText )
-                  || doc.getUserCreator( ).contains( _strSearchText )
-                  || doc.getDescription( ).contains( _strSearchText )
-                ) )
-                {
-                    iterator.remove( );
-                }
+                strSortedAttributeName = _strSortedAttributeName;
             }
+            strAscSort = request.getParameter( MARK_ASC_SORT );
+
+            boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
+            if ( strAscSort == null )
+            {
+                bIsAscSort = _bIsAscSort;
+            }
+
+            Collections.sort( listDocuments, new AttributeComparator( strSortedAttributeName, bIsAscSort ) );
+
+            _bIsSorted = true;
+
+            _strSortedAttributeName = strSortedAttributeName;
+            _bIsAscSort = bIsAscSort;
         }
 
-        Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocs, JSP_MANAGE_HTMLDOCS );
+
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        model.put(MARK_HTMLDOC_LIST, listDocuments);
+        model.put(MARK_PAGINATOR, paginator);
         model.put( MARK_HTMLDOC_FILTER_LIST, getHtmldocFilterList( ) );
+        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_IS_CHECKED, _bIsChecked );
         model.put( MARK_SEARCH_TEXT, _strSearchText );
+        model.put( MARK_NB_ITEMS_PER_PAGE, "" + _nItemsPerPage );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS, TEMPLATE_MANAGE_HTMLDOCS, model );
     }
@@ -266,6 +319,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocsVersions, urlHistory.getUrl( ) );
 
         model.put( MARK_ID_HTMLDOC, nId );
+        
 
         return getPage( PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC, TEMPLATE_HISTORY_HTMLDOC, model );
     }
@@ -284,9 +338,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
+        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        // additionnal create info
-        ResourceEnhancer.getCreateResourceModelAddOn( model );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_HTMLDOC, TEMPLATE_CREATE_HTMLDOC, model );
     }
@@ -314,6 +367,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_CREATE_HTMLDOC )
     public String doCreateHtmlDoc( HttpServletRequest request )
     {
+    	
         _htmldoc.setCreationDate( getSqlDate( ) );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
@@ -321,6 +375,20 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         _htmldoc.setVersion( 1 );
         _htmldoc.setAttachedPortletId( 0 );
         populate( _htmldoc, request );
+        
+        if(request.getParameter(ACTION_ADD_TAG)!= null && !request.getParameter(ACTION_ADD_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG).isEmpty( )&& request.getParameter(ACTION_ADD_TAG).equals(ACTION_ADD_TAG)){
+    		
+        	_htmldoc.addTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG))));
+    		return redirectView( request, VIEW_CREATE_HTMLDOC );
+    		
+    	}
+        if(request.getParameter(ACTION_REMOVE_TAG)!= null && !request.getParameter(ACTION_REMOVE_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG_TO_REMOVE).isEmpty( )&& request.getParameter(ACTION_REMOVE_TAG).equals(ACTION_REMOVE_TAG)){
+    		
+        	_htmldoc.deleteTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG_TO_REMOVE))));
+    		return redirectView( request, VIEW_CREATE_HTMLDOC );
+    		
+    	}
+
 
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -413,6 +481,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
+        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
+
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
@@ -436,7 +506,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         String strUpdate_attachment= request.getParameter( PARAMETER_UPDATE_ATTACHMENT );
         boolean bIsUpdatable = ( ( strUpdate_attachment == null ) || strUpdate_attachment.equals( "" ) ) ? false : true;
 
-
+        
         HtmlDoc latestVersionHtmlDoc = HtmlDocHome.findByPrimaryKey( nId );
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
@@ -449,7 +519,19 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-
+        
+        if(request.getParameter(ACTION_ADD_TAG)!= null && !request.getParameter(ACTION_ADD_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG).isEmpty( )&& request.getParameter(ACTION_ADD_TAG).equals(ACTION_ADD_TAG)){
+    		
+        	_htmldoc.addTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG))));
+    		return redirect(request, VIEW_MODIFY_HTMLDOC, PARAMETER_ID_HTMLDOC, _htmldoc.getId( ));
+    		
+    	}
+        if(request.getParameter(ACTION_REMOVE_TAG)!= null && !request.getParameter(ACTION_REMOVE_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG_TO_REMOVE).isEmpty( )&& request.getParameter(ACTION_REMOVE_TAG).equals(ACTION_REMOVE_TAG)){
+    		
+        	_htmldoc.deleteTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG_TO_REMOVE))));
+    		return redirect(request, VIEW_MODIFY_HTMLDOC, PARAMETER_ID_HTMLDOC, _htmldoc.getId( ));
+    		
+    	}
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
@@ -507,6 +589,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         Map<String, Object> model = getModel( );
+        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
+
         model.put( MARK_HTMLDOC, htmldoc );
 
         return getPage( PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC, TEMPLATE_PREVIEW_HTMLDOC, model );
@@ -595,6 +679,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         return getPage( PROPERTY_PAGE_TITLE_DIFF_HTMLDOC, TEMPLATE_DIFF_HTMLDOC, model );
     }
 
+    
     private ReferenceList getHtmldocFilterList( )
     {
         ReferenceList list = new ReferenceList( );
@@ -618,7 +703,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             String strContentType = fileParameterBinaryValue.getContentType(  );
             byte[] bytes = fileParameterBinaryValue.get(  );
             String strFileName = fileParameterBinaryValue.getName(  );
-            String strExtension = FilenameUtils.getExtension( strFileName );
            
             if(!ArrayUtils.isEmpty( bytes )){
             	

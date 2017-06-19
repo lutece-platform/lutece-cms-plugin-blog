@@ -42,6 +42,8 @@ import java.io.Serializable;
 import fr.paris.lutece.util.ReferenceItem;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the business class for the object HtmlDoc
@@ -84,6 +86,8 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     private String _strDescription;
     
     private DocContent _docContent;
+    
+    private List<Tag> _tag = new ArrayList<Tag>();
 
 
     /**
@@ -335,5 +339,66 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     public void setDocContent( DocContent docContent )
     {
     	_docContent = docContent;
+    }
+    
+    /**
+     * Returns the tag list
+     *
+     * @return The tag list
+     */
+    public List<Tag> getTag( )
+    {
+        return _tag;
+    }
+
+    /**
+     * Sets the tag list
+     *
+     * @param tag list
+     *            The tag list
+     */
+    public void setTag( List<Tag> tag )
+    {
+    	_tag = tag;
+    }
+    
+    /**
+     * Sets the tag list
+     *
+     * @param tag list
+     *            The tag list
+     */
+    public void addTag( Tag tag )
+    {
+    	for(Tag tg:_tag){
+    		
+    		if(tg.getIdTag( ) == tag.getIdTag( )){
+    			
+    			return;
+    		}
+    	}
+    	_tag.add(tag);
+    }
+    
+    /**
+     * delet the tag 
+     *
+     * @param tag 
+     *            The tag 
+     */
+    public void deleteTag( Tag tag )
+    {
+    	Tag tagToRemove = null;
+    	for(Tag tg:_tag){
+    		
+    		if(tg.getIdTag( ) == tag.getIdTag( )){
+    			
+    			
+    			tagToRemove= tg;
+    			break;
+    		}
+    	}
+    	
+    	_tag.remove(tagToRemove);
     }
 }

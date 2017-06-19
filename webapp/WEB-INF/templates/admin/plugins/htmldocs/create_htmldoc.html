@@ -2,7 +2,8 @@
   <form class="form-horizontal" method="post" name="create_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
     <@messages errors=errors />
     <input type="hidden" id="id" name="id"/>
-
+    <input type="hidden" id="action" name="action" value="createHtmlDoc"/>
+    <input id="tag_remove" type="hidden" name="tag_remove" value="" ></input>
     <#include "/admin/util/editor/editor.html" />
     <@fieldInputText i18nLabelKey="htmldocs.create_htmldoc.labelContentLabel" inputName="content_label" mandatory=true value="${htmldoc.contentLabel!''}" i18nHelpBlockKey="htmldocs.create_htmldoc.labelContentLabel.help" />
 
@@ -10,16 +11,16 @@
 		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">#i18n{htmldocs.create_htmldoc.labelDescription}&nbsp;&nbsp;:</label>
 		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 
-			   <textarea id="description" class="richtext" name="description" rows="12">       </textarea>
+			   <textarea id="description" class="richtext" name="description" rows="12">   ${htmldoc.description!}    </textarea>
 
 			<p class="help-block">#i18n{htmldocs.create_htmldoc.labelDescription.help} (help text)</p>
 		</div>
     </div>
      <div class="form-group">
-		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">#i18n{htmldocs.create_htmldoc.labelEditContent}&nbsp;&nbsp;:</label>
+		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="html_content">#i18n{htmldocs.create_htmldoc.labelEditContent}&nbsp;&nbsp;:</label>
 		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 
-    	<textarea id="html_content" class="richtext" name="html_content" rows="12">       </textarea>
+    	<textarea id="html_content" class="richtext" name="html_content" rows="12">     ${htmldoc.htmlContent!}  </textarea>
 
 			<p class="help-block"></p>
 		</div>
@@ -35,6 +36,34 @@
 		
 	</div>
     </div>
+    <div class="form-group">
+	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">Tag&nbsp;&nbsp;:</label>
+	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+  		<@comboWithParams name="tag_doc" default_value="" additionalParameters="class=\"input-xxlarge\"" items=list_tag />
+		<button type="submit" value="addTag" name="addTag" class="btn btn-primary btn-sm btn-flat">
+			<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
+		</button>
+
+    		<p class="help-block"></p>
+		 <#list htmldoc.tag as tg>
+		<#list list_tag as tgName>
+			<#if tgName.code == tg.idTag?string > 
+				${tgName.name!}
+				<button type="submit" value="removeTag" name="removeTag" class="btn btn-danger btn-small" onClick="updateIdEntry(${tg.idTag});">
+					<i class="fa fa-trash"></i>&nbsp;
+	   			</button>
+				  <#break>
+			</#if>
+		</#list>
+		</#list>
+	</div>
+    </div>
+
     <@actionButtons button1Name="action_createHtmlDoc" button2Name="view_manageHtmlDocs"/>
   </form>
 </@rowBoxHeader>
+<script>
+function updateIdEntry(idEntry){
+	$('#tag_remove').val(idEntry);
+}
+</script>  

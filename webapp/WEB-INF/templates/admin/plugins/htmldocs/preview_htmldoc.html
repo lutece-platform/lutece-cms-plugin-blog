@@ -48,13 +48,27 @@
               <div class="well">${htmldoc.description}</div>
             </div>
           </div>
-           <div class="form-group">
+          <div class="form-group">
 		<label class="col-sm-2 control-label" for="attachment">Piece jointe</label>
 		<div class="col-sm-10">
 		<a href="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}" title="preview"> <#if htmldoc.docContent ??>${htmldoc.docContent.textValue!}</#if></a>
 			
-	</div>
+		</div>
+	
    	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="attachment">TAG</label>
+		<div class="col-sm-10">
+		 <#list htmldoc.tag as tg>
+		<#list list_tag as tgName>
+			<#if tgName.code == tg.idTag?string > 
+				<div>${tgName.name!}</div>
+				  <#break>
+			</#if>
+		</#list>
+		</#list>
+			
+	</div>
         </div>
       </div>
       <div class="form-group">
