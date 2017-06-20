@@ -58,9 +58,15 @@ public class HtmlDocsSearchItem extends SearchItem
     public static final String FIELD_ID_HTML_DOC = "id_doc";
 
     /**
-     * Announce tags
+     * Doc tags
      */
     public static final String FIELD_TAGS = "tags";
+    
+    /**
+     * Doc User
+     *
+     */
+    public static final String FIELD_USER = "user";
 
   
 

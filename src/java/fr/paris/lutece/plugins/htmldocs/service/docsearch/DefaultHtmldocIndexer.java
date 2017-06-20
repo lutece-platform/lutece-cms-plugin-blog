@@ -182,6 +182,8 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
 
         doc.add( new StringField( HtmlDocsSearchItem.FIELD_ID_HTML_DOC, Integer.toString( htmldoc.getId(  ) ),
                 Field.Store.YES) );
+     // Add the user firstName as a field, so that index can be incrementally maintained.
+        doc.add( new StringField( HtmlDocsSearchItem.FIELD_USER, htmldoc.getUser() , Field.Store.YES));
 
         doc.add( new TextField( HtmlDocsSearchItem.FIELD_TAGS, getTagToIndex(htmldoc), Field.Store.YES ) );
 
@@ -258,7 +260,7 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
         
         for(Tag tg:htmldoc.getTag()){
 	        sbContentToIndex.append( BLANK_SPACE );
-	        sbContentToIndex.append( tg.getName( ) );
+	        sbContentToIndex.append( tg.getIdTag( ) );
         }
        
         return sbContentToIndex.toString(  );

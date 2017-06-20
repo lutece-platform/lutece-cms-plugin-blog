@@ -54,7 +54,7 @@ public class HtmldocLuceneSearchEngine implements IHtmldocSearchEngine
             Collection<BooleanClause.Occur> flags = new ArrayList<BooleanClause.Occur>(  );
 
                 
-            if ( StringUtils.isNotBlank( filter.getKeywords(  ) ) )
+            if ( filter.getKeywords(  )!= null && StringUtils.isNotBlank( filter.getKeywords(  ) ) )
             {
             
 	            Term term = new Term(HtmlDocsSearchItem.FIELD_CONTENTS,filter.getKeywords(  ));
@@ -62,18 +62,29 @@ public class HtmldocLuceneSearchEngine implements IHtmldocSearchEngine
 	            queries.add( termQuery.toString(  ) );
 	            sectors.add( HtmlDocsSearchItem.FIELD_CONTENTS );
 	            flags.add( BooleanClause.Occur.MUST );
-	            
-	        /*    Term termTitle = new Term(HtmlDocsSearchItem.FIELD_TITLE,filter.getKeywords(  ));
-	            Query termQueryTitle = new TermQuery(termTitle);
-	            queries.add( termQueryTitle.toString(  ) );
-	            sectors.add( HtmlDocsSearchItem.FIELD_TITLE );
+	   
+            }
+            
+            
+            if ( filter.getTag() != null )
+            {
+            
+	            Term term = new Term(HtmlDocsSearchItem.FIELD_TAGS,filter.getTag( ));
+	            Query termQuery = new TermQuery(term);
+	            queries.add( termQuery.toString(  ) );
+	            sectors.add( HtmlDocsSearchItem.FIELD_TAGS );
 	            flags.add( BooleanClause.Occur.MUST );
 	            
-	            Term termSummary = new Term(HtmlDocsSearchItem.FIELD_SUMMARY,filter.getKeywords(  ));
-	            Query termQuerySummary = new TermQuery(termSummary);
-	            queries.add( termQuerySummary.toString(  ) );
-	            sectors.add( HtmlDocsSearchItem.FIELD_SUMMARY );
-	            flags.add( BooleanClause.Occur.MUST );*/
+            }
+            if ( filter.getUser( ) != null )
+            {
+            
+	            Term term = new Term(HtmlDocsSearchItem.FIELD_USER,filter.getUser( ));
+	            Query termQuery = new TermQuery(term);
+	            queries.add( termQuery.toString(  ) );
+	            sectors.add( HtmlDocsSearchItem.FIELD_USER );
+	            flags.add( BooleanClause.Occur.MUST );
+	            
             }
 
             Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String[queries.size(  )] ), sectors.toArray( new String[sectors.size(  )] ),

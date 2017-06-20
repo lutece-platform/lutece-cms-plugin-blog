@@ -53,6 +53,7 @@ import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -129,6 +130,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "htmldocs.listItems.itemsPerPage";
 
     private static final String PROPERTY_RESOURCE_TYPE = "htmldoc";
+    private static final String PROPERTY_REFERENE_ITEME_ALL = "all";
 
 
     // Markers
@@ -144,6 +146,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String MARK_HTMLDOC2 = "htmldoc2";
     private static final String MARK_LIST_TAG = "list_tag";
     private static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
+    private static final String MARK_TAG = "tags";
 
 
     private static final String JSP_MANAGE_HTMLDOCS = "jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp";
@@ -196,6 +199,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private boolean _bIsSorted = false;
     private String _strSortedAttributeName;
     private Boolean _bIsAscSort;
+    private String _strTag=PROPERTY_REFERENE_ITEME_ALL;
 
 
     /**
@@ -224,17 +228,22 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             // CURRENT USER
             _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
+            _strTag = request.getParameter( PARAMETER_TAG );
         }
 
       
 
-        if ( StringUtils.isNotBlank( _strSearchText ) )
+        if ( StringUtils.isNotBlank( _strSearchText ) || !_strTag.equals(PROPERTY_REFERENE_ITEME_ALL) || _bIsChecked )
         {
         	HtmldocSearchFilter filter= new HtmldocSearchFilter();
-        	filter.setKeywords(_strSearchText);
+        	if(StringUtils.isNotBlank( _strSearchText )) filter.setKeywords(_strSearchText);
+        	if (!_strTag.equals(PROPERTY_REFERENE_ITEME_ALL)) filter.setTag(_strTag);
+        	if(_bIsChecked) filter.setUser(user.getFirstName( ));
         	HtmlDocSearchService.getInstance().getSearchResults(filter, listHtmlDocsId);
-        	
-        }else{
+       	
+        }
+        
+        else{
         	
         	listHtmlDocsId= HtmlDocHome.getIdHtmlDocsList();
         }
@@ -252,20 +261,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             if ( document != null )
             {
                 listDocuments.add( document );
-            }
-        }
-        
-        
-        if ( _bIsChecked == true )
-        {
-            Iterator<HtmlDoc> iterator = listDocuments.iterator( );
-            while ( iterator.hasNext( ) )
-            {
-                HtmlDoc doc = iterator.next( );
-                if ( doc.getUser( ).compareTo( user.getFirstName( ) ) != 0 )
-                {
-                    iterator.remove( );
-                }
             }
         }
         
@@ -301,6 +296,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         model.put( MARK_IS_CHECKED, _bIsChecked );
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         model.put( MARK_NB_ITEMS_PER_PAGE, "" + _nItemsPerPage );
+        model.put( MARK_TAG, _strTag );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS, TEMPLATE_MANAGE_HTMLDOCS, model );
     }

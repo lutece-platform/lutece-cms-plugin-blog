@@ -63,7 +63,11 @@ public final class DocContentHome
     }
 
    
-   
+   /**
+    * 
+    * @param docContent
+    * @return
+    */
    public static DocContent update( DocContent docContent  )
     {
         _dao.store( docContent, _plugin );
@@ -71,14 +75,21 @@ public final class DocContentHome
         return docContent;
     }
 
-    
+   /**
+    * 
+    * @param nKey
+    */
     public static void remove( int nKey )
     {
         _dao.delete( nKey, _plugin  );
     }
 
     
-
+    /**
+     * 
+     * @param nIdDocument
+     * @return
+     */
     public static DocContent getDocsContent( int nIdDocument)
     {
         return _dao.loadDocContent(nIdDocument, _plugin );

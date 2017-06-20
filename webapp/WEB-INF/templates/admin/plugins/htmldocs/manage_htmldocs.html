@@ -24,6 +24,17 @@
           <input type="checkbox" name="current_user" value="true" <#if is_checked> checked="checked" </#if> >#i18n{htmldocs.manage_htmldocs.sortByUserButton}
         </label>
       </div>
+      <div class="form-group">
+        <label for="search_text">#i18n{htmldocs.manage_htmldocs.labelTag}</label>
+		<select id="tag_doc" name= "tag_doc">
+			<option value="all">all</option>		
+			<#list list_tag as tgName>
+					<option <#if tags?? && tgName.code=tags> selected</#if> value="${tgName.code!}">${tgName.name!}</option>
+			</#list>
+		</select>
+	</label>
+      </div>
+
       <button type="submit" class="btn btn-default" name="button_search" value="1">#i18n{htmldocs.manage_htmldocs.search}</button>
     </form>
     <#assign idx = 0/>

@@ -55,6 +55,17 @@
             <servlet-class>fr.paris.lutece.plugins.htmldocs.web.HtmlDocFileServlet</servlet-class>
         </servlet>
     </servlets>
+     <!-- Daemons -->
+	<daemons>
+		<daemon>
+			<daemon-id>htmlDocIndexerDaemon</daemon-id>
+			<daemon-name>htmldocs.daemon.indexerDameon.name</daemon-name>
+			<daemon-description>htmldocs.daemon.indexerDameon.description</daemon-description>
+			<daemon-class>fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmldocSearchIndexerDaemon</daemon-class>
+		</daemon>
+              
+	</daemons>
+    
     
     <!-- Portlet parameters -->
     <portlets>
