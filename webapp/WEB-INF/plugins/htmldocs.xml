@@ -29,7 +29,16 @@
             <feature-url>jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
             <feature-icon-url></feature-icon-url>
-      </admin-feature>
+		</admin-feature>
+		<admin-feature>
+            <feature-id>HTMLDOCS_TAGS_MANAGEMENT</feature-id>
+            <feature-title>htmldocs.adminFeature.ManageHtmldocsTags.name</feature-title>
+            <feature-description>htmldocs.adminFeature.ManageHtmldocsTags.description</feature-description>
+            <feature-level>2</feature-level>
+            <feature-url>jsp/admin/plugins/htmldocs/ManageTags.jsp</feature-url>
+            <feature-group>CONTENT</feature-group>
+            <feature-icon-url></feature-icon-url>
+		</admin-feature>
     </admin-features>    
 
     <!-- Specific plugin CSS stylesheet -->

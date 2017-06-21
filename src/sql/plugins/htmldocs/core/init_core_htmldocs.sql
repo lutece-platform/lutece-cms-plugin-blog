@@ -7,9 +7,10 @@ INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home
 --
 -- Data for table core_admin_right
 --
-DELETE FROM core_admin_right WHERE id_right = 'HTMLDOCS_MANAGEMENT';
+DELETE FROM core_admin_right WHERE id_right IN ( 'HTMLDOCS_MANAGEMENT', 'HTMLDOCS_TAGS_MANAGEMENT');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
-('HTMLDOCS_MANAGEMENT','htmldocs.adminFeature.ManageHtmldocs.name',1,'jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp','htmldocs.adminFeature.ManageHtmldocs.description',0,'htmldocs','CONTENT',NULL,NULL,4);
+INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
+('HTMLDOCS_TAGS_MANAGEMENT','htmldocs.adminFeature.ManageHtmldocsTags.name',1,'jsp/admin/plugins/htmldocs/ManageTags.jsp','htmldocs.adminFeature.ManageHtmldocsTags.description',0,'htmldocs','CONTENT',NULL,NULL,4);
 
 
 --
