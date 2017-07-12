@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.htmldocs.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -216,18 +217,18 @@ public class HtmlDocService
      * 
      * @return the list which contains the data of all the htmlDoc objects
      */
-   public List<HtmlDoc> getListDoc()
+   public List<HtmlDoc> getListDocWhithContent( )
    
    {
+	   List<HtmlDoc> listHtmlDocsWhithContent= new ArrayList<HtmlDoc>();
 	  List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
 	   
-     
       for(HtmlDoc doc:listHtmlDocs){
    	   
-    	  doc.setTag(TagHome.getTagListByDoc(doc.getId( )));
+    	  listHtmlDocsWhithContent.add(loadDocument(doc.getId( )));
       }
       
-      return listHtmlDocs;
+      return listHtmlDocsWhithContent;
 	   
    }
    /**

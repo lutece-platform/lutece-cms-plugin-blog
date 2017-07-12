@@ -34,9 +34,6 @@
 
 package fr.paris.lutece.plugins.htmldocs.business;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -121,6 +118,7 @@ public final class DocContentDAO implements IDocContentDAO
            
     	  return docContent ;
        }
+       daoUtil.free(  );
        
        return null;
    }
