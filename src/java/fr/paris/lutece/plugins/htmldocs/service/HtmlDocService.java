@@ -46,6 +46,7 @@ import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
 import fr.paris.lutece.plugins.htmldocs.business.IndexerAction;
 import fr.paris.lutece.plugins.htmldocs.business.Tag;
 import fr.paris.lutece.plugins.htmldocs.business.TagHome;
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublicationHome;
 import fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmlDocSearchService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.util.sql.TransactionManager;
@@ -187,7 +188,8 @@ public class HtmlDocService
        Map<Integer,Integer> listTag= TagHome.loadByDoc(nIdDocument);
        for(Entry<Integer,Integer> entry: listTag.entrySet() ){
     	   Integer cle = entry.getKey();
-    	   htmlDoc.addTag(new Tag(cle));
+      	    Tag tag=TagHome.findByPrimaryKey(cle);
+      	    htmlDoc.addTag(tag);
        }
        
        return htmlDoc;
@@ -203,11 +205,14 @@ public class HtmlDocService
    
    {
 	   HtmlDoc htmlDoc=HtmlDocHome.findByPrimaryKey( nIdDocument );
-      Map<Integer,Integer> listTag= TagHome.loadByDoc(nIdDocument);
-      for(Entry<Integer,Integer> entry: listTag.entrySet() ){
-   	   Integer cle = entry.getKey();
-   	   htmlDoc.addTag(new Tag(cle));
-      }
+       Map<Integer,Integer> listTag= TagHome.loadByDoc(nIdDocument);
+       for(Entry<Integer,Integer> entry: listTag.entrySet( ) ){
+   	    Integer cle = entry.getKey();
+   	    Tag tag=TagHome.findByPrimaryKey(cle);
+   	    htmlDoc.addTag(tag);
+       }
+      htmlDoc.setHtmldocPubilcation(HtmlDocPublicationHome.getDocPublicationByIdDoc( nIdDocument ));
+
       
       return htmlDoc;
 	   
@@ -229,6 +234,24 @@ public class HtmlDocService
       }
       
       return listHtmlDocsWhithContent;
+	   
+   }
+   /**
+    * Returns a list  of a htmlDoc without binairie file whose identifier is specified in parameter
+    * @return the list which contains the data of all the htmlDoc objects
+    */
+   public List<HtmlDoc> getListDocWithoutBinaries( )
+   
+   {
+	  List<HtmlDoc> listHtmlDocsWithoutBinaries= new ArrayList<HtmlDoc>();
+	  List<HtmlDoc> listHtmlDocs = HtmlDocHome.getHtmlDocsList( );
+	   
+      for(HtmlDoc doc:listHtmlDocs){
+   	   
+    	  listHtmlDocsWithoutBinaries.add(findByPrimaryKeyWithoutBinaries(doc.getId( )));
+      }
+      
+      return listHtmlDocsWithoutBinaries;
 	   
    }
    /**

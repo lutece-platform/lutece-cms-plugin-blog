@@ -40,6 +40,8 @@ import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
 import fr.paris.lutece.plugins.htmldocs.business.HtmldocSearchFilter;
 import fr.paris.lutece.plugins.htmldocs.business.Tag;
 import fr.paris.lutece.plugins.htmldocs.business.TagHome;
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublicationHome;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletHome;
 import fr.paris.lutece.plugins.htmldocs.service.HtmlDocService;
 import fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmlDocSearchService;
@@ -153,6 +155,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_HTMLDOC = "htmldocs.message.confirmRemoveHtmlDoc";
+    private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "htmldocs.message.errorDocumentIsPublished";
+
 
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "htmldocs.model.entity.htmldoc.attribute.";
@@ -177,6 +181,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String INFO_HTMLDOC_CREATED = "htmldocs.info.htmldoc.created";
     private static final String INFO_HTMLDOC_UPDATED = "htmldocs.info.htmldoc.updated";
     private static final String INFO_HTMLDOC_REMOVED = "htmldocs.info.htmldoc.removed";
+
 
     // Filter Marks
     private static final String MARK_HTMLDOC_FILTER_LIST = "htmldoc_filter_list";
@@ -260,6 +265,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
             if ( document != null )
             {
+            	document.setHtmldocPubilcation(HtmlDocPublicationHome.getDocPublicationByIdDoc( documentId ));
                 listDocuments.add( document );
             }
         }
@@ -432,11 +438,14 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String doRemoveHtmlDoc( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-        HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( nId );
-        int nAttachedPortletId = htmldoc.getAttachedPortletId( );
-        if ( nAttachedPortletId != 0 )
+    	List<HtmlDocPublication>   docPublication= HtmlDocPublicationHome.getDocPublicationByIdDoc( nId );
+
+       
+        if ( docPublication.size() > 0 )
         {
-            HtmldocsPortletHome.getInstance( ).remove( HtmldocsPortletHome.findByPrimaryKey( nAttachedPortletId ) );
+        	String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED,  AdminMessage.TYPE_STOP);
+
+            return redirect( request, strMessageUrl );
         }
         HtmlDocService.getInstance().deleteDocument(nId);
 
@@ -583,6 +592,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         {
             htmldoc = HtmlDocService.getInstance().loadDocument(nId);
         }
+        htmldoc.setHtmldocPubilcation(HtmlDocPublicationHome.getDocPublicationByIdDoc( nId ));
+
 
         Map<String, Object> model = getModel( );
         model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));

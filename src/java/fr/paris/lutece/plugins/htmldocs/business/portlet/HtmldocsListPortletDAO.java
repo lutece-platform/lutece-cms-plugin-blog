@@ -63,7 +63,7 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
 
     //Category
-    private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc ) VALUES ( ? , ? )";
+    private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status ) VALUES ( ? , ?, ? )";
     private static final String SQL_QUERY_DELETE_HTMLDOCS_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
     //private static final String SQL_QUERY_DELETE_AUTO_PUBLICATION_PORTLET = " DELETE FROM document_auto_publication WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_html_doc FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
@@ -108,6 +108,7 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
             {
                 daoUtil.setInt( 1, p.getId(  ) );
                 daoUtil.setInt( 2, nIdDoc );
+                daoUtil.setInt( 3, 1 );
 
                 daoUtil.executeUpdate(  );
             }

@@ -20,6 +20,9 @@
     <bean id="htmldocs.htmldocIndexer" class="fr.paris.lutece.plugins.htmldocs.service.docsearch.DefaultHtmldocIndexer" />    
 	<bean id="htmldocs.htmldocSearchEngine" class="fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmldocLuceneSearchEngine" />
 	<bean id="htmldocs.htmlDocsListPortletDAO" class="fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsListPortletDAO" />
+    <bean id="htmldocs.htmlDocPublicationDAO" class="fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublicationDAO" />
+	
+	
 	
        
     

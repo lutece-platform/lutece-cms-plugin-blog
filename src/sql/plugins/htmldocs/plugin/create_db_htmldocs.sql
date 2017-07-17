@@ -133,8 +133,11 @@ DROP TABLE IF EXISTS htmldocs_list_portlet_htmldocs;
 CREATE TABLE htmldocs_list_portlet_htmldocs (
 	id_portlet int default NULL,
 	id_html_doc int NOT NULL,
+    date_begin_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
+	date_end_publishing timestamp default  "2030-01-01 11:59:59" NOT NULL,
+	status int default 0 NOT NULL,
+
 	
-	CONSTRAINT `fk_list_portlet` FOREIGN KEY(`id_portlet`) references htmldocs_list_portlet (`id_portlet`),
     CONSTRAINT `fk_id_html_doc_portlet` FOREIGN KEY(`id_html_doc`) references htmldocs(`id_html_doc`),
 	PRIMARY KEY (id_portlet, id_html_doc)
 );

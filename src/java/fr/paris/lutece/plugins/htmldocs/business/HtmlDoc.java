@@ -39,6 +39,7 @@ import org.hibernate.validator.constraints.*;
 
 import java.io.Serializable;
 
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.util.ReferenceItem;
 
 import java.sql.Timestamp;
@@ -88,6 +89,8 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     private DocContent _docContent;
     
     private List<Tag> _tag = new ArrayList<Tag>();
+    
+    private List<HtmlDocPublication> _htmldocPubilcation = new ArrayList<HtmlDocPublication>();
 
 
     /**
@@ -105,10 +108,6 @@ public class HtmlDoc extends ReferenceItem implements Serializable
         return _strContentLabel;
     }
 
-    public String getCode( )
-    {
-        return "TOTO";
-    }
 
     /**
      * Sets the Id
@@ -400,5 +399,26 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     	}
     	
     	_tag.remove(tagToRemove);
+    }
+    
+    /**
+     * Returns the HtmldocPubilcation list
+     *
+     * @return The HtmldocPubilcation list
+     */
+    public List<HtmlDocPublication> getHtmldocPubilcation( )
+    {
+        return _htmldocPubilcation;
+    }
+
+    /**
+     * Sets the htmlDocPublication list
+     *
+     * @param htmlDocPublication list
+     *            The htmlDocPublication list
+     */
+    public void setHtmldocPubilcation( List<HtmlDocPublication> htmlDocPublication )
+    {
+    	_htmldocPubilcation = htmlDocPublication;
     }
 }

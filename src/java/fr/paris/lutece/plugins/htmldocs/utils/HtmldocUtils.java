@@ -27,6 +27,8 @@ public final class HtmldocUtils
     public static final String CONSTANT_WHERE = " WHERE ";
     public static final String CONSTANT_AND = " AND ";
     public static final int CONSTANT_ID_NULL = -1;
+    public static final String CONSTANT_TYPE_RESOURCE = "HTMLDOC_DOCUMENT";
+
 
 
     /**

@@ -85,7 +85,8 @@ public class HtmldocsPortlet extends PortletHtmlContent
     @Override
     public void remove( )
     {
-        HtmlDocHome.remove( this.getContentId( ) );
+        HtmlDocPublicationHome.removeByIdPortlet( this.getId()  );
+        //HtmlDocHome.remove( this.getContentId( ) );
         HtmldocsPortletHome.getInstance( ).remove( this );
     }
 
