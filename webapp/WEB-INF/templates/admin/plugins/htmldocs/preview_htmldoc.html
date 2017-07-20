@@ -1,4 +1,13 @@
-<@rowBoxHeader i18nTitleKey="#i18n{htmldocs.preview_htmldoc.title} : ${htmldoc.contentLabel}">
+<@rowBoxHeader i18nTitleKey="htmldocs.preview_htmldoc.title">
+	  <div class="box-tools pull-right">
+			
+		 	<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
+				<div class="btn-group">
+					${extendableResourceActionsHtml!}
+				</div>
+			</#if>
+		
+		 </div>
         <div class="form-horizontal">
           <div class="form-group">
             <label class="col-sm-2 control-label">#i18n{htmldocs.manage_htmldocs.columnContentLabel}</label>

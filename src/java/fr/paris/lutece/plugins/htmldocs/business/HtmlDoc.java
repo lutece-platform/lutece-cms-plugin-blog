@@ -40,7 +40,9 @@ import org.hibernate.validator.constraints.*;
 import java.io.Serializable;
 
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
+import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.url.UrlItem;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -49,8 +51,10 @@ import java.util.List;
 /**
  * This is the business class for the object HtmlDoc
  */
-public class HtmlDoc extends ReferenceItem implements Serializable
+public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableResource
 {
+    public static final String PROPERTY_RESOURCE_TYPE = "htmldocs";
+
     private static final long serialVersionUID = 1L;
 
     // Variables declarations
@@ -421,4 +425,43 @@ public class HtmlDoc extends ReferenceItem implements Serializable
     {
     	_htmldocPubilcation = htmlDocPublication;
     }
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public String getExtendableResourceDescription() {
+
+		return _strDescription;
+	}
+	 /**
+     * {@inheritDoc}
+     */
+	@Override
+	public String getExtendableResourceImageUrl() {
+		
+         return null;
+	}
+	 /**
+     * {@inheritDoc}
+     */
+	@Override
+	public String getExtendableResourceName() {
+
+		return _strContentLabel;
+	}
+	 /**
+     * {@inheritDoc}
+     */
+	@Override
+	public String getExtendableResourceType() {
+
+		return PROPERTY_RESOURCE_TYPE;
+	}
+	 /**
+     * {@inheritDoc}
+     */
+	@Override
+	public String getIdExtendableResource() {
+		return Integer.toString( _nId );
+	}
 }

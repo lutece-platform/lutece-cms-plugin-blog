@@ -42,7 +42,6 @@ import fr.paris.lutece.plugins.htmldocs.business.Tag;
 import fr.paris.lutece.plugins.htmldocs.business.TagHome;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublicationHome;
-import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletHome;
 import fr.paris.lutece.plugins.htmldocs.service.HtmlDocService;
 import fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmlDocSearchService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -50,13 +49,14 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
-import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -68,7 +68,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Iterator;
 import java.util.Map;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -265,7 +264,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
             if ( document != null )
             {
-            	document.setHtmldocPubilcation(HtmlDocPublicationHome.getDocPublicationByIdDoc( documentId ));
                 listDocuments.add( document );
             }
         }
@@ -448,7 +446,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             return redirect( request, strMessageUrl );
         }
         HtmlDocService.getInstance().deleteDocument(nId);
-
+        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions(HtmlDoc.PROPERTY_RESOURCE_TYPE, String.valueOf(nId));
+        
         addInfo( INFO_HTMLDOC_REMOVED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
@@ -489,6 +488,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        
+        ExtendableResourcePluginActionManager.fillModel( request, getUser(  ), model, String.valueOf(nId),
+                HtmlDoc.PROPERTY_RESOURCE_TYPE );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
     }
@@ -599,6 +601,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
 
         model.put( MARK_HTMLDOC, htmldoc );
+        
+        ExtendableResourcePluginActionManager.fillModel( request, getUser(  ), model, String.valueOf(nId),
+                HtmlDoc.PROPERTY_RESOURCE_TYPE );
 
         return getPage( PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC, TEMPLATE_PREVIEW_HTMLDOC, model );
     }
