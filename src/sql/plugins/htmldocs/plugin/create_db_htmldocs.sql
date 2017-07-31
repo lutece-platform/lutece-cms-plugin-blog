@@ -105,4 +105,43 @@ CREATE TABLE htmldocs_indexer_action (
   );
 CREATE INDEX htmldocs_id_indexer_task ON htmldocs_indexer_action (id_task);
 
+--
+-- Table structure for table htmldocs_page_template
+--
+DROP TABLE IF EXISTS htmldocs_page_template;
+CREATE TABLE htmldocs_page_template (
+	id_page_template_document int default 0 NOT NULL,
+	page_template_path varchar(255) default NULL,
+	picture_path varchar(255) default NULL,
+	description varchar(255) default NULL,
+	
+	PRIMARY KEY (id_page_template_document)
+);
+
+--
+-- Table structure for table htmldocs_list_portlet
+--
+DROP TABLE IF EXISTS htmldocs_list_portlet;
+CREATE TABLE htmldocs_list_portlet (
+	id_portlet int default NULL,
+	id_page_template_document int default 0 NOT NULL,
+	
+	PRIMARY KEY (id_portlet)
+);
+
+DROP TABLE IF EXISTS htmldocs_list_portlet_htmldocs;
+CREATE TABLE htmldocs_list_portlet_htmldocs (
+	id_portlet int default NULL,
+	id_html_doc int NOT NULL,
+    date_begin_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
+	date_end_publishing timestamp default  "2030-01-01 11:59:59" NOT NULL,
+	status int default 0 NOT NULL,
+
+	
+    CONSTRAINT `fk_id_html_doc_portlet` FOREIGN KEY(`id_html_doc`) references htmldocs(`id_html_doc`),
+	PRIMARY KEY (id_portlet, id_html_doc)
+);
+
+
+
 

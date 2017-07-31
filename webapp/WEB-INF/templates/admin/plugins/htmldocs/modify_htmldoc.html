@@ -1,4 +1,13 @@
-<@rowBoxHeader i18nTitleKey="#i18n{htmldocs.modify_htmldoc.title} : ${htmldoc.contentLabel}">
+<@rowBoxHeader i18nTitleKey="htmldocs.modify_htmldoc.title">
+  <div class="box-tools pull-right">
+	
+ 	<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
+		<div class="btn-group">
+			${extendableResourceActionsHtml!}
+		</div>
+	</#if>
+
+ </div>
   <form class="form-horizontal" method="post" name="modify_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
     <@messages errors=errors />
     <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>

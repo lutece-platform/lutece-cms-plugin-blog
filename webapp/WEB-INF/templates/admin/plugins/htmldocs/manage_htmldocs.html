@@ -58,7 +58,8 @@
           </th>
           <th>#i18n{htmldocs.manage_htmldocs.columnUser}</th>
           <th>#i18n{htmldocs.manage_htmldocs.columnEditComment}</th>
-	  <th>TAG</th>
+	      <th>TAG</th>
+	      <th>Publication</th>
           <th>#i18n{portal.util.labelActions}</th>
         </tr>
       </thead>
@@ -95,6 +96,12 @@
 			</#if>
 		</#list>
 		</#list>
+          </td>
+          <td>
+          <#list htmldoc.htmldocPubilcation as publication>
+               <a href="jsp/site/Portal.jsp?page_id=${publication.portlet.pageId}">${publication.portlet.name}</a> 
+	       <div>De: ${publication.dateBeginPublishing} à ${publication.dateEndPublishing}</div>  
+           </#list >
           </td>
           <td>
             <a href="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp?view=previewHtmlDoc&id=${htmldoc.id}"

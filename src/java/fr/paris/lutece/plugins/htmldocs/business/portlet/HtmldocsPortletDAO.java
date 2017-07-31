@@ -63,6 +63,10 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
         daoUtil.setInt( 3, p.getContentId( ) );
         daoUtil.executeUpdate( );
         daoUtil.free( );
+        insertHtmlDocPublivcation(p);
+        
+       
+        
     }
 
     /**
@@ -98,6 +102,10 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
+        
+        HtmlDocPublicationHome.removeByIdPortlet( p.getId( ));
+        insertHtmlDocPublivcation(p);
+
     }
 
     /**
@@ -126,5 +134,18 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
         daoUtil.free( );
 
         return portlet;
+    }
+    /**
+     * 
+     * @param p
+     */
+    private void insertHtmlDocPublivcation(HtmldocsPortlet p){
+    
+    	HtmlDocPublication publication= new HtmlDocPublication();
+    	publication.setStatus( 1 );
+    	publication.setIdDocument(p.getContentId( ));
+    	publication.setIdPortlet(p.getId( ));
+        HtmlDocPublicationHome.create(publication);
+
     }
 }
