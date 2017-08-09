@@ -55,6 +55,10 @@
     </search-indexers>
     <!-- XPages parameters -->
     <applications>
+        <application>
+            <application-id>htmldoc</application-id>
+            <application-class>fr.paris.lutece.plugins.htmldocs.web.HtmlDocApp</application-class>
+        </application>
     </applications>
      <!-- servlets -->
     <servlets>
