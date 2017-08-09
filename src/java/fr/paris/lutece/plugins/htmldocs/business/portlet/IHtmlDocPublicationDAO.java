@@ -29,5 +29,9 @@ public interface IHtmlDocPublicationDAO {
     List<HtmlDocPublication> loadHtmlsDocsId( int nDocId, Plugin plugin  );
 
     void deleteHtmlsDocByIdPortlet( int nIdPortlet, Plugin plugin  );
-	    
+	
+    HtmlDocPublication loadHtmlsDocsPublication( int nDocId, int nPortletId, Plugin plugin  );
+    
+    void store( HtmlDocPublication htmlDocPublication, Plugin plugin );
+    void remove( int nDocId, int nIdPortlet, Plugin plugin  );
 }

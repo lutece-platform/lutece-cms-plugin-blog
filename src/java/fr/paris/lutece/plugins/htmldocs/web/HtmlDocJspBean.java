@@ -104,19 +104,19 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String TEMPLATE_DIFF_HTMLDOC = "admin/plugins/htmldocs/diff_htmldoc.html";
 
     // Parameters
-    private static final String PARAMETER_ID_HTMLDOC = "id";
-    private static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
-    private static final String PARAMETER_VERSION_HTMLDOC2 = "htmldoc_version2";
-    private static final String PARAMETER_CONTENT_LABEL = "content_label";
-    private static final String PARAMETER_HTML_CONTENT = "html_content";
-    private static final String PARAMETER_EDIT_COMMENT = "edit_comment";
-    private static final String PARAMETER_DESCRIPTION = "description";
-    private static final String PARAMETER_VIEW = "view";
-    private static final String PARAMETER_BUTTON_SEARCH = "button_search";
-    private static final String PARAMETER_SEARCH_TEXT = "search_text";
-    private static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
-    private static final String PARAMETER_TAG = "tag_doc";
-    private static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
+    protected static final String PARAMETER_ID_HTMLDOC = "id";
+    protected static final String PARAMETER_VERSION_HTMLDOC = "htmldoc_version";
+    protected static final String PARAMETER_VERSION_HTMLDOC2 = "htmldoc_version2";
+    protected static final String PARAMETER_CONTENT_LABEL = "content_label";
+    protected static final String PARAMETER_HTML_CONTENT = "html_content";
+    protected static final String PARAMETER_EDIT_COMMENT = "edit_comment";
+    protected static final String PARAMETER_DESCRIPTION = "description";
+    protected static final String PARAMETER_VIEW = "view";
+    protected static final String PARAMETER_BUTTON_SEARCH = "button_search";
+    protected static final String PARAMETER_SEARCH_TEXT = "search_text";
+    protected static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
+    protected static final String PARAMETER_TAG = "tag_doc";
+    protected static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
 
 
 
@@ -135,19 +135,19 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
 
     // Markers
-    private static final String MARK_HTMLDOC_LIST = "htmldoc_list";
-    private static final String MARK_HTMLDOC_VERSION_LIST = "htmldoc_version_list";
-    private static final String MARK_HTMLDOC = "htmldoc";
-    private static final String MARK_WEBAPP_URL = "webapp_url";
-    private static final String MARK_IS_CHECKED = "is_checked";
-    private static final String MARK_CURRENT_USER = "current_user";
-    private static final String MARK_ID_HTMLDOC = "id";
-    private static final String MARK_SEARCH_TEXT = "search_text";
-    private static final String MARK_DIFF = "htmldoc_diff";
-    private static final String MARK_HTMLDOC2 = "htmldoc2";
-    private static final String MARK_LIST_TAG = "list_tag";
-    private static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
-    private static final String MARK_TAG = "tags";
+    protected static final String MARK_HTMLDOC_LIST = "htmldoc_list";
+    protected static final String MARK_HTMLDOC_VERSION_LIST = "htmldoc_version_list";
+    protected static final String MARK_HTMLDOC = "htmldoc";
+    protected static final String MARK_WEBAPP_URL = "webapp_url";
+    protected static final String MARK_IS_CHECKED = "is_checked";
+    protected static final String MARK_CURRENT_USER = "current_user";
+    protected static final String MARK_ID_HTMLDOC = "id";
+    protected static final String MARK_SEARCH_TEXT = "search_text";
+    protected static final String MARK_DIFF = "htmldoc_diff";
+    protected static final String MARK_HTMLDOC2 = "htmldoc2";
+    protected static final String MARK_LIST_TAG = "list_tag";
+    protected static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
+    protected static final String MARK_TAG = "tags";
 
 
     private static final String JSP_MANAGE_HTMLDOCS = "jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp";
@@ -161,7 +161,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "htmldocs.model.entity.htmldoc.attribute.";
 
     // Views
-    private static final String VIEW_MANAGE_HTMLDOCS = "manageHtmlDocs";
+    protected static final String VIEW_MANAGE_HTMLDOCS = "manageHtmlDocs";
     private static final String VIEW_CREATE_HTMLDOC = "createHtmlDoc";
     private static final String VIEW_MODIFY_HTMLDOC = "modifyHtmlDoc";
     private static final String VIEW_PREVIOUS_VERSION_HTMLDOC = "previousVersionHtmlDoc";
@@ -183,27 +183,27 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
 
     // Filter Marks
-    private static final String MARK_HTMLDOC_FILTER_LIST = "htmldoc_filter_list";
-    private static final String MARK_HTMLDOC_FILTER_NAME = "Nom";
-    private static final String MARK_HTMLDOC_FILTER_DATE = "Date";
-    private static final String MARK_HTMLDOC_FILTER_USER = "Utilisateur";
-    private static final String MARK_PAGINATOR = "paginator";
-    private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
-    private static final String MARK_ASC_SORT = "asc_sort";
+    protected static final String MARK_HTMLDOC_FILTER_LIST = "htmldoc_filter_list";
+    protected static final String MARK_HTMLDOC_FILTER_NAME = "Nom";
+    protected static final String MARK_HTMLDOC_FILTER_DATE = "Date";
+    protected static final String MARK_HTMLDOC_FILTER_USER = "Utilisateur";
+    protected static final String MARK_PAGINATOR = "paginator";
+    protected static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
+    protected static final String MARK_ASC_SORT = "asc_sort";
 
 
 
     // Session variable to store working values
-    private HtmlDoc _htmldoc;
-    private boolean _bIsChecked = false;
-    private String _strSearchText;
-    private String _strCurrentPageIndex;
-    private int _nItemsPerPage;
-    private int _nDefaultItemsPerPage;
-    private boolean _bIsSorted = false;
-    private String _strSortedAttributeName;
-    private Boolean _bIsAscSort;
-    private String _strTag=PROPERTY_REFERENE_ITEME_ALL;
+    protected HtmlDoc _htmldoc;
+    protected boolean _bIsChecked = false;
+    protected String _strSearchText;
+    protected String _strCurrentPageIndex;
+    protected int _nItemsPerPage;
+    protected int _nDefaultItemsPerPage;
+    protected boolean _bIsSorted = false;
+    protected String _strSortedAttributeName;
+    protected Boolean _bIsAscSort;
+    protected String _strTag=PROPERTY_REFERENE_ITEME_ALL;
 
 
     /**

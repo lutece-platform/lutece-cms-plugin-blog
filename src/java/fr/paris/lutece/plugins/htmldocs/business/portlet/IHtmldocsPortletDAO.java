@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.ReferenceList;
 
 /**
  * IHtmldocsPortletDAO Interface
@@ -73,4 +75,11 @@ public interface IHtmldocsPortletDAO extends IPortletInterfaceDAO
      *            The reference of the portlet
      */
     void store( Portlet portlet );
+    /**
+     * 
+     * @param plugin
+     * @return
+     */
+    ReferenceList selectHtmlDocPortletReferenceList( Plugin plugin );
+
 }

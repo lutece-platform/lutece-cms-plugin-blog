@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
@@ -42,6 +44,8 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
 {
     // Constants
+	
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet, name, content_id FROM htmldocs_portlet";
     private static final String SQL_QUERY_SELECT = "SELECT id_portlet, name, content_id FROM htmldocs_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs_portlet ( id_portlet, name, content_id ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_portlet WHERE id_portlet = ? ";
@@ -147,5 +151,24 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
     	publication.setIdPortlet(p.getId( ));
         HtmlDocPublicationHome.create(publication);
 
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public ReferenceList selectHtmlDocPortletReferenceList( Plugin plugin )
+    {
+        ReferenceList htmlDocPortletList = new ReferenceList( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
+        daoUtil.executeQuery( );
+
+        while ( daoUtil.next( ) )
+        {
+        	htmlDocPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+        }
+
+        daoUtil.free( );
+        return htmlDocPortletList;
     }
 }

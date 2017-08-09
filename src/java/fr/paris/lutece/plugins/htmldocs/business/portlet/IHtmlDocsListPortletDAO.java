@@ -44,7 +44,9 @@ package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 
 import java.util.Collection;
 import java.util.Map;
@@ -108,4 +110,12 @@ public interface IHtmlDocsListPortletDAO extends IPortletInterfaceDAO
      * @return true if the portlet is alias, false otherwise
      */
     boolean checkIsAliasPortlet( int nPortletId );
+    /**
+     * 
+     * @param plugin
+     * @return
+     */
+    ReferenceList selectHtmlDocListPortletReferenceList( Plugin plugin );
+    
+    
 }

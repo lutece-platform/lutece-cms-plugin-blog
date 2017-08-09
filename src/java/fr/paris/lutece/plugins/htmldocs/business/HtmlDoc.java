@@ -425,6 +425,49 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     {
     	_htmldocPubilcation = htmlDocPublication;
     }
+    
+    
+    /**
+     * Sets the HtmldocPubilcation list
+     *
+     * @param HtmldocPubilcation list
+     *            The HtmldocPubilcation list
+     */
+    public void addHtmlDocPublication( HtmlDocPublication htmldocPubilcation )
+    {
+    	for(HtmlDocPublication pub:_htmldocPubilcation){
+    		
+    		if(pub.getIdDocument() == htmldocPubilcation.getIdDocument() &&   pub.getIdPortlet( ) ==htmldocPubilcation.getIdPortlet()){
+    			
+    			return;
+    		}
+    	}
+    	_htmldocPubilcation.add( htmldocPubilcation );
+    }
+    
+    /**
+     * delet the HtmldocPubilcation 
+     *
+     * @param HtmldocPubilcation 
+     *            The HtmldocPubilcation 
+     */
+    public void deleteHtmlDocPublication( HtmlDocPublication htmldocPubilcation )
+    {
+    	HtmlDocPublication pubToRemove = null;
+    	
+    	for(HtmlDocPublication pub:_htmldocPubilcation){
+    		
+    		if(pub.getIdDocument() == htmldocPubilcation.getIdDocument() &&   pub.getIdPortlet( ) ==htmldocPubilcation.getIdPortlet()){
+    			
+    			pubToRemove= pub;
+    			break;
+    		}
+    	}
+    	
+    	
+    	_htmldocPubilcation.remove(pubToRemove);
+    }
+    
     /**
      * {@inheritDoc}
      */

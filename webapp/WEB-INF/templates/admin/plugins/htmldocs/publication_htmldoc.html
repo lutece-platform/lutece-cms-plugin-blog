@@ -1,0 +1,96 @@
+<@rowBoxHeader i18nTitleKey="htmldocs.publication_htmldoc.title">
+
+  <div class="box-tools pull-right">
+ </div>
+  <form class="form-horizontal" method="post" name="publication_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/htmldocs/ManagePublicationHtmlDocs.jsp">
+    <@messages errors=errors />
+    <input type="hidden" id="id" name="id" value="${htmldoc.id}"/>
+    <input type="hidden" id="action" name="action" value="publishDocument"/>
+    <div>	
+    ${htmldoc.contentLabel}
+    </div>
+	<div class="form-group">
+	 <div class="col-xs-12 col-sm-12 col-md-9">
+		<label class="control-label col-xs-12 col-sm-12 col-md-3" for="dateBeginPublishing">portlet*</label>
+		 <select id="idPortlet" name="idPortlet" required>
+			<#list portlet_list as portlet>
+				<#assign bool=false>
+				 <#list htmldoc.htmldocPubilcation as pub>
+					<#if pub.idPortlet == portlet.id>
+			 		   <#assign bool=true>
+					</#if>				
+				</#list>
+				<#if !bool >
+					 <option value="${portlet.id}">${portlet.name}</option> 
+				</#if>
+
+			</#list>
+		</select>	
+		</div>
+	<div class="col-xs-12 col-sm-12 col-md-9">
+	<div class="input-daterange form-inline">
+	        <label class="control-label col-xs-12 col-sm-12 col-md-3" for="dateBeginPublishing">date de publication*</label>
+		<div class="input-group">
+			<input type="text" name="dateBeginPublishing" id="dateBeginPublishing" class="form-control input-sm " value="" required>
+			<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		</div>
+
+		<label class="" for="dateEndPublishing">date de fin publication*</label>
+		
+		<div class="input-group">
+		<input type="text" name="dateEndPublishing" id="dateEndPublishing" class="form-control input-sm " value="" required>
+				<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				</div>
+				<label for="dateEndPublishing" class="inline">#i18n{form.createForm.labelDateEndDisponibility}</label>
+					<span class="help-block">#i18n{form.createForm.labelDateEndDisponibilityComment}</span>
+			</div>
+		</div>
+	</div>
+
+
+
+    
+    <@actionButtons button1Name="action_publicationHtmlDoc" button2Name="view_manageHtmlDocs"/>
+  </form>
+
+<@table>
+      <thead>
+       <tr>
+	<th>Portlet</th>
+	<th>Date de publication</th>
+	<th>Date fin de publication</th>
+        <th>#i18n{portal.util.labelActions}</th>
+       </tr>
+      </thead>
+      <tbody>
+          <#list htmldoc.htmldocPubilcation as pub>
+        <tr>
+          <td>
+             <#list portlet_list as portlet>
+			<#if portlet.id == pub.idPortlet > 
+				<div>${portlet.name!}</div>
+				  <#break>
+			</#if>	
+	     </#list>
+          </td>
+          <td>
+            ${pub.dateBeginPublishing}
+          </td>
+          <td>
+            ${pub.dateEndPublishing}
+          </td>
+          <td>
+       
+            <a  href="jsp/admin/plugins/htmldocs/ManagePublicationHtmlDocs.jsp?action=unPublishDocument&idDocument=${htmldoc.id}&idPortlet=${pub.idPortlet}&id=${htmldoc.id}"
+                class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
+              <i class="fa fa-trash"></i>
+            </a>
+            
+          </td>
+        </tr>
+  
+        </#list>
+      </tbody>
+      </@table>
+</@rowBoxHeader>
+ <@getDatePickerRangeBootstrap language="fr" />

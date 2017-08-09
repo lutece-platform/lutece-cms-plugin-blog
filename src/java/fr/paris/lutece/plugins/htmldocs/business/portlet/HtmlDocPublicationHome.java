@@ -37,15 +37,32 @@ public class HtmlDocPublicationHome  {
         return htmlDocPub;
     }
     
+    public static  void update( HtmlDocPublication htmlDocPub )
+    {
+        _dao.store( htmlDocPub, _plugin );
+
+    }
     public static List<HtmlDocPublication> getDocPublicationByIdDoc( int nDocId )
     {
        return  _dao.loadHtmlsDocsId(nDocId,  _plugin );
 
     }
     
+    public static HtmlDocPublication findDocPublicationByPimaryKey( int nDocId, int nPortletId )
+    {
+       return  _dao.loadHtmlsDocsPublication(nDocId, nPortletId,  _plugin );
+
+    }
+    
     public static void removeByIdPortlet( int nIdPortlet )
     {
          _dao.deleteHtmlsDocByIdPortlet(nIdPortlet,  _plugin );
+
+    }
+    
+    public static void remove( int nIdDoc, int nIdPortlet )
+    {
+         _dao.remove(nIdDoc, nIdPortlet,  _plugin );
 
     }
   
