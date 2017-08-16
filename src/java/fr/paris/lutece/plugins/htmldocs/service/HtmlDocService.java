@@ -120,6 +120,7 @@ public class HtmlDocService
 
         try
         {
+        	TagHome.removeTagDoc(nId);
 	    	DocContentHome.remove(nId);
 	    	HtmlDocHome.remove( nId );
 	        HtmlDocHome.removeVersions( nId );
