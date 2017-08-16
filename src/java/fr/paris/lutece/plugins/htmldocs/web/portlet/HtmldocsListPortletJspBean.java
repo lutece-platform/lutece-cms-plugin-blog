@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.htmldocs.web.portlet;
 
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocsListPortlet;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocsListPortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -93,18 +94,19 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
          List<HtmlDoc> listHtmlDocsPublished= new ArrayList<HtmlDoc>();
 
          boolean bool= false;
+         for(HtmlDocPublication i:_portlet.getArrayHtmlDOcs()){
          for(HtmlDoc doc:listHtmlDocs){
-        	 bool= false;
-        	 for(int i:_portlet.getArrayIdHtmlDOcs()){
-        		 if(i == doc.getId()){
+        	 bool= false;	 
+        		 if(i.getIdDocument( ) == doc.getId()){
         			 bool=true;
         			 listHtmlDocsPublished.add(doc);
         		 }
-        	 }
-        	 
-        	 if (!bool) listHtmlDocsNotPublished.add(doc);
+           }
         	 
          }
+         
+         listHtmlDocsNotPublished.addAll(listHtmlDocs);
+         listHtmlDocsNotPublished.removeAll(listHtmlDocsPublished);
          model.put(MARK_LIST_PAGES, HtmlDocsListPortletHome.loadPages());
 
          model.put( MARK_LIST_HTMLDOC_PUBLISHED, listHtmlDocsPublished );
@@ -124,7 +126,7 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
      */
     public String doCreate( HttpServletRequest request )
     {
-        
+        int order=1;
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         int nIdPage = Integer.parseInt( strIdPage );
 
@@ -145,6 +147,12 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
         _portlet.setPageTemplateDocument( Integer.parseInt(strTemplateCode) );
 
        
+        for(HtmlDocPublication doc: _portlet.getArrayHtmlDOcs()){
+        	
+        	doc.setDocumentOrder(order);
+        	order++;
+        	
+        }
         //Portlet creation
         HtmlDocsListPortletHome.getInstance(  ).create( _portlet );
         
@@ -160,6 +168,8 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
      */
     public String doModify( HttpServletRequest request )
     {
+        int order=1;
+
         // recovers portlet attributes
         String strDocumentTypeCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
         // retrieve portlet common attributes
@@ -172,7 +182,12 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
 
         _portlet.setPageTemplateDocument( Integer.parseInt(strDocumentTypeCode) );
 
-
+        for(HtmlDocPublication doc: _portlet.getArrayHtmlDOcs()){
+        	
+        	doc.setDocumentOrder(order);
+        	order++;
+        	
+        }
         // updates the portlet
         _portlet.update(  );
 
@@ -187,14 +202,22 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
         
         String strAction= request.getParameter( PARAMETER_ACTION_PORTLET );
         String strIdDocument = request.getParameter( "idDocument" );
+        //String strOrderDocument = request.getParameter( "orderDocument" );
         
         int nIdDocument= Integer.parseInt(strIdDocument);
+        //int nDocumentOrder= Integer.parseInt(strOrderDocument);
+        
+        HtmlDocPublication doc= new HtmlDocPublication();
+        doc.setIdDocument(nIdDocument);
+       // doc.setDocumentOrder(nDocumentOrder);
         
         if(strAction != null && !strAction.isEmpty() && strAction.equals(PARAMETER_ACTION_PORTLET_ADD)){
-        	_portlet.addIdHtmlDocs(nIdDocument);
+        	
+        	_portlet.addIdHtmlDocs(doc);
         	
         }else if(strAction != null && !strAction.isEmpty() && strAction.equals(PARAMETER_ACTION_PORTLET_REMOVE)){
-        	_portlet.removeIdHtmlDocs(nIdDocument);
+        	
+        	_portlet.removeHtmlDocs(doc);
         	
         }
         

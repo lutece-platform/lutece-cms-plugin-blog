@@ -64,7 +64,7 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     // Constants
     private int _nPageTemplateDocument;
     private int _nPortletId;
-    private List<Integer> _nArrayIdHtmlDOcs= new ArrayList<Integer>( );
+    private List<HtmlDocPublication> _arrayHtmlDOcs= new ArrayList<HtmlDocPublication>( );
 
 
     /**
@@ -83,10 +83,9 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     	  List<HtmlDoc> listHtmlDocs = HtmlDocService.getInstance().getListDocWhithContent( );
           List<HtmlDoc> listHtmlDocsPublished= new ArrayList<HtmlDoc>();
 
-    	  for(HtmlDoc doc:listHtmlDocs){
-         	 
-         	 for(int i:this.getArrayIdHtmlDOcs()){
-         		 if(i == doc.getId()){
+          for(HtmlDocPublication i:this.getArrayHtmlDOcs()){
+          for(HtmlDoc doc:listHtmlDocs){	 
+         		 if(i.getIdDocument( ) == doc.getId()){
          			 listHtmlDocsPublished.add(doc);
          		 }
          	 }
@@ -165,35 +164,52 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     }
     
     /**
-     * @return the _nArrayIdHtmlDOcs
+     * @return the _arrayHtmlDOcs
      */
-    public List<Integer> getArrayIdHtmlDOcs(  )
+    public List<HtmlDocPublication> getArrayHtmlDOcs(  )
     {
-        return _nArrayIdHtmlDOcs;
+        return _arrayHtmlDOcs;
     }
 
     /**
-     * @param _nArrayIdHtmlDOcs the _nArrayIdHtmlDOcs to set
+     * @param arrayHtmlDOcs the _arrayHtmlDOcs to set
      */
-    public void setArrayIdHtmlDOcs( List<Integer> nArrayIdHtmlDOcs )
+    public void setArrayHtmlDOcs( List<HtmlDocPublication> arrayHtmlDOcs )
     {
-    	_nArrayIdHtmlDOcs = nArrayIdHtmlDOcs;
+    	_arrayHtmlDOcs = arrayHtmlDOcs;
     }
     /**
      * 
-     * @param nIdDocs
+     * @param doc
      */
-    public void addIdHtmlDocs(int nIdDocs){
+    public void addIdHtmlDocs(HtmlDocPublication doc){
     	
-    	_nArrayIdHtmlDOcs.add( nIdDocs );
+    	boolean bool= false;
+    	for(HtmlDocPublication dc:_arrayHtmlDOcs){
+    		
+    		if(doc.getIdDocument() == dc.getIdDocument( )){
+    			bool=true;
+    			break;
+    		}
+    	
+    	}
+    	if(!bool) _arrayHtmlDOcs.add( doc );
     }
     /**
      * 
-     * @param nIdDocs
+     * @param doc
      */
-    public void removeIdHtmlDocs(int nIdDocs){
+    public void removeHtmlDocs(HtmlDocPublication doc){
     	
-    	_nArrayIdHtmlDOcs.remove( new Integer(nIdDocs) );
+		for(HtmlDocPublication dc:_arrayHtmlDOcs){
+		   
+		   	if(doc.getIdDocument() == dc.getIdDocument( )){
+		   		_arrayHtmlDOcs.remove( dc );
+		   		break;
+		   	}
+		   	
+		}
+    	
     }
 
    

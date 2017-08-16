@@ -55,22 +55,12 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     private static final String SQL_QUERY_SELECT = "SELECT id_portlet , id_page_template_document FROM htmldocs_list_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_list_portlet SET id_portlet = ?, id_page_template_document = ? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_list_portlet WHERE id_portlet= ? ";
-   /* private static final String SQL_QUERY_DELETE_PUBLISHED_DOCUMENT_PORTLET = " DELETE FROM document_published WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_SELECT_DOCUMENTS_BY_TYPE_AND_CATEGORY = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " +
-        "FROM document_list_portlet b " +
-        "LEFT JOIN document_published c ON b.id_portlet = c.id_portlet AND c.id_document= ? " +
-        "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " +
-        "LEFT OUTER JOIN document_category_list_portlet d ON b.id_portlet = d.id_portlet " +
-        "INNER JOIN core_page f ON a.id_page = f.id_page " +
-        "WHERE c.id_portlet IS NULL AND b.code_document_type = ? AND (d.id_category IN (SELECT e.id_category " +
-        "FROM document_category_link e WHERE e.id_document = ?) OR d.id_category IS NULL) ";*/
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
 
     //Category
-    private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status ) VALUES ( ? , ?, ? )";
+    private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status, document_order ) VALUES ( ? , ?, ?, ? )";
     private static final String SQL_QUERY_DELETE_HTMLDOCS_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
-    //private static final String SQL_QUERY_DELETE_AUTO_PUBLICATION_PORTLET = " DELETE FROM document_auto_publication WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_html_doc FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_html_doc, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
     private static final String SQL_QUERY_SELECT_PAGE_PORTLET="SELECT id_page_template_document,description from  htmldocs_page_template";
    
 
@@ -104,16 +94,16 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     {
     	HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
 
-        if ( !p.getArrayIdHtmlDOcs().isEmpty() )
+        if ( !p.getArrayHtmlDOcs().isEmpty() )
         {
             DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_HTMLDOCS_PORTLET );
 
-            for ( int nIdDoc : p.getArrayIdHtmlDOcs() )
+            for ( HtmlDocPublication docPub : p.getArrayHtmlDOcs() )
             {
                 daoUtil.setInt( 1, p.getId(  ) );
-                daoUtil.setInt( 2, nIdDoc );
+                daoUtil.setInt( 2, docPub.getIdDocument( ) );
                 daoUtil.setInt( 3, 1 );
-
+                daoUtil.setInt( 4, docPub.getDocumentOrder() );
                 daoUtil.executeUpdate(  );
             }
 
@@ -172,7 +162,7 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
 
         daoUtil.free(  );
 
-        portlet.setArrayIdHtmlDOcs( loadHtmlsDocsId( nPortletId ) );
+        portlet.setArrayHtmlDOcs( loadHtmlsDocsId( nPortletId ) );
 
         return portlet;
     }
@@ -200,22 +190,26 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
      * @param nPortletId
      * @return List of IdDoc
      */
-    private List<Integer> loadHtmlsDocsId( int nPortletId )
+    private List<HtmlDocPublication> loadHtmlsDocsId( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET );
         daoUtil.setInt( 1, nPortletId );
         daoUtil.executeQuery(  );
 
-        List<Integer> nListIdCategory = new ArrayList<Integer>(  );
+        List<HtmlDocPublication> listDocPublication = new ArrayList<HtmlDocPublication>(  );
 
         while ( daoUtil.next(  ) )
         {
-            nListIdCategory.add( daoUtil.getInt( 1 ) );
+        	HtmlDocPublication docPub= new HtmlDocPublication();
+        	docPub.setIdDocument(daoUtil.getInt( 1 ));
+        	docPub.setDocumentOrder(daoUtil.getInt( 2 ));
+        	listDocPublication.add( docPub );
+            
         }
 
         daoUtil.free(  );
 
-        return nListIdCategory;
+        return listDocPublication;
     }
 
     /**

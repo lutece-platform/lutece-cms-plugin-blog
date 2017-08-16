@@ -15,7 +15,7 @@ Page:
   
  <div id="bin" class="target">
   <#list htmldoc_list_published as htmlDoc>
-    <div>
+    <div ondragstart="return false;" ondrop="return false;">
 		<div class="dismiss">x</div>
 		<li id="${htmlDoc.id}"><a draggable="true" id="${htmlDoc.id}">${htmlDoc.contentLabel}</a></li>
 	</div>
@@ -111,6 +111,7 @@ init();
     var y = yum.cloneNode(true);
     
     bin.appendChild(y);
+    var orderDocument= bin.childNodes.length -1;
    setTimeout(function () {
       var t = setInterval(function () {
         if (y.style.opacity <= 0) {
@@ -123,7 +124,7 @@ init();
         }
       }, 50);
 	var idDocument= y.lastChild.id;
-	doAddDocument(idDocument);
+	doAddDocument(idDocument, orderDocument);
     }, 250);
    
    return false;
@@ -131,14 +132,14 @@ init();
 
 
 
-function doAddDocument( idDocument)
+function doAddDocument( idDocument,orderDocument)
 
 {
 
 	
 	$.ajax({
 
-            url : baseUrl + "jsp/admin/plugins/htmldocs/DoAddDocument.jsp?idDocument=" + idDocument+"&action=add",
+            url : baseUrl + "jsp/admin/plugins/htmldocs/DoAddDocument.jsp?idDocument=" + idDocument+"&orderDocument="+orderDocument+"&action=add",
 
 	    type: 'GET',
 

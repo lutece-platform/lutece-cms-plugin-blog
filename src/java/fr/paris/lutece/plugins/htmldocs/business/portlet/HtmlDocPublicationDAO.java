@@ -12,15 +12,15 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
 	
 
     //Category
-    private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status ) VALUES ( ? , ?, ?, ?, ? )";
+    private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order ) VALUES ( ? , ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_DELETE_HTMLDOCS_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_html_doc = ? ";
     private static final String SQL_QUERY_DELETE_HTMLDOCS_PORTLET_BY_ID_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status FROM htmldocs_list_portlet_htmldocs WHERE id_html_doc = ? ";
+    private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_html_doc = ? order by document_order ";
     private static final String SQL_QUERY_REMOVE_HTMLDOCS_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? and id_html_doc= ?";
 
     
-    private static final String SQL_QUERY_UPDATE_HTMLDOCS_PORTLET = "UPDATE htmldocs_list_portlet_htmldocs set id_portlet= ?, id_html_doc= ?, date_begin_publishing= ?, date_end_publishing= ?, status= ? WHERE  id_html_doc= ?";
-    private static final String SQL_QUERY_SELECT_PUBLICATION_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status FROM htmldocs_list_portlet_htmldocs WHERE id_html_doc = ? and id_portlet = ? ";
+    private static final String SQL_QUERY_UPDATE_HTMLDOCS_PORTLET = "UPDATE htmldocs_list_portlet_htmldocs set id_portlet= ?, id_html_doc= ?, date_begin_publishing= ?, date_end_publishing= ?, status= ?, document_order= ? WHERE  id_html_doc= ?";
+    private static final String SQL_QUERY_SELECT_PUBLICATION_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_html_doc = ? and id_portlet = ? order by document_order";
 
     ///////////////////////////////////////////////////////////////////////////////////////
     //Access methods to data
@@ -43,6 +43,7 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
             daoUtil.setDate(3, htmlDocPublication.getDateBeginPublishing( ));
             daoUtil.setDate(4, htmlDocPublication.getDateEndPublishing( ));
             daoUtil.setInt( 5, htmlDocPublication.getStatus( ) );
+            daoUtil.setInt( 6, htmlDocPublication.getDocumentOrder( ) );
             
             daoUtil.executeUpdate(  );
             daoUtil.free(  );
@@ -63,7 +64,9 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
         daoUtil.setDate(3, htmlDocPublication.getDateBeginPublishing( ));
         daoUtil.setDate(4, htmlDocPublication.getDateEndPublishing( ));
         daoUtil.setInt( 5, htmlDocPublication.getStatus( ) );
-        daoUtil.setInt( 6, htmlDocPublication.getIdDocument( ) );
+        daoUtil.setInt( 6, htmlDocPublication.getDocumentOrder( ) );
+
+        daoUtil.setInt( 7, htmlDocPublication.getIdDocument( ) );
 
 
         daoUtil.executeUpdate(  );
@@ -131,6 +134,7 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
         	htmldocPub.setDateBeginPublishing(daoUtil.getDate( 3 ));
         	htmldocPub.setDateEndPublishing(daoUtil.getDate( 4 ));
         	htmldocPub.setStatus(daoUtil.getInt( 5 ));
+        	htmldocPub.setDocumentOrder(daoUtil.getInt( 6 ));
         	
         	nListIdCategory.add( htmldocPub );
         }
@@ -162,6 +166,7 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
         	htmldocPub.setDateBeginPublishing(daoUtil.getDate( 3 ));
         	htmldocPub.setDateEndPublishing(daoUtil.getDate( 4 ));
         	htmldocPub.setStatus(daoUtil.getInt( 5 ));
+        	htmldocPub.setDocumentOrder(daoUtil.getInt( 6 ));
         	
         	
         }

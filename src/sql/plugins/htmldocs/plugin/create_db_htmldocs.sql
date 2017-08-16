@@ -136,6 +136,7 @@ CREATE TABLE htmldocs_list_portlet_htmldocs (
     date_begin_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
 	date_end_publishing timestamp default  "2030-01-01 11:59:59" NOT NULL,
 	status int default 0 NOT NULL,
+	document_order int default NULL,
 
 	
     CONSTRAINT `fk_id_html_doc_portlet` FOREIGN KEY(`id_html_doc`) references htmldocs(`id_html_doc`),
