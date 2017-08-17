@@ -49,17 +49,17 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_html_doc ) FROM htmldocs";
     private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM htmldocs_versions";
-    private static final String SQL_QUERY_SELECT = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description FROM htmldocs WHERE id_html_doc = ?";
-    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description FROM htmldocs WHERE content_label = ?";
-    private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description FROM htmldocs_versions WHERE id_html_doc = ? AND version = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs ( id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable FROM htmldocs WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs WHERE content_label = ?";
+    private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs_versions WHERE id_html_doc = ? AND version = ? ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs ( id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs WHERE id_html_doc = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM htmldocs_versions WHERE id_html_doc = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs SET id_html_doc = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ? WHERE id_html_doc = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description FROM htmldocs";
+    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs SET id_html_doc = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ? WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_html_doc FROM htmldocs";
-    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description FROM htmldocs_versions where id_html_doc = ?";
-    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs_versions where id_html_doc = ?";
+    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
     /**
      * Generates a new primary key
@@ -126,6 +126,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
         daoUtil.setString( nIndex++, htmlDoc.getEditComment( ) );
         daoUtil.setString( nIndex++, htmlDoc.getDescription( ) );
+        daoUtil.setBoolean(nIndex++, htmlDoc.getShareable( ));
 
         
         daoUtil.executeUpdate( );
@@ -150,6 +151,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
         daoUtil.setString( nIndex++, htmlDoc.getEditComment( ) );
         daoUtil.setString( nIndex++, htmlDoc.getDescription( ) );
+        daoUtil.setBoolean(nIndex++, htmlDoc.getShareable( ));
+
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -182,6 +185,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
+
 
         }
 
@@ -216,6 +221,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
+
 
         }
 
@@ -251,6 +258,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
+
 
         }
 
@@ -302,6 +311,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
         daoUtil.setString( nIndex++, htmlDoc.getEditComment( ) );
         daoUtil.setString( nIndex++, htmlDoc.getDescription( ) );
+        daoUtil.setBoolean(  nIndex++ ,htmlDoc.getShareable() );
+
         daoUtil.setInt( nIndex, htmlDoc.getId( ) );
 
         daoUtil.executeUpdate( );
@@ -334,6 +345,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
+
 
             htmlDocList.add( htmlDoc );
         }
@@ -369,6 +382,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
+
 
             htmlDocVersionsList.add( htmlDoc );
         }

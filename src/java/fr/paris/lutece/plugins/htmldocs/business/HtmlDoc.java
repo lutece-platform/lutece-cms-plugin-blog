@@ -92,6 +92,8 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     
     private DocContent _docContent;
     
+    private boolean _bShareable;
+    
     private List<Tag> _tag = new ArrayList<Tag>();
     
     private List<HtmlDocPublication> _htmldocPubilcation = new ArrayList<HtmlDocPublication>();
@@ -344,6 +346,22 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     	_docContent = docContent;
     }
     
+    /**
+     * Returns the Shareable
+     * 
+     * @return The Shareable
+     */
+    public boolean getShareable( )
+    {
+        return _bShareable;
+    }
+    /**
+     * shareable
+     */
+    public void setShareable( boolean shareable )
+    {
+         _bShareable= shareable;
+    }
     /**
      * Returns the tag list
      *

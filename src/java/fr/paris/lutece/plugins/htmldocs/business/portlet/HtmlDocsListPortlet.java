@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,10 +84,12 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     {
     	  List<HtmlDoc> listHtmlDocs = HtmlDocService.getInstance().getListDocWhithContent( );
           List<HtmlDoc> listHtmlDocsPublished= new ArrayList<HtmlDoc>();
-
-          for(HtmlDocPublication i:this.getArrayHtmlDOcs()){
+          GregorianCalendar calendar =new java.util.GregorianCalendar();
+          
+          for(HtmlDocPublication docPub:this.getArrayHtmlDOcs()){
           for(HtmlDoc doc:listHtmlDocs){	 
-         		 if(i.getIdDocument( ) == doc.getId()){
+        	  	
+         		 if(docPub.getIdDocument( ) == doc.getId() && docPub.getDateBeginPublishing().before(new Date(calendar.getTimeInMillis( ))) && docPub.getDateEndPublishing().after(new Date(calendar.getTimeInMillis( )))){
          			 listHtmlDocsPublished.add(doc);
          		 }
          	 }

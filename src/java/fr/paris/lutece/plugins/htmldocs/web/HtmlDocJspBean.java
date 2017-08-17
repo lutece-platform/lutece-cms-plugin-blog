@@ -117,6 +117,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
     protected static final String PARAMETER_TAG = "tag_doc";
     protected static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
+    protected static final String PARAMETER_SHAREABLE = "shareable";
 
 
 
@@ -510,6 +511,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
         String strContentLabel = request.getParameter( PARAMETER_CONTENT_LABEL );
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
+        String strShareable = request.getParameter( PARAMETER_SHAREABLE );
+
         String strUpdate_attachment= request.getParameter( PARAMETER_UPDATE_ATTACHMENT );
         boolean bIsUpdatable = ( ( strUpdate_attachment == null ) || strUpdate_attachment.equals( "" ) ) ? false : true;
 
@@ -522,6 +525,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         _htmldoc.setContentLabel( strContentLabel );
         _htmldoc.setDescription(strDescription);
+        _htmldoc.setShareable(Boolean.parseBoolean(strShareable));
         _htmldoc.setHtmlContent( strHtmlContent );
         _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );

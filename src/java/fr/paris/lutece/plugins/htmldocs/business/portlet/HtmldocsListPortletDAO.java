@@ -60,7 +60,7 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     //Category
     private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status, document_order ) VALUES ( ? , ?, ?, ? )";
     private static final String SQL_QUERY_DELETE_HTMLDOCS_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_html_doc, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
+    private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_html_doc, document_order, date_begin_publishing, date_end_publishing, status FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
     private static final String SQL_QUERY_SELECT_PAGE_PORTLET="SELECT id_page_template_document,description from  htmldocs_page_template";
    
 
@@ -203,6 +203,9 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         	HtmlDocPublication docPub= new HtmlDocPublication();
         	docPub.setIdDocument(daoUtil.getInt( 1 ));
         	docPub.setDocumentOrder(daoUtil.getInt( 2 ));
+        	docPub.setDateBeginPublishing(daoUtil.getDate( 3 ));
+        	docPub.setDateEndPublishing(daoUtil.getDate(4));
+        	docPub.setStatus(daoUtil.getInt( 5 ));
         	listDocPublication.add( docPub );
             
         }
