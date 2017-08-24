@@ -29,6 +29,7 @@
             <version>6.0.0</version>
             <type>lutece-core</type>
         </dependency>
+ 
         <dependency>
             <!-- Needed by daisydiff -->
             <groupId>org.outerj.daisy</groupId>

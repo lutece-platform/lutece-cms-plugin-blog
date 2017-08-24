@@ -147,6 +147,22 @@ CREATE TABLE htmldocs_list_portlet_htmldocs (
 	PRIMARY KEY (id_portlet, id_html_doc)
 );
 
+--
+-- Table structure for table form_rss_cf
+--
+DROP TABLE IF EXISTS htmldocs_rss_cf;
+
+CREATE TABLE htmldocs_rss_cf (
+	id_rss int default 0 NOT NULL,
+	id_portlet int default 0 NOT NULL,
+	
+	PRIMARY KEY (id_rss)
+);
+
+
+
+
+
 
 
 

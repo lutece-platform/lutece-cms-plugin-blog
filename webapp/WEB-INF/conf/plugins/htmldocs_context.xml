@@ -24,7 +24,14 @@
     
     <bean id="htmldocs.documentExtendableResourceService" class="fr.paris.lutece.plugins.htmldocs.service.resource.DocumentExtendableResourceService" />
 	
-	
+	<bean id="htmldocs.htmlDocResourceRssConfigDAO"  class="fr.paris.lutece.plugins.htmldocs.business.rss.HtmlDocResourceRssConfigDAO" />
+	 
+	<!-- RSS -->
+    <bean id="htmldocs.resourceRssTypeForm" class="fr.paris.lutece.portal.business.rss.ResourceRssType" >
+    	<property name="key" value="ResourceRssTypeHtmlDoc" />
+		<property name="titleI18nKey" value="htmldocs.resource_rss_type.label" />
+		<property name="className" value="fr.paris.lutece.plugins.htmldocs.business.rss.HtmlDocResourceRss"/>
+	</bean>
 	
        
     

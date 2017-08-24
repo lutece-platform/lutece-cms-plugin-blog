@@ -47,6 +47,11 @@ public class HtmlDocPublicationHome  {
        return  _dao.loadHtmlsDocsId(nDocId,  _plugin );
 
     }
+    public static List<HtmlDocPublication> getDocPublicationByPortlet( int nIdPortlet )
+    {
+       return  _dao.loadHtmlsDocsByPortlet(nIdPortlet,  _plugin );
+
+    }
     
     public static HtmlDocPublication findDocPublicationByPimaryKey( int nDocId, int nPortletId )
     {
@@ -65,6 +70,11 @@ public class HtmlDocPublicationHome  {
          _dao.remove(nIdDoc, nIdPortlet,  _plugin );
 
     }
-  
+    
+    public static List<HtmlDocPublication> getAllDocPublication(  )
+    {
+       return  _dao.loadAllHtmlsDocsPublication(  _plugin );
+
+    }
 	    
 }

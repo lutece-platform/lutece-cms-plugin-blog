@@ -21,6 +21,8 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     
     private static final String SQL_QUERY_UPDATE_HTMLDOCS_PORTLET = "UPDATE htmldocs_list_portlet_htmldocs set id_portlet= ?, id_html_doc= ?, date_begin_publishing= ?, date_end_publishing= ?, status= ?, document_order= ? WHERE  id_html_doc= ?";
     private static final String SQL_QUERY_SELECT_PUBLICATION_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_html_doc = ? and id_portlet = ? order by document_order";
+    private static final String SQL_QUERY_SELECT_PUBLICATION_ALL = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs order by document_order";
+    private static final String SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
 
     ///////////////////////////////////////////////////////////////////////////////////////
     //Access methods to data
@@ -145,6 +147,40 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     }
     
     /**
+     * Load a list of HtmlDocPublication
+     * @param nIdPortlet
+     * @return List of HtmlDocPublication
+     */
+    public List<HtmlDocPublication> loadHtmlsDocsByPortlet( int nIdPortlet, Plugin plugin  )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET, plugin );
+        daoUtil.setInt( 1, nIdPortlet );
+        daoUtil.executeQuery(  );
+
+        List<HtmlDocPublication> nListIdCategory = new ArrayList<HtmlDocPublication>(  );
+
+        while ( daoUtil.next(  ) )
+        {
+        	
+        	HtmlDocPublication htmldocPub= new HtmlDocPublication();
+        	htmldocPub.setIdPortlet(daoUtil.getInt( 1 ));
+        	htmldocPub.setIdDocument(daoUtil.getInt( 2 ));
+        	htmldocPub.setDateBeginPublishing(daoUtil.getDate( 3 ));
+        	htmldocPub.setDateEndPublishing(daoUtil.getDate( 4 ));
+        	htmldocPub.setStatus(daoUtil.getInt( 5 ));
+        	htmldocPub.setDocumentOrder(daoUtil.getInt( 6 ));
+        	
+        	nListIdCategory.add( htmldocPub );
+        }
+
+        daoUtil.free(  );
+
+        return nListIdCategory;
+    }
+    
+    
+    
+    /**
      * Load a  HtmlDocPublication
      * @param nDocId
      * @return IdDoc
@@ -174,6 +210,35 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
         daoUtil.free(  );
 
         return htmldocPub;
+    }
+    
+    /**
+     * Load all  HtmlDocPublication
+     */
+    public List<HtmlDocPublication>  loadAllHtmlsDocsPublication( Plugin plugin  )
+    {
+    	   DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PUBLICATION_ALL, plugin );
+           daoUtil.executeQuery(  );
+
+           List<HtmlDocPublication> nListIdCategory = new ArrayList<HtmlDocPublication>(  );
+
+           while ( daoUtil.next(  ) )
+           {
+           	
+           	HtmlDocPublication htmldocPub= new HtmlDocPublication();
+           	htmldocPub.setIdPortlet(daoUtil.getInt( 1 ));
+           	htmldocPub.setIdDocument(daoUtil.getInt( 2 ));
+           	htmldocPub.setDateBeginPublishing(daoUtil.getDate( 3 ));
+           	htmldocPub.setDateEndPublishing(daoUtil.getDate( 4 ));
+           	htmldocPub.setStatus(daoUtil.getInt( 5 ));
+           	htmldocPub.setDocumentOrder(daoUtil.getInt( 6 ));
+           	
+           	nListIdCategory.add( htmldocPub );
+           }
+
+           daoUtil.free(  );
+
+           return nListIdCategory;
     }
 
     
