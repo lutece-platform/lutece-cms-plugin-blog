@@ -53,8 +53,11 @@ import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.Paginator;
+import fr.paris.lutece.util.json.JsonResponse;
+import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -339,7 +342,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
-        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
+        model.put(MARK_LIST_TAG, getTageList());
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_HTMLDOC, TEMPLATE_CREATE_HTMLDOC, model );
@@ -376,20 +379,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         _htmldoc.setVersion( 1 );
         _htmldoc.setAttachedPortletId( 0 );
         populate( _htmldoc, request );
-        
-        if(request.getParameter(ACTION_ADD_TAG)!= null && !request.getParameter(ACTION_ADD_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG).isEmpty( )&& request.getParameter(ACTION_ADD_TAG).equals(ACTION_ADD_TAG)){
-    		
-        	_htmldoc.addTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG))));
-    		return redirectView( request, VIEW_CREATE_HTMLDOC );
-    		
-    	}
-        if(request.getParameter(ACTION_REMOVE_TAG)!= null && !request.getParameter(ACTION_REMOVE_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG_TO_REMOVE).isEmpty( )&& request.getParameter(ACTION_REMOVE_TAG).equals(ACTION_REMOVE_TAG)){
-    		
-        	_htmldoc.deleteTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG_TO_REMOVE))));
-    		return redirectView( request, VIEW_CREATE_HTMLDOC );
-    		
-    	}
-
 
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -407,6 +396,26 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
     }
 
+    @Action( ACTION_ADD_TAG )
+    public String doAddTag( HttpServletRequest request )
+    {
+    		String strIdTag= request.getParameter(PARAMETER_TAG);
+        	_htmldoc.addTag(new Tag(Integer.parseInt(strIdTag)));
+        	
+    		return JsonUtil.buildJsonResponse(new JsonResponse("SUCESS"));
+    		
+    	
+     }
+    @Action( ACTION_REMOVE_TAG )
+    public String doRemoveTag( HttpServletRequest request )
+    {
+		     String strIdTag= request.getParameter(PARAMETER_TAG);
+        	_htmldoc.deleteTag(new Tag(Integer.parseInt(strIdTag)));
+        	
+    		return JsonUtil.buildJsonResponse(new JsonResponse("SUCESS"));
+    		
+    	
+     }
     /**
      * Manages the removal form of a htmldoc whose identifier is in the http request
      *
@@ -486,7 +495,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
-        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
+        model.put(MARK_LIST_TAG, getTageList());
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         
@@ -530,19 +539,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-        
-        if(request.getParameter(ACTION_ADD_TAG)!= null && !request.getParameter(ACTION_ADD_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG).isEmpty( )&& request.getParameter(ACTION_ADD_TAG).equals(ACTION_ADD_TAG)){
-    		
-        	_htmldoc.addTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG))));
-    		return redirect(request, VIEW_MODIFY_HTMLDOC, PARAMETER_ID_HTMLDOC, _htmldoc.getId( ));
-    		
-    	}
-        if(request.getParameter(ACTION_REMOVE_TAG)!= null && !request.getParameter(ACTION_REMOVE_TAG).isEmpty() &&!request.getParameter(PARAMETER_TAG_TO_REMOVE).isEmpty( )&& request.getParameter(ACTION_REMOVE_TAG).equals(ACTION_REMOVE_TAG)){
-    		
-        	_htmldoc.deleteTag(new Tag(Integer.parseInt(request.getParameter(PARAMETER_TAG_TO_REMOVE))));
-    		return redirect(request, VIEW_MODIFY_HTMLDOC, PARAMETER_ID_HTMLDOC, _htmldoc.getId( ));
-    		
-    	}
+    
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
@@ -733,5 +730,26 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         return null;
+    }
+    /**
+     * 
+     * @return htmlDocList
+     */
+    private ReferenceList getTageList(){
+    	
+        ReferenceList htmlDocList = new ReferenceList( );
+
+    	for (ReferenceItem item:TagHome.getTagsReferenceList( )){
+    		if(_htmldoc.getTag().size() <= 0)
+    			return TagHome.getTagsReferenceList( );
+    		
+    		for(Tag tg:_htmldoc.getTag())
+	    		if(!item.getCode().equals(String.valueOf(tg.getIdTag( )))){
+	    			
+	    			htmlDocList.add(item);
+	    		}
+    	}
+    	
+    	return htmlDocList;
     }
 }

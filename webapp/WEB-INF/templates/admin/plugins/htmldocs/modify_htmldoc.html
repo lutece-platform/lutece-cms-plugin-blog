@@ -52,34 +52,141 @@
 		   <input name="update_attachment" id="update_attachment" value="1" type="checkbox"> Supprimer la pièce jointe
 	</div>
     </div>
-    <div class="form-group">
-	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">Tag&nbsp;&nbsp;:</label>
-	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+  
+    
+    <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>
+  </form>
+  <div class="form-group" style="position: absolute; top: 0px; right: 0px;">
+	        <div class="">	
+		<label class=" control-label" for="description">Tag&nbsp;&nbsp;:</label>
+
   		<@comboWithParams name="tag_doc" default_value="" additionalParameters="class=\"input-xxlarge\"" items=list_tag />
-		<button type="submit" value="addTag" name="addTag" class="btn btn-primary btn-sm btn-flat">
+		<button type="submit" value="addTag" name="addTag" class="btn btn-primary btn-sm btn-flat" onClick="addIdEntry()">
 			<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
 		</button>
 
-    		<p class="help-block"></p>
+    		<p id="tag" class="help-block"></p>
 		 <#list htmldoc.tag as tg>
 		<#list list_tag as tgName>
 			<#if tgName.code == tg.idTag?string > 
+				<div id="${tg.idTag}">
 				${tgName.name!}
-				<button type="submit" value="removeTag" name="removeTag" class="btn btn-danger btn-small" onClick="updateIdEntry(${tg.idTag});">
+				<button  type="submit" value="removeTag" name="removeTag" class="btn btn-danger btn-small" onClick="removeEntry(${tg.idTag}, '${tgName.name!}');">
 					<i class="fa fa-trash"></i>&nbsp;
 	   			</button>
+				</div>
 				  <#break>
 			</#if>
 		</#list>
 		</#list>
 	</div>
     </div>
-    
-    <@actionButtons button1Name="action_modifyHtmlDoc" button2Name="view_manageHtmlDocs"/>
-  </form>
 </@rowBoxHeader>
 <script>
-function updateIdEntry(idEntry){
+var baseUrl = document.getElementsByTagName('base')[0].href;
+
+function removeEntry(idEntry, tgName){
 	$('#tag_remove').val(idEntry);
+	doDeleteTag(idEntry, tgName);
 }
-</script>  
+
+function addIdEntry(){
+	
+	doAddTag($('select#tag_doc').val(),$('#tag_doc option:selected').text());
+}
+
+
+function doAddTag( idTag, tgName )
+
+{
+
+	$.ajax({
+
+            url : baseUrl + "jsp/admin/plugins/htmldocs/DoAddTag.jsp?action=addTag&tag_doc="+idTag,
+
+	    type: 'GET',
+
+	    dataType: "json",
+
+	    data: {},
+
+            async: false,
+
+	    cache:false,
+
+            success:function(data) {
+
+        	if ( data.status == 'OK' )
+
+    		{
+			$( "#tag" ).append("<div id="+idTag+"> "+tgName+ "<button id='"+idTag+"' type='submit' value='removeTag' name='removeTag' class='btn btn-danger btn-small' onClick=removeEntry("+idTag+",'"+tgName+"');><i class='fa fa-trash'></i>&nbsp;</button> </div> ");
+
+			$('#tag_doc option:selected').detach();
+        	}
+
+        	else
+		{
+
+			alert("echec")
+
+		}
+
+		},
+
+          error: function(jqXHR, textStatus, errorThrown) {
+		alert("error")
+          }
+
+	});
+
+}
+    
+function doDeleteTag( idTag, tgName  )
+
+{
+
+	
+	$.ajax({
+
+            url : baseUrl + "jsp/admin/plugins/htmldocs/DoDeleteTag.jsp?action=removeTag&tag_doc="+idTag,
+
+	    type: 'GET',
+
+	    dataType: "json",
+
+	    data: {},
+
+            async: false,
+
+	    cache:false,
+
+            success:function(data) {
+
+        	if ( data.status == 'OK' )
+
+    		{
+			$('#'+idTag).detach();
+			$('#tag_doc').append("<option value="+idTag+">"+tgName+"</option>")
+			
+        	}
+
+        	else
+		{
+
+			alert("echec")
+
+		}
+
+		},
+
+          error: function(jqXHR, textStatus, errorThrown) {
+		alert("error")
+          }
+
+	});
+
+}
+
+
+  </script>
+   
