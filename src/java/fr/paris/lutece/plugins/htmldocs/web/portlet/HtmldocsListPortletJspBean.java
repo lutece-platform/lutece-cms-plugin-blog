@@ -202,18 +202,17 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
         
         String strAction= request.getParameter( PARAMETER_ACTION_PORTLET );
         String strIdDocument = request.getParameter( "idDocument" );
-        //String strOrderDocument = request.getParameter( "orderDocument" );
+        String strOrderDocument = request.getParameter( "orderDocument" );
         
         int nIdDocument= Integer.parseInt(strIdDocument);
-        //int nDocumentOrder= Integer.parseInt(strOrderDocument);
         
         HtmlDocPublication doc= new HtmlDocPublication();
         doc.setIdDocument(nIdDocument);
-       // doc.setDocumentOrder(nDocumentOrder);
         
         if(strAction != null && !strAction.isEmpty() && strAction.equals(PARAMETER_ACTION_PORTLET_ADD)){
-        	
-        	_portlet.addIdHtmlDocs(doc);
+           
+        	int nDocumentOrder= Integer.parseInt(strOrderDocument);
+        	_portlet.addIdHtmlDocs(nDocumentOrder, doc);
         	
         }else if(strAction != null && !strAction.isEmpty() && strAction.equals(PARAMETER_ACTION_PORTLET_REMOVE)){
         	

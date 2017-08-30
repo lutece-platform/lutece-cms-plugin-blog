@@ -199,6 +199,31 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     	}
     	if(!bool) _arrayHtmlDOcs.add( doc );
     }
+    
+    /**
+     * 
+     * @param doc
+     */
+    public void addIdHtmlDocs( int order, HtmlDocPublication doc){
+    	
+    	boolean bool= false;
+    	HtmlDocPublication htmlDoc= null;
+    	for(HtmlDocPublication dc:_arrayHtmlDOcs){
+    		
+    		if(doc.getIdDocument() == dc.getIdDocument( )){
+    			bool=true;
+    			htmlDoc= dc;
+    			break;
+    		}
+    	
+    	}
+    	if(bool){
+
+    		_arrayHtmlDOcs.remove(htmlDoc);
+    		
+    	}
+    	_arrayHtmlDOcs.add( order, doc );
+    }
     /**
      * 
      * @param doc
