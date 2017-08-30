@@ -35,14 +35,18 @@ package fr.paris.lutece.plugins.htmldocs.web;
 
 
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublicationHome;
 import fr.paris.lutece.plugins.htmldocs.service.HtmlDocService;
-
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
-
 import fr.paris.lutece.portal.web.xpages.XPage;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -69,6 +73,8 @@ public class HtmlDocApp  extends MVCApplication
 
     // Parameters
     protected static final String PARAMETER_ID_HTMLDOC = "id";
+    protected static final String PARAMETER_ID_Portlet = "portlet_id";
+
    
     protected static final String PARAMETER_VIEW = "view";
    
@@ -76,6 +82,8 @@ public class HtmlDocApp  extends MVCApplication
 
     // Filter Marks
     protected static final String MARK_HTML_DOC = "htmldoc";
+    protected static final String MARK_LIST_DOC = "htmldoc_list";
+
 
 
 
@@ -94,10 +102,33 @@ public class HtmlDocApp  extends MVCApplication
     @View( value = VIEW_DETAILS, defaultView = true )
     public XPage getTicketDetails( HttpServletRequest request )
     {
+    	
+    	List<HtmlDocPublication> listHtmlDocPub= new ArrayList<HtmlDocPublication>();
+    	List<HtmlDocPublication> listHtmlDoc= new ArrayList<HtmlDocPublication>();
+
     	int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
+    	String idPortlet =  request.getParameter( PARAMETER_ID_Portlet ) ;
+    	if(idPortlet != null && !idPortlet.isEmpty()){
+    		
+    		listHtmlDocPub= HtmlDocPublicationHome.getDocPublicationByPortlet(Integer.parseInt(idPortlet));
+    	}
+  	    List<HtmlDoc> listHtmlDocs = new ArrayList<HtmlDoc>();
+
+  	    for(HtmlDoc doc:HtmlDocService.getInstance().getListDocWithoutBinaries()){
+  	    	for(HtmlDocPublication pub:listHtmlDocPub){
+  	    		if(doc.getId() == pub.getIdDocument( )){
+  	    			doc.setAttachedPortletId(Integer.parseInt(idPortlet));
+  	    			listHtmlDocs.add(doc);
+  	    			
+  	    		}
+  	    	}
+  	    	
+  	    }
+  	    
         HtmlDoc htmldoc = HtmlDocService.getInstance().loadDocument(nId);
         Map<String, Object> model = getModel( );
         model.put( MARK_HTML_DOC, htmldoc );
+        model.put( MARK_LIST_DOC, listHtmlDocs );
 
 
         return getXPage( TEMPLATE_VIEW_HTMLDOC, request.getLocale( ), model );
