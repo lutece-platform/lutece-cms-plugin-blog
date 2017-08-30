@@ -3,7 +3,6 @@ package fr.paris.lutece.plugins.htmldocs.business.portlet;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -189,7 +188,7 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PUBLICATION_PORTLET, plugin );
         daoUtil.setInt( 1, nDocId );
-        daoUtil.setInt( 1, nPortletId );
+        daoUtil.setInt( 2, nPortletId );
         daoUtil.executeQuery(  );
 
     	HtmlDocPublication htmldocPub= new HtmlDocPublication();

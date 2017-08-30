@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
+import java.sql.Date;
+
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
@@ -50,6 +52,8 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs_portlet ( id_portlet, name, content_id ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_portlet SET id_portlet = ?, name = ?, content_id = ? WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status, document_order ) VALUES ( ? , ?, ?, ? )";
+
 
     /**
      * Insert a new record in the table.
@@ -139,18 +143,24 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
 
         return portlet;
     }
-    /**
-     * 
-     * @param p
-     */
-    private void insertHtmlDocPublivcation(HtmldocsPortlet p){
-    
-    	HtmlDocPublication publication= new HtmlDocPublication();
-    	publication.setStatus( 1 );
-    	publication.setIdDocument(p.getContentId( ));
-    	publication.setIdPortlet(p.getId( ));
-        HtmlDocPublicationHome.create(publication);
 
+    /**
+     * Insert a docPublication for a specified portlet
+     * @param portlet the HtmldocsPortlet to insert
+     */
+    private void insertHtmlDocPublivcation( HtmldocsPortlet p )
+    {
+ 
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_HTMLDOCS_PORTLET );
+
+        daoUtil.setInt( 1, p.getId( ) );
+        daoUtil.setInt( 2, p.getContentId( ) );
+        daoUtil.setInt( 3, 1 );
+        daoUtil.setInt( 4, 0 );
+        daoUtil.executeUpdate(  );
+         
+        daoUtil.free(  );
+        
     }
     
     /**

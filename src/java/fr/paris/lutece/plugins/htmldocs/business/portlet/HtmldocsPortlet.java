@@ -33,11 +33,18 @@
  */
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
+
+import java.sql.Date;
+import java.util.GregorianCalendar;
+
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
 import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.ctc.wstx.util.StringUtil;
+import com.mchange.lang.StringUtils;
 
 /**
  * This class represents business objects HtmldocsPortlet
@@ -55,6 +62,9 @@ public class HtmldocsPortlet extends PortletHtmlContent
     private int _nContentId;
 
     private String _strName;
+    
+    private HtmlDocPublication _htmlDocPublication;
+
 
     /**
      * Returns the HTML code of the HtmldocsPortlet portlet with XML heading
@@ -66,9 +76,16 @@ public class HtmldocsPortlet extends PortletHtmlContent
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
+        GregorianCalendar calendar =new java.util.GregorianCalendar();
 
-        return htmldoc.getHtmlContent( );
+    	HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
+        HtmlDocPublication docPub=HtmlDocPublicationHome.findDocPublicationByPimaryKey(this.getContentId(), this.getId( ));
+		if(docPub != null && docPub.getIdDocument()!=0 && docPub.getDateBeginPublishing().before(new Date(calendar.getTimeInMillis( ))) && docPub.getDateEndPublishing().after(new Date(calendar.getTimeInMillis( )))){
+
+			return htmldoc.getHtmlContent( );
+		}
+		
+		return "";
     }
 
     /**
@@ -111,6 +128,27 @@ public class HtmldocsPortlet extends PortletHtmlContent
         return _nContentId;
     }
 
+    /**
+     * Sets the HtmlDocPublication of the html document
+     *
+     * @param the
+     *            HtmlDocPublication of the document
+     */
+    public void setHtmlDocPublication( HtmlDocPublication htmlDocPublication )
+    {
+    	_htmlDocPublication = htmlDocPublication;
+    }
+
+    /**
+     * Get the HtmlDocPublication of the html document
+     *
+     * @return the HtmlDocPublication of the document
+     */
+    public HtmlDocPublication getHtmlDocPublication( )
+    {
+        return _htmlDocPublication;
+    }
+    
     /**
      * Sets the name of the html document
      *
