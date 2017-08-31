@@ -121,7 +121,7 @@ public class HtmlDocPublicationJspBean extends HtmlDocJspBean
 	
 	    Map<String, Object> model = getModel( );
 	    model.put( MARK_HTMLDOC, _htmldoc );
-	    model.put( MARK_PORTLET_LIST, PublishingService.getInstance().getHtmlDocsPortlets( ) );
+	    model.put( MARK_PORTLET_LIST, PublishingService.getInstance().getHtmlDocsPortletstoPublish( ) );
 
 	
 	    return getPage( PROPERTY_PAGE_TITLE_PUBLICATION_HTMLDOC, TEMPLATE_PUBLICATION_HTMLDOC, model );

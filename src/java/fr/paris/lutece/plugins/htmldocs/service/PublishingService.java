@@ -36,15 +36,18 @@ package fr.paris.lutece.plugins.htmldocs.service;
 import fr.paris.lutece.plugins.htmldocs.business.IndexerAction;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublicationHome;
+import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmldocsPortletHome;
 import fr.paris.lutece.plugins.htmldocs.service.docsearch.HtmlDocSearchService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletType;
+import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -208,6 +211,40 @@ public class PublishingService
         for ( PortletType portletType : plugin.getPortletTypes(  ) )
         {
             listPortletsAll.addAll( PortletHome.findByType( portletType.getId(  ) ) );
+        }       
+
+        return listPortletsAll;
+    }
+    
+    /**
+     * Loads the list of portlets htmldocs empty and htmldocslist 
+     *
+     * @return the {@link Collection} of the portlets
+     */
+    public Collection<Portlet> getHtmlDocsPortletstoPublish(  )
+    {
+        Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
+        Collection<Portlet> listPortletsAll = new ArrayList<Portlet>(  );
+
+        for ( PortletType portletType : plugin.getPortletTypes(  ) )
+        {
+        	List<Portlet> listPortlet=PortletHome.findByType( portletType.getId(  ) );
+        	String className = HtmldocsPortletHome.class.getName( );
+	        String strPortletTypeId = PortletTypeHome.getPortletTypeId( className );
+	        
+        	if(portletType.getId(  ).equals(strPortletTypeId)){
+        		for(Portlet pt:listPortlet){
+        			if(HtmlDocPublicationHome.getDocPublicationByPortlet(pt.getId()).size( ) == 0){
+        				
+        				listPortletsAll.addAll( listPortlet );
+        			}
+        			
+        		}
+        		
+        	}else{
+        		
+        		listPortletsAll.addAll( listPortlet );
+        	}
         }       
 
         return listPortletsAll;
