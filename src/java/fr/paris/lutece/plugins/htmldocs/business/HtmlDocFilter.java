@@ -64,7 +64,7 @@ public class HtmlDocFilter
     /**
      * @param arrayTagsId the _arrayTagsId to set
      */
-    public void setCategoriesId( int[] arrayTagsId )
+    public void setTagsId( int[] arrayTagsId )
     {
     	_arrayTagsId = arrayTagsId;
     }
