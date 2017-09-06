@@ -104,7 +104,6 @@ public class HtmlDocApp  extends MVCApplication
     {
     	
     	List<HtmlDocPublication> listHtmlDocPub= new ArrayList<HtmlDocPublication>();
-    	List<HtmlDocPublication> listHtmlDoc= new ArrayList<HtmlDocPublication>();
 
     	int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
     	String idPortlet =  request.getParameter( PARAMETER_ID_Portlet ) ;

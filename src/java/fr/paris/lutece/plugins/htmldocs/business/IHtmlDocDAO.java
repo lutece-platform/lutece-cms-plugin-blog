@@ -36,6 +36,10 @@ package fr.paris.lutece.plugins.htmldocs.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
+
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -164,4 +168,14 @@ public interface IHtmlDocDAO
      * @return The referenceList which contains the data of all the htmlDoc objects
      */
     ReferenceList selectHtmlDocsReferenceList( Plugin plugin );
+   
+    /**
+     * Load the list of htmldocs
+     * @param filter The HtmlDOcFilter Object
+     * @return The Collection of the htmldocss
+     */ 
+    List<HtmlDoc> selectByFilter( HtmlDocFilter filter );
+   
+
+
 }

@@ -1,6 +1,9 @@
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -22,17 +25,21 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     private static final String SQL_QUERY_SELECT_PUBLICATION_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_html_doc = ? and id_portlet = ? order by document_order";
     private static final String SQL_QUERY_SELECT_PUBLICATION_ALL = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs order by document_order";
     private static final String SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET = "SELECT id_portlet , id_html_doc, date_begin_publishing, date_end_publishing, status, document_order FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
-
+    private static final String SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS = " SELECT id_portlet, id_html_doc, document_order, date_begin_publishing FROM htmldocs_list_portlet_htmldocs WHERE date_begin_publishing <= ? AND date_end_publishing >= ? AND status = ? ORDER BY document_order ";
+    private static final String SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS = " SELECT DISTINCT pub.id_html_doc FROM htmldocs_list_portlet_htmldocs pub WHERE  pub.status = ? AND pub.date_begin_publishing <= ? AND  pub.date_end_publishing >= ? AND pub.id_portlet IN ";
+    
+    private static final String SQL_FILTER_BEGIN = " (";
+    private static final String SQL_TAGS_END = ") ";
+    private static final String CONSTANT_QUESTION_MARK = "?";
+    private static final String CONSTANT_COMMA = ",";
     ///////////////////////////////////////////////////////////////////////////////////////
     //Access methods to data
 
-    /**
-   
 
     /**
-     * Insert a list of doc for a specified htmlDocPublication
-     * @param htmlDocPublication the HtmlDocPublication to insert
+     * {@inheritDoc }
      */
+    @Override
     public void insertHtmlsDocsId( HtmlDocPublication htmlDocPublication, Plugin plugin  )
     {
     	
@@ -52,14 +59,13 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     }
 
     /**
-     * Update the record in the table
-     *
-     * @param portlet A portlet
+     * {@inheritDoc }
      */
+    @Override
     public void store( HtmlDocPublication htmlDocPublication, Plugin plugin )
     {
     	
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_HTMLDOCS_PORTLET );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_HTMLDOCS_PORTLET, plugin );
         daoUtil.setInt( 1, htmlDocPublication.getIdPortlet( ) );
         daoUtil.setInt( 2, htmlDocPublication.getIdDocument( ) );
         daoUtil.setDate(3, htmlDocPublication.getDateBeginPublishing( ));
@@ -77,9 +83,9 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     }
 
     /**
-     * Delete docs for the specified portlet
-     * @param nDocId The portlet identifier
+     * {@inheritDoc }
      */
+    @Override
     public void deleteHtmlsDocsId( int nDocId, Plugin plugin  )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_HTMLDOCS_PORTLET, plugin );
@@ -89,9 +95,9 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     }
 
     /**
-     * Delete docs for the specified portlet
-     * @param nIdPortlet The portlet identifier
+     * {@inheritDoc }
      */
+    @Override
     public void deleteHtmlsDocByIdPortlet( int nIdPortlet, Plugin plugin  )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_HTMLDOCS_PORTLET_BY_ID_PORTLET, plugin );
@@ -99,7 +105,10 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
-    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public void remove( int nDocId, int nIdPortlet, Plugin plugin  )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_HTMLDOCS_PORTLET, plugin );
@@ -110,14 +119,10 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
         daoUtil.free(  );
     }
   
-    
-   
-
     /**
-     * Load a list of HtmlDocPublication
-     * @param nDocId
-     * @return List of IdDoc
+     * {@inheritDoc }
      */
+    @Override
     public List<HtmlDocPublication> loadHtmlsDocsId( int nDocId, Plugin plugin  )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET, plugin );
@@ -146,10 +151,9 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     }
     
     /**
-     * Load a list of HtmlDocPublication
-     * @param nIdPortlet
-     * @return List of HtmlDocPublication
+     * {@inheritDoc }
      */
+    @Override
     public List<HtmlDocPublication> loadHtmlsDocsByPortlet( int nIdPortlet, Plugin plugin  )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET, plugin );
@@ -180,10 +184,9 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     
     
     /**
-     * Load a  HtmlDocPublication
-     * @param nDocId
-     * @return IdDoc
+     * {@inheritDoc }
      */
+    @Override
     public HtmlDocPublication loadHtmlsDocsPublication( int nDocId, int nPortletId, Plugin plugin  )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PUBLICATION_PORTLET, plugin );
@@ -212,8 +215,9 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
     }
     
     /**
-     * Load all  HtmlDocPublication
+     * {@inheritDoc }
      */
+    @Override
     public List<HtmlDocPublication>  loadAllHtmlsDocsPublication( Plugin plugin  )
     {
     	   DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PUBLICATION_ALL, plugin );
@@ -240,7 +244,81 @@ public class HtmlDocPublicationDAO implements IHtmlDocPublicationDAO {
            return nListIdCategory;
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Collection<HtmlDocPublication> selectSinceDatePublishingAndStatus( Date datePublishing, Date dateEndPublication, int nStatus, Plugin plugin )
+    {
+        Collection<HtmlDocPublication> listDocumentPublication = new ArrayList<HtmlDocPublication>(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS, plugin );
+        daoUtil.setTimestamp( 1, new Timestamp( datePublishing.getTime(  ) ) );
+        daoUtil.setTimestamp( 2, new Timestamp( dateEndPublication.getTime(  ) ) );
+
+        daoUtil.setInt( 3, nStatus );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+        	HtmlDocPublication documentPublication = new HtmlDocPublication(  );
+            documentPublication.setIdPortlet( daoUtil.getInt( 1 ) );
+            documentPublication.setIdDocument( daoUtil.getInt( 2 ) );
+            documentPublication.setDocumentOrder( daoUtil.getInt( 3 ) );
+            documentPublication.setStatus( nStatus );
+            documentPublication.setDateBeginPublishing( daoUtil.getDate( 4 ) );
+            listDocumentPublication.add( documentPublication );
+        }
+
+        daoUtil.free(  );
+
+        return listDocumentPublication;
+    }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Integer> getPublishedDocumentsIdsListByPortletIds( int[] nPortletsIds, Date datePublishing,
+    		Date dateEndPublishing, Plugin plugin )
+    {
+        List<Integer> listIds = new ArrayList<Integer>( );
+        if ( nPortletsIds == null || nPortletsIds.length == 0 )
+        {
+            return listIds;
+        }
+        StringBuilder sbSql = new StringBuilder( SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS );
+        sbSql.append(  SQL_FILTER_BEGIN  );
+
+        for ( int i = 0; i < nPortletsIds.length; i++ )
+        {
+            sbSql.append( CONSTANT_QUESTION_MARK );
+            if ( i + 1 < nPortletsIds.length )
+            {
+                sbSql.append( CONSTANT_COMMA );
+            }
+        }
+        sbSql.append(  SQL_TAGS_END + "order by document_order" );
+
+        DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin );
+        int nIndex = 1;
+        daoUtil.setInt( nIndex++, 1 );
+        daoUtil.setTimestamp( nIndex++, new Timestamp( datePublishing.getTime( ) ) );
+        daoUtil.setTimestamp( nIndex++, new Timestamp( dateEndPublishing.getTime( ) ) );
+
+        for ( int nPortletId : nPortletsIds )
+        {
+            daoUtil.setInt( nIndex++, nPortletId );
+        }
+        daoUtil.executeQuery( );
+        while ( daoUtil.next( ) )
+        {
+            listIds.add( daoUtil.getInt( 1 ) );
+        }
+        daoUtil.free( );
+        return listIds;
+
+    }
+
   
 	    
 }

@@ -186,7 +186,7 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     	_arrayHtmlDOcs = arrayHtmlDOcs;
     }
     /**
-     * 
+     *  HtmlDoPublication in the list _arrayHtmlDOcs
      * @param doc
      */
     public void addIdHtmlDocs(HtmlDocPublication doc){
@@ -203,10 +203,11 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     	if(!bool) _arrayHtmlDOcs.add( doc );
     }
     
-    /**
-     * 
-     * @param doc
-     */
+   /**
+    * set HtmlDoPublication in the list by order
+    * @param order
+    * @param doc
+    */
     public void addIdHtmlDocs( int order, HtmlDocPublication doc){
     	
     	boolean bool= false;

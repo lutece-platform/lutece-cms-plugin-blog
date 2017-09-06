@@ -33,12 +33,15 @@
  */
 package fr.paris.lutece.plugins.htmldocs.business;
 
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This class provides instances management methods (create, find, ...) for HtmlDoc objects
@@ -227,4 +230,19 @@ public final class HtmlDocHome
 
         return htmlDoc;
     }
+    
+    /**
+     * Returns a collection of HtmlDoc objects
+     * @return A collection of HtmlDocs
+     * @param filter The filter
+     * @param locale The locale
+     */
+    public static List<HtmlDoc> findByFilter( HtmlDocFilter filter, Locale locale )
+    {
+        List<HtmlDoc> listDocuments = _dao.selectByFilter( filter );
+
+        return listDocuments;
+    }
+    
+    
 }

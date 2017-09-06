@@ -104,7 +104,6 @@ public class HtmlDocsSearchIndexer implements SearchIndexer
     @Override
     public List<Document> getDocuments( String strDocumentId ) throws IOException, InterruptedException, SiteMessageException
     {
-        Plugin plugin = HtmldocsPlugin.getPlugin();
 
         int documentId;
 

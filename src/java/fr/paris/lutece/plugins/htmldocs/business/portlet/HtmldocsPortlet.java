@@ -43,8 +43,6 @@ import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ctc.wstx.util.StringUtil;
-import com.mchange.lang.StringUtils;
 
 /**
  * This class represents business objects HtmldocsPortlet

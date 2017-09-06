@@ -67,11 +67,11 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     ///////////////////////////////////////////////////////////////////////////////////////
     //Access methods to data
 
+    
     /**
-     * Insert a new record in the table htmldocs_list_portlet
-     *
-     * @param portlet the instance of the Portlet object to insert
+     * {@inheritDoc }
      */
+    @Override
     public void insert( Portlet portlet )
     {
         HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
@@ -111,12 +111,11 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         }
     }
 
+    
     /**
-    * Deletes records for a portlet identifier in the tables htmldocs_list_portlet
-    * htmldocs_list_portlet_htmldocs
-    *
-    * @param nPortletId the portlet identifier
-    */
+     * {@inheritDoc }
+     */
+    @Override
     public void delete( int nPortletId )
     {
         deleteHtmlsDocsId( nPortletId );
@@ -139,13 +138,10 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         daoUtil.free(  );
     }
 
-
     /**
-     * Loads the data of Document List Portlet whose identifier is specified in parameter
-     *
-     * @param nPortletId The Portlet identifier
-     * @return theDocumentListPortlet object
+     * {@inheritDoc }
      */
+    @Override
     public Portlet load( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
@@ -167,6 +163,10 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         return portlet;
     }
     
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public Map<Integer,String> loadPages( )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_PORTLET );
@@ -215,11 +215,11 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         return listDocPublication;
     }
 
+    
     /**
-     * Update the record in the table
-     *
-     * @param portlet A portlet
+     * {@inheritDoc }
      */
+    @Override
     public void store( Portlet portlet )
     {
     	HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
@@ -236,13 +236,11 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         insertHtmlsDocsId( p );
     }
 
-   
+    
     /**
-     * Tests if is a portlet is portlet type alias
-     *
-     * @param nPortletId The identifier of the document
-     * @return true if the portlet is alias, false otherwise
+     * {@inheritDoc }
      */
+    @Override
     public boolean checkIsAliasPortlet( int nPortletId )
     {
         boolean bIsAlias = false;

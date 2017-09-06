@@ -35,11 +35,18 @@
 package fr.paris.lutece.plugins.htmldocs.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This class provides Data Access methods for HtmlDoc objects
@@ -60,9 +67,28 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_html_doc FROM htmldocs";
     private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs_versions where id_html_doc = ?";
     private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
-
-    /**
-     * Generates a new primary key
+    
+    private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_html_doc, a.version, a.content_label, " +
+            " a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id , " +
+            " a.edit_comment , a.description, a.shareable  FROM htmldocs a " +
+            " LEFT OUTER JOIN htmldocs_tag_document f ON a.id_html_doc = f.id_html_doc ";
+    
+    private static final String SQL_FILTER_WHERE_CLAUSE = " WHERE ";
+    private static final String SQL_FILTER_AND = " AND ";
+    private static final String SQL_FILTER_TAGS_BEGIN = " (";
+    private static final String SQL_FILTER_TAGS = " f.id_tag = ? ";
+    private static final String SQL_FILTER_TAGS_NULL = " f.id_tag IS NULL ";
+    private static final String SQL_FILTER_TAGS_OR = " OR ";
+    private static final String SQL_FILTER_TAGS_END = ") ";
+    private static final String SQL_FILTER_ID_BEGIN = " (";
+    private static final String SQL_FILTER_ID = " a.id_html_doc = ? ";
+    private static final String SQL_FILTER_ID_OR = " OR ";
+    private static final String SQL_FILTER_ID_END = ") ";
+    private static final String CONSTANT_QUESTION_MARK = "?";
+    private static final String CONSTANT_COMMA = ",";
+    private static final String SQL_ORDER_BY_LAST_MODIFICATION = " ORDER BY a.update_date DESC ";
+  
+    /** Generates a new primary key
      * 
      * @param plugin
      *            The Plugin
@@ -429,4 +455,175 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.free( );
         return htmlDocList;
     }
+    
+    /**
+     * Load the list of htmldocs
+     *
+     * @return The Collection of the htmldocs
+     * @param filter The HtmlDocFilter Object
+     */
+    @Override
+    public List<HtmlDoc> selectByFilter( HtmlDocFilter filter )
+    {
+        List<HtmlDoc> listDocuments = new ArrayList<HtmlDoc>(  );
+        DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next( ) )
+        {
+            HtmlDoc htmlDoc = new HtmlDoc( );
+            int nIndex = 1;
+
+            htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
+
+
+            if ( filter.getLoadBinaries(  ) )
+            {
+            	htmlDoc.setDocContent(DocContentHome.getDocsContent( htmlDoc.getId( ) ));
+            }
+
+            htmlDoc.setTag( TagHome.getTagListByDoc( htmlDoc.getId( )));
+
+            listDocuments.add( htmlDoc );
+        }
+
+        daoUtil.free(  );
+
+        return listDocuments;
+    }
+    
+    /**
+     * Return a dao initialized with the specified filter
+     * @param strQuerySelect the query
+     * @param filter the DocumentFilter object
+     * @return the DaoUtil
+     */
+    private DAOUtil getDaoFromFilter( String strQuerySelect, HtmlDocFilter filter )
+    {
+        String strSQL = strQuerySelect;
+        StringBuilder sbWhere = new StringBuilder( StringUtils.EMPTY );
+      
+        if ( filter.containsTagsCriteria(  ) )
+        {
+            StringBuilder sbCategories = new StringBuilder( SQL_FILTER_TAGS_BEGIN );
+
+            int i = 0;
+
+            for ( int nTagId : filter.getTagsId(  ) )
+            {
+                if ( nTagId > 0 )
+                {
+                    sbCategories.append( SQL_FILTER_TAGS );
+                }
+                else
+                {
+                    sbCategories.append( SQL_FILTER_TAGS_NULL );
+                }
+
+                if ( ( i + 1 ) < filter.getTagsId(  ).length )
+                {
+                    sbCategories.append( SQL_FILTER_TAGS_OR );
+                }
+
+                i++;
+            }
+
+            sbCategories.append( SQL_FILTER_TAGS_END );
+            sbWhere.append( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY )
+                   .append( sbCategories.toString(  ) );
+        }
+
+        if ( filter.containsIdsCriteria(  ) )
+        {
+            StringBuilder sbIds = new StringBuilder( SQL_FILTER_ID_BEGIN );
+
+            for ( int i = 0; i < filter.getIds(  ).length; i++ )
+            {
+                sbIds.append( SQL_FILTER_ID );
+
+                if ( ( i + 1 ) < filter.getIds(  ).length )
+                {
+                    sbIds.append( SQL_FILTER_ID_OR );
+                }
+            }
+
+            sbIds.append( SQL_FILTER_ID_END );
+            sbWhere.append( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( sbIds.toString(  ) );
+        }
+
+        if ( BooleanUtils.isFalse( filter.isPublished(  ) ) )
+        {
+            sbWhere.append( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY )
+                   .append( "a.id_html_doc NOT IN (SELECT DISTINCT id_html_doc FROM htmldocs_tag_document) " );
+        }
+
+        if ( StringUtils.isNotBlank( filter.getDateMin(  ) ) && StringUtils.isNotBlank( filter.getDateMax(  ) ) )
+        {
+            sbWhere.append( ( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) )
+                   .append( "a.update_date < " ).append( "'" + filter.getDateMax(  ) + "'" ).append( SQL_FILTER_AND )
+                   .append( "a.update_date > " ).append( "'" + filter.getDateMin(  ) + "'" );
+        }
+        else if ( StringUtils.isNotBlank( filter.getDateMin(  ) ) )
+        {
+            sbWhere.append( ( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) )
+                   .append( "a.update_date > " ).append( "'" + filter.getDateMin(  ) + "'" );
+        }
+        else if ( StringUtils.isNotBlank( filter.getDateMax(  ) ) )
+        {
+            sbWhere.append( ( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) )
+                   .append( "a.update_date <= " ).append( "'" + filter.getDateMax(  ) + "'" );
+        }
+
+        String strWhere = sbWhere.toString(  );
+
+        if ( sbWhere.length(  ) != 0 )
+        {
+            strSQL += ( SQL_FILTER_WHERE_CLAUSE + strWhere );
+        }
+
+        strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
+        AppLogService.debug( "Sql query filter : " + strSQL );
+
+        DAOUtil daoUtil = new DAOUtil( strSQL );
+        int nIndex = 1;
+
+      
+        if ( filter.containsTagsCriteria(  ) )
+        {
+            for ( int nCategoryId : filter.getTagsId(  ) )
+            {
+                if ( nCategoryId > 0 )
+                {
+                    daoUtil.setInt( nIndex, nCategoryId );
+                    AppLogService.debug( "Param" + nIndex + " (getTagsId) = " + nCategoryId );
+                    nIndex++;
+                }
+            }
+        }
+
+        if ( filter.containsIdsCriteria(  ) )
+        {
+            for ( int nId : filter.getIds(  ) )
+            {
+                daoUtil.setInt( nIndex, nId );
+                AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
+                nIndex++;
+            }
+        }
+
+        return daoUtil;
+    }
+    
+   
 }

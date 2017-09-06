@@ -75,8 +75,8 @@ public class HtmlDocService
 
     /**
      * Create an htmlDoc 
-     * @param htmlDoc
-     * @param docContent
+     * @param htmlDoc The HtmlDoc
+     * @param docContent The Doc content
      */
     public void createDocument( HtmlDoc htmlDoc, DocContent docContent)
         
@@ -111,7 +111,7 @@ public class HtmlDocService
     }
     /**
      * Remvove an HtmlDoc
-     * @param nId
+     * @param nId The HtmlDoc id
      */
     public void deleteDocument( int nId)
     
@@ -137,8 +137,8 @@ public class HtmlDocService
     
     /**
      * Update an HtmlDoc
-     * @param htmlDoc 
-     * @param docContent
+     * @param htmlDoc The Ht-mlDoc
+     * @param docContent The Doc Content
      */
     public void updateDocument(  HtmlDoc htmlDoc, DocContent docContent)
     

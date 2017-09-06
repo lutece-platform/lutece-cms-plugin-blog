@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.htmldocs.service;
 
+import fr.paris.lutece.plugins.htmldocs.business.HtmlDoc;
+import fr.paris.lutece.plugins.htmldocs.business.HtmlDocFilter;
+import fr.paris.lutece.plugins.htmldocs.business.HtmlDocHome;
 import fr.paris.lutece.plugins.htmldocs.business.IndexerAction;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.plugins.htmldocs.business.portlet.HtmlDocPublicationHome;
@@ -47,7 +50,9 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -105,37 +110,7 @@ public class PublishingService
 
     }
 
-    /**
-     * UnPublishing documents assigned to a portlet
-     *
-     * @param nDocumentId the DocumentListPortlet identifier
-     * @param nPortletId the portlet identifier
-     */
-  /*  public void unPublish( int nDocumentId, int nPortletId )
-    {
-        // Publishing of document : set status to Unpublished
-        DocumentPublication documentPublication = DocumentPublicationHome.findByPrimaryKey( nPortletId, nDocumentId );
-
-        // Move the document at the end of the list
-        int nNewOrder = getInstance(  ).getMaxDocumentOrderByPortletId( nPortletId );
-        getInstance(  ).changeDocumentOrder( nDocumentId, nPortletId, nNewOrder );
-
-        if ( documentPublication != null )
-        {
-            documentPublication.setStatus( DocumentPublication.STATUS_UNPUBLISHED );
-            //FIXME LUTECE-577 : before refactoring, documentOrder value was set to null
-            documentPublication.setDocumentOrder( DocumentPublication.DOCUMENT_ORDER_DEFAULT_VALUE );
-            DocumentPublicationHome.update( documentPublication );
-
-            PublishingEvent event = new PublishingEvent( nDocumentId, nPortletId, PublishingEvent.DOCUMENT_UNPUBLISHED );
-            _manager.notifyListeners( event );
-        }
-
-        
-        HtmlDocSearchService.getInstance(  ).addIndexerAction( nDocumentId, IndexerAction.TASK_MODIFY, HtmldocsPlugin.getPlugin() );
-
-    }*/
-
+  
     /**
      * unAssign {@link Document} to a {@link Portlet}
      *
@@ -248,6 +223,85 @@ public class PublishingService
         }       
 
         return listPortletsAll;
+    }
+    
+    /**
+     * Loads the list of the portlets whoes contain htmldoc specified by id
+     *
+     * @param strDocumentId the htmlDoc identifier
+     * @return the {@link Collection} of the portlets
+     */
+    public Collection<Portlet> getPortletsByDocumentId( String strDocumentId )
+    {
+        Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.getDocPublicationByIdDoc( Integer.parseInt( strDocumentId ) );
+        Collection<Portlet> listPortlets = new ArrayList<Portlet>(  );
+
+        for ( HtmlDocPublication documentPublication : listDocumentPublication )
+        {
+            listPortlets.add( PortletHome.findByPrimaryKey( documentPublication.getIdPortlet( ) ) );
+        }
+
+        return listPortlets;
+    }
+    
+    /**
+     * Loads the list of the htmlDoc whose filter and date publication is specified
+     * Return published documents since the publication date. The is also filtered with the documentFilter
+     *
+     * @param datePublishing The start publication date
+     * @param dateEndPublishing The end publication date
+     * @param documentFilter The filter for the published htmldoc. The filter can be null or empty. The array of Ids will not be taked in account.
+     * @param locale The locale is used to get the list of htmldocs with the findByFilter method
+     * @return the list of the htmldoc in form of a List. return null if datePublishing is null
+     */
+    public Collection<HtmlDoc> getPublishedDocumentsSinceDate( Date datePublishing, Date dateEndPublishing, HtmlDocFilter documentFilter,
+        Locale locale )
+    {
+        if ( datePublishing == null )
+        {
+            return null;
+        }
+
+        Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.findSinceDatePublishingAndStatus( datePublishing,dateEndPublishing,
+                1 );
+
+        if ( ( listDocumentPublication == null ) || ( listDocumentPublication.size(  ) == 0 ) )
+        {
+            return new ArrayList<HtmlDoc>(  );
+        }
+
+        int[] arrayIds = new int[listDocumentPublication.size(  )];
+        int i = 0;
+        HtmlDocFilter publishedDocumentFilter = documentFilter;
+
+        if ( publishedDocumentFilter == null )
+        {
+            publishedDocumentFilter = new HtmlDocFilter(  );
+        }
+
+        for ( HtmlDocPublication documentPublication : listDocumentPublication )
+        {
+            arrayIds[i++] = documentPublication.getIdDocument(  );
+        }
+
+        publishedDocumentFilter.setIds( arrayIds );
+
+        Collection<HtmlDoc> listDocuments = HtmlDocHome.findByFilter( publishedDocumentFilter, locale );
+
+        return listDocuments;
+    }
+    
+    /**
+     * Get the list of id of published htmldocs associated with a given
+     * collection of portlets.
+     * @param nPortletsIds The list of portlet ids.
+     * @param datePublishing TODO
+     * @param plugin The document plugin
+     * @return The list of documents id.
+     */
+    public static List<Integer> getPublishedDocumentsIdsListByPortletIds( int[] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
+    {
+        return HtmlDocPublicationHome.getPublishedDocumentsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }
 
 }

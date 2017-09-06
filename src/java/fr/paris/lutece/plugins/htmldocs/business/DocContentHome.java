@@ -37,8 +37,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-import java.util.List;
-
 /**
  * This class provides instances management methods (create, find, ...) for HtmlDoc objects
  */
