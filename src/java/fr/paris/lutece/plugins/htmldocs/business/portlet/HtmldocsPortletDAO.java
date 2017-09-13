@@ -34,9 +34,11 @@
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
 import java.sql.Date;
+import java.util.Collection;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -53,7 +55,11 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_portlet SET id_portlet = ?, name = ?, content_id = ? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status, document_order ) VALUES ( ? , ?, ?, ? )";
-
+    private static final String SQL_QUERY_SELECT_PORTLET_BY_TYPE = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " +
+            "FROM htmldocs_portlet b " +
+            "LEFT JOIN htmldocs_list_portlet_htmldocs c ON b.id_portlet = c.id_portlet " +
+            "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " +
+            "INNER JOIN core_page f ON a.id_page = f.id_page WHERE c.id_portlet IS NULL ";
 
     /**
      * Insert a new record in the table.
@@ -181,4 +187,62 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
         daoUtil.free( );
         return htmlDocPortletList;
     }
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    
+    public Collection<ReferenceItem> selectPortletByType( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
+    {
+        StringBuilder strSQl = new StringBuilder(  );
+        strSQl.append( SQL_QUERY_SELECT_PORTLET_BY_TYPE );
+
+        String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter(  ) : null;
+
+        if ( strFilter != null )
+        {
+            strSQl.append( "AND" );
+            strSQl.append( strFilter );
+        }
+
+        strSQl.append( pOrder.getSQLOrderBy(  ) );
+
+        DAOUtil daoUtil = new DAOUtil( strSQl.toString(  ) );
+
+        if ( strFilter != null )
+        {
+            if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_NAME ) )
+            {
+                for ( int i = 0; i < pFilter.getPageName(  ).length; i++ )
+                {
+                    daoUtil.setString( i + 1, "%" + pFilter.getPageName(  )[i] + "%" );
+                }
+            }
+            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PORTLET_NAME ) )
+            {
+                for ( int i = 0; i < pFilter.getPortletName(  ).length; i++ )
+                {
+                    daoUtil.setString( i + 1, "%" + pFilter.getPortletName(  )[i] + "%" );
+                }
+            }
+            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_ID ) )
+            {
+                daoUtil.setInt( 1, pFilter.getIdPage(  ) );
+            }
+        }
+
+        daoUtil.executeQuery(  );
+
+        ReferenceList list = new ReferenceList(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+        }
+
+        daoUtil.free(  );
+
+        return list;
+    }
+
 }

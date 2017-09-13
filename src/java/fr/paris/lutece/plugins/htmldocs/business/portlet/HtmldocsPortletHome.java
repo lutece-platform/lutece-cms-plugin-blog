@@ -33,10 +33,13 @@
  */
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
+import java.util.Collection;
+
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.util.ReferenceItem;
 
 /**
  * This class provides instances management methods for HtmldocsPortlet objects
@@ -97,4 +100,17 @@ public class HtmldocsPortletHome extends PortletHome
     {
         return _dao;
     }
+    /**
+     * Load the list of Portlet
+     * @param nDocumentId the document ID
+     * @param pOrder order of the portlets
+     * @param pFilter The portlet filter
+     * @return The Collection of the ReferenceItem
+     */
+    public static Collection<ReferenceItem> findByFilter( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
+    {
+        //FIXME : method should access to different home business methods
+        return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
+    }
+    
 }

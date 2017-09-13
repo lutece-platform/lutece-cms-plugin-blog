@@ -45,6 +45,10 @@ response.setDateHeader ("Expires", 0);
 <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-57-precomposed.png">
 -->
 <script src="js/jquery/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-filestyle.min.js"></script>
+<script src="js/app.min.js"></script>
+
 </head>
 <%-- Display the admin menu --%>
 

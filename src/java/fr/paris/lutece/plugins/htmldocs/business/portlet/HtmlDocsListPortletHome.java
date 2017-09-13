@@ -33,12 +33,14 @@
  */
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
+import java.util.Collection;
 import java.util.Map;
 
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.util.ReferenceItem;
 
 
 /**
@@ -127,6 +129,19 @@ public class HtmlDocsListPortletHome extends PortletHome
     public static boolean checkIsAliasPortlet( int nPortletId )
     {
         return _dao.checkIsAliasPortlet( nPortletId );
+    }
+    
+    /**
+     * Load the list of Portlet
+     * @param nDocumentId the document ID
+     * @param pOrder order of the portlets
+     * @param pFilter The portlet filter
+     * @return The Collection of the ReferenceItem
+     */
+    public static Collection<ReferenceItem> findByFilter( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
+    {
+        //FIXME : method should access to different home business methods
+        return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
     }
     
     public static Map<Integer,String> loadPages(  )

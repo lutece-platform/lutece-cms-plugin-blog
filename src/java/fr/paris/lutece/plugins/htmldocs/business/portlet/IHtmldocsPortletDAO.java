@@ -33,9 +33,12 @@
  */
 package fr.paris.lutece.plugins.htmldocs.business.portlet;
 
+import java.util.Collection;
+
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -81,5 +84,13 @@ public interface IHtmldocsPortletDAO extends IPortletInterfaceDAO
      * @return
      */
     ReferenceList selectHtmlDocPortletReferenceList( Plugin plugin );
+    /**
+     * Load the list of portlet
+     * @param nDocumentId the document ID
+     * @param pOrder order of the portlets
+     * @return The Collection of the ReferenceItem
+     */
+    
+    Collection<ReferenceItem> selectPortletByType( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter );
 
 }

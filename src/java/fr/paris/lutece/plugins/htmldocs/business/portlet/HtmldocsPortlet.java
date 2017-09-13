@@ -49,6 +49,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class HtmldocsPortlet extends PortletHtmlContent
 {
+    public static final String RESOURCE_ID = "HTMLDOCS_PORTLET";
+
     /**
      * Sets the identifier of the portlet type to value specified
      */
