@@ -1,39 +1,7 @@
-<script src="js/plugins/htmldocs/portlet_list.js"></script>
-<div class="form-group">
-  <label>Mod&egrave;le de pr&eacute;sentation</label>
-  <select class="form-control" id="page_template_code" name="page_template_code">
-  <#list pages_list as key, value >
-     <option value="${key}">${value}</option> 
-  </#list>  
-</select>
-</div>
-<div class="form-group">
-  <div class="row">
-    <div class="col-xs-12 col-sm-6">
-      <h4 class="lead">Liste Docs </h4>
-      <div id="docs" class="connectedSortable list-group">
-        <#list htmldoc_list as doc>
-          <a id="${doc.id}" class="list-group-item" href="#">
-            ${doc.contentLabel}
-          </a>
-        </#list>
-      </div>
-    </div>
-    <div class="col-xs-12 col-sm-6">
+ $(function () {
 
-      <h4 class="lead">Liste Docs Published </h4>
-      <div id="published_docs" class="connectedSortable list-groups">
- 
-        </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  $(function () {
-
-    var isAdded= false;
-    var isSorted= false;
+    var isAdded= true;
+    var isSorted= true;
     $("#style").parent().toggle();
 
   /*  $("#docs, #published_docs").sortable({
@@ -164,5 +132,3 @@
       }
     });
   }
-
-</script>

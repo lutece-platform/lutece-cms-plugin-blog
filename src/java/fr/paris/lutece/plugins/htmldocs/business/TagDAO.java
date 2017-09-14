@@ -61,8 +61,8 @@ public final class TagDAO implements ITagDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_tag WHERE id_tag = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_tag SET  id_tag = ?, name = ? WHERE id_tag = ?";
     
-    private static final String SQL_QUERY_INSERT_TAG_DOC = "INSERT INTO htmldocs_tag_document ( id_tag, id_html_doc ) VALUES ( ? , ? )";
-    private static final String SQL_QUERY_SELECT_TAG_DOC = "SELECT  id_tag, id_html_doc FROM htmldocs_tag_document WHERE id_html_doc = ? ";
+    private static final String SQL_QUERY_INSERT_TAG_DOC = "INSERT INTO htmldocs_tag_document ( id_tag, id_html_doc, priority ) VALUES ( ? , ?, ? )";
+    private static final String SQL_QUERY_SELECT_TAG_DOC = " SELECT  a.id_tag, t.name, a.priority FROM htmldocs_tag_document a Inner join htmldocs_tag t on (t.id_tag= a.id_tag) WHERE a.id_html_doc = ? ORDER BY priority";
     private static final String SQL_QUERY_DELETE_BY_TAG = "DELETE FROM htmldocs_tag_document WHERE id_tag = ? AND id_html_doc = ?";
     private static final String SQL_QUERY_DELETE_BY_DOC = "DELETE FROM htmldocs_tag_document WHERE id_html_doc = ? ";
 
@@ -191,13 +191,14 @@ public final class TagDAO implements ITagDAO
      * {@inheritDoc }
      */
     @Override
-   public void insert( int idTag, int idDoc, Plugin plugin )
+   public void insert( int nIdTag, int nIdDoc, int nPriority, Plugin plugin )
    {
        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG_DOC, plugin );
      
 
-       daoUtil.setInt( 1, idTag);
-       daoUtil.setInt( 2, idDoc );
+       daoUtil.setInt( 1, nIdTag);
+       daoUtil.setInt( 2, nIdDoc );
+       daoUtil.setInt( 3, nPriority);
 
        daoUtil.executeUpdate(  );
        daoUtil.free(  );
@@ -238,21 +239,25 @@ public final class TagDAO implements ITagDAO
      * {@inheritDoc }
      */
     @Override
-   public Map<Integer, Integer> loadByDoc( int idDoc, Plugin plugin )
+   public List<Tag> loadByDoc( int idDoc, Plugin plugin )
    {
-       Map<Integer, Integer> map= new HashMap<Integer, Integer>();
+       List<Tag> list= new ArrayList<Tag>();
        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_DOC, plugin );
        daoUtil.setInt( 1, idDoc );
        daoUtil.executeQuery(  );
 
        while ( daoUtil.next(  ) )
        {
-    	   map.put(daoUtil.getInt( 1 ), daoUtil.getInt( 2 ));
+    	   Tag tag= new Tag();
+    	   tag.setIdTag(daoUtil.getInt( 1 ));
+    	   tag.setName(daoUtil.getString( 2 ));
+    	   tag.setPriority(daoUtil.getInt( 3 ));
+    	   list.add(tag);
            
        }
 	   daoUtil.free(  );
        
-       return map;
+       return list;
    }
     
     /**
@@ -284,8 +289,10 @@ public final class TagDAO implements ITagDAO
 
         while ( daoUtil.next(  ) )
         {
-        	Tag tag = new Tag( daoUtil.getInt( 1 ) );
-
+        	Tag tag = new Tag( );
+        	tag.setIdTag(daoUtil.getInt( 1 ));
+        	tag.setName(daoUtil.getString( 2 ));
+        	tag.setPriority(daoUtil.getInt( 3 ));
      	   
      	   listTag.add(tag);
             

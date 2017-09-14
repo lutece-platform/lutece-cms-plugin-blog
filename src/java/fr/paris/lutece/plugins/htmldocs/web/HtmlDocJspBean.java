@@ -119,8 +119,12 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected static final String PARAMETER_SEARCH_TEXT = "search_text";
     protected static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
     protected static final String PARAMETER_TAG = "tag_doc";
+    protected static final String PARAMETER_TAG_NAME = "tag_name";
+
     protected static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
     protected static final String PARAMETER_SHAREABLE = "shareable";
+    protected static final String PARAMETER_PRIORITY= "tag_priority";
+    protected static final String PARAMETER_TAG_ACTION= "tagAction";
 
 
 
@@ -180,6 +184,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String ACTION_CONFIRM_REMOVE_HTMLDOC = "confirmRemoveHtmlDoc";
     private static final String ACTION_ADD_TAG = "addTag";
     private static final String ACTION_REMOVE_TAG = "removeTag";
+    private static final String ACTION_UPDATE_PRIORITY_TAG = "updatePriorityTag";
     // Infos
     private static final String INFO_HTMLDOC_CREATED = "htmldocs.info.htmldoc.created";
     private static final String INFO_HTMLDOC_UPDATED = "htmldocs.info.htmldoc.updated";
@@ -400,7 +405,12 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String doAddTag( HttpServletRequest request )
     {
     		String strIdTag= request.getParameter(PARAMETER_TAG);
-        	_htmldoc.addTag(new Tag(Integer.parseInt(strIdTag)));
+    		String strTagName= request.getParameter(PARAMETER_TAG_NAME);
+    		
+    		Tag tag= new Tag(Integer.parseInt(strIdTag), _htmldoc.getTag( ).size( )+1 );
+    		tag.setName(strTagName);
+    		
+        	_htmldoc.addTag(tag);
         	
     		return JsonUtil.buildJsonResponse(new JsonResponse("SUCESS"));
     		
@@ -410,10 +420,54 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String doRemoveTag( HttpServletRequest request )
     {
 		     String strIdTag= request.getParameter(PARAMETER_TAG);
-        	_htmldoc.deleteTag(new Tag(Integer.parseInt(strIdTag)));
+		     Tag tag= new  Tag();
+		     tag.setIdTag(Integer.parseInt(strIdTag));
+        	_htmldoc.deleteTag(tag);
         	
     		return JsonUtil.buildJsonResponse(new JsonResponse("SUCESS"));
     		
+    	
+     }
+    @Action( ACTION_UPDATE_PRIORITY_TAG )
+    public String doUpdatePriorityTag( HttpServletRequest request )
+    {
+    		Tag tg= null;
+    		Tag tagMove= null;
+    		int nPriorityToSet=0;
+    		int nPriority= 0;
+
+    		String strIdTag= request.getParameter(PARAMETER_TAG);
+    		String strAction= request.getParameter(PARAMETER_TAG_ACTION);
+    		    		
+    		for(Tag tag:_htmldoc.getTag()){
+    			if(tag.getIdTag()== Integer.parseInt(strIdTag)){
+    				tg= tag;	
+    				nPriorityToSet= tag.getPriority();
+    				nPriority= tag.getPriority();
+    			}
+    		}
+    		for(Tag tag:_htmldoc.getTag()){
+    			if(strAction.equals("moveUp") && tag.getPriority()== nPriority -1 ){
+    				tagMove= tag;
+    				tagMove.setPriority(tagMove.getPriority( ) +1 );
+    				nPriorityToSet= nPriority - 1;
+    				
+    			}else if(strAction.equals("moveDown") && tag.getPriority()== nPriority +1){
+    				tagMove= tag;
+    				tagMove.setPriority(tagMove.getPriority( ) - 1);
+    				nPriorityToSet= nPriority + 1;
+
+    			}
+    		}
+    		tg.setPriority(nPriorityToSet);
+    		  
+    		if( tagMove!=null ){
+    			
+    		return JsonUtil.buildJsonResponse(new JsonResponse(String.valueOf(tagMove.getIdTag())));
+    		
+    		}
+    		return JsonUtil.buildJsonResponse(new JsonResponse(String.valueOf(tg.getIdTag())));
+
     	
      }
     /**
@@ -737,17 +791,18 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
      */
     private ReferenceList getTageList(){
     	
-        ReferenceList htmlDocList = new ReferenceList( );
+        ReferenceList htmlDocList = TagHome.getTagsReferenceList( );
+		int index=0;
 
     	for (ReferenceItem item:TagHome.getTagsReferenceList( )){
-    		if(_htmldoc.getTag().size() <= 0)
-    			return TagHome.getTagsReferenceList( );
-    		
-    		for(Tag tg:_htmldoc.getTag())
-	    		if(!item.getCode().equals(String.valueOf(tg.getIdTag( )))){
+    		for(Tag tg:_htmldoc.getTag()){
+	    		if( item.getCode().equals(String.valueOf(tg.getIdTag( )))){
 	    			
-	    			htmlDocList.add(item);
+	    			htmlDocList.remove(index);
+	    			index--;
 	    		}
+    		}
+    		index++;
     	}
     	
     	return htmlDocList;

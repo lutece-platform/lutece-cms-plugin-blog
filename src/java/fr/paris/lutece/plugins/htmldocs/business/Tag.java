@@ -4,6 +4,7 @@ public class Tag {
 	
      private int _nIdTag;
 	 private String _strName;
+	 private int _nPriority;
 
      
 	 
@@ -11,9 +12,10 @@ public class Tag {
 		 
 		 
 	 } 
-	 public Tag(int nIdTag){
+	 public Tag(int nIdTag, int nPriority){
 		 
 		 this.setIdTag(nIdTag);
+		 this.setPriority(nPriority);
 	 }
      /**
       * Returns the _nIdTag
@@ -52,7 +54,24 @@ public class Tag {
      {
          return _strName;
      }
-     
+     /**
+     * Returns the _nPriority
+     *
+     * @return The_nPriority
+     */
+    public int getPriority(  )
+    {
+        return _nPriority;
+    }
 
+    /**
+     * Sets the nPriority
+     *
+     * @param nIdTag The nPriority
+     */
+    public void setPriority( int nPriority )
+    {
+   	 _nPriority = nPriority;
+    }
 
 }

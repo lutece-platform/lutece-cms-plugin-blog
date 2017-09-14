@@ -2,7 +2,6 @@ package fr.paris.lutece.plugins.htmldocs.business;
 
 
 import java.util.List;
-import java.util.Map;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
@@ -17,10 +16,10 @@ public interface ITagDAO {
 	   void store( Tag tag, Plugin plugin );
 	
 	   
-	   void insert( int idTag, int idDoc, Plugin plugin );
+	   void insert( int idTag, int idDoc, int nPriority, Plugin plugin );
 	   void deleteByTAG( int idTag, int idDoc,  Plugin plugin );
 	   void deleteByDoc( int idDoc,  Plugin plugin );
-	   Map<Integer, Integer> loadByDoc( int idDoc, Plugin plugin );
+	   List<Tag> loadByDoc( int idDoc, Plugin plugin );
 	   List<Tag> loadListTagByIdDoc( int idDoc, Plugin plugin );
 	   ReferenceList selectTagsReferenceList( Plugin plugin );
 

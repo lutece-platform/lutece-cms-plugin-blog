@@ -128,14 +128,14 @@ public final class TagHome
         return _dao.selectTagsReferenceList( _plugin );
     }
     
-    public static Map<Integer,Integer> loadByDoc(int nIdDco )
+    public static List<Tag> loadByDoc(int nIdDco )
     {
         return _dao.loadByDoc(nIdDco, _plugin );
     }
     
-    public static void create( int nIdTag, int nIdocument )
+    public static void create( int nIdTag, int nIdocument, int nPriority )
     {
-        _dao.insert( nIdTag, nIdocument, _plugin );
+        _dao.insert( nIdTag, nIdocument, nPriority, _plugin );
 
     }
     public static void removeTagDoc( int nIdDoc )

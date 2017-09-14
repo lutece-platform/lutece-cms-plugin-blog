@@ -91,6 +91,7 @@ DROP TABLE IF EXISTS htmldocs_tag_document;
 CREATE TABLE htmldocs_tag_document (
 id_tag int NOT NULL,
 id_html_doc int NOT NULL,
+priority int NOT NULL,
 CONSTRAINT `fk_htmldocs` FOREIGN KEY(`id_html_doc`) references htmldocs (`id_html_doc`),
 CONSTRAINT `fk_id_tag` FOREIGN KEY(`id_tag`) references htmldocs_tag(`id_tag`),
 

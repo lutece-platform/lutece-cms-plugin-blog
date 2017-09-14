@@ -1,3 +1,4 @@
+<script src="js/plugins/htmldocs/manage_tag.js"></script>
 <@rowBoxHeader i18nTitleKey="#i18n{htmldocs.create_htmldoc.title}">
   <form class="form-horizontal" method="post" name="create_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
     <@messages errors=errors />
@@ -52,126 +53,20 @@
 
     		<p id="tag" class="help-block"></p>
 		 <#list htmldoc.tag as tg>
-		<#list list_tag as tgName>
-			<#if tgName.code == tg.idTag?string > 
-				<div id="${tg.idTag}">
-				${tgName.name!}
-				<button  type="submit" value="removeTag" name="removeTag" class="btn btn-danger btn-small" onClick="removeEntry(${tg.idTag}, '${tgName.name!}');">
+		<div id="${tg.idTag}">
+				${tg.name!}
+				<button class="btn btn-primary btn-xs btn-flat"  title="Descendre" onClick="doUpdatePriorityTag(${tg.idTag}, 'moveDown' );">
+									<i class="glyphicon glyphicon-arrow-down"></i>
+				</button>
+				<button class="btn btn-primary btn-xs btn-flat"  title="Monter" onClick="doUpdatePriorityTag(${tg.idTag}, 'moveUp');">
+									<i class="glyphicon glyphicon-arrow-up"></i>
+				</button>
+				<button  type="submit" value="removeTag" name="removeTag" class="btn btn-danger btn-small" onClick="removeEntry(${tg.idTag}, '${tg.name!}');">
 					<i class="fa fa-trash"></i>&nbsp;
 	   			</button>
-				</div>
-				  <#break>
-			</#if>
-		</#list>
+		</div>	
+
 		</#list>
 	</div>
     </div>
 </@rowBoxHeader>
-<script>
-var baseUrl = document.getElementsByTagName('base')[0].href;
-
-function removeEntry(idEntry, tgName){
-	$('#tag_remove').val(idEntry);
-	doDeleteTag(idEntry, tgName);
-}
-
-function addIdEntry(){
-	
-	doAddTag($('select#tag_doc').val(),$('#tag_doc option:selected').text());
-}
-
-
-function doAddTag( idTag, tgName )
-
-{
-
-	$.ajax({
-
-            url : baseUrl + "jsp/admin/plugins/htmldocs/DoAddTag.jsp?action=addTag&tag_doc="+idTag,
-
-	    type: 'GET',
-
-	    dataType: "json",
-
-	    data: {},
-
-            async: false,
-
-	    cache:false,
-
-            success:function(data) {
-
-        	if ( data.status == 'OK' )
-
-    		{
-			$( "#tag" ).append("<div id="+idTag+"> "+tgName+ "<button id='"+idTag+"' type='submit' value='removeTag' name='removeTag' class='btn btn-danger btn-small' onClick=removeEntry("+idTag+",'"+tgName+"');><i class='fa fa-trash'></i>&nbsp;</button> </div> ");
-
-			$('#tag_doc option:selected').detach();
-        	}
-
-        	else
-		{
-
-			alert("echec")
-
-		}
-
-		},
-
-          error: function(jqXHR, textStatus, errorThrown) {
-		alert("error")
-          }
-
-	});
-
-}
-    
-function doDeleteTag( idTag, tgName  )
-
-{
-
-	
-	$.ajax({
-
-            url : baseUrl + "jsp/admin/plugins/htmldocs/DoDeleteTag.jsp?action=removeTag&tag_doc="+idTag,
-
-	    type: 'GET',
-
-	    dataType: "json",
-
-	    data: {},
-
-            async: false,
-
-	    cache:false,
-
-            success:function(data) {
-
-        	if ( data.status == 'OK' )
-
-    		{
-			$('#'+idTag).detach();
-			$('#tag_doc').append("<option value="+idTag+">"+tgName+"</option>")
-			
-        	}
-
-        	else
-		{
-
-			alert("echec")
-
-		}
-
-		},
-
-          error: function(jqXHR, textStatus, errorThrown) {
-		alert("error")
-          }
-
-	});
-
-}
-
-
-  </script>
- 

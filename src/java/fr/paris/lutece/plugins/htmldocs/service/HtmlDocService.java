@@ -89,7 +89,7 @@ public class HtmlDocService
 	    	HtmlDocHome.addInitialVersion(htmlDoc);
 	    	for(Tag tag:htmlDoc.getTag()){
 				
-				TagHome.create(tag.getIdTag( ),htmlDoc.getId( ) );
+				TagHome.create(tag.getIdTag( ),htmlDoc.getId( ), tag.getPriority( ) );
 			}
 	    	if(docContent != null ){
 	    	
@@ -161,7 +161,7 @@ public class HtmlDocService
 	    	TagHome.removeTagDoc(htmlDoc.getId( ));
 	    	for(Tag tag:htmlDoc.getTag()){
 				
-				TagHome.create(tag.getIdTag( ),htmlDoc.getId( ) );
+				TagHome.create(tag.getIdTag( ),htmlDoc.getId( ), tag.getPriority( ) );
 			}
 	    	TransactionManager.commitTransaction(HtmldocsPlugin.getPlugin());
 	    }
@@ -186,12 +186,7 @@ public class HtmlDocService
 	   HtmlDoc htmlDoc=HtmlDocHome.findByPrimaryKey( nIdDocument );
        DocContent docContent= DocContentHome.getDocsContent(nIdDocument);
        htmlDoc.setDocContent(docContent);
-       Map<Integer,Integer> listTag= TagHome.loadByDoc(nIdDocument);
-       for(Entry<Integer,Integer> entry: listTag.entrySet() ){
-    	   Integer cle = entry.getKey();
-      	    Tag tag=TagHome.findByPrimaryKey(cle);
-      	    htmlDoc.addTag(tag);
-       }
+       htmlDoc.setTag(TagHome.loadByDoc(nIdDocument));
        
        return htmlDoc;
 	   
@@ -206,12 +201,7 @@ public class HtmlDocService
    
    {
 	   HtmlDoc htmlDoc=HtmlDocHome.findByPrimaryKey( nIdDocument );
-       Map<Integer,Integer> listTag= TagHome.loadByDoc(nIdDocument);
-       for(Entry<Integer,Integer> entry: listTag.entrySet( ) ){
-   	    Integer cle = entry.getKey();
-   	    Tag tag=TagHome.findByPrimaryKey(cle);
-   	    htmlDoc.addTag(tag);
-       }
+       htmlDoc.setTag(TagHome.loadByDoc(nIdDocument));
       htmlDoc.setHtmldocPubilcation(HtmlDocPublicationHome.getDocPublicationByIdDoc( nIdDocument ));
 
       
