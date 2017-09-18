@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
+
+    <bean id="blog.htmlDocDAO" class="fr.paris.lutece.plugins.blog.business.HtmlDocDAO" />
+    <bean id="blog.docContentDAO" class="fr.paris.lutece.plugins.blog.business.DocContentDAO" />    
+    <bean id="blog.tagDAO" class="fr.paris.lutece.plugins.blog.business.TagDAO" />
+    <bean id="blog.htmldocIndexerActionDAO" class="fr.paris.lutece.plugins.blog.business.IndexerActionDAO" />    
+    
+
+
+    <bean id="blog.HtmldocsPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortletDAO" />
+    <bean id="blog.documentPageTemplateDAO" class="fr.paris.lutece.plugins.blog.business.DocumentPageTemplateDAO" />
+    
+     
+    
+    
+    <bean id="blog.htmldocIndexer" class="fr.paris.lutece.plugins.blog.service.docsearch.DefaultHtmldocIndexer" />    
+	<bean id="blog.htmldocSearchEngine" class="fr.paris.lutece.plugins.blog.service.docsearch.HtmldocLuceneSearchEngine" />
+	<bean id="blog.htmlDocsListPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.HtmldocsListPortletDAO" />
+    <bean id="blog.htmlDocPublicationDAO" class="fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublicationDAO" />
+    
+    <bean id="blog.documentExtendableResourceService" class="fr.paris.lutece.plugins.blog.service.resource.DocumentExtendableResourceService" />
+	
+	<bean id="blog.htmlDocResourceRssConfigDAO"  class="fr.paris.lutece.plugins.blog.business.rss.HtmlDocResourceRssConfigDAO" />
+	 
+	<!-- RSS -->
+    <bean id="blog.resourceRssTypeForm" class="fr.paris.lutece.portal.business.rss.ResourceRssType" >
+    	<property name="key" value="ResourceRssTypeHtmlDoc" />
+		<property name="titleI18nKey" value="blog.resource_rss_type.label" />
+		<property name="className" value="fr.paris.lutece.plugins.blog.business.rss.HtmlDocResourceRss"/>
+	</bean>
+	
+       
+    
+</beans>

@@ -1,9 +1,9 @@
 
-#Plugin htmldocs
+#Plugin blog
 
 ##Introduction
 
-Htmldocs plugin allows to create portlets linked with objects that are manageable in the associated admin feature.
+Blog plugin allows to create portlets linked with objects that are manageable in the associated admin feature.
 
 ##Goal
 
@@ -14,7 +14,7 @@ The Hmtldocs plugin's goal is to simplify the site administration page. In fact 
 There is two ways to create an htmldoc portlet : - Create an Htmldoc document in the admin feature then link it to a new portlet- Dynamically create an htmldoc portlet on the "site administration" page, and directly fill it in with the content of your choice Moreover, every changes applied to either the portlet or it's linked Htmldoc is applied to the other.
 
 
-[Maven documentation and reports](http://dev.lutece.paris.fr/plugins/plugin-htmldocs/)
+[Maven documentation and reports](http://dev.lutece.paris.fr/plugins/plugin-blog/)
 
 
 

@@ -1,0 +1,11 @@
+<@rowBoxHeader i18nTitleKey="#i18n{blog.create_tag.title}">
+  <form class="form-horizontal" method="post" name="modify_tag" action="jsp/admin/plugins/blog/ManageTags.jsp">
+    <@messages errors=errors />
+    <input type="hidden" id="id" name=""/>
+
+    <@fieldInputText i18nLabelKey="blog.modify_tag.labelTagName" inputName="name" mandatory=true value="${tags.name!}" i18nHelpBlockKey="blog.modify_tag.labelTagName.help" />
+
+  
+    <@actionButtons button1Name="action_modifyTag" button2Name="view_manageTags"/>
+  </form>
+</@rowBoxHeader>

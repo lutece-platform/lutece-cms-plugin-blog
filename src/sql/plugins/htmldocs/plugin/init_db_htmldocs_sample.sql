@@ -1,1 +1,0 @@
-insert into htmldocs_page_template(id_page_template_document, page_template_path, picture_path, description )values(0,"skin/plugins/htmldocs/portlet/page_template_htmldocsList.html","no picture","default page");

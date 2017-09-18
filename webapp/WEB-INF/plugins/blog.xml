@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plug-in>
+    <name>blog</name>
+    <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
+    <version>1.0.0</version>
+    <documentation></documentation>
+    <installation></installation>
+    <changes></changes>
+    <user-guide></user-guide>
+    <description>blog.plugin.description</description>
+    <provider>blog.plugin.provider</provider>
+    <provider-url>http://dev.lutece.paris.fr</provider-url>
+    <icon-url>images/admin/skin/feature_default_icon.png</icon-url>
+    <copyright>Copyright (c) 2016 Your Company</copyright>
+    <db-pool-required>1</db-pool-required>
+    
+    <core-version-dependency>
+        <min-core-version>4.1.0</min-core-version>
+        <max-core-version/>	
+    </core-version-dependency>
+
+    <!-- Admin features parameters -->
+    <admin-features>
+        <admin-feature>
+            <feature-id>HTMLDOCS_MANAGEMENT</feature-id>
+            <feature-title>blog.adminFeature.ManageHtmldocs.name</feature-title>
+            <feature-description>blog.adminFeature.ManageHtmldocs.description</feature-description>
+            <feature-level>2</feature-level>
+            <feature-url>jsp/admin/plugins/blog/ManageHtmlDocs.jsp</feature-url>
+            <feature-group>CONTENT</feature-group>
+            <feature-icon-url></feature-icon-url>
+		</admin-feature>
+		<admin-feature>
+            <feature-id>HTMLDOCS_TAGS_MANAGEMENT</feature-id>
+            <feature-title>htmldocs.adminFeature.ManageHtmldocsTags.name</feature-title>
+            <feature-description>htmldocs.adminFeature.ManageHtmldocsTags.description</feature-description>
+            <feature-level>2</feature-level>
+            <feature-url>jsp/admin/plugins/blog/ManageTags.jsp</feature-url>
+            <feature-group>CONTENT</feature-group>
+            <feature-icon-url></feature-icon-url>
+		</admin-feature>
+    </admin-features>    
+
+    <!-- Specific plugin CSS stylesheet -->
+    <admin-css-stylesheets>
+        <admin-css-stylesheet>css/admin/plugins/blog/diff.css</admin-css-stylesheet>
+    </admin-css-stylesheets>
+	  <!-- Search Indexer Service -->
+    <search-indexers>
+        <search-indexer>
+            <search-indexer-class>
+                fr.paris.lutece.plugins.blog.service.search.HtmlDocsSearchIndexer
+            </search-indexer-class>
+        </search-indexer>
+    </search-indexers>
+    <!-- XPages parameters -->
+    <applications>
+        <application>
+            <application-id>htmldoc</application-id>
+            <application-class>fr.paris.lutece.plugins.blog.web.HtmlDocApp</application-class>
+        </application>
+    </applications>
+     <!-- servlets -->
+    <servlets>
+        <servlet>
+            <servlet-name>FileServlet</servlet-name>
+            <url-pattern>/servlet/plugins/htmldocs/file</url-pattern>
+            <servlet-class>fr.paris.lutece.plugins.blog.web.HtmlDocFileServlet</servlet-class>
+        </servlet>
+    </servlets>
+     <!-- Daemons -->
+	<daemons>
+		<daemon>
+			<daemon-id>htmlDocIndexerDaemon</daemon-id>
+			<daemon-name>htmldocs.daemon.indexerDameon.name</daemon-name>
+			<daemon-description>htmldocs.daemon.indexerDameon.description</daemon-description>
+			<daemon-class>fr.paris.lutece.plugins.blog.service.docsearch.HtmldocSearchIndexerDaemon</daemon-class>
+		</daemon>
+              
+	</daemons>
+    
+    
+    <!-- Portlet parameters -->
+    <portlets>
+     <portlet>
+       <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortletHome</portlet-class>
+	   <portlet-type-id>HTMLDOCS_PORTLET</portlet-type-id>
+	   <portlet-type-name>blog.portlet.htmldocsHtmldocsPortlet.name</portlet-type-name>
+	   <portlet-creation-url>plugins/blog/CreatePortletHtmldocs.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/blog/ModifyPortletHtmldocs.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/blog/DoCreatePortletHtmldocs.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/blog/DoModifyPortletHtmldocs.jsp</portlet-modify-action-url>
+	    <!-- optional entries -->
+        <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
+        <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
+        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portlethtmldocs.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portlethtmldocs.html</portlet-modify-specific-template>
+        <portlet-create-specific-form-template></portlet-create-specific-form-template>
+        <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
+     </portlet>
+     
+      <portlet>     
+       <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.HtmlDocsListPortletHome</portlet-class>
+	   <portlet-type-id>HTMLDOCSLIST_PORTLET</portlet-type-id>
+	   <portlet-type-name>blog.portlet.htmldocsListHtmldocsPortlet.name</portlet-type-name>
+	   <portlet-creation-url>plugins/blog/CreatePortletHtmldocsList.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/blog/ModifyPortletHtmldocsList.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/blog/DoCreatePortletHtmldocsList.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/blog/DoModifyPortletHtmldocsList.jsp</portlet-modify-action-url>
+	    
+        <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
+        <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
+        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portlethtmldocslist.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portlethtmldocslist.html</portlet-modify-specific-template>
+        <portlet-create-specific-form-template></portlet-create-specific-form-template>
+        <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
+     </portlet>
+   </portlets>
+</plug-in>
