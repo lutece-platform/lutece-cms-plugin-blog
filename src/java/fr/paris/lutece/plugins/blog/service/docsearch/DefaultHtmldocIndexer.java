@@ -1,6 +1,5 @@
 package fr.paris.lutece.plugins.blog.service.docsearch;
 
-
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
 import fr.paris.lutece.plugins.blog.business.IndexerAction;
@@ -13,11 +12,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-
-
-
-
-
 
 //import org.apache.lucene.demo.html.HTMLParser;
 import org.apache.lucene.document.Field;
@@ -40,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  * DefaultAnnounceIndexer
  */
@@ -57,29 +50,34 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
      * {@inheritDoc}
      */
     @Override
-    public String getDescription(  )
+    public String getDescription( )
     {
         return AppPropertiesService.getProperty( PROPERTY_INDEXER_DESCRIPTION );
     }
 
     /**
      * Index given list of record
-     * @param indexWriter the indexWriter
-     * @param listIdHtmlDoc The list of id htmldoc
-     * @throws CorruptIndexException If the index is corrupted
-     * @throws IOException If an IO Exception occurred
-     * @throws InterruptedException If the indexer is interrupted
+     * 
+     * @param indexWriter
+     *            the indexWriter
+     * @param listIdHtmlDoc
+     *            The list of id htmldoc
+     * @throws CorruptIndexException
+     *             If the index is corrupted
+     * @throws IOException
+     *             If an IO Exception occurred
+     * @throws InterruptedException
+     *             If the indexer is interrupted
      */
-    private void indexListHtmldoc( IndexWriter indexWriter, List<Integer> listIdHtmlDoc )
-        throws CorruptIndexException, IOException, InterruptedException
+    private void indexListHtmldoc( IndexWriter indexWriter, List<Integer> listIdHtmlDoc ) throws CorruptIndexException, IOException, InterruptedException
     {
-        Iterator<Integer> it = listIdHtmlDoc.iterator(  );
+        Iterator<Integer> it = listIdHtmlDoc.iterator( );
 
-        while ( it.hasNext(  ) )
+        while ( it.hasNext( ) )
         {
-            Integer nHtmldocId = it.next(  );
-            HtmlDoc htmldoc = HtmlDocService.getInstance().loadDocument( nHtmldocId );
-            indexWriter.addDocument( getDocument( htmldoc) );
+            Integer nHtmldocId = it.next( );
+            HtmlDoc htmldoc = HtmlDocService.getInstance( ).loadDocument( nHtmldocId );
+            indexWriter.addDocument( getDocument( htmldoc ) );
         }
     }
 
@@ -87,145 +85,142 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
      * {@inheritDoc}
      */
     @Override
-    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLogs )
-        throws IOException, InterruptedException, SiteMessageException
+    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLogs ) throws IOException, InterruptedException,
+            SiteMessageException
     {
         Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
-        List<Integer> listIdHtmldoc = new ArrayList<Integer>(  );
+        List<Integer> listIdHtmldoc = new ArrayList<Integer>( );
 
         if ( !bCreate )
         {
-            //incremental indexing
-            //delete all record which must be deleted
-            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : HtmlDocSearchService.getInstance(  )
-                                                              .getAllIndexerActionByTask( IndexerAction.TASK_DELETE,
-                    plugin ) )
+            // incremental indexing
+            // delete all record which must be deleted
+            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : HtmlDocSearchService.getInstance( ).getAllIndexerActionByTask(
+                    IndexerAction.TASK_DELETE, plugin ) )
             {
-            	sbLogHtmldoc( sbLogs, action.getIdHtmldoc( ), IndexerAction.TASK_DELETE );
+                sbLogHtmldoc( sbLogs, action.getIdHtmldoc( ), IndexerAction.TASK_DELETE );
 
                 Term term = new Term( HtmlDocsSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdHtmldoc( ) ) );
-                Term[] terms = { term };
+                Term [ ] terms = {
+                    term
+                };
 
                 indexWriter.deleteDocuments( terms );
-                HtmlDocSearchService.getInstance(  ).removeIndexerAction( action.getIdAction(  ), plugin );
+                HtmlDocSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
             }
 
-            //Update all record which must be updated
-            for ( IndexerAction action : HtmlDocSearchService.getInstance(  )
-                                                              .getAllIndexerActionByTask( IndexerAction.TASK_MODIFY,
-                    plugin ) )
+            // Update all record which must be updated
+            for ( IndexerAction action : HtmlDocSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_MODIFY, plugin ) )
             {
-            	sbLogHtmldoc( sbLogs, action.getIdHtmldoc( ), IndexerAction.TASK_MODIFY );
+                sbLogHtmldoc( sbLogs, action.getIdHtmldoc( ), IndexerAction.TASK_MODIFY );
 
                 Term term = new Term( HtmlDocsSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdHtmldoc( ) ) );
-                Term[] terms = { term };
+                Term [ ] terms = {
+                    term
+                };
 
                 indexWriter.deleteDocuments( terms );
 
-                listIdHtmldoc.add( action.getIdHtmldoc( ));
+                listIdHtmldoc.add( action.getIdHtmldoc( ) );
 
-                HtmlDocSearchService.getInstance(  ).removeIndexerAction( action.getIdAction(  ), plugin );
+                HtmlDocSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
             }
 
             this.indexListHtmldoc( indexWriter, listIdHtmldoc );
 
-            listIdHtmldoc = new ArrayList<Integer>(  );
+            listIdHtmldoc = new ArrayList<Integer>( );
 
-            //add all record which must be added
-            for ( IndexerAction action : HtmlDocSearchService.getInstance(  )
-                                                              .getAllIndexerActionByTask( IndexerAction.TASK_CREATE,
-                    plugin ) )
+            // add all record which must be added
+            for ( IndexerAction action : HtmlDocSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_CREATE, plugin ) )
             {
-            	sbLogHtmldoc( sbLogs, action.getIdHtmldoc( ), IndexerAction.TASK_CREATE );
+                sbLogHtmldoc( sbLogs, action.getIdHtmldoc( ), IndexerAction.TASK_CREATE );
                 listIdHtmldoc.add( action.getIdHtmldoc( ) );
 
-                HtmlDocSearchService.getInstance(  ).removeIndexerAction( action.getIdAction(  ), plugin );
+                HtmlDocSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
             }
 
-            this.indexListHtmldoc( indexWriter, listIdHtmldoc  );
+            this.indexListHtmldoc( indexWriter, listIdHtmldoc );
         }
         else
         {
-            for ( HtmlDoc doc : HtmlDocHome.getHtmlDocsList() )
+            for ( HtmlDoc doc : HtmlDocHome.getHtmlDocsList( ) )
             {
-                
-                    sbLogs.append( "Indexing Htmldoc" );
-                    sbLogs.append( "\r\n" );
 
-                    sbLogHtmldoc( sbLogs, doc.getId(  ), IndexerAction.TASK_CREATE );
+                sbLogs.append( "Indexing Htmldoc" );
+                sbLogs.append( "\r\n" );
 
-                    listIdHtmldoc.add( doc.getId(  ) );
-                
+                sbLogHtmldoc( sbLogs, doc.getId( ), IndexerAction.TASK_CREATE );
+
+                listIdHtmldoc.add( doc.getId( ) );
+
             }
 
             this.indexListHtmldoc( indexWriter, listIdHtmldoc );
         }
 
-        indexWriter.commit(  );
+        indexWriter.commit( );
     }
 
- 
-
     /**
-     * Builds a document which will be used by Lucene during the indexing of the
-     * announces list
-     * @param announce the announce
-     * @param strUrl the url
-     * @param plugin the plugin
-     * @throws IOException If an IO Exception occurred
-     * @throws InterruptedException If the indexer is interrupted
+     * Builds a document which will be used by Lucene during the indexing of the announces list
+     * 
+     * @param announce
+     *            the announce
+     * @param strUrl
+     *            the url
+     * @param plugin
+     *            the plugin
+     * @throws IOException
+     *             If an IO Exception occurred
+     * @throws InterruptedException
+     *             If the indexer is interrupted
      * @return the document
      */
-    public static org.apache.lucene.document.Document getDocument( HtmlDoc htmldoc )
-        throws IOException, InterruptedException
+    public static org.apache.lucene.document.Document getDocument( HtmlDoc htmldoc ) throws IOException, InterruptedException
     {
         // make a new, empty document
-        org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document(  );
+        org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document( );
 
+        doc.add( new StringField( HtmlDocsSearchItem.FIELD_ID_HTML_DOC, Integer.toString( htmldoc.getId( ) ), Field.Store.YES ) );
+        // Add the user firstName as a field, so that index can be incrementally maintained.
+        doc.add( new StringField( HtmlDocsSearchItem.FIELD_USER, htmldoc.getUser( ), Field.Store.YES ) );
 
-        doc.add( new StringField( HtmlDocsSearchItem.FIELD_ID_HTML_DOC, Integer.toString( htmldoc.getId(  ) ),
-                Field.Store.YES) );
-     // Add the user firstName as a field, so that index can be incrementally maintained.
-        doc.add( new StringField( HtmlDocsSearchItem.FIELD_USER, htmldoc.getUser() , Field.Store.YES));
-
-        doc.add( new TextField( HtmlDocsSearchItem.FIELD_TAGS, getTagToIndex(htmldoc), Field.Store.YES ) );
+        doc.add( new TextField( HtmlDocsSearchItem.FIELD_TAGS, getTagToIndex( htmldoc ), Field.Store.YES ) );
 
         // Add the uid as a field, so that index can be incrementally maintained.
         // This field is not stored with question/answer, it is indexed, but it is not
         // tokenized prior to indexing.
-        String strIdAnnounce = String.valueOf( htmldoc.getId(  ) );
+        String strIdAnnounce = String.valueOf( htmldoc.getId( ) );
         doc.add( new StringField( HtmlDocsSearchItem.FIELD_UID, strIdAnnounce, Field.Store.YES ) );
 
-     
-        String strContentToIndex = getContentToIndex(htmldoc);
-        //NOUVEAU
-        ContentHandler handler = new BodyContentHandler(  );
-        Metadata metadata = new Metadata(  );
+        String strContentToIndex = getContentToIndex( htmldoc );
+        // NOUVEAU
+        ContentHandler handler = new BodyContentHandler( );
+        Metadata metadata = new Metadata( );
 
         try
         {
-            new HtmlParser(  ).parse( new ByteArrayInputStream( strContentToIndex.getBytes(  ) ), handler, metadata,
-                new ParseContext(  ) );
+            new HtmlParser( ).parse( new ByteArrayInputStream( strContentToIndex.getBytes( ) ), handler, metadata, new ParseContext( ) );
         }
-        catch ( SAXException e )
+        catch( SAXException e )
         {
             throw new AppException( "Error during announce parsing." );
         }
-        catch ( TikaException e )
+        catch( TikaException e )
         {
             throw new AppException( "Error during announce parsing." );
         }
 
-        String strContent = handler.toString(  );
+        String strContent = handler.toString( );
 
         // Add the tag-stripped contents as a Reader-valued Text field so it will
         // get tokenized and indexed.
         doc.add( new TextField( HtmlDocsSearchItem.FIELD_CONTENTS, strContent, Field.Store.NO ) );
 
-        doc.add( new TextField( HtmlDocsSearchItem.FIELD_SUMMARY, htmldoc.getHtmlContent(), Field.Store.YES ) );
+        doc.add( new TextField( HtmlDocsSearchItem.FIELD_SUMMARY, htmldoc.getHtmlContent( ), Field.Store.YES ) );
         // Add the subject name as a separate Text field, so that it can be searched
         // separately.
-        doc.add( new StringField( HtmlDocsSearchItem.FIELD_TITLE, htmldoc.getName(), Field.Store.YES ) );
+        doc.add( new StringField( HtmlDocsSearchItem.FIELD_TITLE, htmldoc.getName( ), Field.Store.YES ) );
 
         doc.add( new StringField( HtmlDocsSearchItem.FIELD_TYPE, HtmldocsPlugin.PLUGIN_NAME, Field.Store.YES ) );
 
@@ -235,45 +230,49 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
 
     /**
      * Set the Content to index
-     * @param htmldoc The {@link htmldoc} to index
+     * 
+     * @param htmldoc
+     *            The {@link htmldoc} to index
      * @return The content to index
      */
     private static String getContentToIndex( HtmlDoc htmldoc )
     {
-        StringBuffer sbContentToIndex = new StringBuffer(  );
-        //Do not index question here
-        sbContentToIndex.append( htmldoc.getName() );
+        StringBuffer sbContentToIndex = new StringBuffer( );
+        // Do not index question here
+        sbContentToIndex.append( htmldoc.getName( ) );
         sbContentToIndex.append( BLANK_SPACE );
-        sbContentToIndex.append( htmldoc.getDescription(  ) );
+        sbContentToIndex.append( htmldoc.getDescription( ) );
         sbContentToIndex.append( BLANK_SPACE );
-        sbContentToIndex.append( htmldoc.getHtmlContent());
-        
-        return sbContentToIndex.toString(  );
+        sbContentToIndex.append( htmldoc.getHtmlContent( ) );
+
+        return sbContentToIndex.toString( );
     }
-    
+
     /**
      * Set the tag to index
-     * @param htmldoc The {@link htmldoc} to index
+     * 
+     * @param htmldoc
+     *            The {@link htmldoc} to index
      * @return The tag to index
      */
     private static String getTagToIndex( HtmlDoc htmldoc )
     {
-        StringBuffer sbContentToIndex = new StringBuffer(  );
-       
-        
-        for(Tag tg:htmldoc.getTag()){
-	        sbContentToIndex.append( BLANK_SPACE );
-	        sbContentToIndex.append( tg.getIdTag( ) );
+        StringBuffer sbContentToIndex = new StringBuffer( );
+
+        for ( Tag tg : htmldoc.getTag( ) )
+        {
+            sbContentToIndex.append( BLANK_SPACE );
+            sbContentToIndex.append( tg.getIdTag( ) );
         }
-       
-        return sbContentToIndex.toString(  );
+
+        return sbContentToIndex.toString( );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getName(  )
+    public String getName( )
     {
         return AppPropertiesService.getProperty( PROPERTY_INDEXER_NAME );
     }
@@ -282,7 +281,7 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
      * {@inheritDoc}
      */
     @Override
-    public String getVersion(  )
+    public String getVersion( )
     {
         return AppPropertiesService.getProperty( PROPERTY_INDEXER_VERSION );
     }
@@ -291,14 +290,13 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
      * {@inheritDoc}
      */
     @Override
-    public boolean isEnable(  )
+    public boolean isEnable( )
     {
         boolean bReturn = false;
         String strEnable = AppPropertiesService.getProperty( PROPERTY_INDEXER_ENABLE );
 
-        if ( ( strEnable != null ) &&
-                ( strEnable.equalsIgnoreCase( Boolean.TRUE.toString(  ) ) || strEnable.equals( ENABLE_VALUE_TRUE ) ) &&
-                PluginService.isPluginEnable( HtmldocsPlugin.PLUGIN_NAME ) )
+        if ( ( strEnable != null ) && ( strEnable.equalsIgnoreCase( Boolean.TRUE.toString( ) ) || strEnable.equals( ENABLE_VALUE_TRUE ) )
+                && PluginService.isPluginEnable( HtmldocsPlugin.PLUGIN_NAME ) )
         {
             bReturn = true;
         }
@@ -308,15 +306,19 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
 
     /**
      * Indexing action performed on the recording
-     * @param sbLogs the buffer log
-     * @param nIdHtmldoc the id of the Htmldoc
-     * @param nAction the indexer action key performed
+     * 
+     * @param sbLogs
+     *            the buffer log
+     * @param nIdHtmldoc
+     *            the id of the Htmldoc
+     * @param nAction
+     *            the indexer action key performed
      */
     private void sbLogHtmldoc( StringBuffer sbLogs, int nIdHtmldoc, int nAction )
     {
         sbLogs.append( "Indexing HtmlDocs:" );
 
-        switch ( nAction )
+        switch( nAction )
         {
             case IndexerAction.TASK_CREATE:
                 sbLogs.append( "Insert " );
@@ -345,6 +347,5 @@ public class DefaultHtmldocIndexer implements IHtmldocsSearchIndexer
 
         sbLogs.append( "\r\n" );
     }
-    
-   
+
 }

@@ -62,23 +62,23 @@ public class HtmlDocResourceRssConfig
     {
         _nIdRss = idRss;
     }
-    
-   /**
-    * @return id Portlet
-    */
-   public int getIdPortlet( )
-   {
-       return _nIdPortlet;
-   }
 
-   /**
-    * set id Portlet
-    * 
-    * @param idPortlet
-    *            id Portlet
-    */
-   public void setIdPortlet( int idPortlet )
-   {
-	   _nIdPortlet = idPortlet;
-   }
+    /**
+     * @return id Portlet
+     */
+    public int getIdPortlet( )
+    {
+        return _nIdPortlet;
+    }
+
+    /**
+     * set id Portlet
+     * 
+     * @param idPortlet
+     *            id Portlet
+     */
+    public void setIdPortlet( int idPortlet )
+    {
+        _nIdPortlet = idPortlet;
+    }
 }

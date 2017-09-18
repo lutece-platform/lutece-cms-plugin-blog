@@ -1,6 +1,5 @@
 package fr.paris.lutece.plugins.blog.business;
 
-
 /**
  *
  * class IndexerActionFilter
@@ -17,16 +16,19 @@ public class IndexerActionFilter
 
     /**
      * gets the id of task
+     * 
      * @return the task id insert in the filter
      */
-    public int getIdTask(  )
+    public int getIdTask( )
     {
         return _nIdTask;
     }
 
     /**
      * set the task id in the filter
-     * @param idTask the task id to insert in the filter
+     * 
+     * @param idTask
+     *            the task id to insert in the filter
      */
     public void setIdTask( int idTask )
     {
@@ -35,25 +37,29 @@ public class IndexerActionFilter
 
     /**
      * weather or not it contains the task
+     * 
      * @return true if the filter contain a task id
      */
-    public boolean containsIdTask(  )
+    public boolean containsIdTask( )
     {
         return ( _nIdTask != ALL_INT );
     }
 
     /**
      * Get the id of the HtmlDoc
+     * 
      * @return The id of the HtmlDoc
      */
-    public int getIdHtmlDoc(  )
+    public int getIdHtmlDoc( )
     {
         return _nIdHtmlDoc;
     }
 
     /**
      * Set the id of the HtmlDoc
-     * @param nId The id of the HtmlDoc
+     * 
+     * @param nId
+     *            The id of the HtmlDoc
      */
     public void setIdHtmlDoc( int nId )
     {
@@ -62,9 +68,10 @@ public class IndexerActionFilter
 
     /**
      * Check if this filter contains an HtmlDoc id
+     * 
      * @return True if this filter contains an HtmlDoc id, false otherwise
      */
-    public boolean containsIdHtmlDoc(  )
+    public boolean containsIdHtmlDoc( )
     {
         return ( _nIdHtmlDoc != ALL_INT );
     }

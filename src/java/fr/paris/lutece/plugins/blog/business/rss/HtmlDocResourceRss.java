@@ -78,7 +78,6 @@ public class HtmlDocResourceRss extends ResourceRss
     private static final String TEMPLATE_TASK_CREATE_CONFIG = "admin/plugins/blog/rss/rss_create_config.html";
     private static final String TEMPLATE_TASK_MODIFY_CONFIG = "admin/plugins/blog/rss/rss_modify_config.html";
 
-
     // JSPs
     private static final String JSP_PAGE_HTMLDOCS = "/jsp/site/Portal.jsp?page=htmldoc";
 
@@ -92,12 +91,9 @@ public class HtmlDocResourceRss extends ResourceRss
     private static final String MARK_PORTLET_LIST = "portlet_list";
     private static final String MARK_ID_PORTLET = "id_portlet";
 
-
-
     // Parameters
     private static final String PARAMETER_ID_HTMLDOC = "id_htmldoc";
     private static final String PARAMETER_ID_PORTLET = "id_portlet";
-
 
     // Messages
     private static final String PROPERTY_SITE_LANGUAGE = "rss.language";
@@ -113,7 +109,7 @@ public class HtmlDocResourceRss extends ResourceRss
     public boolean contentResourceRss( )
     {
 
-        if ( HtmlDocPublicationHome.getAllDocPublication( ).size() > 0 )
+        if ( HtmlDocPublicationHome.getAllDocPublication( ).size( ) > 0 )
         {
             return true;
         }
@@ -130,12 +126,9 @@ public class HtmlDocResourceRss extends ResourceRss
         Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
         String stridPortlet = request.getParameter( PARAMETER_ID_PORTLET );
 
-        
         HtmlDocResourceRssConfig config = new HtmlDocResourceRssConfig( );
         config.setIdRss( this.getId( ) );
-        config.setIdPortlet(Integer.parseInt(stridPortlet));
-
-        
+        config.setIdPortlet( Integer.parseInt( stridPortlet ) );
 
         HtmlDocResourceRssConfigHome.create( config, plugin );
     }
@@ -151,9 +144,7 @@ public class HtmlDocResourceRss extends ResourceRss
 
         HtmlDocResourceRssConfig config = new HtmlDocResourceRssConfig( );
         config.setIdRss( this.getId( ) );
-        config.setIdPortlet(Integer.parseInt(stridPortlet));
-        
-        
+        config.setIdPortlet( Integer.parseInt( stridPortlet ) );
 
         HtmlDocResourceRssConfigHome.update( config, pluginForm );
     }
@@ -167,7 +158,6 @@ public class HtmlDocResourceRss extends ResourceRss
         this.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, locale ) );
         String stridPortlet = request.getParameter( PARAMETER_ID_PORTLET );
 
-
         return null;
     }
 
@@ -178,23 +168,21 @@ public class HtmlDocResourceRss extends ResourceRss
     public String getDisplayCreateConfigForm( HttpServletRequest request, Locale locale )
     {
 
+        List<Portlet> portletList = (List<Portlet>) PublishingService.getInstance( ).getHtmlDocsPortlets( );
 
-         List<Portlet> portletList =  (List<Portlet>) PublishingService.getInstance().getHtmlDocsPortlets();
-         
-    	 ReferenceList referencelist = new ReferenceList(  );
-         HashMap<String, Object> model = new HashMap<String, Object>(  );
+        ReferenceList referencelist = new ReferenceList( );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
 
-         for ( Portlet portlet : portletList )
-         {
-        	 referencelist.addItem(portlet.getId( ), portlet.getName( ));
-         }
+        for ( Portlet portlet : portletList )
+        {
+            referencelist.addItem( portlet.getId( ), portlet.getName( ) );
+        }
 
-         model.put( MARK_PORTLET_LIST, referencelist );
-   
+        model.put( MARK_PORTLET_LIST, referencelist );
 
-         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_CREATE_CONFIG, locale, model );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_CREATE_CONFIG, locale, model );
 
-         return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -204,37 +192,35 @@ public class HtmlDocResourceRss extends ResourceRss
     public String getDisplayModifyConfigForm( HttpServletRequest request, Locale locale )
     {
         Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
-    	 List<Portlet> portletList =  (List<Portlet>) PublishingService.getInstance().getHtmlDocsPortlets();
-         HtmlDocResourceRssConfig config = HtmlDocResourceRssConfigHome.findByPrimaryKey( this.getId(  ), plugin );
+        List<Portlet> portletList = (List<Portlet>) PublishingService.getInstance( ).getHtmlDocsPortlets( );
+        HtmlDocResourceRssConfig config = HtmlDocResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
 
-    	 ReferenceList referencelist = new ReferenceList(  );
-         HashMap<String, Object> model = new HashMap<String, Object>(  );
+        ReferenceList referencelist = new ReferenceList( );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
 
-         for ( Portlet portlet : portletList )
-         {
-        	 referencelist.addItem(portlet.getId( ), portlet.getName( ));
-         }
-         
-         model.put( MARK_ID_PORTLET, config.getIdPortlet( ));
-         model.put( MARK_PORTLET_LIST, referencelist );
-   
+        for ( Portlet portlet : portletList )
+        {
+            referencelist.addItem( portlet.getId( ), portlet.getName( ) );
+        }
 
-         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_MODIFY_CONFIG, locale, model );
+        model.put( MARK_ID_PORTLET, config.getIdPortlet( ) );
+        model.put( MARK_PORTLET_LIST, referencelist );
 
-         return template.getHtml(  );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_MODIFY_CONFIG, locale, model );
+
+        return template.getHtml( );
     }
 
     /**
      * {@inheritDoc}
      */
-    
-    
+
     @Override
     public String createHtmlRss( )
     {
-    	HashMap<String, Object> model = new HashMap<String, Object>(  );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
         Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
-        HtmlDocResourceRssConfig config = HtmlDocResourceRssConfigHome.findByPrimaryKey( this.getId(  ), plugin );
+        HtmlDocResourceRssConfig config = HtmlDocResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
 
         String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
         Locale locale = new Locale( strRssFileLanguage );
@@ -242,30 +228,28 @@ public class HtmlDocResourceRss extends ResourceRss
         String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
         String strSiteUrl = strWebAppUrl;
 
-
-        List<HtmlDocPublication> listDocPub= HtmlDocPublicationHome.getDocPublicationByPortlet(config.getIdPortlet());
+        List<HtmlDocPublication> listDocPub = HtmlDocPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
         List<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>( );
 
-        for(HtmlDocPublication dcPub:listDocPub){
-    	
-        	HashMap<String, Object> item = new HashMap<String, Object>( );
-        	HtmlDoc htmldoc= HtmlDocService.getInstance().findByPrimaryKeyWithoutBinaries(dcPub.getIdDocument( ));
+        for ( HtmlDocPublication dcPub : listDocPub )
+        {
+
+            HashMap<String, Object> item = new HashMap<String, Object>( );
+            HtmlDoc htmldoc = HtmlDocService.getInstance( ).findByPrimaryKeyWithoutBinaries( dcPub.getIdDocument( ) );
             item.put( MARK_RSS_ITEM_TITLE, htmldoc.getName( ) );
             item.put( MARK_RSS_ITEM_DESCRIPTION, htmldoc.getDescription( ) );
             item.put( MARK_RSS_SITE_URL, strSiteUrl );
             item.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
-            item.put( MARK_RSS_ITEM_GUID, htmldoc.getId( ));
-
-            
+            item.put( MARK_RSS_ITEM_GUID, htmldoc.getId( ) );
 
             listItem.add( item );
-        	
-        }
-            model.put( MARK_ITEM_LIST, listItem );
-            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PUSH_RSS_XML_HTMLDOC, locale, model );
 
-            return template.getHtml(  );
-        
+        }
+        model.put( MARK_ITEM_LIST, listItem );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PUSH_RSS_XML_HTMLDOC, locale, model );
+
+        return template.getHtml( );
+
     }
 
     /**
@@ -278,8 +262,7 @@ public class HtmlDocResourceRss extends ResourceRss
         Locale locale = new Locale( strRssFileLanguage );
         Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
 
-        HtmlDocResourceRssConfig config = HtmlDocResourceRssConfigHome.findByPrimaryKey( this.getId(  ), plugin );
-
+        HtmlDocResourceRssConfig config = HtmlDocResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
 
         String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
         String strSiteUrl = strWebAppUrl;
@@ -289,25 +272,25 @@ public class HtmlDocResourceRss extends ResourceRss
         resource.setLink( strSiteUrl + JSP_PAGE_HTMLDOCS );
         resource.setLanguage( strRssFileLanguage );
         resource.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
-        
 
-        List<HtmlDocPublication> listDocPub= HtmlDocPublicationHome.getDocPublicationByPortlet(config.getIdPortlet());
+        List<HtmlDocPublication> listDocPub = HtmlDocPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
 
         List<IFeedResourceItem> listItems = new ArrayList<IFeedResourceItem>( );
 
-        for(HtmlDocPublication dcPub:listDocPub){
+        for ( HtmlDocPublication dcPub : listDocPub )
+        {
 
             IFeedResourceItem item = new FeedResourceItem( );
 
             String strTitle;
             Map<String, Object> model = new HashMap<String, Object>( );
 
-            HtmlDoc htmldoc= HtmlDocService.getInstance().findByPrimaryKeyWithoutBinaries(dcPub.getIdDocument( ));
+            HtmlDoc htmldoc = HtmlDocService.getInstance( ).findByPrimaryKeyWithoutBinaries( dcPub.getIdDocument( ) );
             model.put( MARK_RSS_ITEM_TITLE, htmldoc.getName( ) );
             model.put( MARK_RSS_ITEM_DESCRIPTION, htmldoc.getDescription( ) );
             model.put( MARK_RSS_SITE_URL, strSiteUrl );
             model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
-            
+
             HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_HTMLDOC_ITEM_TITLE, locale, model );
             strTitle = template.getHtml( );
 
@@ -315,7 +298,7 @@ public class HtmlDocResourceRss extends ResourceRss
             item.setLink( strSiteUrl + JSP_PAGE_HTMLDOCS + "&id=" + htmldoc.getId( ) );
             item.setDescription( htmldoc.getDescription( ) );
             item.setDate( htmldoc.getCreationDate( ) );
-            item.setGUID(String.valueOf(htmldoc.getId( )));
+            item.setGUID( String.valueOf( htmldoc.getId( ) ) );
 
             listItems.add( item );
         }

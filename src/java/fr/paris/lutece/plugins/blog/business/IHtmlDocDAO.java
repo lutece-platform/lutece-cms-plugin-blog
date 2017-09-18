@@ -168,14 +168,14 @@ public interface IHtmlDocDAO
      * @return The referenceList which contains the data of all the htmlDoc objects
      */
     ReferenceList selectHtmlDocsReferenceList( Plugin plugin );
-   
+
     /**
      * Load the list of htmldocs
-     * @param filter The HtmlDOcFilter Object
+     * 
+     * @param filter
+     *            The HtmlDOcFilter Object
      * @return The Collection of the htmldocss
-     */ 
+     */
     List<HtmlDoc> selectByFilter( HtmlDocFilter filter );
-   
-
 
 }

@@ -1,6 +1,5 @@
 package fr.paris.lutece.plugins.blog.business;
 
-
 /**
  *
  * IndexerAction
@@ -28,16 +27,19 @@ public class IndexerAction
 
     /**
      * gets the action id
+     * 
      * @return the action id
      */
-    public int getIdAction(  )
+    public int getIdAction( )
     {
         return _nIdAction;
     }
 
     /**
      * set the action id
-     * @param nIdAction idAction
+     * 
+     * @param nIdAction
+     *            idAction
      */
     public void setIdAction( int nIdAction )
     {
@@ -46,34 +48,40 @@ public class IndexerAction
 
     /**
      * gets announce id
+     * 
      * @return the record Id
      */
-    public int getIdHtmldoc(  )
+    public int getIdHtmldoc( )
     {
         return _nIdHtmldoc;
     }
 
     /**
      * set the IdHtmldoc
-     * @param nIdHtmldocrecord if
+     * 
+     * @param nIdHtmldocrecord
+     *            if
      */
     public void setIdHtmldoc( int nIdHtmldoc )
     {
-    	_nIdHtmldoc = nIdHtmldoc;
+        _nIdHtmldoc = nIdHtmldoc;
     }
 
     /**
      * get the task id
+     * 
      * @return the task id
      */
-    public int getIdTask(  )
+    public int getIdTask( )
     {
         return _nIdTask;
     }
 
     /**
      * set the task id
-     * @param nIdTask the task id
+     * 
+     * @param nIdTask
+     *            the task id
      */
     public void setIdTask( int nIdTask )
     {

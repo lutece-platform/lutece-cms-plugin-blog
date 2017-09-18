@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.Locale;
 
-
 /**
  *
  * DocumentExtendableResourceService
@@ -19,7 +18,7 @@ import java.util.Locale;
 public class DocumentExtendableResourceService implements IExtendableResourceService
 {
     private static final String MESSAGE_DOCUMENT_RESOURCE_TYPE_DESCRIPTION = "blog.resource.resourceTypeDescription";
-   
+
     /**
      * {@inheritDoc}
      */
@@ -39,7 +38,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
         {
             int nIdDocument = Integer.parseInt( strIdResource );
 
-            return HtmlDocService.getInstance().loadDocument(nIdDocument);
+            return HtmlDocService.getInstance( ).loadDocument( nIdDocument );
         }
 
         return null;
@@ -49,7 +48,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
      * {@inheritDoc}
      */
     @Override
-    public String getResourceType(  )
+    public String getResourceType( )
     {
         return HtmlDoc.PROPERTY_RESOURCE_TYPE;
     }
@@ -69,7 +68,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
     @Override
     public String getResourceUrl( String strIdResource, String strResourceType )
     {
-        
+
         return null;
     }
 }

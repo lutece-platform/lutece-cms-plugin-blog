@@ -54,20 +54,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
  * Publishing service
  */
 public class PublishingService
 {
-    private static PublishingService _singleton = new PublishingService(  );
-
+    private static PublishingService _singleton = new PublishingService( );
 
     /**
      * Get the unique instance of the service
+     * 
      * @return The unique instance
      */
-    public static PublishingService getInstance(  )
+    public static PublishingService getInstance( )
     {
         return _singleton;
     }
@@ -75,12 +74,14 @@ public class PublishingService
     /**
      * Assign {@link Document} to a {@link Portlet}
      *
-     * @param nDocumentId The {@link Document} identifier
-     * @param nPortletId The {@link Portlet} identifier
+     * @param nDocumentId
+     *            The {@link Document} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
      */
     public void assign( int nDocumentId, int nPortletId )
     {
-    	HtmlDocPublication documentPublication = new HtmlDocPublication(  );
+        HtmlDocPublication documentPublication = new HtmlDocPublication( );
         documentPublication.setIdPortlet( nPortletId );
         documentPublication.setIdDocument( nDocumentId );
         HtmlDocPublicationHome.create( documentPublication );
@@ -89,83 +90,94 @@ public class PublishingService
     /**
      * Publishing documents assigned to a portlet at the begin of the list
      *
-     * @param nDocumentId the Document id
-     * @param nPortletId the portlet identifier
+     * @param nDocumentId
+     *            the Document id
+     * @param nPortletId
+     *            the portlet identifier
      */
     public void publish( int nDocumentId, int nPortletId )
     {
         // Publishing of document : set status to Published
-    	HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
 
         if ( documentPublication != null )
         {
-        	 documentPublication.setIdPortlet( nPortletId );
-             documentPublication.setIdDocument( nDocumentId );
-             HtmlDocPublicationHome.update( documentPublication );
+            documentPublication.setIdPortlet( nPortletId );
+            documentPublication.setIdDocument( nDocumentId );
+            HtmlDocPublicationHome.update( documentPublication );
 
-           
         }
 
-        HtmlDocSearchService.getInstance(  ).addIndexerAction( nDocumentId, IndexerAction.TASK_MODIFY, HtmldocsPlugin.getPlugin() );
+        HtmlDocSearchService.getInstance( ).addIndexerAction( nDocumentId, IndexerAction.TASK_MODIFY, HtmldocsPlugin.getPlugin( ) );
 
     }
 
-  
     /**
      * unAssign {@link Document} to a {@link Portlet}
      *
-     * @param nDocumentId The {@link Document} identifier
-     * @param nPortletId The {@link Portlet} identifier
+     * @param nDocumentId
+     *            The {@link Document} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
      */
     public void unAssign( int nDocumentId, int nPortletId )
     {
-    	HtmlDocPublicationHome.remove( nPortletId, nDocumentId );
+        HtmlDocPublicationHome.remove( nPortletId, nDocumentId );
     }
 
-   
     /**
      * Check if the specified {@link Document} is published into the specified {@link Portlet}
-     * @param nDocumentId The {@link Document} identifier
-     * @param nPortletId The {@link Portlet} identifier
+     * 
+     * @param nDocumentId
+     *            The {@link Document} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
      * @return True if {@link Document} is published, false else (unpublished or not assigned)
      */
     public boolean isPublished( int nDocumentId, int nPortletId )
     {
-    	HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
 
-        return documentPublication != null ?true:false;
+        return documentPublication != null ? true : false;
     }
 
-   
     /**
      * Check if the specified {@link Document} is assigned (unpublished or published) into at least one {@link Portlet}
-     * @param nDocumentId The {@link Document} identifier
+     * 
+     * @param nDocumentId
+     *            The {@link Document} identifier
      * @return True if {@link Document} is assigned (published or unpublished), false else (not assigned)
      */
     public boolean isAssigned( int nDocumentId )
     {
         Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.getDocPublicationByIdDoc( nDocumentId );
 
-        return ( listDocumentPublication.size(  ) > 0 );
+        return ( listDocumentPublication.size( ) > 0 );
     }
 
     /**
      * Check if the specified {@link Document} is assigned (unpublished or published) into the specified {@link Portlet}
-     * @param nDocumentId The {@link Document} identifier
-     * @param nPortletId The {@link Portlet} identifier
+     * 
+     * @param nDocumentId
+     *            The {@link Document} identifier
+     * @param nPortletId
+     *            The {@link Portlet} identifier
      * @return True if {@link Document} is assigned (published or unpublished), false else (not assigned)
      */
     public boolean isAssigned( int nDocumentId, int nPortletId )
     {
-    	HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
 
         return ( documentPublication != null );
     }
 
     /**
      * Return a {@link DocumentPublication} from a {@link Portlet} identifier and {@link Document} identifier
-     * @param nPortletId the {@link Portlet} identifier
-     * @param nDocumentId the {@link Document} identifier
+     * 
+     * @param nPortletId
+     *            the {@link Portlet} identifier
+     * @param nDocumentId
+     *            the {@link Document} identifier
      * @return a {@link DocumentPublication} or null if no object match
      */
     public HtmlDocPublication getDocumentPublication( int nPortletId, int nDocumentId )
@@ -174,67 +186,73 @@ public class PublishingService
     }
 
     /**
-     * Loads the list of portlets 
+     * Loads the list of portlets
      *
      * @return the {@link Collection} of the portlets
      */
-    public Collection<Portlet> getHtmlDocsPortlets(  )
+    public Collection<Portlet> getHtmlDocsPortlets( )
     {
         Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
-        Collection<Portlet> listPortletsAll = new ArrayList<Portlet>(  );
+        Collection<Portlet> listPortletsAll = new ArrayList<Portlet>( );
 
-        for ( PortletType portletType : plugin.getPortletTypes(  ) )
+        for ( PortletType portletType : plugin.getPortletTypes( ) )
         {
-            listPortletsAll.addAll( PortletHome.findByType( portletType.getId(  ) ) );
-        }       
+            listPortletsAll.addAll( PortletHome.findByType( portletType.getId( ) ) );
+        }
 
         return listPortletsAll;
     }
-    
+
     /**
-     * Loads the list of portlets htmldocs empty and htmldocslist 
+     * Loads the list of portlets htmldocs empty and htmldocslist
      *
      * @return the {@link Collection} of the portlets
      */
-    public Collection<Portlet> getHtmlDocsPortletstoPublish(  )
+    public Collection<Portlet> getHtmlDocsPortletstoPublish( )
     {
         Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
-        Collection<Portlet> listPortletsAll = new ArrayList<Portlet>(  );
+        Collection<Portlet> listPortletsAll = new ArrayList<Portlet>( );
 
-        for ( PortletType portletType : plugin.getPortletTypes(  ) )
+        for ( PortletType portletType : plugin.getPortletTypes( ) )
         {
-        	List<Portlet> listPortlet=PortletHome.findByType( portletType.getId(  ) );
-        	String className = HtmldocsPortletHome.class.getName( );
-	        String strPortletTypeId = PortletTypeHome.getPortletTypeId( className );
-	        
-        	if(portletType.getId(  ).equals(strPortletTypeId)){
-        		for(Portlet pt:listPortlet){
-        			if(HtmlDocPublicationHome.getDocPublicationByPortlet(pt.getId()).size( ) == 0){
-        				
-        				listPortletsAll.addAll( listPortlet );
-        			}
-        			
-        		}
-        		
-        	}else{
-        		
-        		listPortletsAll.addAll( listPortlet );
-        	}
-        }       
+            List<Portlet> listPortlet = PortletHome.findByType( portletType.getId( ) );
+            String className = HtmldocsPortletHome.class.getName( );
+            String strPortletTypeId = PortletTypeHome.getPortletTypeId( className );
+
+            if ( portletType.getId( ).equals( strPortletTypeId ) )
+            {
+                for ( Portlet pt : listPortlet )
+                {
+                    if ( HtmlDocPublicationHome.getDocPublicationByPortlet( pt.getId( ) ).size( ) == 0 )
+                    {
+
+                        listPortletsAll.addAll( listPortlet );
+                    }
+
+                }
+
+            }
+            else
+            {
+
+                listPortletsAll.addAll( listPortlet );
+            }
+        }
 
         return listPortletsAll;
     }
-    
+
     /**
      * Loads the list of the portlets whoes contain htmldoc specified by id
      *
-     * @param strDocumentId the htmlDoc identifier
+     * @param strDocumentId
+     *            the htmlDoc identifier
      * @return the {@link Collection} of the portlets
      */
     public Collection<Portlet> getPortletsByDocumentId( String strDocumentId )
     {
         Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.getDocPublicationByIdDoc( Integer.parseInt( strDocumentId ) );
-        Collection<Portlet> listPortlets = new ArrayList<Portlet>(  );
+        Collection<Portlet> listPortlets = new ArrayList<Portlet>( );
 
         for ( HtmlDocPublication documentPublication : listDocumentPublication )
         {
@@ -243,45 +261,47 @@ public class PublishingService
 
         return listPortlets;
     }
-    
+
     /**
-     * Loads the list of the htmlDoc whose filter and date publication is specified
-     * Return published documents since the publication date. The is also filtered with the documentFilter
+     * Loads the list of the htmlDoc whose filter and date publication is specified Return published documents since the publication date. The is also filtered
+     * with the documentFilter
      *
-     * @param datePublishing The start publication date
-     * @param dateEndPublishing The end publication date
-     * @param documentFilter The filter for the published htmldoc. The filter can be null or empty. The array of Ids will not be taked in account.
-     * @param locale The locale is used to get the list of htmldocs with the findByFilter method
+     * @param datePublishing
+     *            The start publication date
+     * @param dateEndPublishing
+     *            The end publication date
+     * @param documentFilter
+     *            The filter for the published htmldoc. The filter can be null or empty. The array of Ids will not be taked in account.
+     * @param locale
+     *            The locale is used to get the list of htmldocs with the findByFilter method
      * @return the list of the htmldoc in form of a List. return null if datePublishing is null
      */
-    public Collection<HtmlDoc> getPublishedDocumentsSinceDate( Date datePublishing, Date dateEndPublishing, HtmlDocFilter documentFilter,
-        Locale locale )
+    public Collection<HtmlDoc> getPublishedDocumentsSinceDate( Date datePublishing, Date dateEndPublishing, HtmlDocFilter documentFilter, Locale locale )
     {
         if ( datePublishing == null )
         {
             return null;
         }
 
-        Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.findSinceDatePublishingAndStatus( datePublishing,dateEndPublishing,
-                1 );
+        Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.findSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, 1 );
 
-        if ( ( listDocumentPublication == null ) || ( listDocumentPublication.size(  ) == 0 ) )
+        if ( ( listDocumentPublication == null ) || ( listDocumentPublication.size( ) == 0 ) )
         {
-            return new ArrayList<HtmlDoc>(  );
+            return new ArrayList<HtmlDoc>( );
         }
 
-        int[] arrayIds = new int[listDocumentPublication.size(  )];
+        int [ ] arrayIds = new int [ listDocumentPublication.size( )];
         int i = 0;
         HtmlDocFilter publishedDocumentFilter = documentFilter;
 
         if ( publishedDocumentFilter == null )
         {
-            publishedDocumentFilter = new HtmlDocFilter(  );
+            publishedDocumentFilter = new HtmlDocFilter( );
         }
 
         for ( HtmlDocPublication documentPublication : listDocumentPublication )
         {
-            arrayIds[i++] = documentPublication.getIdDocument(  );
+            arrayIds [i++] = documentPublication.getIdDocument( );
         }
 
         publishedDocumentFilter.setIds( arrayIds );
@@ -290,16 +310,19 @@ public class PublishingService
 
         return listDocuments;
     }
-    
+
     /**
-     * Get the list of id of published htmldocs associated with a given
-     * collection of portlets.
-     * @param nPortletsIds The list of portlet ids.
-     * @param datePublishing TODO
-     * @param plugin The document plugin
+     * Get the list of id of published htmldocs associated with a given collection of portlets.
+     * 
+     * @param nPortletsIds
+     *            The list of portlet ids.
+     * @param datePublishing
+     *            TODO
+     * @param plugin
+     *            The document plugin
      * @return The list of documents id.
      */
-    public static List<Integer> getPublishedDocumentsIdsListByPortletIds( int[] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
+    public static List<Integer> getPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
     {
         return HtmlDocPublicationHome.getPublishedDocumentsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }

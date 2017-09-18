@@ -78,19 +78,24 @@ public interface IHtmldocsPortletDAO extends IPortletInterfaceDAO
      *            The reference of the portlet
      */
     void store( Portlet portlet );
+
     /**
      * 
      * @param plugin
      * @return
      */
     ReferenceList selectHtmlDocPortletReferenceList( Plugin plugin );
+
     /**
      * Load the list of portlet
-     * @param nDocumentId the document ID
-     * @param pOrder order of the portlets
+     * 
+     * @param nDocumentId
+     *            the document ID
+     * @param pOrder
+     *            order of the portlets
      * @return The Collection of the ReferenceItem
      */
-    
+
     Collection<ReferenceItem> selectPortletByType( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter );
 
 }

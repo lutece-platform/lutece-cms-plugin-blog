@@ -17,38 +17,39 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
  * Utility class for announce plugin
  */
 public final class HtmldocUtils
 {
-    //Constants
+    // Constants
     public static final String CONSTANT_WHERE = " WHERE ";
     public static final String CONSTANT_AND = " AND ";
     public static final int CONSTANT_ID_NULL = -1;
     public static final String CONSTANT_TYPE_RESOURCE = "HTMLDOC_DOCUMENT";
 
-
-
     /**
      * Private default constructor
      */
-    private HtmldocUtils(  )
+    private HtmldocUtils( )
     {
         // Do nothing
     }
 
     /**
      * Builds a query with filters placed in parameters
-     * @param strSelect the select of the query
-     * @param listStrFilter the list of filter to add in the query
-     * @param strOrder the order by of the query
+     * 
+     * @param strSelect
+     *            the select of the query
+     * @param listStrFilter
+     *            the list of filter to add in the query
+     * @param strOrder
+     *            the order by of the query
      * @return a query
      */
     public static String buildRequetteWithFilter( String strSelect, List<String> listStrFilter, String strOrder )
     {
-        StringBuffer strBuffer = new StringBuffer(  );
+        StringBuffer strBuffer = new StringBuffer( );
         strBuffer.append( strSelect );
 
         int nCount = 0;
@@ -62,7 +63,7 @@ public final class HtmldocUtils
 
             strBuffer.append( strFilter );
 
-            if ( nCount != listStrFilter.size(  ) )
+            if ( nCount != listStrFilter.size( ) )
             {
                 strBuffer.append( CONSTANT_AND );
             }
@@ -73,7 +74,7 @@ public final class HtmldocUtils
             strBuffer.append( strOrder );
         }
 
-        return strBuffer.toString(  );
+        return strBuffer.toString( );
     }
 
     /**
@@ -100,7 +101,7 @@ public final class HtmldocUtils
      *
      * @return the plugin
      */
-    public static Plugin getPlugin(  )
+    public static Plugin getPlugin( )
     {
         return PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
     }

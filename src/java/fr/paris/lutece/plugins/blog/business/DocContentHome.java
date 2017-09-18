@@ -57,41 +57,37 @@ public final class DocContentHome
     {
         _dao.insertDocContent( docContent, _plugin );
 
-        
     }
 
-   
-   /**
-    * 
-    * @param docContent
-    * @return
-    */
-   public static DocContent update( DocContent docContent  )
+    /**
+     * 
+     * @param docContent
+     * @return
+     */
+    public static DocContent update( DocContent docContent )
     {
         _dao.store( docContent, _plugin );
 
         return docContent;
     }
 
-   /**
-    * 
-    * @param nKey
-    */
+    /**
+     * 
+     * @param nKey
+     */
     public static void remove( int nKey )
     {
-        _dao.delete( nKey, _plugin  );
+        _dao.delete( nKey, _plugin );
     }
 
-    
     /**
      * 
      * @param nIdDocument
      * @return
      */
-    public static DocContent getDocsContent( int nIdDocument)
+    public static DocContent getDocsContent( int nIdDocument )
     {
-        return _dao.loadDocContent(nIdDocument, _plugin );
+        return _dao.loadDocContent( nIdDocument, _plugin );
     }
 
-   
 }

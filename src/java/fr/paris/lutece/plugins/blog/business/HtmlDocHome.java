@@ -206,7 +206,7 @@ public final class HtmlDocHome
      */
     public static HtmlDoc addInitialVersion( HtmlDoc htmlDoc )
     {
-        //TODO handle errors
+        // TODO handle errors
         HtmlDocHome.create( htmlDoc );
         HtmlDocHome.createVersion( htmlDoc );
 
@@ -222,18 +222,21 @@ public final class HtmlDocHome
      */
     public static HtmlDoc addNewVersion( HtmlDoc htmlDoc )
     {
-        //TODO handle errors
+        // TODO handle errors
         HtmlDocHome.update( htmlDoc );
         HtmlDocHome.createVersion( htmlDoc );
 
         return htmlDoc;
     }
-    
+
     /**
      * Returns a collection of HtmlDoc objects
+     * 
      * @return A collection of HtmlDocs
-     * @param filter The filter
-     * @param locale The locale
+     * @param filter
+     *            The filter
+     * @param locale
+     *            The locale
      */
     public static List<HtmlDoc> findByFilter( HtmlDocFilter filter, Locale locale )
     {
@@ -241,6 +244,5 @@ public final class HtmlDocHome
 
         return listDocuments;
     }
-    
-    
+
 }

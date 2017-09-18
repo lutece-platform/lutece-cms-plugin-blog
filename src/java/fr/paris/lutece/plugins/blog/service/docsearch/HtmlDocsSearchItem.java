@@ -37,17 +37,17 @@ import fr.paris.lutece.portal.service.search.SearchItem;
 
 import org.apache.lucene.document.Document;
 
-
 /**
  * AnnounceSearchItem
  */
 public class HtmlDocsSearchItem extends SearchItem
 {
-    public HtmlDocsSearchItem(Document document) {
-		super(document);
-	}
+    public HtmlDocsSearchItem( Document document )
+    {
+        super( document );
+    }
 
-	/**
+    /**
      * Category id
      */
     public static final String FIELD_CATEGORY_ID = "category_id";
@@ -61,17 +61,11 @@ public class HtmlDocsSearchItem extends SearchItem
      * Doc tags
      */
     public static final String FIELD_TAGS = "tags";
-    
+
     /**
      * Doc User
      *
      */
     public static final String FIELD_USER = "user";
 
-  
-
-
-
-
- 
 }

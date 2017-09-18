@@ -82,7 +82,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         HashMap<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listHtmlDocs );
-        //TODO implement repopulating the form with editcomment (and others..) in case of error in doCreate
+        // TODO implement repopulating the form with editcomment (and others..) in case of error in doCreate
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
 
         return template.getHtml( );
@@ -106,7 +106,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         model.put( MARK_HTML_CONTENT, htmlDoc.getHtmlContent( ) );
         model.put( MARK_EDIT_COMMENT, "" );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        //TODO implement repopulating the form with editcomment (and others..) in case of error in doModify
+        // TODO implement repopulating the form with editcomment (and others..) in case of error in doModify
         HtmlTemplate template = getModifyTemplate( portlet, model );
 
         return template.getHtml( );
@@ -149,7 +149,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
             htmldoc.setCreationDate( getSqlDate( ) );
             htmldoc.setUpdateDate( getSqlDate( ) );
             htmldoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
-            //TODO error validation on edit comment length
+            // TODO error validation on edit comment length
             htmldoc.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
             htmldoc.setUser( user.getFirstName( ) );
             htmldoc.setUserCreator( user.getFirstName( ) );
@@ -208,10 +208,10 @@ public class HtmldocsPortletJspBean extends PortletJspBean
 
         // updates the HtmlDoc
         htmlDoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
-        //TODO error validation on edit comment length
+        // TODO error validation on edit comment length
         htmlDoc.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
         htmlDoc.setUpdateDate( getSqlDate( ) );
-        htmlDoc.setVersion( htmlDoc.getVersion() + 1 );
+        htmlDoc.setVersion( htmlDoc.getVersion( ) + 1 );
         HtmlDocHome.addNewVersion( htmlDoc );
 
         // updates the portlet

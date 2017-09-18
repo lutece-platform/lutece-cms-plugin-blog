@@ -86,18 +86,17 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
 
     @Size( max = 100, message = "#i18n{blog.validation.htmldoc.EditComment.size}" )
     private String _strEditComment;
-    
+
     @Size( message = "#i18n{blog.validation.description.size}" )
     private String _strDescription;
-    
-    private DocContent _docContent;
-    
-    private boolean _bShareable;
-    
-    private List<Tag> _tag = new ArrayList<Tag>();
-    
-    private List<HtmlDocPublication> _htmldocPubilcation = new ArrayList<HtmlDocPublication>();
 
+    private DocContent _docContent;
+
+    private boolean _bShareable;
+
+    private List<Tag> _tag = new ArrayList<Tag>( );
+
+    private List<HtmlDocPublication> _htmldocPubilcation = new ArrayList<HtmlDocPublication>( );
 
     /**
      * Returns the Id
@@ -113,7 +112,6 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     {
         return _strContentLabel;
     }
-
 
     /**
      * Sets the Id
@@ -303,7 +301,7 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     {
         _strEditComment = strEditComment;
     }
-    
+
     /**
      * Returns the Description
      *
@@ -322,9 +320,9 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
      */
     public void setDescription( String strDescription )
     {
-    	_strDescription = strDescription;
+        _strDescription = strDescription;
     }
-    
+
     /**
      * Returns the DocContent
      *
@@ -343,9 +341,9 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
      */
     public void setDocContent( DocContent docContent )
     {
-    	_docContent = docContent;
+        _docContent = docContent;
     }
-    
+
     /**
      * Returns the Shareable
      * 
@@ -355,13 +353,15 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     {
         return _bShareable;
     }
+
     /**
      * shareable
      */
     public void setShareable( boolean shareable )
     {
-         _bShareable= shareable;
+        _bShareable = shareable;
     }
+
     /**
      * Returns the tag list
      *
@@ -375,54 +375,57 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     /**
      * Sets the tag list
      *
-     * @param tag list
-     *            The tag list
+     * @param tag
+     *            list The tag list
      */
     public void setTag( List<Tag> tag )
     {
-    	_tag = tag;
+        _tag = tag;
     }
-    
+
     /**
      * Sets the tag list
      *
-     * @param tag list
-     *            The tag list
+     * @param tag
+     *            list The tag list
      */
     public void addTag( Tag tag )
     {
-    	for(Tag tg:_tag){
-    		
-    		if(tg.getIdTag( ) == tag.getIdTag( )){
-    			
-    			return;
-    		}
-    	}
-    	_tag.add(tag);
+        for ( Tag tg : _tag )
+        {
+
+            if ( tg.getIdTag( ) == tag.getIdTag( ) )
+            {
+
+                return;
+            }
+        }
+        _tag.add( tag );
     }
-    
+
     /**
-     * delet the tag 
+     * delet the tag
      *
-     * @param tag 
-     *            The tag 
+     * @param tag
+     *            The tag
      */
     public void deleteTag( Tag tag )
     {
-    	Tag tagToRemove = null;
-    	for(Tag tg:_tag){
-    		
-    		if(tg.getIdTag( ) == tag.getIdTag( )){
-    			
-    			
-    			tagToRemove= tg;
-    			break;
-    		}
-    	}
-    	
-    	_tag.remove(tagToRemove);
+        Tag tagToRemove = null;
+        for ( Tag tg : _tag )
+        {
+
+            if ( tg.getIdTag( ) == tag.getIdTag( ) )
+            {
+
+                tagToRemove = tg;
+                break;
+            }
+        }
+
+        _tag.remove( tagToRemove );
     }
-    
+
     /**
      * Returns the HtmldocPubilcation list
      *
@@ -436,93 +439,104 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     /**
      * Sets the htmlDocPublication list
      *
-     * @param htmlDocPublication list
-     *            The htmlDocPublication list
+     * @param htmlDocPublication
+     *            list The htmlDocPublication list
      */
     public void setHtmldocPubilcation( List<HtmlDocPublication> htmlDocPublication )
     {
-    	_htmldocPubilcation = htmlDocPublication;
+        _htmldocPubilcation = htmlDocPublication;
     }
-    
-    
+
     /**
      * Sets the HtmldocPubilcation list
      *
-     * @param HtmldocPubilcation list
-     *            The HtmldocPubilcation list
+     * @param HtmldocPubilcation
+     *            list The HtmldocPubilcation list
      */
     public void addHtmlDocPublication( HtmlDocPublication htmldocPubilcation )
     {
-    	for(HtmlDocPublication pub:_htmldocPubilcation){
-    		
-    		if(pub.getIdDocument() == htmldocPubilcation.getIdDocument() &&   pub.getIdPortlet( ) ==htmldocPubilcation.getIdPortlet()){
-    			
-    			return;
-    		}
-    	}
-    	_htmldocPubilcation.add( htmldocPubilcation );
+        for ( HtmlDocPublication pub : _htmldocPubilcation )
+        {
+
+            if ( pub.getIdDocument( ) == htmldocPubilcation.getIdDocument( ) && pub.getIdPortlet( ) == htmldocPubilcation.getIdPortlet( ) )
+            {
+
+                return;
+            }
+        }
+        _htmldocPubilcation.add( htmldocPubilcation );
     }
-    
+
     /**
-     * delet the HtmldocPubilcation 
+     * delet the HtmldocPubilcation
      *
-     * @param HtmldocPubilcation 
-     *            The HtmldocPubilcation 
+     * @param HtmldocPubilcation
+     *            The HtmldocPubilcation
      */
     public void deleteHtmlDocPublication( HtmlDocPublication htmldocPubilcation )
     {
-    	HtmlDocPublication pubToRemove = null;
-    	
-    	for(HtmlDocPublication pub:_htmldocPubilcation){
-    		
-    		if(pub.getIdDocument() == htmldocPubilcation.getIdDocument() &&   pub.getIdPortlet( ) ==htmldocPubilcation.getIdPortlet()){
-    			
-    			pubToRemove= pub;
-    			break;
-    		}
-    	}
-    	
-    	
-    	_htmldocPubilcation.remove(pubToRemove);
+        HtmlDocPublication pubToRemove = null;
+
+        for ( HtmlDocPublication pub : _htmldocPubilcation )
+        {
+
+            if ( pub.getIdDocument( ) == htmldocPubilcation.getIdDocument( ) && pub.getIdPortlet( ) == htmldocPubilcation.getIdPortlet( ) )
+            {
+
+                pubToRemove = pub;
+                break;
+            }
+        }
+
+        _htmldocPubilcation.remove( pubToRemove );
     }
-    
+
     /**
      * {@inheritDoc}
      */
-	@Override
-	public String getExtendableResourceDescription() {
+    @Override
+    public String getExtendableResourceDescription( )
+    {
 
-		return _strDescription;
-	}
-	 /**
-     * {@inheritDoc}
-     */
-	@Override
-	public String getExtendableResourceImageUrl() {
-		
-         return null;
-	}
-	 /**
-     * {@inheritDoc}
-     */
-	@Override
-	public String getExtendableResourceName() {
+        return _strDescription;
+    }
 
-		return _strContentLabel;
-	}
-	 /**
+    /**
      * {@inheritDoc}
      */
-	@Override
-	public String getExtendableResourceType() {
+    @Override
+    public String getExtendableResourceImageUrl( )
+    {
 
-		return PROPERTY_RESOURCE_TYPE;
-	}
-	 /**
+        return null;
+    }
+
+    /**
      * {@inheritDoc}
      */
-	@Override
-	public String getIdExtendableResource() {
-		return Integer.toString( _nId );
-	}
+    @Override
+    public String getExtendableResourceName( )
+    {
+
+        return _strContentLabel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getExtendableResourceType( )
+    {
+
+        return PROPERTY_RESOURCE_TYPE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getIdExtendableResource( )
+    {
+        return Integer.toString( _nId );
+    }
 }

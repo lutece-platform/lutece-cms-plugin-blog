@@ -1,6 +1,4 @@
-
 package fr.paris.lutece.plugins.blog.service.search;
-
 
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.service.HtmlDocService;
@@ -108,7 +106,7 @@ public class HtmlDocsSearchIndexer implements SearchIndexer
 
         try
         {
-        	documentId = Integer.parseInt( strDocumentId );
+            documentId = Integer.parseInt( strDocumentId );
         }
         catch( NumberFormatException ne )
         {
@@ -117,8 +115,7 @@ public class HtmlDocsSearchIndexer implements SearchIndexer
             return new ArrayList<Document>( 0 );
         }
 
-      
-        HtmlDoc htmlDoc= HtmlDocService.getInstance().loadDocument(documentId);
+        HtmlDoc htmlDoc = HtmlDocService.getInstance( ).loadDocument( documentId );
         Document doc = DefaultHtmldocIndexer.getDocument( htmlDoc );
 
         if ( doc != null )
@@ -138,10 +135,8 @@ public class HtmlDocsSearchIndexer implements SearchIndexer
     @Override
     public void indexDocuments( ) throws IOException, InterruptedException, SiteMessageException
     {
-    	HtmlDocSearchService.getInstance(  ).processIndexing( true );
+        HtmlDocSearchService.getInstance( ).processIndexing( true );
         // DefaultHtmldocIndexer.getDocuments("");
     }
-
-  
 
 }

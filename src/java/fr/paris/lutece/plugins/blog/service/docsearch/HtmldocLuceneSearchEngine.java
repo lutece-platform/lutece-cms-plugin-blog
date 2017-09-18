@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * LuceneSearchEngine
  */
@@ -39,7 +38,7 @@ public class HtmldocLuceneSearchEngine implements IHtmldocSearchEngine
     @Override
     public int getSearchResults( HtmldocSearchFilter filter, Plugin plugin, List<SearchResult> listSearchResult )
     {
-       ArrayList<SearchItem> listResults = new ArrayList<SearchItem>(  );
+        ArrayList<SearchItem> listResults = new ArrayList<SearchItem>( );
         IndexSearcher searcher;
 
         // Searcher searcher = null;
@@ -47,98 +46,97 @@ public class HtmldocLuceneSearchEngine implements IHtmldocSearchEngine
 
         try
         {
-            searcher = HtmlDocSearchService.getInstance(  ).getSearcher(  );
+            searcher = HtmlDocSearchService.getInstance( ).getSearcher( );
 
-            Collection<String> queries = new ArrayList<String>(  );
-            Collection<String> sectors = new ArrayList<String>(  );
-            Collection<BooleanClause.Occur> flags = new ArrayList<BooleanClause.Occur>(  );
+            Collection<String> queries = new ArrayList<String>( );
+            Collection<String> sectors = new ArrayList<String>( );
+            Collection<BooleanClause.Occur> flags = new ArrayList<BooleanClause.Occur>( );
 
-                
-            if ( filter.getKeywords(  )!= null && StringUtils.isNotBlank( filter.getKeywords(  ) ) )
+            if ( filter.getKeywords( ) != null && StringUtils.isNotBlank( filter.getKeywords( ) ) )
             {
-            
-	            Term term = new Term(HtmlDocsSearchItem.FIELD_CONTENTS,filter.getKeywords(  ));
-	            Query termQuery = new TermQuery(term);
-	            queries.add( termQuery.toString(  ) );
-	            sectors.add( HtmlDocsSearchItem.FIELD_CONTENTS );
-	            flags.add( BooleanClause.Occur.MUST );
-	   
+
+                Term term = new Term( HtmlDocsSearchItem.FIELD_CONTENTS, filter.getKeywords( ) );
+                Query termQuery = new TermQuery( term );
+                queries.add( termQuery.toString( ) );
+                sectors.add( HtmlDocsSearchItem.FIELD_CONTENTS );
+                flags.add( BooleanClause.Occur.MUST );
+
             }
-            
-            
-            if ( filter.getTag() != null )
+
+            if ( filter.getTag( ) != null )
             {
-            
-	            Term term = new Term(HtmlDocsSearchItem.FIELD_TAGS,filter.getTag( ));
-	            Query termQuery = new TermQuery(term);
-	            queries.add( termQuery.toString(  ) );
-	            sectors.add( HtmlDocsSearchItem.FIELD_TAGS );
-	            flags.add( BooleanClause.Occur.MUST );
-	            
+
+                Term term = new Term( HtmlDocsSearchItem.FIELD_TAGS, filter.getTag( ) );
+                Query termQuery = new TermQuery( term );
+                queries.add( termQuery.toString( ) );
+                sectors.add( HtmlDocsSearchItem.FIELD_TAGS );
+                flags.add( BooleanClause.Occur.MUST );
+
             }
             if ( filter.getUser( ) != null )
             {
-            
-	            Term term = new Term(HtmlDocsSearchItem.FIELD_USER,filter.getUser( ));
-	            Query termQuery = new TermQuery(term);
-	            queries.add( termQuery.toString(  ) );
-	            sectors.add( HtmlDocsSearchItem.FIELD_USER );
-	            flags.add( BooleanClause.Occur.MUST );
-	            
+
+                Term term = new Term( HtmlDocsSearchItem.FIELD_USER, filter.getUser( ) );
+                Query termQuery = new TermQuery( term );
+                queries.add( termQuery.toString( ) );
+                sectors.add( HtmlDocsSearchItem.FIELD_USER );
+                flags.add( BooleanClause.Occur.MUST );
+
             }
 
-            Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String[queries.size(  )] ), sectors.toArray( new String[sectors.size(  )] ),
-                    flags.toArray( new BooleanClause.Occur[flags.size(  )] ),
-                    HtmlDocSearchService.getInstance(  ).getAnalyzer(  ) );
+            Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String [ queries.size( )] ), sectors.toArray( new String [ sectors.size( )] ),
+                    flags.toArray( new BooleanClause.Occur [ flags.size( )] ), HtmlDocSearchService.getInstance( ).getAnalyzer( ) );
 
             TopDocs topDocs = searcher.search( queryMulti, LuceneSearchEngine.MAX_RESPONSES );
-            ScoreDoc[] hits = topDocs.scoreDocs;
+            ScoreDoc [ ] hits = topDocs.scoreDocs;
             nNbResults = hits.length;
 
             for ( int i = 0; i < nNbResults; i++ )
             {
-                int docId = hits[i].doc;
+                int docId = hits [i].doc;
                 Document document = searcher.doc( docId );
                 SearchItem si = new SearchItem( document );
                 listResults.add( si );
             }
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
         }
-        
+
         convertList( listResults, listSearchResult );
-        
-       return nNbResults;
+
+        return nNbResults;
     }
 
     /**
      * Convert the SearchItem list on SearchResult list
-     * @param listSource The source list
-     * @param listSearchResult The result list
+     * 
+     * @param listSource
+     *            The source list
+     * @param listSearchResult
+     *            The result list
      */
     private void convertList( List<SearchItem> listSource, List<SearchResult> listSearchResult )
     {
         for ( SearchItem item : listSource )
         {
-            SearchResult result = new SearchResult(  );
-            result.setId( item.getId(  ) );
+            SearchResult result = new SearchResult( );
+            result.setId( item.getId( ) );
 
             try
             {
-                result.setDate( DateTools.stringToDate( item.getDate(  ) ) );
+                result.setDate( DateTools.stringToDate( item.getDate( ) ) );
             }
-            catch ( ParseException e )
+            catch( ParseException e )
             {
-                AppLogService.error( "Bad Date Format for indexed item \"" + item.getTitle(  ) + "\" : " +
-                    e.getMessage(  ) );
+                AppLogService.error( "Bad Date Format for indexed item \"" + item.getTitle( ) + "\" : " + e.getMessage( ) );
             }
 
-            result.setUrl( item.getUrl(  ) );
-            result.setTitle( item.getTitle(  ) );
-            result.setSummary( item.getSummary(  ) );
-            result.setType( item.getType(  ) );
+            result.setUrl( item.getUrl( ) );
+            result.setTitle( item.getTitle( ) );
+            result.setSummary( item.getSummary( ) );
+            result.setType( item.getType( ) );
             listSearchResult.add( result );
         }
     }

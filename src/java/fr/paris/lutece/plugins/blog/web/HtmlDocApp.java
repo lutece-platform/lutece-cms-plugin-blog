@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
-
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublicationHome;
@@ -54,20 +53,20 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 @Controller( xpageName = HtmlDocApp.XPAGE_NAME, pageTitleI18nKey = HtmlDocApp.MESSAGE_PAGE_TITLE, pagePathI18nKey = HtmlDocApp.MESSAGE_PATH )
-public class HtmlDocApp  extends MVCApplication
+public class HtmlDocApp extends MVCApplication
 {
-	
-	/**
+
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected static final String XPAGE_NAME = "htmldoc";
+    protected static final String XPAGE_NAME = "htmldoc";
 
     // Messages
     protected static final String MESSAGE_PAGE_TITLE = "blog.xpage.htmldoc.view.pageTitle";
     protected static final String MESSAGE_PATH = "blog.xpage.htmldoc.view.pagePathLabel";
-	  // Templates
+    // Templates
 
     private static final String TEMPLATE_VIEW_HTMLDOC = "skin/plugins/blog/view_htmldoc.html";
 
@@ -75,22 +74,16 @@ public class HtmlDocApp  extends MVCApplication
     protected static final String PARAMETER_ID_HTMLDOC = "id";
     protected static final String PARAMETER_ID_Portlet = "portlet_id";
 
-   
     protected static final String PARAMETER_VIEW = "view";
-   
+
     // Properties for page titles
 
     // Filter Marks
     protected static final String MARK_HTML_DOC = "htmldoc";
     protected static final String MARK_LIST_DOC = "htmldoc_list";
 
-
-
-
     // Views
     private static final String VIEW_DETAILS = "documentDetails";
-    
-
 
     /**
      * Gets the HTMLDOC details view
@@ -102,33 +95,36 @@ public class HtmlDocApp  extends MVCApplication
     @View( value = VIEW_DETAILS, defaultView = true )
     public XPage getTicketDetails( HttpServletRequest request )
     {
-    	
-    	List<HtmlDocPublication> listHtmlDocPub= new ArrayList<HtmlDocPublication>();
 
-    	int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-    	String idPortlet =  request.getParameter( PARAMETER_ID_Portlet ) ;
-    	if(idPortlet != null && !idPortlet.isEmpty()){
-    		
-    		listHtmlDocPub= HtmlDocPublicationHome.getDocPublicationByPortlet(Integer.parseInt(idPortlet));
-    	}
-  	    List<HtmlDoc> listHtmlDocs = new ArrayList<HtmlDoc>();
+        List<HtmlDocPublication> listHtmlDocPub = new ArrayList<HtmlDocPublication>( );
 
-  	    for(HtmlDoc doc:HtmlDocService.getInstance().getListDocWithoutBinaries()){
-  	    	for(HtmlDocPublication pub:listHtmlDocPub){
-  	    		if(doc.getId() == pub.getIdDocument( )){
-  	    			doc.setAttachedPortletId(Integer.parseInt(idPortlet));
-  	    			listHtmlDocs.add(doc);
-  	    			
-  	    		}
-  	    	}
-  	    	
-  	    }
-  	    
-        HtmlDoc htmldoc = HtmlDocService.getInstance().loadDocument(nId);
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
+        String idPortlet = request.getParameter( PARAMETER_ID_Portlet );
+        if ( idPortlet != null && !idPortlet.isEmpty( ) )
+        {
+
+            listHtmlDocPub = HtmlDocPublicationHome.getDocPublicationByPortlet( Integer.parseInt( idPortlet ) );
+        }
+        List<HtmlDoc> listHtmlDocs = new ArrayList<HtmlDoc>( );
+
+        for ( HtmlDoc doc : HtmlDocService.getInstance( ).getListDocWithoutBinaries( ) )
+        {
+            for ( HtmlDocPublication pub : listHtmlDocPub )
+            {
+                if ( doc.getId( ) == pub.getIdDocument( ) )
+                {
+                    doc.setAttachedPortletId( Integer.parseInt( idPortlet ) );
+                    listHtmlDocs.add( doc );
+
+                }
+            }
+
+        }
+
+        HtmlDoc htmldoc = HtmlDocService.getInstance( ).loadDocument( nId );
         Map<String, Object> model = getModel( );
         model.put( MARK_HTML_DOC, htmldoc );
         model.put( MARK_LIST_DOC, listHtmlDocs );
-
 
         return getXPage( TEMPLATE_VIEW_HTMLDOC, request.getLocale( ), model );
     }

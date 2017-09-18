@@ -48,8 +48,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
-
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
  */
@@ -61,7 +59,6 @@ public class TagJspBean extends ManageHtmldocsJspBean
     private static final String TEMPLATE_CREATE_TAG = "/admin/plugins/blog/tag/create_tag.html";
     private static final String TEMPLATE_MODIFY_TAG = "/admin/plugins/blog/tag/modify_tag.html";
 
-
     // Parameters
     private static final String PARAMETER_ID_TAG = "id";
 
@@ -69,7 +66,6 @@ public class TagJspBean extends ManageHtmldocsJspBean
     private static final String PROPERTY_PAGE_TITLE_MANAGE_TAGS = "blog.manage_tags.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_TAGS = "blog.modify_tags.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_TAG = "blog.create_tag.pageTitle";
-
 
     // Markers
     private static final String MARK_TAG_LIST = "tag_list";
@@ -89,7 +85,6 @@ public class TagJspBean extends ManageHtmldocsJspBean
     private static final String VIEW_CREATE_TAG = "createTag";
     private static final String VIEW_MODIFY_TAG = "modifyTag";
 
-
     // Actions
     private static final String ACTION_CREATE_TAG = "createTag";
     private static final String ACTION_MODIFY_TAG = "modifyTag";
@@ -100,8 +95,6 @@ public class TagJspBean extends ManageHtmldocsJspBean
     private static final String INFO_TAG_CREATED = "blog.info.tag.created";
     private static final String INFO_TAG_UPDATED = "blog.info.tag.updated";
     private static final String INFO_TAG_REMOVED = "blog.info.tag.removed";
-
-
 
     // Session variable to store working values
     private Tag _tag;
@@ -116,8 +109,8 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @View( value = VIEW_MANAGE_TAGS, defaultView = true )
     public String getManageTags( HttpServletRequest request )
     {
-    	_tag = null;
-        List<Tag> listTag = TagHome.getTagList();
+        _tag = null;
+        List<Tag> listTag = TagHome.getTagList( );
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_TAG_LIST, listTag, JSP_MANAGE_TAGS );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
@@ -125,7 +118,6 @@ public class TagJspBean extends ManageHtmldocsJspBean
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_TAGS, TEMPLATE_MANAGE_TAGS, model );
     }
 
-    
     /**
      * Returns the form to create a tag
      *
@@ -136,7 +128,7 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @View( VIEW_CREATE_TAG )
     public String getCreateTag( HttpServletRequest request )
     {
-    	_tag = ( _tag != null ) ? _tag : new Tag( );
+        _tag = ( _tag != null ) ? _tag : new Tag( );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_TAG, _tag );
@@ -144,8 +136,6 @@ public class TagJspBean extends ManageHtmldocsJspBean
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_TAG, TEMPLATE_CREATE_TAG, model );
     }
-
-   
 
     /**
      * Process the data capture form of a new tag
@@ -157,15 +147,15 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_CREATE_TAG )
     public String doCreateTag( HttpServletRequest request )
     {
-        populate(_tag, request);
+        populate( _tag, request );
 
         // Check constraints
         if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
             return redirectView( request, VIEW_CREATE_TAG );
         }
-         
-        TagHome.create(_tag);
+
+        TagHome.create( _tag );
 
         addInfo( INFO_TAG_CREATED, getLocale( ) );
 
@@ -203,12 +193,11 @@ public class TagJspBean extends ManageHtmldocsJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_TAG ) );
         Tag tag = TagHome.findByPrimaryKey( nId );
-        /*int nAttachedPortletId = .getAttachedPortletId( );
-        if ( nAttachedPortletId != 0 )
-        {
-            HtmldocsPortletHome.getInstance( ).remove( HtmldocsPortletHome.findByPrimaryKey( nAttachedPortletId ) );
-        }*/
-        TagHome.remove(nId);
+        /*
+         * int nAttachedPortletId = .getAttachedPortletId( ); if ( nAttachedPortletId != 0 ) { HtmldocsPortletHome.getInstance( ).remove(
+         * HtmldocsPortletHome.findByPrimaryKey( nAttachedPortletId ) ); }
+         */
+        TagHome.remove( nId );
 
         addInfo( INFO_TAG_REMOVED, getLocale( ) );
 
@@ -226,12 +215,12 @@ public class TagJspBean extends ManageHtmldocsJspBean
     public String getModifyTag( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_TAG ) );
-       
-        if ( _tag == null || ( _tag.getIdTag( ) != nId )  )
+
+        if ( _tag == null || ( _tag.getIdTag( ) != nId ) )
         {
-            
-            _tag = TagHome.findByPrimaryKey(nId);
-   
+
+            _tag = TagHome.findByPrimaryKey( nId );
+
         }
 
         Map<String, Object> model = getModel( );
@@ -251,7 +240,7 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_MODIFY_TAG )
     public String doModifyHtmlDoc( HttpServletRequest request )
     {
-        populate(_tag,request);
+        populate( _tag, request );
 
         // Check constraints
         if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -259,12 +248,11 @@ public class TagJspBean extends ManageHtmldocsJspBean
             return redirect( request, VIEW_MODIFY_TAG, PARAMETER_ID_TAG, _tag.getIdTag( ) );
         }
 
-        TagHome.update(_tag);
-  
+        TagHome.update( _tag );
+
         addInfo( INFO_TAG_UPDATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_TAGS );
     }
 
-  
 }

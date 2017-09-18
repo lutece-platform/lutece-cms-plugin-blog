@@ -51,7 +51,6 @@ import fr.paris.lutece.util.ReferenceList;
 import java.util.Collection;
 import java.util.Map;
 
-
 /**
  *
  */
@@ -61,7 +60,8 @@ public interface IHtmlDocsListPortletDAO extends IPortletInterfaceDAO
      * Deletes records for a portlet identifier in the tables htmldocs_list_portlet
      *
      *
-     * @param nPortletId the portlet identifier
+     * @param nPortletId
+     *            the portlet identifier
      */
     void delete( int nPortletId );
 
@@ -69,7 +69,8 @@ public interface IHtmlDocsListPortletDAO extends IPortletInterfaceDAO
      * Insert a new record in the table htmldocs_list_portlet
      *
      *
-     * @param portlet the instance of the Portlet object to insert
+     * @param portlet
+     *            the instance of the Portlet object to insert
      */
     void insert( Portlet portlet );
 
@@ -77,52 +78,64 @@ public interface IHtmlDocsListPortletDAO extends IPortletInterfaceDAO
      * Loads the data of Document List Portlet whose identifier is specified in parameter
      *
      *
-     * @param nPortletId The Portlet identifier
+     * @param nPortletId
+     *            The Portlet identifier
      * @return theDocumentListPortlet object
      */
     Portlet load( int nPortletId );
 
-    Map<Integer,String> loadPages(  );
+    Map<Integer, String> loadPages( );
 
     /**
      * Load the list of documentTypes
-     * @param nDocumentId the document ID
-     * @param strCodeDocumentType The code
-     * @param pOrder order of the portlets
-     * @param pFilter The portlet filter
+     * 
+     * @param nDocumentId
+     *            the document ID
+     * @param strCodeDocumentType
+     *            The code
+     * @param pOrder
+     *            order of the portlets
+     * @param pFilter
+     *            The portlet filter
      * @return The Collection of the ReferenceItem
      */
-  /*  Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType,
-        PortletOrder pOrder, PortletFilter pFilter );
-*/
+    /*
+     * Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter );
+     */
     /**
      * Update the record in the table
      *
      *
-     * @param portlet A portlet
+     * @param portlet
+     *            A portlet
      */
     void store( Portlet portlet );
 
     /**
      * Tests if is a portlet is portlet type alias
      *
-     * @param nPortletId The identifier of the document
+     * @param nPortletId
+     *            The identifier of the document
      * @return true if the portlet is alias, false otherwise
      */
     boolean checkIsAliasPortlet( int nPortletId );
+
     /**
      * 
      * @param plugin
      * @return
      */
     ReferenceList selectHtmlDocListPortletReferenceList( Plugin plugin );
-    
+
     /**
      * Load the list of portlet
-     * @param nDocumentId the document ID
-     * @param pOrder order of the portlets
+     * 
+     * @param nDocumentId
+     *            the document ID
+     * @param pOrder
+     *            order of the portlets
      * @return The Collection of the ReferenceItem
      */
-    
+
     Collection<ReferenceItem> selectPortletByType( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter );
 }

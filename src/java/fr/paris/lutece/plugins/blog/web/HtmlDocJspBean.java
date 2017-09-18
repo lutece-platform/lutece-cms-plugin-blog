@@ -123,10 +123,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
     protected static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
     protected static final String PARAMETER_SHAREABLE = "shareable";
-    protected static final String PARAMETER_PRIORITY= "tag_priority";
-    protected static final String PARAMETER_TAG_ACTION= "tagAction";
-
-
+    protected static final String PARAMETER_PRIORITY = "tag_priority";
+    protected static final String PARAMETER_TAG_ACTION = "tagAction";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_HTMLDOCS = "blog.manage_htmldocs.pageTitle";
@@ -140,7 +138,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
     private static final String PROPERTY_RESOURCE_TYPE = "htmldoc";
     private static final String PROPERTY_REFERENE_ITEME_ALL = "all";
-
 
     // Markers
     protected static final String MARK_HTMLDOC_LIST = "htmldoc_list";
@@ -157,13 +154,11 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
     protected static final String MARK_TAG = "tags";
 
-
     private static final String JSP_MANAGE_HTMLDOCS = "jsp/admin/plugins/blog/ManageHtmlDocs.jsp";
 
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_HTMLDOC = "blog.message.confirmRemoveHtmlDoc";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
-
 
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "blog.model.entity.htmldoc.attribute.";
@@ -190,7 +185,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String INFO_HTMLDOC_UPDATED = "blog.info.htmldoc.updated";
     private static final String INFO_HTMLDOC_REMOVED = "blog.info.htmldoc.removed";
 
-
     // Filter Marks
     protected static final String MARK_HTMLDOC_FILTER_LIST = "htmldoc_filter_list";
     protected static final String MARK_HTMLDOC_FILTER_NAME = "Nom";
@@ -199,8 +193,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected static final String MARK_PAGINATOR = "paginator";
     protected static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     protected static final String MARK_ASC_SORT = "asc_sort";
-
-
 
     // Session variable to store working values
     protected HtmlDoc _htmldoc;
@@ -212,8 +204,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected boolean _bIsSorted = false;
     protected String _strSortedAttributeName;
     protected Boolean _bIsAscSort;
-    protected String _strTag=PROPERTY_REFERENE_ITEME_ALL;
-
+    protected String _strTag = PROPERTY_REFERENE_ITEME_ALL;
 
     /**
      * Build the Manage View
@@ -226,57 +217,59 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String getManageHtmlDocs( HttpServletRequest request )
     {
         _htmldoc = null;
-        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex ); 
+        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
         _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
-        
+
         // SORT
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
         String strAscSort = null;
-        
+
         AdminUser user = AdminUserService.getAdminUser( request );
-        List<Integer> listHtmlDocsId= new ArrayList<Integer>();
-        String strButtonSearch = request.getParameter ( PARAMETER_BUTTON_SEARCH );
-        if ( strButtonSearch != null ) {
+        List<Integer> listHtmlDocsId = new ArrayList<Integer>( );
+        String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
+        if ( strButtonSearch != null )
+        {
             // CURRENT USER
             _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
             _strTag = request.getParameter( PARAMETER_TAG );
         }
 
-      
-
-        if ( StringUtils.isNotBlank( _strSearchText ) || !_strTag.equals(PROPERTY_REFERENE_ITEME_ALL) || _bIsChecked )
+        if ( StringUtils.isNotBlank( _strSearchText ) || !_strTag.equals( PROPERTY_REFERENE_ITEME_ALL ) || _bIsChecked )
         {
-        	HtmldocSearchFilter filter= new HtmldocSearchFilter();
-        	if(StringUtils.isNotBlank( _strSearchText )) filter.setKeywords(_strSearchText);
-        	if (!_strTag.equals(PROPERTY_REFERENE_ITEME_ALL)) filter.setTag(_strTag);
-        	if(_bIsChecked) filter.setUser(user.getFirstName( ));
-        	HtmlDocSearchService.getInstance().getSearchResults(filter, listHtmlDocsId);
-       	
-        }
-        
-        else{
-        	
-        	listHtmlDocsId= HtmlDocHome.getIdHtmlDocsList();
-        }
-        
-        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( (List<Integer>) listHtmlDocsId,
-                _nItemsPerPage, getHomeUrl( request ), Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex,
-                getLocale(  ) );
+            HtmldocSearchFilter filter = new HtmldocSearchFilter( );
+            if ( StringUtils.isNotBlank( _strSearchText ) )
+                filter.setKeywords( _strSearchText );
+            if ( !_strTag.equals( PROPERTY_REFERENE_ITEME_ALL ) )
+                filter.setTag( _strTag );
+            if ( _bIsChecked )
+                filter.setUser( user.getFirstName( ) );
+            HtmlDocSearchService.getInstance( ).getSearchResults( filter, listHtmlDocsId );
 
-        List<HtmlDoc> listDocuments = new ArrayList<HtmlDoc>(  );
+        }
 
-        for ( Integer documentId : paginator.getPageItems(  ) )
+        else
         {
-        	HtmlDoc document = HtmlDocService.getInstance().findByPrimaryKeyWithoutBinaries( documentId );
+
+            listHtmlDocsId = HtmlDocHome.getIdHtmlDocsList( );
+        }
+
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( (List<Integer>) listHtmlDocsId, _nItemsPerPage, getHomeUrl( request ),
+                Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
+
+        List<HtmlDoc> listDocuments = new ArrayList<HtmlDoc>( );
+
+        for ( Integer documentId : paginator.getPageItems( ) )
+        {
+            HtmlDoc document = HtmlDocService.getInstance( ).findByPrimaryKeyWithoutBinaries( documentId );
 
             if ( document != null )
             {
                 listDocuments.add( document );
             }
         }
-        
+
         if ( strSortedAttributeName != null || _bIsSorted == true )
         {
             if ( strSortedAttributeName == null )
@@ -299,12 +292,11 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             _bIsAscSort = bIsAscSort;
         }
 
-
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put(MARK_HTMLDOC_LIST, listDocuments);
-        model.put(MARK_PAGINATOR, paginator);
+        Map<String, Object> model = new HashMap<String, Object>( );
+        model.put( MARK_HTMLDOC_LIST, listDocuments );
+        model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_HTMLDOC_FILTER_LIST, getHtmldocFilterList( ) );
-        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
+        model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_IS_CHECKED, _bIsChecked );
         model.put( MARK_SEARCH_TEXT, _strSearchText );
@@ -322,13 +314,12 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList( nId );
 
         UrlItem urlHistory = new UrlItem( JSP_MANAGE_HTMLDOCS );
-        urlHistory.addParameter( PARAMETER_VIEW , VIEW_HISTORY_HTMLDOC );
-        urlHistory.addParameter( PARAMETER_ID_HTMLDOC , nId );
+        urlHistory.addParameter( PARAMETER_VIEW, VIEW_HISTORY_HTMLDOC );
+        urlHistory.addParameter( PARAMETER_ID_HTMLDOC, nId );
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_HTMLDOC_LIST, listHtmlDocsVersions, urlHistory.getUrl( ) );
 
         model.put( MARK_ID_HTMLDOC, nId );
-        
 
         return getPage( PROPERTY_PAGE_TITLE_HISTORY_HTMLDOC, TEMPLATE_HISTORY_HTMLDOC, model );
     }
@@ -347,7 +338,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
-        model.put(MARK_LIST_TAG, getTageList());
+        model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_HTMLDOC, TEMPLATE_CREATE_HTMLDOC, model );
@@ -376,7 +367,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_CREATE_HTMLDOC )
     public String doCreateHtmlDoc( HttpServletRequest request )
     {
-    	
+
         _htmldoc.setCreationDate( getSqlDate( ) );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
@@ -390,11 +381,11 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         {
             return redirectView( request, VIEW_CREATE_HTMLDOC );
         }
-        
-        //HtmlDocHome.addInitialVersion( _htmldoc );
+
+        // HtmlDocHome.addInitialVersion( _htmldoc );
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        DocContent docContent= setContent( multipartRequest, request.getLocale( ) );
-        HtmlDocService.getInstance().createDocument(_htmldoc, docContent);
+        DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
+        HtmlDocService.getInstance( ).createDocument( _htmldoc, docContent );
 
         addInfo( INFO_HTMLDOC_CREATED, getLocale( ) );
 
@@ -404,72 +395,80 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_ADD_TAG )
     public String doAddTag( HttpServletRequest request )
     {
-    		String strIdTag= request.getParameter(PARAMETER_TAG);
-    		String strTagName= request.getParameter(PARAMETER_TAG_NAME);
-    		
-    		Tag tag= new Tag(Integer.parseInt(strIdTag), _htmldoc.getTag( ).size( )+1 );
-    		tag.setName(strTagName);
-    		
-        	_htmldoc.addTag(tag);
-        	
-    		return JsonUtil.buildJsonResponse(new JsonResponse("SUCESS"));
-    		
-    	
-     }
+        String strIdTag = request.getParameter( PARAMETER_TAG );
+        String strTagName = request.getParameter( PARAMETER_TAG_NAME );
+
+        Tag tag = new Tag( Integer.parseInt( strIdTag ), _htmldoc.getTag( ).size( ) + 1 );
+        tag.setName( strTagName );
+
+        _htmldoc.addTag( tag );
+
+        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+
+    }
+
     @Action( ACTION_REMOVE_TAG )
     public String doRemoveTag( HttpServletRequest request )
     {
-		     String strIdTag= request.getParameter(PARAMETER_TAG);
-		     Tag tag= new  Tag();
-		     tag.setIdTag(Integer.parseInt(strIdTag));
-        	_htmldoc.deleteTag(tag);
-        	
-    		return JsonUtil.buildJsonResponse(new JsonResponse("SUCESS"));
-    		
-    	
-     }
+        String strIdTag = request.getParameter( PARAMETER_TAG );
+        Tag tag = new Tag( );
+        tag.setIdTag( Integer.parseInt( strIdTag ) );
+        _htmldoc.deleteTag( tag );
+
+        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+
+    }
+
     @Action( ACTION_UPDATE_PRIORITY_TAG )
     public String doUpdatePriorityTag( HttpServletRequest request )
     {
-    		Tag tg= null;
-    		Tag tagMove= null;
-    		int nPriorityToSet=0;
-    		int nPriority= 0;
+        Tag tg = null;
+        Tag tagMove = null;
+        int nPriorityToSet = 0;
+        int nPriority = 0;
 
-    		String strIdTag= request.getParameter(PARAMETER_TAG);
-    		String strAction= request.getParameter(PARAMETER_TAG_ACTION);
-    		    		
-    		for(Tag tag:_htmldoc.getTag()){
-    			if(tag.getIdTag()== Integer.parseInt(strIdTag)){
-    				tg= tag;	
-    				nPriorityToSet= tag.getPriority();
-    				nPriority= tag.getPriority();
-    			}
-    		}
-    		for(Tag tag:_htmldoc.getTag()){
-    			if(strAction.equals("moveUp") && tag.getPriority()== nPriority -1 ){
-    				tagMove= tag;
-    				tagMove.setPriority(tagMove.getPriority( ) +1 );
-    				nPriorityToSet= nPriority - 1;
-    				
-    			}else if(strAction.equals("moveDown") && tag.getPriority()== nPriority +1){
-    				tagMove= tag;
-    				tagMove.setPriority(tagMove.getPriority( ) - 1);
-    				nPriorityToSet= nPriority + 1;
+        String strIdTag = request.getParameter( PARAMETER_TAG );
+        String strAction = request.getParameter( PARAMETER_TAG_ACTION );
 
-    			}
-    		}
-    		tg.setPriority(nPriorityToSet);
-    		  
-    		if( tagMove!=null ){
-    			
-    		return JsonUtil.buildJsonResponse(new JsonResponse(String.valueOf(tagMove.getIdTag())));
-    		
-    		}
-    		return JsonUtil.buildJsonResponse(new JsonResponse(String.valueOf(tg.getIdTag())));
+        for ( Tag tag : _htmldoc.getTag( ) )
+        {
+            if ( tag.getIdTag( ) == Integer.parseInt( strIdTag ) )
+            {
+                tg = tag;
+                nPriorityToSet = tag.getPriority( );
+                nPriority = tag.getPriority( );
+            }
+        }
+        for ( Tag tag : _htmldoc.getTag( ) )
+        {
+            if ( strAction.equals( "moveUp" ) && tag.getPriority( ) == nPriority - 1 )
+            {
+                tagMove = tag;
+                tagMove.setPriority( tagMove.getPriority( ) + 1 );
+                nPriorityToSet = nPriority - 1;
 
-    	
-     }
+            }
+            else
+                if ( strAction.equals( "moveDown" ) && tag.getPriority( ) == nPriority + 1 )
+                {
+                    tagMove = tag;
+                    tagMove.setPriority( tagMove.getPriority( ) - 1 );
+                    nPriorityToSet = nPriority + 1;
+
+                }
+        }
+        tg.setPriority( nPriorityToSet );
+
+        if ( tagMove != null )
+        {
+
+            return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( tagMove.getIdTag( ) ) ) );
+
+        }
+        return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( tg.getIdTag( ) ) ) );
+
+    }
+
     /**
      * Manages the removal form of a htmldoc whose identifier is in the http request
      *
@@ -500,18 +499,17 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     public String doRemoveHtmlDoc( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
-    	List<HtmlDocPublication>   docPublication= HtmlDocPublicationHome.getDocPublicationByIdDoc( nId );
+        List<HtmlDocPublication> docPublication = HtmlDocPublicationHome.getDocPublicationByIdDoc( nId );
 
-       
-        if ( docPublication.size() > 0 )
+        if ( docPublication.size( ) > 0 )
         {
-        	String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED,  AdminMessage.TYPE_STOP);
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
 
             return redirect( request, strMessageUrl );
         }
-        HtmlDocService.getInstance().deleteDocument(nId);
-        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions(HtmlDoc.PROPERTY_RESOURCE_TYPE, String.valueOf(nId));
-        
+        HtmlDocService.getInstance( ).deleteDocument( nId );
+        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( HtmlDoc.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
+
         addInfo( INFO_HTMLDOC_REMOVED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_HTMLDOCS );
@@ -530,7 +528,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
         String strResetVersion = request.getParameter( PARAMETER_VERSION_HTMLDOC );
         int nVersion = -1;
-        if (strResetVersion != null )
+        if ( strResetVersion != null )
         {
             nVersion = Integer.parseInt( strResetVersion );
         }
@@ -540,21 +538,21 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             if ( strResetVersion != null )
             {
                 _htmldoc = HtmlDocHome.findVersion( nId, nVersion );
-            } else
-            {
-                _htmldoc = HtmlDocService.getInstance().loadDocument(nId);
             }
-          //  _htmldoc.setEditComment("");
+            else
+            {
+                _htmldoc = HtmlDocService.getInstance( ).loadDocument( nId );
+            }
+            // _htmldoc.setEditComment("");
         }
 
         Map<String, Object> model = getModel( );
         model.put( MARK_HTMLDOC, _htmldoc );
-        model.put(MARK_LIST_TAG, getTageList());
+        model.put( MARK_LIST_TAG, getTageList( ) );
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        
-        ExtendableResourcePluginActionManager.fillModel( request, getUser(  ), model, String.valueOf(nId),
-                HtmlDoc.PROPERTY_RESOURCE_TYPE );
+
+        ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), HtmlDoc.PROPERTY_RESOURCE_TYPE );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_HTMLDOC, TEMPLATE_MODIFY_HTMLDOC, model );
     }
@@ -576,10 +574,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strShareable = request.getParameter( PARAMETER_SHAREABLE );
 
-        String strUpdate_attachment= request.getParameter( PARAMETER_UPDATE_ATTACHMENT );
+        String strUpdate_attachment = request.getParameter( PARAMETER_UPDATE_ATTACHMENT );
         boolean bIsUpdatable = ( ( strUpdate_attachment == null ) || strUpdate_attachment.equals( "" ) ) ? false : true;
 
-        
         HtmlDoc latestVersionHtmlDoc = HtmlDocHome.findByPrimaryKey( nId );
         if ( _htmldoc == null || ( _htmldoc.getId( ) != nId ) )
         {
@@ -587,13 +584,13 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setContentLabel( strContentLabel );
-        _htmldoc.setDescription(strDescription);
-        _htmldoc.setShareable(Boolean.parseBoolean(strShareable));
+        _htmldoc.setDescription( strDescription );
+        _htmldoc.setShareable( Boolean.parseBoolean( strShareable ) );
         _htmldoc.setHtmlContent( strHtmlContent );
         _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-    
+
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
@@ -601,22 +598,24 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setVersion( latestVersionHtmlDoc.getVersion( ) + 1 );
-       
+
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        DocContent docContent= setContent( multipartRequest, request.getLocale( ) );
-        if(bIsUpdatable && docContent == null){
-        	
-        	DocContentHome.remove(nId);
-        	docContent = null;
+        DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
+        if ( bIsUpdatable && docContent == null )
+        {
+
+            DocContentHome.remove( nId );
+            docContent = null;
         }
-        else if(docContent == null ){
-        	
-        	docContent = _htmldoc.getDocContent();
-        
-        }
-        
-        HtmlDocService.getInstance().updateDocument(_htmldoc, docContent);
-        
+        else
+            if ( docContent == null )
+            {
+
+                docContent = _htmldoc.getDocContent( );
+
+            }
+
+        HtmlDocService.getInstance( ).updateDocument( _htmldoc, docContent );
 
         addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
 
@@ -636,7 +635,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
         String strVersion = request.getParameter( PARAMETER_VERSION_HTMLDOC );
         int nVersion = -1;
-        if (strVersion != null )
+        if ( strVersion != null )
         {
             nVersion = Integer.parseInt( strVersion );
         }
@@ -645,20 +644,19 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         if ( strVersion != null )
         {
             htmldoc = HtmlDocHome.findVersion( nId, nVersion );
-        } else
-        {
-            htmldoc = HtmlDocService.getInstance().loadDocument(nId);
         }
-        htmldoc.setHtmldocPubilcation(HtmlDocPublicationHome.getDocPublicationByIdDoc( nId ));
-
+        else
+        {
+            htmldoc = HtmlDocService.getInstance( ).loadDocument( nId );
+        }
+        htmldoc.setHtmldocPubilcation( HtmlDocPublicationHome.getDocPublicationByIdDoc( nId ) );
 
         Map<String, Object> model = getModel( );
-        model.put(MARK_LIST_TAG, TagHome.getTagsReferenceList( ));
+        model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
 
         model.put( MARK_HTMLDOC, htmldoc );
-        
-        ExtendableResourcePluginActionManager.fillModel( request, getUser(  ), model, String.valueOf(nId),
-                HtmlDoc.PROPERTY_RESOURCE_TYPE );
+
+        ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), HtmlDoc.PROPERTY_RESOURCE_TYPE );
 
         return getPage( PROPERTY_PAGE_TITLE_PREVIEW_HTMLDOC, TEMPLATE_PREVIEW_HTMLDOC, model );
     }
@@ -676,7 +674,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_HTMLDOC ) );
         String strVersion = request.getParameter( PARAMETER_VERSION_HTMLDOC );
         int nVersion = -1;
-        if (strVersion != null )
+        if ( strVersion != null )
         {
             nVersion = Integer.parseInt( strVersion );
         }
@@ -686,7 +684,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         if ( strVersion != null )
         {
             htmldoc = HtmlDocHome.findVersion( nId, nVersion );
-        } else
+        }
+        else
         {
             htmldoc = HtmlDocHome.findByPrimaryKey( nId );
         }
@@ -698,41 +697,47 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         HtmlDoc htmldoc2 = HtmlDocHome.findVersion( nId, nVersion2 );
-        if ( htmldoc2 == null ) {
+        if ( htmldoc2 == null )
+        {
             htmldoc2 = HtmlDocHome.findByPrimaryKey( nId );
         }
 
-        if ( htmldoc2.getVersion() > htmldoc.getVersion() ) {
+        if ( htmldoc2.getVersion( ) > htmldoc.getVersion( ) )
+        {
             HtmlDoc tmp = htmldoc2;
             htmldoc2 = htmldoc;
             htmldoc = tmp;
         }
 
         String strDiff = null;
-        HtmlCleaner cleaner = new HtmlCleaner();
-        try {
-          SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
-          TransformerHandler result = tf.newTransformerHandler();
-          result.getTransformer().setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
-          StringWriter resultWriter = new StringWriter();
-          result.setResult(new StreamResult(resultWriter));
-          Locale locale = getLocale();
+        HtmlCleaner cleaner = new HtmlCleaner( );
+        try
+        {
+            SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance( );
+            TransformerHandler result = tf.newTransformerHandler( );
+            result.getTransformer( ).setOutputProperty( OutputKeys.OMIT_XML_DECLARATION, "yes" );
+            StringWriter resultWriter = new StringWriter( );
+            result.setResult( new StreamResult( resultWriter ) );
+            Locale locale = getLocale( );
 
-          DomTreeBuilder oldHandler = new DomTreeBuilder();
-          cleaner.cleanAndParse(new InputSource(new ByteArrayInputStream(htmldoc2.getHtmlContent().getBytes("UTF-8"))), oldHandler);
-          TextNodeComparator leftComparator = new TextNodeComparator( oldHandler, locale );
+            DomTreeBuilder oldHandler = new DomTreeBuilder( );
+            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( htmldoc2.getHtmlContent( ).getBytes( "UTF-8" ) ) ), oldHandler );
+            TextNodeComparator leftComparator = new TextNodeComparator( oldHandler, locale );
 
-          DomTreeBuilder newHandler = new DomTreeBuilder();
-          cleaner.cleanAndParse(new InputSource(new ByteArrayInputStream(htmldoc.getHtmlContent().getBytes("UTF-8"))), newHandler);
-          TextNodeComparator rightComparator = new TextNodeComparator( newHandler, locale );
+            DomTreeBuilder newHandler = new DomTreeBuilder( );
+            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( htmldoc.getHtmlContent( ).getBytes( "UTF-8" ) ) ), newHandler );
+            TextNodeComparator rightComparator = new TextNodeComparator( newHandler, locale );
 
-          HtmlSaxDiffOutput output = new HtmlSaxDiffOutput(result, "");
-          HTMLDiffer differ = new HTMLDiffer(output);
-          differ.diff(leftComparator, rightComparator);
+            HtmlSaxDiffOutput output = new HtmlSaxDiffOutput( result, "" );
+            HTMLDiffer differ = new HTMLDiffer( output );
+            differ.diff( leftComparator, rightComparator );
 
-          strDiff = resultWriter.toString();
-        } catch (Exception e) {
-          AppLogService.error( "Error generating daisy diff for htmldoc " + nId + ":" + htmldoc.getContentLabel() + "; versions ("+ htmldoc.getVersion() + "," + htmldoc2.getVersion() + ")", e);
+            strDiff = resultWriter.toString( );
+        }
+        catch( Exception e )
+        {
+            AppLogService.error( "Error generating daisy diff for htmldoc " + nId + ":" + htmldoc.getContentLabel( ) + "; versions (" + htmldoc.getVersion( )
+                    + "," + htmldoc2.getVersion( ) + ")", e );
         }
 
         List<HtmlDoc> listHtmlDocsVersions = HtmlDocHome.getHtmlDocsVersionsList( nId );
@@ -746,7 +751,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         return getPage( PROPERTY_PAGE_TITLE_DIFF_HTMLDOC, TEMPLATE_DIFF_HTMLDOC, model );
     }
 
-    
     private ReferenceList getHtmldocFilterList( )
     {
         ReferenceList list = new ReferenceList( );
@@ -756,55 +760,60 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         return list;
     }
-    
+
     public DocContent setContent( MultipartHttpServletRequest mRequest, Locale locale )
     {
-    	
-        FileItem fileParameterBinaryValue = mRequest.getFile( "attachment" );
-        //boolean bToResize = ( ( strToResize == null ) || strToResize.equals( "" ) ) ? false : true;
 
-      
-       if ( fileParameterBinaryValue != null ) // If the field is a file
+        FileItem fileParameterBinaryValue = mRequest.getFile( "attachment" );
+        // boolean bToResize = ( ( strToResize == null ) || strToResize.equals( "" ) ) ? false : true;
+
+        if ( fileParameterBinaryValue != null ) // If the field is a file
         {
-           
-            String strContentType = fileParameterBinaryValue.getContentType(  );
-            byte[] bytes = fileParameterBinaryValue.get(  );
-            String strFileName = fileParameterBinaryValue.getName(  );
-           
-            if(!ArrayUtils.isEmpty( bytes )){
-            	
-            	  DocContent docContent= new DocContent();
-                  docContent.setBinaryValue( bytes );
-                  docContent.setValueContentType( strContentType );
-                  docContent.setTextValue( strFileName );
-                
-                  return docContent;
+
+            String strContentType = fileParameterBinaryValue.getContentType( );
+            byte [ ] bytes = fileParameterBinaryValue.get( );
+            String strFileName = fileParameterBinaryValue.getName( );
+
+            if ( !ArrayUtils.isEmpty( bytes ) )
+            {
+
+                DocContent docContent = new DocContent( );
+                docContent.setBinaryValue( bytes );
+                docContent.setValueContentType( strContentType );
+                docContent.setTextValue( strFileName );
+
+                return docContent;
             }
-          
+
         }
 
         return null;
     }
+
     /**
      * 
      * @return htmlDocList
      */
-    private ReferenceList getTageList(){
-    	
-        ReferenceList htmlDocList = TagHome.getTagsReferenceList( );
-		int index=0;
+    private ReferenceList getTageList( )
+    {
 
-    	for (ReferenceItem item:TagHome.getTagsReferenceList( )){
-    		for(Tag tg:_htmldoc.getTag()){
-	    		if( item.getCode().equals(String.valueOf(tg.getIdTag( )))){
-	    			
-	    			htmlDocList.remove(index);
-	    			index--;
-	    		}
-    		}
-    		index++;
-    	}
-    	
-    	return htmlDocList;
+        ReferenceList htmlDocList = TagHome.getTagsReferenceList( );
+        int index = 0;
+
+        for ( ReferenceItem item : TagHome.getTagsReferenceList( ) )
+        {
+            for ( Tag tg : _htmldoc.getTag( ) )
+            {
+                if ( item.getCode( ).equals( String.valueOf( tg.getIdTag( ) ) ) )
+                {
+
+                    htmlDocList.remove( index );
+                    index--;
+                }
+            }
+            index++;
+        }
+
+        return htmlDocList;
     }
 }

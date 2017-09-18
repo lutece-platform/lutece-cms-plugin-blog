@@ -45,13 +45,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * This class provides Data Access methods for ArticlesListPortlet objects
  */
 public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
 {
-	
+
     private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet , id_page_template_document FROM htmldocs_list_portlet ";
     private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs_list_portlet ( id_portlet , id_page_template_document ) VALUES ( ? , ? )";
     private static final String SQL_QUERY_SELECT = "SELECT id_portlet , id_page_template_document FROM htmldocs_list_portlet WHERE id_portlet = ? ";
@@ -59,22 +58,18 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_list_portlet WHERE id_portlet= ? ";
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
 
-    private static final String SQL_QUERY_SELECT_PORTLET_BY_TYPE = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " +
-            "FROM htmldocs_list_portlet b " +
-            "LEFT JOIN htmldocs_list_portlet_htmldocs c ON b.id_portlet = c.id_portlet AND c.id_html_doc= ? " +
-            "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " +
-            "INNER JOIN core_page f ON a.id_page = f.id_page WHERE c.id_portlet IS NULL ";
-    //Category
+    private static final String SQL_QUERY_SELECT_PORTLET_BY_TYPE = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " + "FROM htmldocs_list_portlet b "
+            + "LEFT JOIN htmldocs_list_portlet_htmldocs c ON b.id_portlet = c.id_portlet AND c.id_html_doc= ? "
+            + "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " + "INNER JOIN core_page f ON a.id_page = f.id_page WHERE c.id_portlet IS NULL ";
+    // Category
     private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status, document_order ) VALUES ( ? , ?, ?, ? )";
     private static final String SQL_QUERY_DELETE_HTMLDOCS_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_html_doc, document_order, date_begin_publishing, date_end_publishing, status FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
-    private static final String SQL_QUERY_SELECT_PAGE_PORTLET="SELECT id_page_template_document,description from  htmldocs_page_template";
-   
+    private static final String SQL_QUERY_SELECT_PAGE_PORTLET = "SELECT id_page_template_document,description from  htmldocs_page_template";
 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //Access methods to data
+    // /////////////////////////////////////////////////////////////////////////////////////
+    // Access methods to data
 
-    
     /**
      * {@inheritDoc }
      */
@@ -84,41 +79,42 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId(  ) );
+        daoUtil.setInt( 1, p.getId( ) );
         daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
 
         insertHtmlsDocsId( portlet );
     }
 
     /**
      * Insert a list of doc for a specified portlet
-     * @param portlet the DocumentListPortlet to insert
+     * 
+     * @param portlet
+     *            the DocumentListPortlet to insert
      */
     private void insertHtmlsDocsId( Portlet portlet )
     {
-    	HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
+        HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
 
-        if ( !p.getArrayHtmlDOcs().isEmpty() )
+        if ( !p.getArrayHtmlDOcs( ).isEmpty( ) )
         {
             DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_HTMLDOCS_PORTLET );
 
-            for ( HtmlDocPublication docPub : p.getArrayHtmlDOcs() )
+            for ( HtmlDocPublication docPub : p.getArrayHtmlDOcs( ) )
             {
-                daoUtil.setInt( 1, p.getId(  ) );
+                daoUtil.setInt( 1, p.getId( ) );
                 daoUtil.setInt( 2, docPub.getIdDocument( ) );
                 daoUtil.setInt( 3, 1 );
-                daoUtil.setInt( 4, docPub.getDocumentOrder() );
-                daoUtil.executeUpdate(  );
+                daoUtil.setInt( 4, docPub.getDocumentOrder( ) );
+                daoUtil.executeUpdate( );
             }
 
-            daoUtil.free(  );
+            daoUtil.free( );
         }
     }
 
-    
     /**
      * {@inheritDoc }
      */
@@ -128,21 +124,23 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         deleteHtmlsDocsId( nPortletId );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
 
     }
 
     /**
      * Delete docs for the specified portlet
-     * @param nPortletId The portlet identifier
+     * 
+     * @param nPortletId
+     *            The portlet identifier
      */
     private void deleteHtmlsDocsId( int nPortletId )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_HTMLDOCS_PORTLET );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -153,47 +151,47 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        HtmlDocsListPortlet portlet = new HtmlDocsListPortlet(  );
+        HtmlDocsListPortlet portlet = new HtmlDocsListPortlet( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             portlet.setId( daoUtil.getInt( 1 ) );
             portlet.setPageTemplateDocument( daoUtil.getInt( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         portlet.setArrayHtmlDOcs( loadHtmlsDocsId( nPortletId ) );
 
         return portlet;
     }
-    
+
     /**
      * {@inheritDoc }
      */
     @Override
-    public Map<Integer,String> loadPages( )
+    public Map<Integer, String> loadPages( )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_PORTLET );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        Map<Integer, String> page = new HashMap<Integer,String>();
+        Map<Integer, String> page = new HashMap<Integer, String>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-        	page.put(daoUtil.getInt( 1 ) , daoUtil.getString( 2 ) );
+            page.put( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
         }
 
-        daoUtil.free(  );
-
+        daoUtil.free( );
 
         return page;
     }
 
     /**
      * Load a list of Id HtmlDocs
+     * 
      * @param nPortletId
      * @return List of IdDoc
      */
@@ -201,49 +199,47 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET );
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        List<HtmlDocPublication> listDocPublication = new ArrayList<HtmlDocPublication>(  );
+        List<HtmlDocPublication> listDocPublication = new ArrayList<HtmlDocPublication>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-        	HtmlDocPublication docPub= new HtmlDocPublication();
-        	docPub.setIdDocument(daoUtil.getInt( 1 ));
-        	docPub.setDocumentOrder(daoUtil.getInt( 2 ));
-        	docPub.setDateBeginPublishing(daoUtil.getDate( 3 ));
-        	docPub.setDateEndPublishing(daoUtil.getDate(4));
-        	docPub.setStatus(daoUtil.getInt( 5 ));
-        	listDocPublication.add( docPub );
-            
+            HtmlDocPublication docPub = new HtmlDocPublication( );
+            docPub.setIdDocument( daoUtil.getInt( 1 ) );
+            docPub.setDocumentOrder( daoUtil.getInt( 2 ) );
+            docPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
+            docPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
+            docPub.setStatus( daoUtil.getInt( 5 ) );
+            listDocPublication.add( docPub );
+
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocPublication;
     }
 
-    
     /**
      * {@inheritDoc }
      */
     @Override
     public void store( Portlet portlet )
     {
-    	HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
+        HtmlDocsListPortlet p = (HtmlDocsListPortlet) portlet;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getId(  ) );
+        daoUtil.setInt( 1, p.getId( ) );
         daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
-        daoUtil.setInt( 3, p.getId(  ) );
+        daoUtil.setInt( 3, p.getId( ) );
 
-        daoUtil.executeUpdate(  );
+        daoUtil.executeUpdate( );
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
-        deleteHtmlsDocsId( p.getId(  ) );
+        deleteHtmlsDocsId( p.getId( ) );
         insertHtmlsDocsId( p );
     }
 
-    
     /**
      * {@inheritDoc }
      */
@@ -254,18 +250,18 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_IS_ALIAS );
 
         daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             bIsAlias = true;
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return bIsAlias;
     }
-    
+
     /**
      * {@inheritDoc }
      */
@@ -278,23 +274,23 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
 
         while ( daoUtil.next( ) )
         {
-        	htmlDocPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            htmlDocPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
         }
 
         daoUtil.free( );
         return htmlDocPortletList;
     }
+
     /**
      * {@inheritDoc }
      */
     @Override
-    
     public Collection<ReferenceItem> selectPortletByType( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
-        StringBuilder strSQl = new StringBuilder(  );
+        StringBuilder strSQl = new StringBuilder( );
         strSQl.append( SQL_QUERY_SELECT_PORTLET_BY_TYPE );
 
-        String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter(  ) : null;
+        String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter( ) : null;
 
         if ( strFilter != null )
         {
@@ -302,44 +298,46 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
             strSQl.append( strFilter );
         }
 
-        strSQl.append( pOrder.getSQLOrderBy(  ) );
+        strSQl.append( pOrder.getSQLOrderBy( ) );
 
-        DAOUtil daoUtil = new DAOUtil( strSQl.toString(  ) );
+        DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) );
 
         daoUtil.setInt( 1, nDocumentId );
 
         if ( strFilter != null )
         {
-            if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_NAME ) )
+            if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
             {
-                for ( int i = 0; i < pFilter.getPageName(  ).length; i++ )
+                for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
                 {
-                    daoUtil.setString( i + 2, "%" + pFilter.getPageName(  )[i] + "%" );
+                    daoUtil.setString( i + 2, "%" + pFilter.getPageName( ) [i] + "%" );
                 }
             }
-            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PORTLET_NAME ) )
-            {
-                for ( int i = 0; i < pFilter.getPortletName(  ).length; i++ )
+            else
+                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
                 {
-                    daoUtil.setString( i + 2, "%" + pFilter.getPortletName(  )[i] + "%" );
+                    for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                    {
+                        daoUtil.setString( i + 2, "%" + pFilter.getPortletName( ) [i] + "%" );
+                    }
                 }
-            }
-            else if ( pFilter.getPortletFilterType(  ).equals( PortletFilter.PAGE_ID ) )
-            {
-                daoUtil.setInt( 2, pFilter.getIdPage(  ) );
-            }
+                else
+                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                    {
+                        daoUtil.setInt( 2, pFilter.getIdPage( ) );
+                    }
         }
 
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        ReferenceList list = new ReferenceList(  );
+        ReferenceList list = new ReferenceList( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return list;
     }

@@ -100,17 +100,22 @@ public class HtmldocsPortletHome extends PortletHome
     {
         return _dao;
     }
+
     /**
      * Load the list of Portlet
-     * @param nDocumentId the document ID
-     * @param pOrder order of the portlets
-     * @param pFilter The portlet filter
+     * 
+     * @param nDocumentId
+     *            the document ID
+     * @param pOrder
+     *            order of the portlets
+     * @param pFilter
+     *            The portlet filter
      * @return The Collection of the ReferenceItem
      */
     public static Collection<ReferenceItem> findByFilter( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
-        //FIXME : method should access to different home business methods
+        // FIXME : method should access to different home business methods
         return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
     }
-    
+
 }

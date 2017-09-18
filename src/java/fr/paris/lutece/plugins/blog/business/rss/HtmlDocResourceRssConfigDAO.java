@@ -63,8 +63,7 @@ public class HtmlDocResourceRssConfigDAO implements IHtmlDocResourceRssConfigDAO
         int nPos = 0;
 
         daoUtil.setInt( ++nPos, config.getIdRss( ) );
-        daoUtil.setInt( ++nPos, config.getIdPortlet() );
-
+        daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -81,8 +80,7 @@ public class HtmlDocResourceRssConfigDAO implements IHtmlDocResourceRssConfigDAO
         int nPos = 0;
 
         daoUtil.setInt( ++nPos, config.getIdRss( ) );
-        daoUtil.setInt( ++nPos, config.getIdPortlet() );
-
+        daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
 
         daoUtil.setInt( ++nPos, config.getIdRss( ) );
         daoUtil.executeUpdate( );
@@ -148,7 +146,6 @@ public class HtmlDocResourceRssConfigDAO implements IHtmlDocResourceRssConfigDAO
             HtmlDocResourceRssConfig config = new HtmlDocResourceRssConfig( );
             config.setIdRss( daoUtil.getInt( ++nPos ) );
             config.setIdPortlet( daoUtil.getInt( ++nPos ) );
-
 
             configList.add( config );
         }

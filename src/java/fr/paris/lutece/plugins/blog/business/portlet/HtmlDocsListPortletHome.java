@@ -42,14 +42,12 @@ import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceItem;
 
-
 /**
- * This class provides instances management methods for ArticlesListPortlet
- * objects
+ * This class provides instances management methods for ArticlesListPortlet objects
  */
 public class HtmlDocsListPortletHome extends PortletHome
 {
-    /////////////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
     private static IHtmlDocsListPortletDAO _dao = SpringContextService.getBean( "blog.htmlDocsListPortletDAO" );
@@ -60,7 +58,7 @@ public class HtmlDocsListPortletHome extends PortletHome
     /**
      * Constructor
      */
-    public HtmlDocsListPortletHome(  )
+    public HtmlDocsListPortletHome( )
     {
         if ( _singleton == null )
         {
@@ -73,11 +71,11 @@ public class HtmlDocsListPortletHome extends PortletHome
      *
      * @return the DocumentListPortletHome instance
      */
-    public static   PortletHome getInstance(  )
+    public static PortletHome getInstance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new HtmlDocsListPortletHome(  );
+            _singleton = new HtmlDocsListPortletHome( );
         }
 
         return _singleton;
@@ -88,9 +86,9 @@ public class HtmlDocsListPortletHome extends PortletHome
      *
      * @return the portlet type identifier
      */
-    public String getPortletTypeId(  )
+    public String getPortletTypeId( )
     {
-        String strCurrentClassName = this.getClass(  ).getName(  );
+        String strCurrentClassName = this.getClass( ).getName( );
         String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
         return strPortletTypeId;
@@ -101,51 +99,61 @@ public class HtmlDocsListPortletHome extends PortletHome
      *
      * @return the instance of the DAO singleton
      */
-    public IPortletInterfaceDAO getDAO(  )
+    public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
     }
 
     /**
      * Load the list of documentTypes
-     * @param nDocumentId the document ID
-     * @param strCodeDocumentType The code
-     * @param pOrder order of the portlets
-     * @param pFilter The portlet filter
+     * 
+     * @param nDocumentId
+     *            the document ID
+     * @param strCodeDocumentType
+     *            The code
+     * @param pOrder
+     *            order of the portlets
+     * @param pFilter
+     *            The portlet filter
      * @return The Collection of the ReferenceItem
      */
-  /*  public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId,
-        String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter )
-    {
-        //FIXME : method should access to different home business methods
-        return _dao.selectByDocumentIdAndDocumentType( nDocumentId, strCodeDocumentType, pOrder, pFilter );
-    }*/
+    /*
+     * public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder,
+     * PortletFilter pFilter ) { //FIXME : method should access to different home business methods return _dao.selectByDocumentIdAndDocumentType( nDocumentId,
+     * strCodeDocumentType, pOrder, pFilter ); }
+     */
 
     /**
      * Check whether a portlet is an alias portlet
-     * @param nPortletId The id of the portlet
+     * 
+     * @param nPortletId
+     *            The id of the portlet
      * @return True if the portlet is an alias portlet, false otherwise
      */
     public static boolean checkIsAliasPortlet( int nPortletId )
     {
         return _dao.checkIsAliasPortlet( nPortletId );
     }
-    
+
     /**
      * Load the list of Portlet
-     * @param nDocumentId the document ID
-     * @param pOrder order of the portlets
-     * @param pFilter The portlet filter
+     * 
+     * @param nDocumentId
+     *            the document ID
+     * @param pOrder
+     *            order of the portlets
+     * @param pFilter
+     *            The portlet filter
      * @return The Collection of the ReferenceItem
      */
     public static Collection<ReferenceItem> findByFilter( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
-        //FIXME : method should access to different home business methods
+        // FIXME : method should access to different home business methods
         return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
     }
-    
-    public static Map<Integer,String> loadPages(  )
+
+    public static Map<Integer, String> loadPages( )
     {
-    	 return _dao.loadPages( );
+        return _dao.loadPages( );
     }
 }

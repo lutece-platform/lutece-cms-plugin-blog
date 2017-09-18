@@ -1,22 +1,16 @@
 package fr.paris.lutece.plugins.blog.business;
 
-
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
-public interface IDocContentDAO {
+public interface IDocContentDAO
+{
 
-	   void insertDocContent( DocContent docContent, Plugin plugin );
+    void insertDocContent( DocContent docContent, Plugin plugin );
 
-	   DocContent loadDocContent( int idDocument, Plugin plugin );
-	   
-	   void delete( int nDocumentId, Plugin plugin );
-	    
-	   void store( DocContent docContent, Plugin plugin );
+    DocContent loadDocContent( int idDocument, Plugin plugin );
 
-	
-	   
-	
-	
-	
+    void delete( int nDocumentId, Plugin plugin );
+
+    void store( DocContent docContent, Plugin plugin );
 
 }

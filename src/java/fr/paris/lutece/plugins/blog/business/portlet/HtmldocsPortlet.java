@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.blog.business.portlet;
 
-
 import java.sql.Date;
 import java.util.GregorianCalendar;
 
@@ -42,7 +41,6 @@ import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
 
 import javax.servlet.http.HttpServletRequest;
-
 
 /**
  * This class represents business objects HtmldocsPortlet
@@ -62,9 +60,8 @@ public class HtmldocsPortlet extends PortletHtmlContent
     private int _nContentId;
 
     private String _strName;
-    
-    private HtmlDocPublication _htmlDocPublication;
 
+    private HtmlDocPublication _htmlDocPublication;
 
     /**
      * Returns the HTML code of the HtmldocsPortlet portlet with XML heading
@@ -76,16 +73,18 @@ public class HtmldocsPortlet extends PortletHtmlContent
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        GregorianCalendar calendar =new java.util.GregorianCalendar();
+        GregorianCalendar calendar = new java.util.GregorianCalendar( );
 
-    	HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
-        HtmlDocPublication docPub=HtmlDocPublicationHome.findDocPublicationByPimaryKey(this.getContentId(), this.getId( ));
-		if(docPub != null && docPub.getIdDocument()!=0 && docPub.getDateBeginPublishing().before(new Date(calendar.getTimeInMillis( ))) && docPub.getDateEndPublishing().after(new Date(calendar.getTimeInMillis( )))){
+        HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
+        HtmlDocPublication docPub = HtmlDocPublicationHome.findDocPublicationByPimaryKey( this.getContentId( ), this.getId( ) );
+        if ( docPub != null && docPub.getIdDocument( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
+                && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
+        {
 
-			return htmldoc.getHtmlContent( );
-		}
-		
-		return "";
+            return htmldoc.getHtmlContent( );
+        }
+
+        return "";
     }
 
     /**
@@ -102,8 +101,8 @@ public class HtmldocsPortlet extends PortletHtmlContent
     @Override
     public void remove( )
     {
-        HtmlDocPublicationHome.removeByIdPortlet( this.getId()  );
-        //HtmlDocHome.remove( this.getContentId( ) );
+        HtmlDocPublicationHome.removeByIdPortlet( this.getId( ) );
+        // HtmlDocHome.remove( this.getContentId( ) );
         HtmldocsPortletHome.getInstance( ).remove( this );
     }
 
@@ -136,7 +135,7 @@ public class HtmldocsPortlet extends PortletHtmlContent
      */
     public void setHtmlDocPublication( HtmlDocPublication htmlDocPublication )
     {
-    	_htmlDocPublication = htmlDocPublication;
+        _htmlDocPublication = htmlDocPublication;
     }
 
     /**
@@ -148,7 +147,7 @@ public class HtmldocsPortlet extends PortletHtmlContent
     {
         return _htmlDocPublication;
     }
-    
+
     /**
      * Sets the name of the html document
      *

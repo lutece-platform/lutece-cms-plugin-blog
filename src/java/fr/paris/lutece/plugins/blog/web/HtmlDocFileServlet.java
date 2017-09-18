@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
-
 import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -86,7 +85,7 @@ public class HtmlDocFileServlet extends HttpServlet
         {
             int nIdResponse = Integer.parseInt( strIdFile );
 
-            DocContent docContent= DocContentHome.getDocsContent(nIdResponse);
+            DocContent docContent = DocContentHome.getDocsContent( nIdResponse );
 
             if ( docContent == null )
             {
@@ -94,17 +93,13 @@ public class HtmlDocFileServlet extends HttpServlet
                 throw new ServletException( LOG_UNKNOWN_ID_RESPONSE + strIdFile );
             }
 
-         /*   if ( !isRequestAuthenticated( request ) )
-            {
-                AppLogService.error( LOG_UNAUTHENTICATED_REQUEST );
-                throw new ServletException( LOG_UNAUTHENTICATED_REQUEST );
-            }
-		*/
-            
-
+            /*
+             * if ( !isRequestAuthenticated( request ) ) { AppLogService.error( LOG_UNAUTHENTICATED_REQUEST ); throw new ServletException(
+             * LOG_UNAUTHENTICATED_REQUEST ); }
+             */
 
             httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + docContent.getTextValue( ) + "\";" );
-            httpResponse.setHeader( "Content-type", docContent.getValueContentType( ));
+            httpResponse.setHeader( "Content-type", docContent.getValueContentType( ) );
             httpResponse.addHeader( "Content-Encoding", "UTF-8" );
             httpResponse.addHeader( "Pragma", "public" );
             httpResponse.addHeader( "Expires", "0" );
@@ -113,7 +108,7 @@ public class HtmlDocFileServlet extends HttpServlet
             try
             {
                 OutputStream os = httpResponse.getOutputStream( );
-                os.write( docContent.getBinaryValue() );
+                os.write( docContent.getBinaryValue( ) );
                 // We do not close the output stream in finaly clause because it is
                 // the response stream,
                 // and an error message needs to be displayed if an exception occurs
@@ -185,8 +180,8 @@ public class HtmlDocFileServlet extends HttpServlet
      *            the HTTP request
      * @return {@code true} if the request is authenticated, {@code false} otherwise
      */
-  /* private boolean isRequestAuthenticated( HttpServletRequest request )
-    {
-        return RequestAuthenticationService.getRequestAuthenticator( ).isRequestAuthenticated( request );
-    }*/
+    /*
+     * private boolean isRequestAuthenticated( HttpServletRequest request ) { return RequestAuthenticationService.getRequestAuthenticator(
+     * ).isRequestAuthenticated( request ); }
+     */
 }

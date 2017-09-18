@@ -49,7 +49,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * This class represents business objects ArticlesList Portlet
  */
@@ -57,76 +56,71 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
 {
     public static final String RESOURCE_ID = "HTMLDOCS_LIST_PORTLET";
 
-    /////////////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////////
     public static final String MARK_LIST_HTMLDOC_PUBLISHED = "htmldoc_list_published";
     public static final String MARK_PAGE_TEMPLATE = "page_template";
     public static final String MARK_PORTLET_ID = "portlet_id";
 
-   
-
-    /////////////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////////
     // Constants
     private int _nPageTemplateDocument;
     private int _nPortletId;
-    private List<HtmlDocPublication> _arrayHtmlDOcs= new ArrayList<HtmlDocPublication>( );
-
+    private List<HtmlDocPublication> _arrayHtmlDOcs = new ArrayList<HtmlDocPublication>( );
 
     /**
-     * Sets the identifier of the portlet type to the value specified in the
-     * ArticlesListPortletHome class
+     * Sets the identifier of the portlet type to the value specified in the ArticlesListPortletHome class
      */
-    public HtmlDocsListPortlet(  )
+    public HtmlDocsListPortlet( )
     {
-        setPortletTypeId( HtmlDocsListPortletHome.getInstance(  ).getPortletTypeId(  ) );
+        setPortletTypeId( HtmlDocsListPortletHome.getInstance( ).getPortletTypeId( ) );
     }
 
-   
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-    	  List<HtmlDoc> listHtmlDocs = HtmlDocService.getInstance().getListDocWhithContent( );
-          List<HtmlDoc> listHtmlDocsPublished= new ArrayList<HtmlDoc>();
-          GregorianCalendar calendar =new java.util.GregorianCalendar();
-          
-          for(HtmlDocPublication docPub:this.getArrayHtmlDOcs()){
-          for(HtmlDoc doc:listHtmlDocs){	 
-        	  	
-         		 if(docPub.getIdDocument( ) == doc.getId() && docPub.getDateBeginPublishing().before(new Date(calendar.getTimeInMillis( ))) && docPub.getDateEndPublishing().after(new Date(calendar.getTimeInMillis( )))){
-         			 listHtmlDocsPublished.add(doc);
-         		 }
-         	 }
-         	
-         	 
-          }
-    		
-    	  DocumentPageTemplate pageTemplate= DocumentPageTemplateHome.findByPrimaryKey(this.getPageTemplateDocument( ));
+        List<HtmlDoc> listHtmlDocs = HtmlDocService.getInstance( ).getListDocWhithContent( );
+        List<HtmlDoc> listHtmlDocsPublished = new ArrayList<HtmlDoc>( );
+        GregorianCalendar calendar = new java.util.GregorianCalendar( );
 
-       	  HashMap<String, Object> model = new HashMap<String, Object>( );
-          model.put( MARK_LIST_HTMLDOC_PUBLISHED, listHtmlDocsPublished );
-          model.put( MARK_PAGE_TEMPLATE, pageTemplate );
-          model.put( MARK_PORTLET_ID, this.getId( ));
-          HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), request.getLocale( ), model );
-       	 
-    	
+        for ( HtmlDocPublication docPub : this.getArrayHtmlDOcs( ) )
+        {
+            for ( HtmlDoc doc : listHtmlDocs )
+            {
 
-        return template.getHtml();
+                if ( docPub.getIdDocument( ) == doc.getId( ) && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
+                        && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
+                {
+                    listHtmlDocsPublished.add( doc );
+                }
+            }
+
+        }
+
+        DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
+
+        HashMap<String, Object> model = new HashMap<String, Object>( );
+        model.put( MARK_LIST_HTMLDOC_PUBLISHED, listHtmlDocsPublished );
+        model.put( MARK_PAGE_TEMPLATE, pageTemplate );
+        model.put( MARK_PORTLET_ID, this.getId( ) );
+        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), request.getLocale( ), model );
+
+        return template.getHtml( );
     }
 
-    
     /**
      * Updates the current instance of the Articles List Portlet object
      */
-    public void update(  )
+    public void update( )
     {
-        HtmlDocsListPortletHome.getInstance(  ).update( this );
+        HtmlDocsListPortletHome.getInstance( ).update( this );
     }
 
     /**
      * Removes the current instance of the Articles List Portlet object
      */
-    public void remove(  )
+    public void remove( )
     {
-        HtmlDocsListPortletHome.getInstance(  ).remove( this );
+        HtmlDocsListPortletHome.getInstance( ).remove( this );
     }
 
     /**
@@ -134,7 +128,7 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
      *
      * @return The nPortletId
      */
-    public int getPortletId(  )
+    public int getPortletId( )
     {
         return _nPortletId;
     }
@@ -142,7 +136,8 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     /**
      * Sets the IdPortlet
      *
-     * @param nPortletId The nPortletId
+     * @param nPortletId
+     *            The nPortletId
      */
     public void setPortletId( int nPortletId )
     {
@@ -150,14 +145,14 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     }
 
     /**
-     * Sets the parent page identifier of the portlet to the value specified in
-     * parameter
+     * Sets the parent page identifier of the portlet to the value specified in parameter
      *
-     * @param nPageTemplateDocument the code
+     * @param nPageTemplateDocument
+     *            the code
      */
     public void setPageTemplateDocument( int nPageTemplateDocument )
     {
-    	_nPageTemplateDocument = nPageTemplateDocument;
+        _nPageTemplateDocument = nPageTemplateDocument;
     }
 
     /**
@@ -165,85 +160,100 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
      *
      * @return the parent page identifier
      */
-    public int getPageTemplateDocument(  )
+    public int getPageTemplateDocument( )
     {
         return _nPageTemplateDocument;
     }
-    
+
     /**
      * @return the _arrayHtmlDOcs
      */
-    public List<HtmlDocPublication> getArrayHtmlDOcs(  )
+    public List<HtmlDocPublication> getArrayHtmlDOcs( )
     {
         return _arrayHtmlDOcs;
     }
 
     /**
-     * @param arrayHtmlDOcs the _arrayHtmlDOcs to set
+     * @param arrayHtmlDOcs
+     *            the _arrayHtmlDOcs to set
      */
     public void setArrayHtmlDOcs( List<HtmlDocPublication> arrayHtmlDOcs )
     {
-    	_arrayHtmlDOcs = arrayHtmlDOcs;
+        _arrayHtmlDOcs = arrayHtmlDOcs;
     }
+
     /**
-     *  HtmlDoPublication in the list _arrayHtmlDOcs
+     * HtmlDoPublication in the list _arrayHtmlDOcs
+     * 
      * @param doc
      */
-    public void addIdHtmlDocs(HtmlDocPublication doc){
-    	
-    	boolean bool= false;
-    	for(HtmlDocPublication dc:_arrayHtmlDOcs){
-    		
-    		if(doc.getIdDocument() == dc.getIdDocument( )){
-    			bool=true;
-    			break;
-    		}
-    	
-    	}
-    	if(!bool) _arrayHtmlDOcs.add( doc );
-    }
-    
-   /**
-    * set HtmlDoPublication in the list by order
-    * @param order
-    * @param doc
-    */
-    public void addIdHtmlDocs( int order, HtmlDocPublication doc){
-    	
-    	boolean bool= false;
-    	HtmlDocPublication htmlDoc= null;
-    	for(HtmlDocPublication dc:_arrayHtmlDOcs){
-    		
-    		if(doc.getIdDocument() == dc.getIdDocument( )){
-    			bool=true;
-    			htmlDoc= dc;
-    			break;
-    		}
-    	
-    	}
-    	if(bool){
+    public void addIdHtmlDocs( HtmlDocPublication doc )
+    {
 
-    		_arrayHtmlDOcs.remove(htmlDoc);
-    		
-    	}
-    	_arrayHtmlDOcs.add( order, doc );
+        boolean bool = false;
+        for ( HtmlDocPublication dc : _arrayHtmlDOcs )
+        {
+
+            if ( doc.getIdDocument( ) == dc.getIdDocument( ) )
+            {
+                bool = true;
+                break;
+            }
+
+        }
+        if ( !bool )
+            _arrayHtmlDOcs.add( doc );
     }
+
+    /**
+     * set HtmlDoPublication in the list by order
+     * 
+     * @param order
+     * @param doc
+     */
+    public void addIdHtmlDocs( int order, HtmlDocPublication doc )
+    {
+
+        boolean bool = false;
+        HtmlDocPublication htmlDoc = null;
+        for ( HtmlDocPublication dc : _arrayHtmlDOcs )
+        {
+
+            if ( doc.getIdDocument( ) == dc.getIdDocument( ) )
+            {
+                bool = true;
+                htmlDoc = dc;
+                break;
+            }
+
+        }
+        if ( bool )
+        {
+
+            _arrayHtmlDOcs.remove( htmlDoc );
+
+        }
+        _arrayHtmlDOcs.add( order, doc );
+    }
+
     /**
      * 
      * @param doc
      */
-    public void removeHtmlDocs(HtmlDocPublication doc){
-    	
-		for(HtmlDocPublication dc:_arrayHtmlDOcs){
-		   
-		   	if(doc.getIdDocument() == dc.getIdDocument( )){
-		   		_arrayHtmlDOcs.remove( dc );
-		   		break;
-		   	}
-		   	
-		}
-    	
+    public void removeHtmlDocs( HtmlDocPublication doc )
+    {
+
+        for ( HtmlDocPublication dc : _arrayHtmlDOcs )
+        {
+
+            if ( doc.getIdDocument( ) == dc.getIdDocument( ) )
+            {
+                _arrayHtmlDOcs.remove( dc );
+                break;
+            }
+
+        }
+
     }
 
-   
 }

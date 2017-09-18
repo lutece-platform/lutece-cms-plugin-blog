@@ -67,12 +67,11 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_html_doc FROM htmldocs";
     private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs_versions where id_html_doc = ?";
     private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO htmldocs_versions ( id_version, id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
-    
-    private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_html_doc, a.version, a.content_label, " +
-            " a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id , " +
-            " a.edit_comment , a.description, a.shareable  FROM htmldocs a " +
-            " LEFT OUTER JOIN htmldocs_tag_document f ON a.id_html_doc = f.id_html_doc ";
-    
+
+    private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_html_doc, a.version, a.content_label, "
+            + " a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id , "
+            + " a.edit_comment , a.description, a.shareable  FROM htmldocs a " + " LEFT OUTER JOIN htmldocs_tag_document f ON a.id_html_doc = f.id_html_doc ";
+
     private static final String SQL_FILTER_WHERE_CLAUSE = " WHERE ";
     private static final String SQL_FILTER_AND = " AND ";
     private static final String SQL_FILTER_TAGS_BEGIN = " (";
@@ -87,8 +86,9 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     private static final String CONSTANT_QUESTION_MARK = "?";
     private static final String CONSTANT_COMMA = ",";
     private static final String SQL_ORDER_BY_LAST_MODIFICATION = " ORDER BY a.update_date DESC ";
-  
-    /** Generates a new primary key
+
+    /**
+     * Generates a new primary key
      * 
      * @param plugin
      *            The Plugin
@@ -152,9 +152,8 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
         daoUtil.setString( nIndex++, htmlDoc.getEditComment( ) );
         daoUtil.setString( nIndex++, htmlDoc.getDescription( ) );
-        daoUtil.setBoolean(nIndex++, htmlDoc.getShareable( ));
+        daoUtil.setBoolean( nIndex++, htmlDoc.getShareable( ) );
 
-        
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
@@ -177,8 +176,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
         daoUtil.setString( nIndex++, htmlDoc.getEditComment( ) );
         daoUtil.setString( nIndex++, htmlDoc.getDescription( ) );
-        daoUtil.setBoolean(nIndex++, htmlDoc.getShareable( ));
-
+        daoUtil.setBoolean( nIndex++, htmlDoc.getShareable( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -212,7 +210,6 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
             htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
-
 
         }
 
@@ -249,7 +246,6 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
             htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
 
-
         }
 
         daoUtil.free( );
@@ -285,7 +281,6 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
             htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
-
 
         }
 
@@ -337,7 +332,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.setInt( nIndex++, htmlDoc.getAttachedPortletId( ) );
         daoUtil.setString( nIndex++, htmlDoc.getEditComment( ) );
         daoUtil.setString( nIndex++, htmlDoc.getDescription( ) );
-        daoUtil.setBoolean(  nIndex++ ,htmlDoc.getShareable() );
+        daoUtil.setBoolean( nIndex++, htmlDoc.getShareable( ) );
 
         daoUtil.setInt( nIndex, htmlDoc.getId( ) );
 
@@ -372,7 +367,6 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
             htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
-
 
             htmlDocList.add( htmlDoc );
         }
@@ -409,7 +403,6 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
             htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
-
 
             htmlDocVersionsList.add( htmlDoc );
         }
@@ -455,19 +448,20 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.free( );
         return htmlDocList;
     }
-    
+
     /**
      * Load the list of htmldocs
      *
      * @return The Collection of the htmldocs
-     * @param filter The HtmlDocFilter Object
+     * @param filter
+     *            The HtmlDocFilter Object
      */
     @Override
     public List<HtmlDoc> selectByFilter( HtmlDocFilter filter )
     {
-        List<HtmlDoc> listDocuments = new ArrayList<HtmlDoc>(  );
+        List<HtmlDoc> listDocuments = new ArrayList<HtmlDoc>( );
         DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )
         {
@@ -487,40 +481,42 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
             htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
 
-
-            if ( filter.getLoadBinaries(  ) )
+            if ( filter.getLoadBinaries( ) )
             {
-            	htmlDoc.setDocContent(DocContentHome.getDocsContent( htmlDoc.getId( ) ));
+                htmlDoc.setDocContent( DocContentHome.getDocsContent( htmlDoc.getId( ) ) );
             }
 
-            htmlDoc.setTag( TagHome.getTagListByDoc( htmlDoc.getId( )));
+            htmlDoc.setTag( TagHome.getTagListByDoc( htmlDoc.getId( ) ) );
 
             listDocuments.add( htmlDoc );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDocuments;
     }
-    
+
     /**
      * Return a dao initialized with the specified filter
-     * @param strQuerySelect the query
-     * @param filter the DocumentFilter object
+     * 
+     * @param strQuerySelect
+     *            the query
+     * @param filter
+     *            the DocumentFilter object
      * @return the DaoUtil
      */
     private DAOUtil getDaoFromFilter( String strQuerySelect, HtmlDocFilter filter )
     {
         String strSQL = strQuerySelect;
         StringBuilder sbWhere = new StringBuilder( StringUtils.EMPTY );
-      
-        if ( filter.containsTagsCriteria(  ) )
+
+        if ( filter.containsTagsCriteria( ) )
         {
             StringBuilder sbCategories = new StringBuilder( SQL_FILTER_TAGS_BEGIN );
 
             int i = 0;
 
-            for ( int nTagId : filter.getTagsId(  ) )
+            for ( int nTagId : filter.getTagsId( ) )
             {
                 if ( nTagId > 0 )
                 {
@@ -531,7 +527,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
                     sbCategories.append( SQL_FILTER_TAGS_NULL );
                 }
 
-                if ( ( i + 1 ) < filter.getTagsId(  ).length )
+                if ( ( i + 1 ) < filter.getTagsId( ).length )
                 {
                     sbCategories.append( SQL_FILTER_TAGS_OR );
                 }
@@ -540,54 +536,54 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             }
 
             sbCategories.append( SQL_FILTER_TAGS_END );
-            sbWhere.append( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY )
-                   .append( sbCategories.toString(  ) );
+            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( sbCategories.toString( ) );
         }
 
-        if ( filter.containsIdsCriteria(  ) )
+        if ( filter.containsIdsCriteria( ) )
         {
             StringBuilder sbIds = new StringBuilder( SQL_FILTER_ID_BEGIN );
 
-            for ( int i = 0; i < filter.getIds(  ).length; i++ )
+            for ( int i = 0; i < filter.getIds( ).length; i++ )
             {
                 sbIds.append( SQL_FILTER_ID );
 
-                if ( ( i + 1 ) < filter.getIds(  ).length )
+                if ( ( i + 1 ) < filter.getIds( ).length )
                 {
                     sbIds.append( SQL_FILTER_ID_OR );
                 }
             }
 
             sbIds.append( SQL_FILTER_ID_END );
-            sbWhere.append( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( sbIds.toString(  ) );
+            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( sbIds.toString( ) );
         }
 
-        if ( BooleanUtils.isFalse( filter.isPublished(  ) ) )
+        if ( BooleanUtils.isFalse( filter.isPublished( ) ) )
         {
-            sbWhere.append( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY )
-                   .append( "a.id_html_doc NOT IN (SELECT DISTINCT id_html_doc FROM htmldocs_tag_document) " );
+            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append(
+                    "a.id_html_doc NOT IN (SELECT DISTINCT id_html_doc FROM htmldocs_tag_document) " );
         }
 
-        if ( StringUtils.isNotBlank( filter.getDateMin(  ) ) && StringUtils.isNotBlank( filter.getDateMax(  ) ) )
+        if ( StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) ) )
         {
-            sbWhere.append( ( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) )
-                   .append( "a.update_date < " ).append( "'" + filter.getDateMax(  ) + "'" ).append( SQL_FILTER_AND )
-                   .append( "a.update_date > " ).append( "'" + filter.getDateMin(  ) + "'" );
+            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date < " )
+                    .append( "'" + filter.getDateMax( ) + "'" ).append( SQL_FILTER_AND ).append( "a.update_date > " ).append( "'" + filter.getDateMin( ) + "'" );
         }
-        else if ( StringUtils.isNotBlank( filter.getDateMin(  ) ) )
-        {
-            sbWhere.append( ( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) )
-                   .append( "a.update_date > " ).append( "'" + filter.getDateMin(  ) + "'" );
-        }
-        else if ( StringUtils.isNotBlank( filter.getDateMax(  ) ) )
-        {
-            sbWhere.append( ( ( sbWhere.length(  ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) )
-                   .append( "a.update_date <= " ).append( "'" + filter.getDateMax(  ) + "'" );
-        }
+        else
+            if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
+            {
+                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " )
+                        .append( "'" + filter.getDateMin( ) + "'" );
+            }
+            else
+                if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
+                {
+                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " )
+                            .append( "'" + filter.getDateMax( ) + "'" );
+                }
 
-        String strWhere = sbWhere.toString(  );
+        String strWhere = sbWhere.toString( );
 
-        if ( sbWhere.length(  ) != 0 )
+        if ( sbWhere.length( ) != 0 )
         {
             strSQL += ( SQL_FILTER_WHERE_CLAUSE + strWhere );
         }
@@ -598,10 +594,9 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         DAOUtil daoUtil = new DAOUtil( strSQL );
         int nIndex = 1;
 
-      
-        if ( filter.containsTagsCriteria(  ) )
+        if ( filter.containsTagsCriteria( ) )
         {
-            for ( int nCategoryId : filter.getTagsId(  ) )
+            for ( int nCategoryId : filter.getTagsId( ) )
             {
                 if ( nCategoryId > 0 )
                 {
@@ -612,9 +607,9 @@ public final class HtmlDocDAO implements IHtmlDocDAO
             }
         }
 
-        if ( filter.containsIdsCriteria(  ) )
+        if ( filter.containsIdsCriteria( ) )
         {
-            for ( int nId : filter.getIds(  ) )
+            for ( int nId : filter.getIds( ) )
             {
                 daoUtil.setInt( nIndex, nId );
                 AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
@@ -624,6 +619,5 @@ public final class HtmlDocDAO implements IHtmlDocDAO
 
         return daoUtil;
     }
-    
-   
+
 }

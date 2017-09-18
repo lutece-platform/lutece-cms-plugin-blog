@@ -33,17 +33,15 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-
 /**
  *
  */
 public class HtmlDocFilter
 {
-  
 
     // Variables declarations
-    private int[] _arrayTagsId;
-    private int[] _arrayId;
+    private int [ ] _arrayTagsId;
+    private int [ ] _arrayId;
 
     // The default value is true to assure ascendant compatibility
     private boolean _bLoadBinaries = true;
@@ -51,39 +49,39 @@ public class HtmlDocFilter
     private String _dateMin;
     private String _dateMax;
 
- 
-
     /**
      * @return the _arrayTagsId
      */
-    public int[] getTagsId(  )
+    public int [ ] getTagsId( )
     {
         return _arrayTagsId;
     }
 
     /**
-     * @param arrayTagsId the _arrayTagsId to set
+     * @param arrayTagsId
+     *            the _arrayTagsId to set
      */
-    public void setTagsId( int[] arrayTagsId )
+    public void setTagsId( int [ ] arrayTagsId )
     {
-    	_arrayTagsId = arrayTagsId;
+        _arrayTagsId = arrayTagsId;
     }
 
     /**
      * Tell if the filter contains a criteria on the tag
-     * @return True if the filter contains a criteria on the tags
-     *         otherwise false
+     * 
+     * @return True if the filter contains a criteria on the tags otherwise false
      */
-    public boolean containsTagsCriteria(  )
+    public boolean containsTagsCriteria( )
     {
         return ( ( _arrayTagsId != null ) && ( _arrayTagsId.length != 0 ) );
     }
 
     /**
      * Tell if the filter contains a criteria on the Id
+     * 
      * @return True if the filter contains a criteria on the Ids otherwise false
      */
-    public boolean containsIdsCriteria(  )
+    public boolean containsIdsCriteria( )
     {
         return ( ( _arrayId != null ) && ( _arrayId.length != 0 ) );
     }
@@ -91,33 +89,35 @@ public class HtmlDocFilter
     /**
      * @return the _arrayId
      */
-    public int[] getIds(  )
+    public int [ ] getIds( )
     {
         return _arrayId;
     }
 
     /**
-     * @param arrayId the _arrayId to set
+     * @param arrayId
+     *            the _arrayId to set
      */
-    public void setIds( int[] arrayId )
+    public void setIds( int [ ] arrayId )
     {
         _arrayId = arrayId;
     }
 
     /**
-     * Get the boolean that indicates whether binaries of documents should be
-     * loaded
+     * Get the boolean that indicates whether binaries of documents should be loaded
+     * 
      * @return True if binaries should be loaded, false otherwise
      */
-    public boolean getLoadBinaries(  )
+    public boolean getLoadBinaries( )
     {
         return _bLoadBinaries;
     }
 
     /**
-     * Set the boolean that indicates whether binaries of documents should be
-     * loaded
-     * @param bLoadBinaries True if binaries should be loaded, false otherwise
+     * Set the boolean that indicates whether binaries of documents should be loaded
+     * 
+     * @param bLoadBinaries
+     *            True if binaries should be loaded, false otherwise
      */
     public void setLoadBinaries( boolean bLoadBinaries )
     {
@@ -127,13 +127,14 @@ public class HtmlDocFilter
     /**
      * @return the _bIsPublished
      */
-    public Boolean isPublished(  )
+    public Boolean isPublished( )
     {
         return _bIsPublished;
     }
 
     /**
-     * @param bIsPublished the _bIsPublished to set
+     * @param bIsPublished
+     *            the _bIsPublished to set
      */
     public void setIsPublished( Boolean bIsPublished )
     {
@@ -143,13 +144,14 @@ public class HtmlDocFilter
     /**
      * @return the _dateMin
      */
-    public String getDateMin(  )
+    public String getDateMin( )
     {
         return _dateMin;
     }
 
     /**
-     * @param dateMin the _dateMin to set
+     * @param dateMin
+     *            the _dateMin to set
      */
     public void setDateMin( String dateMin )
     {
@@ -159,13 +161,14 @@ public class HtmlDocFilter
     /**
      * @return the _dateMax
      */
-    public String getDateMax(  )
+    public String getDateMax( )
     {
         return _dateMax;
     }
 
     /**
-     * @param dateMax the _dateMax to set
+     * @param dateMax
+     *            the _dateMax to set
      */
     public void setDateMax( String dateMax )
     {
