@@ -7,7 +7,7 @@ public class HtmldocSearchFilter
 {
     private int _nIdFilter;
     private String _strKeywords;
-    private String _strTag;
+    private String[] _strTag;
     private String _strUser;
 
     /**
@@ -57,7 +57,7 @@ public class HtmldocSearchFilter
      * 
      * @return The tag of the filter
      */
-    public String getTag( )
+    public String[] getTag( )
     {
         return _strTag;
     }
@@ -68,7 +68,7 @@ public class HtmldocSearchFilter
      * @param strTag
      *            The tag of the filter
      */
-    public void setTag( String strTag )
+    public void setTag( String[] strTag )
     {
         this._strTag = strTag;
     }

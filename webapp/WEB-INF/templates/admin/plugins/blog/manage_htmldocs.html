@@ -26,10 +26,10 @@
       </div>
       <div class="form-group">
         <label for="search_text">#i18n{blog.manage_htmldocs.labelTag}</label>
-		<select id="tag_doc" name= "tag_doc">
-			<option value="all">all</option>		
+		<select multiple id="tag_doc" name= "tag_doc">
+
 			<#list list_tag as tgName>
-					<option <#if tags?? && tgName.code=tags> selected</#if> value="${tgName.code!}">${tgName.name!}</option>
+					<option <#if tags?? && tags?seq_contains(tgName.code)> selected</#if> value="${tgName.code!}">${tgName.name!}</option>
 			</#list>
 		</select>
 	</label>

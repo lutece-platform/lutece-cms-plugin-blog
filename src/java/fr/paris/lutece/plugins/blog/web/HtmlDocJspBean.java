@@ -204,7 +204,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected boolean _bIsSorted = false;
     protected String _strSortedAttributeName;
     protected Boolean _bIsAscSort;
-    protected String _strTag = PROPERTY_REFERENE_ITEME_ALL;
+    protected String[] _strTag ;
 
     /**
      * Build the Manage View
@@ -233,15 +233,15 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             // CURRENT USER
             _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
-            _strTag = request.getParameter( PARAMETER_TAG );
+            _strTag = request.getParameterValues( PARAMETER_TAG );
         }
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || !_strTag.equals( PROPERTY_REFERENE_ITEME_ALL ) || _bIsChecked )
+        if ( StringUtils.isNotBlank( _strSearchText ) || (_strTag!= null && _strTag.length >0 ) || _bIsChecked )
         {
             HtmldocSearchFilter filter = new HtmldocSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
                 filter.setKeywords( _strSearchText );
-            if ( !_strTag.equals( PROPERTY_REFERENE_ITEME_ALL ) )
+            if (_strTag !=null && (_strTag.length > 0) )
                 filter.setTag( _strTag );
             if ( _bIsChecked )
                 filter.setUser( user.getFirstName( ) );
