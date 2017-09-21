@@ -72,8 +72,8 @@
 	<daemons>
 		<daemon>
 			<daemon-id>htmlDocIndexerDaemon</daemon-id>
-			<daemon-name>htmldocs.daemon.indexerDameon.name</daemon-name>
-			<daemon-description>htmldocs.daemon.indexerDameon.description</daemon-description>
+			<daemon-name>blog.daemon.indexerDameon.name</daemon-name>
+			<daemon-description>blog.daemon.indexerDameon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.blog.service.docsearch.HtmldocSearchIndexerDaemon</daemon-class>
 		</daemon>
               
