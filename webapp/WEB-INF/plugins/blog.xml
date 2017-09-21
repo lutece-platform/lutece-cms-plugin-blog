@@ -32,8 +32,8 @@
 		</admin-feature>
 		<admin-feature>
             <feature-id>HTMLDOCS_TAGS_MANAGEMENT</feature-id>
-            <feature-title>htmldocs.adminFeature.ManageHtmldocsTags.name</feature-title>
-            <feature-description>htmldocs.adminFeature.ManageHtmldocsTags.description</feature-description>
+            <feature-title>blog.adminFeature.ManageHtmldocsTags.name</feature-title>
+            <feature-description>blog.adminFeature.ManageHtmldocsTags.description</feature-description>
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/blog/ManageTags.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
@@ -56,7 +56,7 @@
     <!-- XPages parameters -->
     <applications>
         <application>
-            <application-id>htmldoc</application-id>
+            <application-id>blog</application-id>
             <application-class>fr.paris.lutece.plugins.blog.web.HtmlDocApp</application-class>
         </application>
     </applications>
