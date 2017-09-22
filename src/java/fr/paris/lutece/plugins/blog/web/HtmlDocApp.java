@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.blog.web;
 
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
+import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublicationHome;
 import fr.paris.lutece.plugins.blog.service.HtmlDocService;
@@ -61,7 +62,7 @@ public class HtmlDocApp extends MVCApplication
 	 */
     private static final long serialVersionUID = 1L;
 
-    protected static final String XPAGE_NAME = "htmldoc";
+    protected static final String XPAGE_NAME = "blog";
 
     // Messages
     protected static final String MESSAGE_PAGE_TITLE = "blog.xpage.htmldoc.view.pageTitle";
@@ -84,6 +85,8 @@ public class HtmlDocApp extends MVCApplication
 
     // Views
     private static final String VIEW_DETAILS = "documentDetails";
+    protected static final String MARK_LIST_TAG = "list_tag";
+
 
     /**
      * Gets the HTMLDOC details view
@@ -125,6 +128,8 @@ public class HtmlDocApp extends MVCApplication
         Map<String, Object> model = getModel( );
         model.put( MARK_HTML_DOC, htmldoc );
         model.put( MARK_LIST_DOC, listHtmlDocs );
+        model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
+
 
         return getXPage( TEMPLATE_VIEW_HTMLDOC, request.getLocale( ), model );
     }
