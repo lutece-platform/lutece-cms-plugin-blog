@@ -141,7 +141,13 @@ public interface IHtmlDocDAO
      * @return The list which contains the data of all the htmlDoc objects
      */
     List<HtmlDoc> selectHtmlDocsList( Plugin plugin );
-
+    /**
+     * Load the data of nLimit last modified htmlDoc objects and returns them as a list
+     * @param plugin the Plugin
+     * @param nLimit number of htmldocument
+     * @return The list which contains the data of of nLimit last modified htmlDoc objects
+     */
+    List<HtmlDoc> selectlastModifiedHtmlDocsList( Plugin plugin, int nLimit );
     /**
      * Load the data of all the htmlDoc objects and returns them as a list
      * 

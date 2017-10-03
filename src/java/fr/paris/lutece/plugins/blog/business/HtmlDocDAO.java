@@ -57,6 +57,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_html_doc ) FROM htmldocs";
     private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM htmldocs_versions";
     private static final String SQL_QUERY_SELECT = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable FROM htmldocs WHERE id_html_doc = ?";
+    private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable FROM htmldocs ORDER BY update_date LIMIT ?";
     private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs WHERE content_label = ?";
     private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_html_doc, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable FROM htmldocs_versions WHERE id_html_doc = ? AND version = ? ";
     private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs ( id_html_doc,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
@@ -348,6 +349,42 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     {
         List<HtmlDoc> htmlDocList = new ArrayList<HtmlDoc>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
+        daoUtil.executeQuery( );
+
+        while ( daoUtil.next( ) )
+        {
+            HtmlDoc htmlDoc = new HtmlDoc( );
+            int nIndex = 1;
+
+            htmlDoc.setId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setVersion( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setContentLabel( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+            htmlDoc.setHtmlContent( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUser( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setUserCreator( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            htmlDoc.setEditComment( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setDescription( daoUtil.getString( nIndex++ ) );
+            htmlDoc.setShareable( daoUtil.getBoolean( nIndex++ ) );
+
+            htmlDocList.add( htmlDoc );
+        }
+
+        daoUtil.free( );
+        return htmlDocList;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<HtmlDoc> selectlastModifiedHtmlDocsList( Plugin plugin, int nLimit )
+    {
+        List<HtmlDoc> htmlDocList = new ArrayList<HtmlDoc>( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_DOCUMENTS, plugin );
+        daoUtil.setInt( 1, nLimit );
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )

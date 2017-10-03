@@ -166,6 +166,14 @@ public final class HtmlDocHome
     {
         return _dao.selectHtmlDocsList( _plugin );
     }
+    /** Load the data of nLimit last modified htmlDoc objects and returns them as a list
+    * @param nLimit number of htmldocument
+    * @return The list which contains the data of of nLimit last modified htmlDoc objects
+    */
+    public static List<HtmlDoc> getLastModifiedHtmlDocsList( int nLimit )
+    {
+        return _dao.selectlastModifiedHtmlDocsList(_plugin, nLimit);
+    }
 
     /**
      * Load the data of all the htmlDoc objects and returns them as a list
