@@ -50,6 +50,11 @@
 		<button type="submit" value="addTag" name="addTag" class="btn btn-primary btn-sm btn-flat" onClick="addIdEntry()">
 			<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
 		</button>
+		
+		<input type="text" id="tag_name" name="tag_name" value="" placeholder="Entrez le nom du tag"/>
+		<button type="submit" value="createTag" name="createTag" class="btn btn-primary btn-sm btn-flat" onClick="createTag()">
+			<i class="glyphicon glyphicon-plus"></i>Creer un tag&nbsp;
+		</button>
 
     		<p id="tag" class="help-block"></p>
 		 <#list htmldoc.tag as tg>

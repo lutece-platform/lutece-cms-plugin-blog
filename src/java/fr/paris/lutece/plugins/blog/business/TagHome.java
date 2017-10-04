@@ -107,6 +107,18 @@ public final class TagHome
     {
         return _dao.load( nKey, _plugin );
     }
+    
+    /**
+     * Returns an instance of a tag whose name is specified in parameter
+     * 
+     * @param strName
+     *            The tag name
+     * @return an instance of Tag
+     */
+    public static Tag findByName( String strName )
+    {
+        return _dao.loadByName( strName, _plugin );
+    }
 
     /**
      * Load the data of all the tag objects and returns them as a list

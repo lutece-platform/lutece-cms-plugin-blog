@@ -11,6 +11,9 @@ public interface ITagDAO
     void insert( Tag tag, Plugin plugin );
 
     Tag load( int idTag, Plugin plugin );
+    
+    Tag loadByName( String strName, Plugin plugin );
+
 
     List<Tag> loadAllTag( Plugin plugin );
 

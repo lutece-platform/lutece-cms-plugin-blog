@@ -52,6 +52,8 @@ public final class TagDAO implements ITagDAO
     private static final String SQL_QUERY_INSERT_TAG = "INSERT INTO htmldocs_tag ( id_tag, name ) VALUES ( ? , ? )";
     private static final String SQL_QUERY_SELECT_TAG = "SELECT  id_tag, name FROM htmldocs_tag WHERE id_tag = ? ";
     private static final String SQL_QUERY_SELECT_ALL_TAG = "SELECT  id_tag, name FROM htmldocs_tag ";
+    private static final String SQL_QUERY_SELECT_TAG_BY_NAME = "SELECT  id_tag, name FROM htmldocs_tag WHERE name = ? ";
+
 
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_tag WHERE id_tag = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_tag SET  id_tag = ?, name = ? WHERE id_tag = ?";
@@ -286,5 +288,30 @@ public final class TagDAO implements ITagDAO
         daoUtil.free( );
 
         return listTag;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Tag loadByName( String strName, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_BY_NAME, plugin );
+        daoUtil.setString( 1, strName );
+        daoUtil.executeQuery( );
+
+        if ( daoUtil.next( ) )
+        {
+            Tag tag = new Tag( );
+
+            tag.setIdTag( daoUtil.getInt( 1 ) );
+            tag.setName( daoUtil.getString( 2 ) );
+
+            daoUtil.free( );
+
+            return tag;
+        }
+
+        return null;
     }
 }

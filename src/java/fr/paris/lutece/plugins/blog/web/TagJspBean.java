@@ -40,6 +40,8 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.util.json.JsonResponse;
+import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
@@ -85,11 +87,12 @@ public class TagJspBean extends ManageHtmldocsJspBean
     private static final String VIEW_CREATE_TAG = "createTag";
     private static final String VIEW_MODIFY_TAG = "modifyTag";
 
-    // Actions
+    // ActionscreateTag
     private static final String ACTION_CREATE_TAG = "createTag";
     private static final String ACTION_MODIFY_TAG = "modifyTag";
     private static final String ACTION_REMOVE_TAG = "removeTag";
     private static final String ACTION_CONFIRM_REMOVE_TAG = "confirmRemoveTag";
+    private static final String ACTION_CREATE_TAG_AJAX_REQUEST = "createTagByAjax";
 
     // Infos
     private static final String INFO_TAG_CREATED = "blog.info.tag.created";
@@ -147,6 +150,8 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_CREATE_TAG )
     public String doCreateTag( HttpServletRequest request )
     {
+    	String strRequestAjax= request.getParameter(ACTION_CREATE_TAG_AJAX_REQUEST);
+    	_tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
 
         // Check constraints
@@ -155,9 +160,23 @@ public class TagJspBean extends ManageHtmldocsJspBean
             return redirectView( request, VIEW_CREATE_TAG );
         }
 
-        TagHome.create( _tag );
-
-        addInfo( INFO_TAG_CREATED, getLocale( ) );
+        if( TagHome.findByName(_tag.getName()) == null){
+        	
+        	Tag tag= TagHome.create( _tag );
+        	
+        	if( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith(strRequestAjax)){
+             	
+            	 return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( tag.getIdTag( ))) );
+            }
+            
+            addInfo( INFO_TAG_CREATED, getLocale( ) );
+            
+        }else if(strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith(strRequestAjax)){
+        	
+        	 return JsonUtil.buildJsonResponse( new JsonResponse( "TAG_EXIST") );
+        }
+        
+       
 
         return redirectView( request, VIEW_MANAGE_TAGS );
     }
@@ -192,11 +211,6 @@ public class TagJspBean extends ManageHtmldocsJspBean
     public String doRemoveTag( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_TAG ) );
-        Tag tag = TagHome.findByPrimaryKey( nId );
-        /*
-         * int nAttachedPortletId = .getAttachedPortletId( ); if ( nAttachedPortletId != 0 ) { HtmldocsPortletHome.getInstance( ).remove(
-         * HtmldocsPortletHome.findByPrimaryKey( nAttachedPortletId ) ); }
-         */
         TagHome.remove( nId );
 
         addInfo( INFO_TAG_REMOVED, getLocale( ) );
@@ -240,6 +254,7 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_MODIFY_TAG )
     public String doModifyHtmlDoc( HttpServletRequest request )
     {
+    	_tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
 
         // Check constraints
@@ -247,10 +262,13 @@ public class TagJspBean extends ManageHtmldocsJspBean
         {
             return redirect( request, VIEW_MODIFY_TAG, PARAMETER_ID_TAG, _tag.getIdTag( ) );
         }
+        
+        if( TagHome.findByName(_tag.getName()) == null){
+        
+        	TagHome.update( _tag );
+            addInfo( INFO_TAG_UPDATED, getLocale( ) );
 
-        TagHome.update( _tag );
-
-        addInfo( INFO_TAG_UPDATED, getLocale( ) );
+        }
 
         return redirectView( request, VIEW_MANAGE_TAGS );
     }

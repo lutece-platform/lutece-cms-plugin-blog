@@ -10,6 +10,13 @@ function addIdEntry(){
 	doAddTag($('select#tag_doc').val(),$('#tag_doc option:selected').text());
 }
 
+function createTag(){
+	
+	if($('#tag_name').val() != null && $('#tag_name').val()!=""){
+		doCreateTag($('#tag_name').val());
+	}
+}
+
 
 function doAddTag( idTag, tgName )
 
@@ -151,6 +158,49 @@ function doUpdatePriorityTag( idTag, action )
           }
 
 	});
-
 }
- 
+	function doCreateTag( tgName )
+
+	{
+
+		$.ajax({
+
+	            url : baseUrl + "jsp/admin/plugins/blog/DoCreateTag.jsp?createTagByAjax=createTagByAjax&name="+tgName,
+
+		    type: 'GET',
+
+		    dataType: "json",
+
+		    data: {},
+
+	            async: false,
+
+		    cache:false,
+
+	            success:function(data) {
+
+	        	if ( data.status == 'OK' )
+
+	    		{
+				if(data.result != "TAG_EXIST"){
+	    				$('#tag_doc').append("<option value="+data.result+">"+tgName+"</option>");
+				}
+
+	        	}
+
+	        	else
+			{
+
+				alert("echec")
+
+			}
+
+			},
+
+	          error: function(jqXHR, textStatus, errorThrown) {
+			alert("error")
+	          }
+
+		});
+
+	}
