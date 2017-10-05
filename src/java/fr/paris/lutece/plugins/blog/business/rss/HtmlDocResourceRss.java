@@ -40,9 +40,6 @@ import fr.paris.lutece.plugins.blog.service.HtmlDocService;
 import fr.paris.lutece.plugins.blog.service.HtmldocsPlugin;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.portal.business.portlet.PortletHome;
-import fr.paris.lutece.portal.business.portlet.PortletType;
-import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.business.rss.FeedResource;
 import fr.paris.lutece.portal.business.rss.FeedResourceItem;
 import fr.paris.lutece.portal.business.rss.IFeedResource;
@@ -63,8 +60,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.mysql.fabric.xmlrpc.base.Array;
 
 /**
  *
@@ -156,7 +151,6 @@ public class HtmlDocResourceRss extends ResourceRss
     public String doValidateConfigForm( HttpServletRequest request, Locale locale )
     {
         this.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, locale ) );
-        String stridPortlet = request.getParameter( PARAMETER_ID_PORTLET );
 
         return null;
     }

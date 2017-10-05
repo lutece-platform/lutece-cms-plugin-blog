@@ -55,10 +55,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
- * Calendar Dashboard Component
- * This component displays directories
+ * Calendar Dashboard Component This component displays directories
  */
 public class HtmlDocDashboardComponent extends DashboardComponent
 {
@@ -71,7 +69,6 @@ public class HtmlDocDashboardComponent extends DashboardComponent
     private static final String MARK_LAST_MODIFIED_DOCUMENT = "last_modified_document";
     private static final String PROPERTY_NIMBER_DOCUMENT_LOADED = "number.documents.to.be.loaded";
 
-
     // TEMPALTES
     private static final String TEMPLATE_DASHBOARD = "/admin/plugins/blog/dashboard/htmldocs_dashboard.html";
 
@@ -81,11 +78,10 @@ public class HtmlDocDashboardComponent extends DashboardComponent
     @Override
     public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
-        Right right = RightHome.findByPrimaryKey( getRight(  ) );
-        Plugin plugin = PluginService.getPlugin( right.getPluginName(  ) );
+        Right right = RightHome.findByPrimaryKey( getRight( ) );
+        Plugin plugin = PluginService.getPlugin( right.getPluginName( ) );
 
-        if ( !( ( plugin.getDbPoolName(  ) != null ) &&
-                !AppConnectionService.NO_POOL_DEFINED.equals( plugin.getDbPoolName(  ) ) ) )
+        if ( !( ( plugin.getDbPoolName( ) != null ) && !AppConnectionService.NO_POOL_DEFINED.equals( plugin.getDbPoolName( ) ) ) )
         {
             return StringUtils.EMPTY;
         }
@@ -93,18 +89,17 @@ public class HtmlDocDashboardComponent extends DashboardComponent
         String strValue = DatastoreService.getDataValue( PROPERTY_NIMBER_DOCUMENT_LOADED, null );
         List<HtmlDoc> lastModifiedDocument = HtmlDocHome.getLastModifiedHtmlDocsList( Integer.parseInt( strValue ) );
 
-     
-        UrlItem url = new UrlItem( right.getUrl(  ) );
-        url.addParameter( PARAMETER_PLUGIN_NAME, right.getPluginName(  ) );
+        UrlItem url = new UrlItem( right.getUrl( ) );
+        url.addParameter( PARAMETER_PLUGIN_NAME, right.getPluginName( ) );
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
 
         model.put( MARK_LAST_MODIFIED_DOCUMENT, lastModifiedDocument );
-        model.put( MARK_URL, url.getUrl(  ) );
-        model.put( MARK_ICON, plugin.getIconUrl(  ) );
+        model.put( MARK_URL, url.getUrl( ) );
+        model.put( MARK_ICON, plugin.getIconUrl( ) );
 
-        HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, user.getLocale(  ), model );
+        HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, user.getLocale( ), model );
 
-        return t.getHtml(  );
+        return t.getHtml( );
     }
 }

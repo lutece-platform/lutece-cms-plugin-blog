@@ -43,12 +43,10 @@ public final class HtmlDocSearchService
     private static final String BEAN_SEARCH_ENGINE = "blog.htmldocSearchEngine";
     private static final String PATH_INDEX = "blog.internalIndexer.lucene.indexPath";
     private static final String PROPERTY_WRITER_MERGE_FACTOR = "blog.internalIndexer.lucene.writer.mergeFactor";
-    private static final String PROPERTY_WRITER_MAX_FIELD_LENGTH = "blog.internalIndexer.lucene.writer.maxSectorLength";
     private static final String PROPERTY_ANALYSER_CLASS_NAME = "blog.internalIndexer.lucene.analyser.className";
 
     // Default values
     private static final int DEFAULT_WRITER_MERGE_FACTOR = 20;
-    private static final int DEFAULT_WRITER_MAX_FIELD_LENGTH = 1000000;
 
     // Constants corresponding to the variables defined in the lutece.properties file
     private static volatile HtmlDocSearchService _singleton;
@@ -56,7 +54,6 @@ public final class HtmlDocSearchService
     private Analyzer _analyzer;
     private IHtmldocsSearchIndexer _indexer;
     private int _nWriterMergeFactor;
-    private int _nWriterMaxSectorLength;
 
     /**
      * Creates a new instance of DirectorySearchService
@@ -72,7 +69,6 @@ public final class HtmlDocSearchService
         }
 
         _nWriterMergeFactor = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MERGE_FACTOR, DEFAULT_WRITER_MERGE_FACTOR );
-        _nWriterMaxSectorLength = AppPropertiesService.getPropertyInt( PROPERTY_WRITER_MAX_FIELD_LENGTH, DEFAULT_WRITER_MAX_FIELD_LENGTH );
 
         String strAnalyserClassName = AppPropertiesService.getProperty( PROPERTY_ANALYSER_CLASS_NAME );
 

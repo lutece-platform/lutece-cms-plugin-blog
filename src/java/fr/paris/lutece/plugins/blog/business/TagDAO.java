@@ -54,7 +54,6 @@ public final class TagDAO implements ITagDAO
     private static final String SQL_QUERY_SELECT_ALL_TAG = "SELECT  id_tag, name FROM htmldocs_tag ";
     private static final String SQL_QUERY_SELECT_TAG_BY_NAME = "SELECT  id_tag, name FROM htmldocs_tag WHERE name = ? ";
 
-
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_tag WHERE id_tag = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_tag SET  id_tag = ?, name = ? WHERE id_tag = ?";
 
@@ -165,6 +164,9 @@ public final class TagDAO implements ITagDAO
 
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void store( Tag tag, Plugin plugin )
     {
@@ -267,6 +269,9 @@ public final class TagDAO implements ITagDAO
         return htmlDocList;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public List<Tag> loadListTagByIdDoc( int idDoc, Plugin plugin )
     {
@@ -289,7 +294,7 @@ public final class TagDAO implements ITagDAO
 
         return listTag;
     }
-    
+
     /**
      * {@inheritDoc }
      */

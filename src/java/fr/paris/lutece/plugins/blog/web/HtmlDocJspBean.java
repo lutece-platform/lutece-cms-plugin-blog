@@ -136,9 +136,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
 
-    private static final String PROPERTY_RESOURCE_TYPE = "htmldoc";
-    private static final String PROPERTY_REFERENE_ITEME_ALL = "all";
-
     // Markers
     protected static final String MARK_HTMLDOC_LIST = "htmldoc_list";
     protected static final String MARK_HTMLDOC_VERSION_LIST = "htmldoc_version_list";
@@ -167,7 +164,6 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected static final String VIEW_MANAGE_HTMLDOCS = "manageHtmlDocs";
     private static final String VIEW_CREATE_HTMLDOC = "createHtmlDoc";
     private static final String VIEW_MODIFY_HTMLDOC = "modifyHtmlDoc";
-    private static final String VIEW_PREVIOUS_VERSION_HTMLDOC = "previousVersionHtmlDoc";
     private static final String VIEW_HISTORY_HTMLDOC = "historyHtmlDoc";
     private static final String VIEW_PREVIEW_HTMLDOC = "previewHtmlDoc";
     private static final String VIEW_DIFF_HTMLDOC = "diffHtmlDoc";
@@ -204,7 +200,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected boolean _bIsSorted = false;
     protected String _strSortedAttributeName;
     protected Boolean _bIsAscSort;
-    protected String[] _strTag ;
+    protected String [ ] _strTag;
 
     /**
      * Build the Manage View
@@ -236,12 +232,12 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
             _strTag = request.getParameterValues( PARAMETER_TAG );
         }
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || (_strTag!= null && _strTag.length >0 ) || _bIsChecked )
+        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked )
         {
             HtmldocSearchFilter filter = new HtmldocSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
                 filter.setKeywords( _strSearchText );
-            if (_strTag !=null && (_strTag.length > 0) )
+            if ( _strTag != null && ( _strTag.length > 0 ) )
                 filter.setTag( _strTag );
             if ( _bIsChecked )
                 filter.setUser( user.getFirstName( ) );

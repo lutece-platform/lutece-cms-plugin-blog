@@ -65,13 +65,14 @@ public class HtmldocLuceneSearchEngine implements IHtmldocSearchEngine
 
             if ( filter.getTag( ) != null )
             {
-            	for(String tag: filter.getTag( )){
-                Term term = new Term( HtmlDocsSearchItem.FIELD_TAGS, tag );
-                Query termQuery = new TermQuery( term );
-                queries.add( termQuery.toString( ) );
-                sectors.add( HtmlDocsSearchItem.FIELD_TAGS );
-                flags.add( BooleanClause.Occur.MUST );
-            	}
+                for ( String tag : filter.getTag( ) )
+                {
+                    Term term = new Term( HtmlDocsSearchItem.FIELD_TAGS, tag );
+                    Query termQuery = new TermQuery( term );
+                    queries.add( termQuery.toString( ) );
+                    sectors.add( HtmlDocsSearchItem.FIELD_TAGS );
+                    flags.add( BooleanClause.Occur.MUST );
+                }
 
             }
             if ( filter.getUser( ) != null )

@@ -53,6 +53,12 @@ public final class DocContentHome
     {
     }
 
+    /**
+     * Create an instance of the DocContent class
+     * 
+     * @param docContent
+     *            The Document Content
+     */
     public static void create( DocContent docContent )
     {
         _dao.insertDocContent( docContent, _plugin );
@@ -60,9 +66,11 @@ public final class DocContentHome
     }
 
     /**
+     * Update of the DocContent which is specified in parameter
      * 
      * @param docContent
-     * @return
+     *            the Document Content
+     * @return the instance of DocContent updated
      */
     public static DocContent update( DocContent docContent )
     {
@@ -72,8 +80,10 @@ public final class DocContentHome
     }
 
     /**
+     * Remove the DocContent whose identifier is specified in parameter
      * 
      * @param nKey
+     *            the Id DocContent
      */
     public static void remove( int nKey )
     {
@@ -81,9 +91,10 @@ public final class DocContentHome
     }
 
     /**
+     * Returns an instance of a DocContent whose identifier is specified in parameter
      * 
      * @param nIdDocument
-     * @return
+     * @return an instance of DocContent
      */
     public static DocContent getDocsContent( int nIdDocument )
     {

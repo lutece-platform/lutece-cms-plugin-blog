@@ -37,9 +37,6 @@ package fr.paris.lutece.plugins.blog.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
 
-import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -141,13 +138,18 @@ public interface IHtmlDocDAO
      * @return The list which contains the data of all the htmlDoc objects
      */
     List<HtmlDoc> selectHtmlDocsList( Plugin plugin );
+
     /**
      * Load the data of nLimit last modified htmlDoc objects and returns them as a list
-     * @param plugin the Plugin
-     * @param nLimit number of htmldocument
+     * 
+     * @param plugin
+     *            the Plugin
+     * @param nLimit
+     *            number of htmldocument
      * @return The list which contains the data of of nLimit last modified htmlDoc objects
      */
     List<HtmlDoc> selectlastModifiedHtmlDocsList( Plugin plugin, int nLimit );
+
     /**
      * Load the data of all the htmlDoc objects and returns them as a list
      * 

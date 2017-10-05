@@ -87,7 +87,6 @@ public class HtmlDocApp extends MVCApplication
     private static final String VIEW_DETAILS = "documentDetails";
     protected static final String MARK_LIST_TAG = "list_tag";
 
-
     /**
      * Gets the HTMLDOC details view
      * 
@@ -129,7 +128,6 @@ public class HtmlDocApp extends MVCApplication
         model.put( MARK_HTML_DOC, htmldoc );
         model.put( MARK_LIST_DOC, listHtmlDocs );
         model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
-
 
         return getXPage( TEMPLATE_VIEW_HTMLDOC, request.getLocale( ), model );
     }

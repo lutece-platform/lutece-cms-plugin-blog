@@ -150,8 +150,8 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_CREATE_TAG )
     public String doCreateTag( HttpServletRequest request )
     {
-    	String strRequestAjax= request.getParameter(ACTION_CREATE_TAG_AJAX_REQUEST);
-    	_tag = ( _tag != null ) ? _tag : new Tag( );
+        String strRequestAjax = request.getParameter( ACTION_CREATE_TAG_AJAX_REQUEST );
+        _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
 
         // Check constraints
@@ -160,23 +160,26 @@ public class TagJspBean extends ManageHtmldocsJspBean
             return redirectView( request, VIEW_CREATE_TAG );
         }
 
-        if( TagHome.findByName(_tag.getName()) == null){
-        	
-        	Tag tag= TagHome.create( _tag );
-        	
-        	if( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith(strRequestAjax)){
-             	
-            	 return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( tag.getIdTag( ))) );
+        if ( TagHome.findByName( _tag.getName( ) ) == null )
+        {
+
+            Tag tag = TagHome.create( _tag );
+
+            if ( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith( strRequestAjax ) )
+            {
+
+                return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( tag.getIdTag( ) ) ) );
             }
-            
+
             addInfo( INFO_TAG_CREATED, getLocale( ) );
-            
-        }else if(strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith(strRequestAjax)){
-        	
-        	 return JsonUtil.buildJsonResponse( new JsonResponse( "TAG_EXIST") );
+
         }
-        
-       
+        else
+            if ( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith( strRequestAjax ) )
+            {
+
+                return JsonUtil.buildJsonResponse( new JsonResponse( "TAG_EXIST" ) );
+            }
 
         return redirectView( request, VIEW_MANAGE_TAGS );
     }
@@ -254,7 +257,7 @@ public class TagJspBean extends ManageHtmldocsJspBean
     @Action( ACTION_MODIFY_TAG )
     public String doModifyHtmlDoc( HttpServletRequest request )
     {
-    	_tag = ( _tag != null ) ? _tag : new Tag( );
+        _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
 
         // Check constraints
@@ -262,10 +265,11 @@ public class TagJspBean extends ManageHtmldocsJspBean
         {
             return redirect( request, VIEW_MODIFY_TAG, PARAMETER_ID_TAG, _tag.getIdTag( ) );
         }
-        
-        if( TagHome.findByName(_tag.getName()) == null){
-        
-        	TagHome.update( _tag );
+
+        if ( TagHome.findByName( _tag.getName( ) ) == null )
+        {
+
+            TagHome.update( _tag );
             addInfo( INFO_TAG_UPDATED, getLocale( ) );
 
         }

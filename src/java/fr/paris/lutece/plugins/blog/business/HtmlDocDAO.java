@@ -39,10 +39,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -84,8 +81,6 @@ public final class HtmlDocDAO implements IHtmlDocDAO
     private static final String SQL_FILTER_ID = " a.id_html_doc = ? ";
     private static final String SQL_FILTER_ID_OR = " OR ";
     private static final String SQL_FILTER_ID_END = ") ";
-    private static final String CONSTANT_QUESTION_MARK = "?";
-    private static final String CONSTANT_COMMA = ",";
     private static final String SQL_ORDER_BY_LAST_MODIFICATION = " ORDER BY a.update_date DESC ";
 
     /**
@@ -375,7 +370,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
         daoUtil.free( );
         return htmlDocList;
     }
-    
+
     /**
      * {@inheritDoc }
      */

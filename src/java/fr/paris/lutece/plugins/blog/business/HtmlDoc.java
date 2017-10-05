@@ -42,7 +42,6 @@ import java.io.Serializable;
 import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublication;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.util.ReferenceItem;
-import fr.paris.lutece.util.url.UrlItem;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

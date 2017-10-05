@@ -2,12 +2,10 @@ package fr.paris.lutece.plugins.blog.service.search;
 
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.service.HtmlDocService;
-import fr.paris.lutece.plugins.blog.service.HtmldocsPlugin;
 import fr.paris.lutece.plugins.blog.service.docsearch.DefaultHtmldocIndexer;
 import fr.paris.lutece.plugins.blog.service.docsearch.HtmlDocSearchService;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.search.SearchIndexer;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -31,7 +29,6 @@ public class HtmlDocsSearchIndexer implements SearchIndexer
     private static final String INDEXER_DESCRIPTION = "Indexer service for htmldocs";
     private static final String INDEXER_VERSION = "1.0.0";
     private static final String PROPERTY_INDEXER_ENABLE = "blog.globalIndexer.enable";
-    private static final String ROLE_NONE = "none";
 
     /**
      * {@inheritDoc}

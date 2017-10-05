@@ -64,7 +64,6 @@ public class HtmlDocFileServlet extends HttpServlet
     public static final String URL_SERVLET = "servlet/plugins/blog/file";
     private static final String LOG_UNKNOWN_ID_RESPONSE = "Calling HtmlDocs file servlet with unknown id file : ";
     private static final String LOG_WRONG_ID_RESPONSE = "Calling HtmlDocs file servlet with wrong format for parameter " + PARAMETER_ID_FILE + " : ";
-    private static final String LOG_UNAUTHENTICATED_REQUEST = "Calling HtmlDocs file servlet with unauthenticated request";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

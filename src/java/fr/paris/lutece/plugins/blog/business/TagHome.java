@@ -107,7 +107,7 @@ public final class TagHome
     {
         return _dao.load( nKey, _plugin );
     }
-    
+
     /**
      * Returns an instance of a tag whose name is specified in parameter
      * 
@@ -140,22 +140,52 @@ public final class TagHome
         return _dao.selectTagsReferenceList( _plugin );
     }
 
+    /**
+     * Load the data of the tag objects whose identifier is specified in parameter and returns them as a list
+     * 
+     * @param nIdDco
+     *            The document identifiant
+     * @return returns them as a list of the tag objects
+     */
     public static List<Tag> loadByDoc( int nIdDco )
     {
         return _dao.loadByDoc( nIdDco, _plugin );
     }
 
+    /**
+     * Associating a tag with a document
+     * 
+     * @param nIdTag
+     *            the Tag id
+     * @param nIdocument
+     *            The document identifiant
+     * @param nPriority
+     *            The priority of the document
+     */
     public static void create( int nIdTag, int nIdocument, int nPriority )
     {
         _dao.insert( nIdTag, nIdocument, nPriority, _plugin );
 
     }
 
+    /**
+     * Delete Association a tag with a document whose identifier is specified in parameter
+     * 
+     * @param nIdDoc
+     *            The Id Document
+     */
     public static void removeTagDoc( int nIdDoc )
     {
         _dao.deleteByDoc( nIdDoc, _plugin );
     }
 
+    /**
+     * Load the Tags associated with the document whose identifier is specified in parameter
+     * 
+     * @param idDoc
+     *            Id Document
+     * @return list of Tag
+     */
     public static List<Tag> getTagListByDoc( int idDoc )
     {
         return _dao.loadListTagByIdDoc( idDoc, _plugin );

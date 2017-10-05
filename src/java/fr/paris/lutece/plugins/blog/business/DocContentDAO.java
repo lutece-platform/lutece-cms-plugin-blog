@@ -133,6 +133,9 @@ public final class DocContentDAO implements IDocContentDAO
 
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void store( DocContent docContent, Plugin plugin )
     {

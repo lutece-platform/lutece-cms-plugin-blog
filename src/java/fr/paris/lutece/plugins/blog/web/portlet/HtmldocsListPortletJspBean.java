@@ -93,15 +93,12 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
         List<HtmlDoc> listHtmlDocsNotPublished = new ArrayList<HtmlDoc>( );
         List<HtmlDoc> listHtmlDocsPublished = new ArrayList<HtmlDoc>( );
 
-        boolean bool = false;
         for ( HtmlDocPublication i : _portlet.getArrayHtmlDOcs( ) )
         {
             for ( HtmlDoc doc : listHtmlDocs )
             {
-                bool = false;
                 if ( i.getIdDocument( ) == doc.getId( ) )
                 {
-                    bool = true;
                     listHtmlDocsPublished.add( doc );
                 }
             }
