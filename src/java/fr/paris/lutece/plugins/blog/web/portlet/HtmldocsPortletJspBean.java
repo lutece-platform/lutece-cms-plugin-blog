@@ -46,6 +46,8 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -142,7 +144,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         int nPageId = Integer.parseInt( strPageId );
         HtmlDoc htmldoc = new HtmlDoc( );
-        if ( strSelectedHtmldoc.compareTo( "Htmldocs" ) == 0 )
+        if ( strSelectedHtmldoc == null || StringUtils.isEmpty(strSelectedHtmldoc) || !StringUtils.isNumeric(strSelectedHtmldoc) )
         {
             htmldoc.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
             htmldoc.setVersion( 1 );
@@ -157,7 +159,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         }
         else
         {
-            htmldoc = HtmlDocHome.findByName( strSelectedHtmldoc );
+            htmldoc = HtmlDocHome.findByPrimaryKey(Integer.parseInt(strSelectedHtmldoc ));
         }
         int nContentId = htmldoc.getId( );
 

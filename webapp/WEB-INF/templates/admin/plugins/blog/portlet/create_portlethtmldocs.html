@@ -22,10 +22,10 @@
       <div class="form-group">
         <legend>#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelCreationExistingLegend} : </legend>
         <select class="form-control" name="htmldoc_selected">
-          <option label=" ">Htmldocs</option>
+          <option value=""></option>
           <#list htmldoc_list as htmldoc>
           <#if htmldoc.attachedPortletId == 0>
-          <option>${htmldoc.contentLabel}</option>
+          <option value="${htmldoc.id}">${htmldoc.contentLabel}</option>
           </#if>
           </#list>
         </select>
