@@ -1,77 +1,163 @@
-<script src="js/plugins/blog/manage_tag.js"></script>
-<@rowBoxHeader i18nTitleKey="#i18n{blog.create_htmldoc.title}">
-  <form class="form-horizontal" method="post" name="create_htmldoc" enctype="multipart/form-data" action="jsp/admin/plugins/blog/ManageHtmlDocs.jsp">
+<#include "/admin/util/editor/editor.html" />
+<form class="form" id="form-editor" name="create_htmldoc" method="post" enctype="multipart/form-data" action="jsp/admin/plugins/blog/ManageHtmlDocs.jsp">
     <@messages errors=errors />
-    <input type="hidden" id="id" name="id"/>
-    <input type="hidden" id="action" name="action" value="createHtmlDoc"/>
-    <input id="tag_remove" type="hidden" name="tag_remove" value="" ></input>
-    <#include "/admin/util/editor/editor.html" />
-    <@fieldInputText i18nLabelKey="blog.create_htmldoc.labelContentLabel" inputName="content_label" mandatory=true value="${htmldoc.contentLabel!''}" i18nHelpBlockKey="blog.create_htmldoc.labelContentLabel.help" />
+    <input type="hidden" id="action" name="action" value="createHtmlDoc">
+    <input id="tag_remove" type="hidden" name="tag_remove" value="">
+    <div class="row">
+        <article class="col-xs-12 col-sm-10">
+            <div class="form-group">
+                <label for="content_label" class="sr-only">#i18n{blog.create_htmldoc.labelContentLabel} </label>
+                <input class="form-control" name="content_label" id="content_label" type="text" placeholder="Le titre de mon contenu" value="" required>
+            </div>
+          <div class="form-group">
+              <label for="html_content" class="sr-only">#i18n{blog.create_htmldoc.labelEditContent} </label>
+              <textarea id="html_content" class="hidden" name="html_content" rows="12"></textarea>
+              <@initEditor />
+          </div>
+        </article>
+        <aside class="col-xs-12 col-sm-2 aside">
+          <div class="form-group">
+              <button class="btn btn-primary btn-block" type="submit" title="OK" name="action_createHtmlDoc">
+                <i class="fa fa-check" aria-hidden="true"></i> #i18n{portal.util.labelCreate}
+              </button>
+          </div>
+          <div class="box box-default" data-widget="box-widget">
+      			<div class="box-header with-border">
+      				<h3 class="box-title">#i18n{blog.create_htmldoc.labelDescription}</h3>
+      				<div class="box-tools">
+      					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+      				</div>
+      			</div>
+      			<div class="box-body">
+              <label for="description" class="sr-only">#i18n{blog.modify_htmldoc.labelEditComment}</label>
+              <textarea id="description" class="form-control" name="description" rows="2">${htmldoc.description!}</textarea>
+            </div>
+          </div>
+          <div class="box box-default" data-widget="box-widget">
+            <div class="box-header with-border">
+              <h3 class="box-title">#i18n{blog.create_htmldoc.TagsTitle}</h3>
+              <div class="box-tools">
+                <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="form-group">
+                <label for="addTag" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
+                  <div class="input-group">
+                    <@comboSortedWithParams name="tag_doc" default_value="" additionalParameters="class=\"form-control\"" items=list_tag />
+                    <span class="input-group-btn">
+                      <button type="button" value="addTag" id="addTag" name="addTag" class="btn btn-primary">
+                        <i class="fa fa-tag"></i>
+                       </button>
+                      </span>
+                    </div>
+                </div>
+                <ul id="tag-list" class="list-group">
+                  <#list htmldoc.tag as tg>
+                    <li id="tag_${tg.idTag}" class="list-group-item clearfix" title="${tg.name}">
+                      <span class="pull-left">${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
+                      <span class="pull-right">
+                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="Descendre" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveDown' );">
+                          <i class="fa fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="Monter" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveUp');">
+                          <i class="fa fa-arrow-up"></i>
+                        </button>
+                        <button type="button" value="removeTag" name="removeTag" class="btn btn-danger btn-xs btn-flat" onclick="doDeleteTag( ${tg.idTag}, '${tg.name!}');">
+                          <i class="fa fa-trash"></i>&nbsp;
+                        </button>
+                      </span>
+                    </li>
+                   </#list>
+                  </ul>
+                  <label for="tag_name" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
+                    <div class="input-group">
+                      <input type="text" id="tag_name" class="form-control" name="tag_name" value="" placeholder="#i18n{blog.manage_tags.buttonAdd}">
+                      <span class="input-group-btn">
+                        <button type="button" value="createTag" id="createTag" name="createTag" class="btn btn-primary" title="#i18n{blog.create_tag.pageTitle}">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                      </span>
+                  </div>
+                </div>
+              </div>
 
-    <div class="form-group">
-		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="description">#i18n{blog.create_htmldoc.labelDescription}&nbsp;&nbsp;:</label>
-		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+              <div class="box box-default" data-widget="box-widget">
+                <div class="box-header with-border">
+                  <h3 class="box-title">#i18n{blog.create_htmldoc.labelImage}</h3>
+                  <div class="box-tools">
+                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <div class="form-group">
+                    <label for="attachment" class="sr-only">#i18n{blog.create_htmldoc.labelAttachment}</label>
+                    <input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" value="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}">
+                    <div class="text-center">
+                      <#if htmldoc.docContent??>
+                        <a href="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}" title="preview">
+                          ${htmldoc.docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}" alt="Preview" class="img-responsive img-thumbnail">
+                        </a>
+                      <#else>
+                        <img id="preview_attachment" src="images/none.jpg" alt="Preview" class="img-responsive img-thumbnail">
+                      </#if>
+                    </div>
+                  </div>
+                  <div class="form-group" id="group_update_attachment">
+                    <div class="checkbox">
+                      <label for="update_attachment">
+                        <input name="update_attachment" id="update_attachment" value="1" type="checkbox"> Supprimer l'image
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-			   <textarea id="description" class="richtext" name="description" rows="12">   ${htmldoc.description!}    </textarea>
-
-			<p class="help-block">#i18n{blog.create_htmldoc.labelDescription.help} (help text)</p>
-		</div>
+              <div class="box box-default" data-widget="box-widget">
+                <div class="box-header with-border">
+                  <h3 class="box-title">#i18n{blog.create_htmldoc.labelEditComment}</h3>
+                  <div class="box-tools">
+                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                  </div>
+                </div>
+                <div class="box-body">
+                  <label for="edit_comment" class="sr-only">#i18n{blog.create_htmldoc.labelEditComment}</label>
+                  <input class="form-control" name="edit_comment" id="edit_comment" type="text" value="">
+                </div>
+              </div>
+        </aside>
     </div>
-     <div class="form-group">
-		<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="html_content">#i18n{blog.create_htmldoc.labelEditContent}&nbsp;&nbsp;:</label>
-		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-
-    	<textarea id="html_content" class="richtext" name="html_content" rows="12">     ${htmldoc.htmlContent!}  </textarea>
-
-			<p class="help-block"></p>
-		</div>
-    </div>
-
-    
-    <@initEditor />
-    <@fieldInputText i18nLabelKey="blog.create_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${htmldoc.editComment!''}" i18nHelpBlockKey="blog.create_htmldoc.labelEditComment.help" />
-	<@fieldInputCheckBox i18nLabelKey="blog.create_htmldoc.labelShareable" inputName="shareable" value="true" disabled=false checked=false i18nHelpBlockKey='blog.create_htmldoc.labelShareable.help' cssClass='' />
-	<div class="form-group">
-	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="attachment">Piece jointe</label>
-	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-		<input tabindex="-1" style="position: absolute; clip: rect(0px, 0px, 0px, 0px);" class="filestyle" name="attachment" id="attachment" type="file">
-		
-	</div>
-    </div>
-   
-
-    <@actionButtons button1Name="action_createHtmlDoc" button2Name="view_manageHtmlDocs"/>
   </form>
- <div class="form-group" style="position: absolute; top: 0px; right: 0px;">
-	        <div class="">	
-		<label class=" control-label" for="description">Tag&nbsp;&nbsp;:</label>
+<script src="js/plugins/blog/manage_tag.js"></script>
+<script>
+function readURL( input ){
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      $('#preview_attachment').attr('src', e.target.result);
+      $("#preview_attachment").toggle();
+      $("#group_update_attachment").toggle();
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
 
-  		<@comboWithParams name="tag_doc" default_value="" additionalParameters="class=\"input-xxlarge\"" items=list_tag />
-		<button type="submit" value="addTag" name="addTag" class="btn btn-primary btn-sm btn-flat" onClick="addIdEntry()">
-			<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
-		</button>
-		
-		<input type="text" id="tag_name" name="tag_name" value="" placeholder="Entrez le nom du tag"/>
-		<button type="submit" value="createTag" name="createTag" class="btn btn-primary btn-sm btn-flat" onClick="createTag()">
-			<i class="glyphicon glyphicon-plus"></i>Creer un tag&nbsp;
-		</button>
+$( function(){
+  $("#createTag").click( function(){
+    createTag();
+  });
 
-    		<p id="tag" class="help-block"></p>
-		 <#list htmldoc.tag as tg>
-		<div id="${tg.idTag}">
-				${tg.name!}
-				<button class="btn btn-primary btn-xs btn-flat"  title="Descendre" onClick="doUpdatePriorityTag(${tg.idTag}, 'moveDown' );">
-									<i class="glyphicon glyphicon-arrow-down"></i>
-				</button>
-				<button class="btn btn-primary btn-xs btn-flat"  title="Monter" onClick="doUpdatePriorityTag(${tg.idTag}, 'moveUp');">
-									<i class="glyphicon glyphicon-arrow-up"></i>
-				</button>
-				<button  type="submit" value="removeTag" name="removeTag" class="btn btn-danger btn-small" onClick="removeEntry(${tg.idTag}, '${tg.name!}');">
-					<i class="fa fa-trash"></i>&nbsp;
-	   			</button>
-		</div>	
+  $("#addTag").click( function(){
+    doAddTag( $('#tag_doc').val(), $('#tag_doc option:selected').text() );
+  });
 
-		</#list>
-	</div>
-    </div>
-</@rowBoxHeader>
+  <#if !htmldoc.docContent??>
+    $("#preview_attachment").toggle();
+    $("#group_update_attachment").toggle();
+  </#if>
+
+  $("#attachment").change(function() {
+   readURL(this);
+  });
+});
+</script>

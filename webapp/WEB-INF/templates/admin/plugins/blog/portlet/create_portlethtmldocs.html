@@ -1,35 +1,42 @@
 <!-- Portlet specific parameters -->
-
-<div>
-
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#creation" aria-controls="creation" role="tab" data-toggle="tab">#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelCreationNewTab}</a></li>
-    <li role="presentation"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelCreationExistingTab}</a></li>
-  </ul>
-
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="creation">
-      <legend>#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelCreationNewLegend}</legend>
-      <div class="form-group" name="creation">
-        <label for="html_content">#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelEditNewContent}</label>
-        <#include "/admin/util/editor/editor.html" />
-        <div id="html_content" class="richtext" name="html_content" rows="12">   </div>
-        <@initEditor type='inlite'/>
+<#include "/admin/util/editor/editor.html" />
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#creation" aria-controls="creation" role="tab" data-toggle="tab">#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelCreationNewTab}</a></li>
+  <li role="presentation"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelCreationExistingTab}</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="creation">
+    <div class="form-group" name="creation">
+      <label for="html_content">#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelEditNewContent}</label>
+      <textarea id="html_content" class="richtext" name="html_content" rows="12"></textarea>
+        <@initEditor fsubmit='form-portlet' />
       </div>
-      <@fieldInputText i18nLabelKey="blog.create_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="" i18nHelpBlockKey="blog.modify_htmldoc.labelEditComment.help" />
+      <@fieldInputText i18nLabelKey="htmldocs.create_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="" i18nHelpBlockKey="htmldocs.modify_htmldoc.labelEditComment.help" />
     </div>
     <div role="tabpanel" class="tab-pane" id="existing">
       <div class="form-group">
-        <legend>#i18n{blog.portlet.htmldocsHtmldocsPortlet.labelCreationExistingLegend} : </legend>
-        <select class="form-control" name="htmldoc_selected">
+        <select class="form-control" name="htmldoc_selected" id="htmldoc_selected">
           <option value=""></option>
-          <#list htmldoc_list as htmldoc>
-          <#if htmldoc.attachedPortletId == 0>
-          <option value="${htmldoc.id}">${htmldoc.contentLabel}</option>
-          </#if>
+          <#list htmldoc_list?sort_by('contentLabel') as htmldoc>
+            <#if htmldoc.attachedPortletId == 0>
+              <option value="${htmldoc.id}">${htmldoc.contentLabel} - ${htmldoc.id}</option>
+            </#if>
           </#list>
         </select>
       </div>
-    </div>
   </div>
 </div>
+<!--
+<link href="css/admin/plugins/blog//blog.css" rel="stylesheet">
+<link href="js/jquery/plugins/multiple-select/multiple-select.css" rel="stylesheet">
+<script src="js/jquery/plugins/multiple-select/multiple-select.js"></script>
+-->
+<script>
+$(function () {
+  $("#style").parent().toggle();
+  /*$("#htmldoc_selected").multipleSelect({
+    filter: true,
+    selectAll: false
+  });*/
+});
+</script>

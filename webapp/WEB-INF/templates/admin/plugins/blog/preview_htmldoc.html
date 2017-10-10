@@ -1,89 +1,84 @@
-<@rowBoxHeader i18nTitleKey="blog.preview_htmldoc.title">
-	  <div class="box-tools pull-right">
-			
-		 	<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
-				<div class="btn-group">
-					${extendableResourceActionsHtml!}
+<style>
+.panel.panel-horizontal {
+    display:table;
+    width:100%;
+}
+.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-body, .panel.panel-horizontal > .panel-footer {
+    display:table-cell;
+}
+.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-footer {
+    width: 25%;
+    border:0;
+    vertical-align: middle;
+}
+.panel.panel-horizontal > .panel-heading {
+    border-right: 1px solid #ddd;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 4px;
+}
+.panel.panel-horizontal > .panel-footer {
+    border-left: 1px solid #ddd;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 4px;
+}
+</style>
+<div class="row">
+	<div class="col-xs-12 col-sm-12">
+		<div class="box box-default collapsed-box" data-widget="box-widget">
+			<div class="box-header with-border">
+				<h3 class="box-title">
+					${htmldoc.contentLabel} #i18n{blog.manage_htmldocs.columnVersion}	<span class="badge">${htmldoc.version}</span>
+					- <small>#i18n{blog.preview_htmldoc.createdBy} ${htmldoc.userCreator} ${htmldoc.creationDate} / #i18n{blog.preview_htmldoc.lastUpdate} ${htmldoc.updateDate} par ${htmldoc.user}</small>
+				</h3>
+				<div class="box-tools">
+					<a href="jsp/admin/plugins/blog/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}" class="btn btn-box-tool" title="#i18n{blog.modify_htmldoc.title}"><i class="fa fa-pencil"></i></a>
+					<a href="jsp/admin/plugins/blog/ManagePublicationHtmlDocs.jsp?view=manageHtmlDocsPublication&id=${htmldoc.id}" class="btn btn-box-tool" title="#i18n{blog.publication_htmldoc.pageTitle}"><i class="fa fa-globe"></i></a>
+					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-plus"></i></button>
 				</div>
-			</#if>
-		
-		 </div>
-        <div class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnContentLabel}</label>
-            <div class="col-sm-10">
-              <p class="form-control-static">${htmldoc.contentLabel}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnUserCreator}</label>
-            <div class="col-sm-10">
-              <p class="form-control-static">${htmldoc.userCreator}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnCreationDate}</label>
-            <div class="col-sm-10">
-              <p class="form-control-static">${htmldoc.creationDate}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnVersion}</label>
-            <div class="col-sm-10">
-              <p class="form-control-static">${htmldoc.version}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnUpdateDate}</label>
-            <div class="col-sm-10">
-              <p class="form-control-static">${htmldoc.updateDate}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnUser}</label>
-            <div class="col-sm-10">
-              <p class="form-control-static">${htmldoc.user}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnEditComment}</label>
-            <div class="col-sm-10">
-              <p class="form-control-static">${htmldoc.editComment}</p>
-            </div>
-          </div>
-          	<@fieldInputCheckBox i18nLabelKey="blog.create_htmldoc.labelShareable" inputName="shareable" value="true" disabled=true checked=htmldoc.shareable i18nHelpBlockKey='blog.create_htmldoc.labelShareable.help' cssClass='' />
-          
-          <div class="form-group">
-            <label class="col-sm-2 control-label">#i18n{blog.manage_htmldocs.columnDescription}</label>
-            <div class="col-sm-10">
-              <div class="well">${htmldoc.description}</div>
-            </div>
-          </div>
-          <div class="form-group">
-		<label class="col-sm-2 control-label" for="attachment">Piece jointe</label>
-		<div class="col-sm-10">
-		<a href="servlet/plugins/blog/file?id_file=${htmldoc.id}" title="preview"> <#if htmldoc.docContent ??>${htmldoc.docContent.textValue!}</#if></a>
-			
+			</div>
+			<div class="box-body">
+						<div class="panel panel-default panel-horizontal">
+  					  <div class="panel-heading">
+        				<h3 class="panel-title">#i18n{blog.manage_htmldocs.columnDescription} </h3>
+    					</div>
+    					<div class="panel-body">${htmldoc.description}</div>
+  					</div>
+						<div class="panel panel-default panel-horizontal">
+  					  <div class="panel-heading">
+        				<h3 class="panel-title">#i18n{blog.manage_htmldocs.columnEditComment}</h3>
+    					</div>
+    					<div class="panel-body">	${htmldoc.editComment}</div>
+  					</div>
+						<div class="panel panel-default panel-horizontal">
+  					  <div class="panel-heading">
+        				<h3 class="panel-title">Image	</h3>
+    				</div>
+    				<div class="panel-body"><img src="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}" alt="" title=""></div>
+  			</div>
+				<div class="panel panel-default panel-horizontal">
+				  <div class="panel-heading">
+    				<h3 class="panel-title">#i18n{blog.manage_tags.title}</h3>
+					</div>
+					<div class="panel-body">
+						<#list htmldoc.tag as tg>
+								<#list list_tag as tgName>
+									<#if tgName.code == tg.idTag?string >
+										<span class="label label-default">${tgName.name!}</span>&nbsp;
+									  <#break>
+									</#if>
+								</#list>
+							</#list>
+					</div>
+				</div>
+			</div>
 		</div>
-	
-   	</div>
-	<div class="form-group">
-		<label class="col-sm-2 control-label" for="attachment">TAG</label>
-		<div class="col-sm-10">
-		 <#list htmldoc.tag as tg>
-		<#list list_tag as tgName>
-			<#if tgName.code == tg.idTag?string > 
-				<div>${tgName.name!}</div>
-				  <#break>
-			</#if>
-		</#list>
-		</#list>
-			
 	</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="control-label">#i18n{blog.preview_htmldoc.labelContent}</label>
-      </div>
-      <div class="well">${htmldoc.htmlContent}</div>
-</@rowBoxHeader>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-sm-12">
+			<iframe frameborder="0" style="width:100%;height:100vh" src="jsp/site/Portal.jsp?page=blog&id=${htmldoc.id}"></iframe>
+	</div>
+</div>
+<script>
+
+</script>

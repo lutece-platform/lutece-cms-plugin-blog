@@ -1,12 +1,6 @@
 <@rowBox>
-<@boxHeader title="#i18n{blog.history_htmldoc.title} : ${(htmldoc_list[0].contentLabel)!''}" boxTools=true>
-
-    <form class="form-inline pull-right" method="post" name="manage_htmldocs" action="jsp/admin/plugins/blog/ManageHtmlDocs.jsp">
-    </form>
-
-  </@boxHeader>
   <@boxBody>
-    <@paginationAdmin paginator=paginator combo=1 />
+    
     <form method="get" name="diff_htmldocs" action="jsp/admin/plugins/blog/ManageHtmlDocs.jsp">
     <input type="hidden" name="view" value="diffHtmlDoc">
     <input type="hidden" name="id" value="${(htmldoc_list[0].id)!}">
@@ -14,59 +8,61 @@
       <@table>
       <thead>
         <tr>
-          <th>#i18n{blog.manage_htmldocs.columnVersion}</th>
           <th>
-            #i18n{blog.manage_htmldocs.columnUpdateDate}
             <@sort jsp_url="jsp/admin/plugins/blog/ManageHtmlDocs.jsp?view=historyHtmlDoc&id=${id}" attribute="updateDate" />
+            #i18n{blog.manage_htmldocs.columnVersion} 
           </th>
-          <th>#i18n{blog.manage_htmldocs.columnUser}</th>
           <th>#i18n{blog.manage_htmldocs.columnEditComment}</th>
           <th>#i18n{portal.util.labelActions}</th>
-          <th>#i18n{blog.history_htmldoc.columnDiffSelect} <button type="submit" class="btn btn-primary" value="1"> <i class="fa fa-pencil-square-o"></i> </button></th>
+          <th>
+          <button type="submit" class="btn btn-info btn-xs" value="1"> <i class="fa fa-files-o"></i>  Comparer</button>
+            
+          </th>
         </tr>
       </thead>
       <tbody>
-        <#list htmldoc_list as htmldoc >
+        <#assign nbVersion=htmldoc_list?size >
+        <#assign nIdxVersion=1>
+        <#list htmldoc_list?reverse as htmldoc >
         <tr>
           <td>
-            ${htmldoc.version}
-          </td>
-          <td>
-            ${htmldoc.updateDate}
-          </td>
-          <td>
-            ${htmldoc.user}
+           Version <strong>${htmldoc.version}</strong> modifi&eacute;e le <em>${htmldoc.updateDate}</em> par <strong>${htmldoc.user}</strong>
           </td>
           <td>
             ${htmldoc.editComment}
           </td>
           <td>
             <a href="jsp/admin/plugins/blog/ManageHtmlDocs.jsp?view=previewHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
-                class="btn btn-primary btn-sm" title="#i18n{blog.history_htmldoc.labelPreview}" >
+                class="btn btn-default btn-sm" title="#i18n{blog.history_htmldoc.labelPreview}" >
               <i class="fa fa-eye"></i>
             </a>
             <a href="jsp/admin/plugins/blog/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
-                class="btn btn-primary btn-sm" title="#i18n{blog.history_htmldoc.labelReset}" >
+                class="btn btn-primary btn-sm" title="#i18n{blog.history_htmldoc.labelReset} ${htmldoc.version}" >
               <i class="fa fa-undo"></i>
             </a>
             <#if htmldoc.version != 1>
             <a href="jsp/admin/plugins/blog/ManageHtmlDocs.jsp?view=diffHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
-                class="btn btn-primary btn-sm" title="#i18n{blog.history_htmldoc.labelDiffPrevious}" >
-              <i class="fa fa-pencil-square-o"></i>
+                class="btn btn-info btn-sm" title="#i18n{blog.history_htmldoc.labelDiffPrevious}" >
+              <i class="fa fa-code-fork"></i>
             </a>
             </#if>
           </td>
           <td>
-              <input value="${htmldoc.version}" name="htmldoc_version" type="radio">
-              <input value="${htmldoc.version}" name="htmldoc_version2" type="radio">
+              <input value="${htmldoc.version}" name="htmldoc_version" type="radio" <#if nIdxVersion==1>checked</#if>>
+              <input value="${htmldoc.version}" name="htmldoc_version2" type="radio" <#if nIdxVersion==nbVersion>checked</#if>>
           </td>
         </tr>
+        <#assign nIdxVersion++>
         </#list>
       </tbody>
+      <tfoot>
+        <td colspan="3"></td>
+        <td><button type="submit" class="btn btn-info btn-xs" value="1"> <i class="fa fa-files-o"></i>  Comparer</button></td>
+      </tfoot>
       </@table>
     </div>
     </form>
-    <@paginationAdmin paginator=paginator />
+  <@paginationAdmin paginator=paginator combo=1 showcount=0 />
 
   </@boxBody>
 </@rowBox>

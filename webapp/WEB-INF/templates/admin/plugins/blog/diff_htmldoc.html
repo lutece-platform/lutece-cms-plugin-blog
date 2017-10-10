@@ -1,38 +1,58 @@
-<@rowBoxHeader i18nTitleKey="#i18n{blog.diff_htmldoc.title} : ${htmldoc.contentLabel}">
-<p>${htmldoc.contentLabel}</p>
-    <div class="row">
-        <div class="col-md-12">
-            <p>Diff</p>
-            <div class="well" style="overflow: auto;">${htmldoc_diff!}</div>
-        </div>
-    </div>
-
-    <form action="jsp/admin/plugins/htmldocs/ManageHtmlDocs.jsp">
-    <div class="row">
-        <input type="hidden" name="view" value="diffHtmlDoc">
-        <input type="hidden" name="id" value="${htmldoc.id}">
-        <button type="submit" class="btn btn-default" name="button_search" value="1">#i18n{blog.diff_htmldoc.labelButtonCompare}</button>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <select name="htmldoc_version2">
+<@box>
+<@boxHeader title='Diff ${htmldoc.contentLabel}' i18nTitleKey='Diff de ${htmldoc.contentLabel}' boxTools=true>
+<form action="jsp/admin/plugins/blog/ManageHtmlDocs.jsp" class="form-inline">
+    <input type="hidden" name="view" value="diffHtmlDoc">
+    <input type="hidden" name="id" value="${htmldoc.id}">
+    <div class="form-group">
+        <select name="htmldoc_version2" class="form-control">
                 <#list htmldoc_version_list as htmldoc_tmp>
                 <option value="${htmldoc_tmp.version}" <#if htmldoc_tmp.version == htmldoc2.version>selected="selected"</#if> >#i18n{blog.manage_htmldocs.columnVersion} ${htmldoc_tmp.version} - ${htmldoc_tmp.updateDate}</option>
                 </#list>
             </select>
-            <div class="well" style="overflow: auto;">${htmldoc2.htmlContent}</div>
-        </div>
-        <div class="col-md-6">
-            <select name="htmldoc_version2">
+    </div>
+    <div class="form-group">
+        <select name="htmldoc_version2" class="form-control">
                 <#list htmldoc_version_list as htmldoc_tmp>
                 <option value="${htmldoc_tmp.version}" <#if htmldoc_tmp.version == htmldoc.version>selected="selected"</#if> >#i18n{blog.manage_htmldocs.columnVersion} ${htmldoc_tmp.version} - ${htmldoc_tmp.updateDate}</option>
                 </#list>
             </select>
-            <div class="well" style="overflow: auto;">${htmldoc.htmlContent}</div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default" name="button_search" value="1">#i18n{blog.diff_htmldoc.labelButtonCompare}</button>
+    </div>
+</form>
+</@boxHeader>
+<@boxBody>
+<div class="row">
+    <div class="col-xs-12 col-md-12">
+        <h3>Version en cours</h3>
+        <div class="well" style="overflow: auto;">${htmldoc_diff!}</div>
+    </div>
+</div>
+ 
+<div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <h3> Version ${htmldoc2.version} <small>${htmldoc2.updateDate}</small>
+            <a href="jsp/admin/plugins/blog/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc2.id}&htmldoc_version=${htmldoc2.version}"
+                class="btn btn-primary btn-sm" title="#i18n{blog.history_htmldoc.labelReset} ${htmldoc2.version}">
+                    <i class="fa fa-undo"></i>
+                </a>
+            </h3>
+            <div class="well" style="overflow: auto;">${htmldoc2.htmlContent}</div>
+        </div> 
+        <div class="col-xs-12col-sm-6">
+            <h3> Version ${htmldoc.version} 
+                <small>${htmldoc.updateDate}</small>
+                <a href="jsp/admin/plugins/blog/ManageHtmlDocs.jsp?view=modifyHtmlDoc&id=${htmldoc.id}&htmldoc_version=${htmldoc.version}"
+                class="btn btn-primary btn-sm" title="#i18n{blog.history_htmldoc.labelReset} ${htmldoc.version}">
+                    <i class="fa fa-undo"></i>
+                </a>
+            </h3>
+           <div class="well" style="overflow: auto;">${htmldoc.htmlContent}</div>
         </div>
     </div>
-    </form>
-</@rowBoxHeader>
+   </@boxBody>
+</@box>
 <script type = 'text/javascript'>
 //lifted from daisy diff.js, just this part without the whole dojo/prev/next
 function updateOverlays(){

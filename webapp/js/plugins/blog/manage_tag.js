@@ -1,206 +1,116 @@
 var baseUrl = document.getElementsByTagName('base')[0].href;
 
-function removeEntry(idEntry, tgName){
-	$('#tag_remove').val(idEntry);
-	doDeleteTag(idEntry, tgName);
-}
-
-function addIdEntry(){
-	
-	doAddTag($('select#tag_doc').val(),$('#tag_doc option:selected').text());
-}
-
 function createTag(){
-	
-	if($('#tag_name').val() != null && $('#tag_name').val()!=""){
-		doCreateTag($('#tag_name').val());
+	var tg = $('#tag_name').val();
+	if( tg != null &&tg !=""){
+		doCreateTag( tg );
+	} else {
+		alert("OOOuuppps ! ");
 	}
 }
-
 
 function doAddTag( idTag, tgName )
-
 {
-
 	$.ajax({
-
-            url : baseUrl + "jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc="+idTag+"&tag_name="+tgName,
-
-	    type: 'GET',
-
-	    dataType: "json",
-
-	    data: {},
-
-            async: false,
-
-	    cache:false,
-
-            success:function(data) {
-
-        	if ( data.status == 'OK' )
-
-    		{
-			$( "#tag" ).append("<div id="+idTag+"> "+tgName+"<button class='btn btn-primary btn-xs btn-flat'  onClick= doUpdatePriorityTag("+idTag+",'"+"moveDown"+"') title='Descendre' ><i class='glyphicon glyphicon-arrow-down'></i></button><button class='btn btn-primary btn-xs btn-flat'  title='Monter' onClick= doUpdatePriorityTag("+idTag+",'"+"moveUp"+"')><i class='glyphicon glyphicon-arrow-up'></i></button>"+"<button id='"+idTag+"' type='submit' value='removeTag' name='removeTag' class='btn btn-danger btn-small' onClick=removeEntry("+idTag+",'"+tgName+"');><i class='fa fa-trash'></i>&nbsp;</button> </div> ");
-
-			$('#tag_doc option:selected').detach();
-        	}
-
-        	else
+    url : baseUrl + "jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc="+idTag+"&tag_name="+tgName,
+    type: 'GET',
+    dataType: "json",
+    data: {},
+    async: false,
+    cache:false,
+    success:function(data) {
+  	if ( data.status == 'OK' )
 		{
-
-			alert("echec")
-
-		}
-
+			setListTag(  idTag, tgName  )
+			$( '#tag_doc option:selected' ).detach();
+    	}	else	{
+				alert( "Echec" );
+			}
 		},
-
-          error: function(jqXHR, textStatus, errorThrown) {
-		alert("error")
-          }
-
+  	error: function(jqXHR, textStatus, errorThrown) {
+			alert( "Error" );
+    }
 	});
-
-}
-    
-function doDeleteTag( idTag, tgName  )
-
-{
-
-	
-	$.ajax({
-
-            url : baseUrl + "jsp/admin/plugins/blog/DoDeleteTag.jsp?action=removeTag&tag_doc="+idTag,
-
-	    type: 'GET',
-
-	    dataType: "json",
-
-	    data: {},
-
-            async: false,
-
-	    cache:false,
-
-            success:function(data) {
-
-        	if ( data.status == 'OK' )
-
-    		{
-			$('#'+idTag).detach();
-			$('#tag_doc').append("<option value="+idTag+">"+tgName+"</option>")
-			
-        	}
-
-        	else
-		{
-
-			alert("echec")
-
-		}
-
-		},
-
-          error: function(jqXHR, textStatus, errorThrown) {
-		alert("error")
-          }
-
-	});
-
 }
 
+function doDeleteTag( idTag, tgName )
+{
+	$.ajax({
+    url : baseUrl + "jsp/admin/plugins/blog/DoDeleteTag.jsp?action=removeTag&tag_doc=" + idTag,
+  	type: 'GET',
+    dataType: "json",
+  	data: {},
+    async: false,
+  	cache:false,
+  	success:function(data) {
+	  	if ( data.status == 'OK' )
+			{
+				var tg = '#tag_' + idTag;
+				$( tg ).detach();
+				$('#tag_doc').append( '<option value="' + idTag + '">' + tgName + '</option>' );
+	  	} else	{
+				alert("echec")
+			}
+		},
+  	error: function(jqXHR, textStatus, errorThrown) {
+			alert("error")
+    }
+	});
+}
 
 function doUpdatePriorityTag( idTag, action )
-
 {
-
 	$.ajax({
-
-            url : baseUrl + "jsp/admin/plugins/blog/DoUpdatePriority.jsp?tagAction="+action+"&tag_doc="+idTag,
-
-	    type: 'GET',
-
-	    dataType: "json",
-
-	    data: {},
-
-            async: false,
-
-	    cache:false,
-
-            success:function(data) {
-
-        	if ( data.status == 'OK' )
-
-    		{
+    url : baseUrl + "jsp/admin/plugins/blog/DoUpdatePriority.jsp?tagAction="+action+"&tag_doc="+idTag,
+    type: 'GET',
+    dataType: "json",
+    data: {},
+    async: false,
+    cache:false,
+    success:function(data) {
+  	if ( data.status == 'OK' )
+  		{
 			if( action == "moveUp" ){
-
-				$('#'+data.result).insertAfter($('#'+idTag));
-
-			}else if( action == "moveDown" ){
-
-				$('#'+idTag ).insertAfter($('#'+data.result));
+				$('#tag_' + data.result ).insertAfter( $('#tag_' + idTag) );
+			} else if( action == "moveDown" ){
+				$('#tag_' + idTag ).insertAfter( $('#tag_' + data.result) );
 			}
-
-        	}
-
-        	else
+  	}
+  	else
 		{
-
-			alert("echec")
-
+		alert("echec")
 		}
+	},
+  error: function(jqXHR, textStatus, errorThrown) {
+	alert("error")
+  }
+});
+}
 
-		},
-
-          error: function(jqXHR, textStatus, errorThrown) {
-		alert("error")
-          }
-
+function doCreateTag( tgName ){
+	$.ajax({
+	    url : baseUrl + "jsp/admin/plugins/blog/DoCreateTag.jsp?createTagByAjax=createTagByAjax&name=" + tgName,
+	    type: 'GET',
+	    dataType: "json",
+	    data: {},
+	    async: false,
+	  	cache:false,
+	    success:function(data) {
+		  	if ( data.status == 'OK' ){
+					if( data.result != 'TAG_EXIST'){
+						setListTag(  data.result, tgName  )
+					} else {
+						alert('Ce tag existe déja !!!!');
+					}
+				}
+			},
+		 	error: function(jqXHR, textStatus, errorThrown) {
+				alert(" Erreur ");
+			}
 	});
 }
-	function doCreateTag( tgName )
 
-	{
-
-		$.ajax({
-
-	            url : baseUrl + "jsp/admin/plugins/blog/DoCreateTag.jsp?createTagByAjax=createTagByAjax&name="+tgName,
-
-		    type: 'GET',
-
-		    dataType: "json",
-
-		    data: {},
-
-	            async: false,
-
-		    cache:false,
-
-	            success:function(data) {
-
-	        	if ( data.status == 'OK' )
-
-	    		{
-				if(data.result != "TAG_EXIST"){
-	    				$('#tag_doc').append("<option value="+data.result+">"+tgName+"</option>");
-				}
-
-	        	}
-
-	        	else
-			{
-
-				alert("echec")
-
-			}
-
-			},
-
-	          error: function(jqXHR, textStatus, errorThrown) {
-			alert("error")
-	          }
-
-		});
-
-	}
+function setListTag( idTag, tgName ){
+	$( "#tag-list" ).append(
+		'<li class="list-group-item" id="tag_' + idTag + '">' + tgName + '<span class="pull-right"><button type="button" class="btn btn-primary btn-xs btn-flat btn-down" onclick="doUpdatePriorityTag(' + idTag + ',\'moveDown\')" title="Descendre" ><i class="fa fa-arrow-down"></i></button><button  type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="Monter" onclick="doUpdatePriorityTag(' + idTag + ',\'moveUp\')"><i class="fa fa-arrow-up"></i></button><button id="' + idTag + '" type="button" value="removeTag" name="removeTag" class="btn btn-danger btn-xs btn-flat" onclick="doDeleteTag(' + idTag + ',\'' + tgName + '\')"><i class="fa fa-trash"></i></button></span></li>');
+}
