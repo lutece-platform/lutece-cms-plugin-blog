@@ -80,7 +80,7 @@ public class HtmldocsPortlet extends PortletHtmlContent
         if ( docPub != null && docPub.getIdDocument( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
                 && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
         {
-        	if(this.getDisplayPortletTitle() == 1){
+        	if(this.getDisplayPortletTitle() == 0){
         		
         		builder.append(this.getName());
         		builder.append( "<br />");
