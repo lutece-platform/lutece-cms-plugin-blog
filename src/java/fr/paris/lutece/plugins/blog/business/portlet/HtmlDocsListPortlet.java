@@ -60,6 +60,8 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     public static final String MARK_LIST_HTMLDOC_PUBLISHED = "htmldoc_list_published";
     public static final String MARK_PAGE_TEMPLATE = "page_template";
     public static final String MARK_PORTLET_ID = "portlet_id";
+    public static final String MARK_PORTLET_NAME = "portlet_name";
+
 
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -102,6 +104,11 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
         model.put( MARK_LIST_HTMLDOC_PUBLISHED, listHtmlDocsPublished );
         model.put( MARK_PAGE_TEMPLATE, pageTemplate );
         model.put( MARK_PORTLET_ID, this.getId( ) );
+        if( this.getDisplayPortletTitle() == 0 ){
+  	
+        	model.put( MARK_PORTLET_NAME, this.getName( ));
+        
+        }
         HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), request.getLocale( ), model );
 
         return template.getHtml( );

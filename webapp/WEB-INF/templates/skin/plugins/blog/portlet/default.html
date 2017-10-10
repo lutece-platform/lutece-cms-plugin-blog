@@ -1,3 +1,4 @@
+<div>${portlet_name!}</div>
 <#list htmldoc_list_published as doc>
 <div class="portlet portlet-alaune">
 	<div class="media">
@@ -10,7 +11,7 @@
 			<h4 class="media-heading">${doc.contentLabel}</h4>
 			${doc.description!}
 			<p class="lead">
-				<a href="jsp/site/Portal.jsp?page=htmldoc&id=${doc.id}&portlet_id=${portlet_id}" alt="" title="">
+				<a href="jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}" alt="" title="">
 					Lire la suite...
 				</a>
 			</p>

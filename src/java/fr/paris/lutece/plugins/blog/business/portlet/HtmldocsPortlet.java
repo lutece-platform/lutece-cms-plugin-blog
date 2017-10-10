@@ -74,14 +74,21 @@ public class HtmldocsPortlet extends PortletHtmlContent
     public String getHtmlContent( HttpServletRequest request )
     {
         GregorianCalendar calendar = new java.util.GregorianCalendar( );
-
+        StringBuilder builder= new StringBuilder();
         HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
         HtmlDocPublication docPub = HtmlDocPublicationHome.findDocPublicationByPimaryKey( this.getContentId( ), this.getId( ) );
         if ( docPub != null && docPub.getIdDocument( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
                 && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
         {
-
-            return htmldoc.getHtmlContent( );
+        	if(this.getDisplayPortletTitle() == 1){
+        		
+        		builder.append(this.getName());
+        		builder.append( "<br />");
+            
+            }
+             builder.append( htmldoc.getHtmlContent( ) );
+             
+             return builder.toString();
         }
 
         return "";
