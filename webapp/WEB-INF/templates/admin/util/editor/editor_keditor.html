@@ -1,4 +1,10 @@
-<!--
+<#macro initEditor fsubmit='form-editor'>
+<#--
+ Macro @initEditor :
+  Parameters
+    - fsubmit : Default value: 'form-editor' default name for Blog forms in both update and create features
+                The fsubmit parameter to set the form id which is POST in content validation
+
   -------------------------------
   Add Keditor to Blog Plugin
   -------------------------------	
@@ -8,6 +14,8 @@
   version: 1.1.5
   dependencies: $, $.fn.draggable, $.fn.droppable, $.fn.sortable, Bootstrap (optional), FontAwesome (optional)
 -->
+<!-- Replace textarea -->
+<div id="keditor-set-content"></div>
 <!-- Config Files -->
 <link rel="stylesheet" type="text/css" href="${webapp_url}js/editors/keditor/css/keditor-1.1.5.min.css">
 <link rel="stylesheet" type="text/css" href="${webapp_url}js/editors/keditor/css/keditor-1.1.5.min.css">
@@ -26,16 +34,6 @@
 <script src="${webapp_url}js/editors/keditor/dist/js/keditor-components-1.1.5.min.js"></script>
 -->
 
-<!--
- Macro @initEditor :
-  Parameters
-    - fsubmit : Default value: 'form-editor' default name for Blog forms in both update and create features
-                The fsubmit parameter to set the form id which is POST in content validation
--->
-
-<#macro initEditor fsubmit='form-editor'>
-<!-- Replace textarea -->
-<div id="keditor-set-content"></div>
 
 <!-- BS Modal for Keditor -->
 <div class="modal fade" id="keditorModal" tabindex="-1" role="dialog" aria-labelledby="keditorModalLabel">
@@ -54,7 +52,7 @@
     </div>
   </div>
 </div>
-</#macro>
+
 
 <!-- Styles for Iframe Mode = true -->
 <!-- Admin Keditor styles -->
@@ -73,6 +71,7 @@
 var _baseUrl = "${webapp_url!}";
 /* Plugin document : Documents Spaces id for Images and Files */
 var _imgSpaceId = '#dskey{library.img.defaultSpace.id!'6'}', _pdfSpaceId = '#dskey{library.pdf.defaultSpace.id!'8'}';
+
 /* The form id for validate and set content in Lutece - Default: "#form-editor" */
 var myForm = '#${fsubmit!}';
 
@@ -111,3 +110,4 @@ function loadKModalUrl( url ) {
   }
 }
 </script>
+</#macro>

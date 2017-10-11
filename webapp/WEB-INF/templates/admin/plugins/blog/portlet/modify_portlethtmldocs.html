@@ -1,7 +1,7 @@
-<!-- Portlet specific parameters
-<legend>#i18n{blog.modify_htmldoc.labelEditorLegend}</legend>
--->
 <#include "/admin/util/editor/editor.html" />
-<textarea id="html_content" class="richtext" name="html_content" rows="12">${htmlcontent!}</textarea>
+<div class="form-group">
+	<label class="sr-only" for="html_content">#i18n{blog.modify_htmldoc.labelContent}</label>
+	<textarea id="html_content" class="richtext" name="html_content" rows="12">${htmlcontent!}</textarea>
+	<@initEditor fsubmit='form-portlet' />
+</div>
 <@fieldInputText i18nLabelKey="blog.modify_htmldoc.labelEditComment" inputName="edit_comment" mandatory=false value="${edit_comment!''}" i18nHelpBlockKey="blog.modify_htmldoc.labelEditComment.help" />
-<@initEditor fsubmit='form-portlet' />
