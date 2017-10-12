@@ -38,13 +38,11 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import fr.paris.lutece.plugins.blog.business.DocumentPageTemplate;
 import fr.paris.lutece.plugins.blog.business.DocumentPageTemplateHome;
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocFilter;
-import fr.paris.lutece.plugins.blog.service.HtmlDocService;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.utils.HtmldocUtils;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;

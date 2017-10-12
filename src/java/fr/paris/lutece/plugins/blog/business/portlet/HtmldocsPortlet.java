@@ -35,10 +35,13 @@ package fr.paris.lutece.plugins.blog.business.portlet;
 
 import java.sql.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
+import fr.paris.lutece.util.html.HtmlTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,6 +51,14 @@ import javax.servlet.http.HttpServletRequest;
 public class HtmldocsPortlet extends PortletHtmlContent
 {
     public static final String RESOURCE_ID = "HTMLDOCS_PORTLET";
+    private static final String TEMPLATE_VIEW_PORTLET_HTMLDOC = "skin/plugins/blog/portlet/view_portlet_htmldoc.html";
+    public static final String MARK_HTMLDOC = "htmldoc";
+    public static final String MARK_PORTLET_NAME = "portlet_name";
+    public static final String MARK_PORTLET_ID = "portlet_id";
+
+
+
+
 
     /**
      * Sets the identifier of the portlet type to value specified
@@ -74,24 +85,27 @@ public class HtmldocsPortlet extends PortletHtmlContent
     public String getHtmlContent( HttpServletRequest request )
     {
         GregorianCalendar calendar = new java.util.GregorianCalendar( );
-        StringBuilder builder= new StringBuilder();
         HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
         HtmlDocPublication docPub = HtmlDocPublicationHome.findDocPublicationByPimaryKey( this.getContentId( ), this.getId( ) );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
+        
         if ( docPub != null && docPub.getIdDocument( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
                 && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
         {
         	if(this.getDisplayPortletTitle() == 0){
         		
-        		builder.append(this.getName());
-        		builder.append( "<br />");
+        		model.put( MARK_PORTLET_NAME, this.getName( ) );
             
             }
-             builder.append( htmldoc.getHtmlContent( ) );
-             
-             return builder.toString();
+        	model.put( MARK_HTMLDOC, htmldoc );
         }
+        model.put( MARK_PORTLET_ID, this.getId( ) );
 
-        return "";
+        
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_VIEW_PORTLET_HTMLDOC, request.getLocale( ), model );
+
+        return template.getHtml( );
+
     }
 
     /**
