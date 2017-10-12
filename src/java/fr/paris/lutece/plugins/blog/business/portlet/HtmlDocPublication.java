@@ -13,7 +13,7 @@ public class HtmlDocPublication
     private Date _dateBeginPublishing;
     private Date _dateEndPublishing;
     private int _nDocumentOrder;
-    private int _nStatus;
+    private int _nStatus = 1;
 
     /**
      * Returns the IdDocument

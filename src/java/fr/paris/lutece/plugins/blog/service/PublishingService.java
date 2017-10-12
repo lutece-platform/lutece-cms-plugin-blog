@@ -290,7 +290,7 @@ public class PublishingService
             return new ArrayList<HtmlDoc>( );
         }
 
-        int [ ] arrayIds = new int [ listDocumentPublication.size( )];
+        Integer [ ] arrayIds = new Integer [ listDocumentPublication.size( )];
         int i = 0;
         HtmlDocFilter publishedDocumentFilter = documentFilter;
 

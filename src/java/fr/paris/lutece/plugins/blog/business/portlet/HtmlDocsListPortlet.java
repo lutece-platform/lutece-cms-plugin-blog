@@ -38,11 +38,15 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import fr.paris.lutece.plugins.blog.business.DocumentPageTemplate;
 import fr.paris.lutece.plugins.blog.business.DocumentPageTemplateHome;
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
+import fr.paris.lutece.plugins.blog.business.HtmlDocFilter;
 import fr.paris.lutece.plugins.blog.service.HtmlDocService;
+import fr.paris.lutece.plugins.blog.service.PublishingService;
+import fr.paris.lutece.plugins.blog.utils.HtmldocUtils;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -80,24 +84,15 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        List<HtmlDoc> listHtmlDocs = HtmlDocService.getInstance( ).getListDocWhithContent( );
-        List<HtmlDoc> listHtmlDocsPublished = new ArrayList<HtmlDoc>( );
-        GregorianCalendar calendar = new java.util.GregorianCalendar( );
-
-        for ( HtmlDocPublication docPub : this.getArrayHtmlDOcs( ) )
-        {
-            for ( HtmlDoc doc : listHtmlDocs )
-            {
-
-                if ( docPub.getIdDocument( ) == doc.getId( ) && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
-                        && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
-                {
-                    listHtmlDocsPublished.add( doc );
-                }
-            }
-
-        }
-
+    	GregorianCalendar calendar = new java.util.GregorianCalendar( );
+    	Date date= new Date( calendar.getTimeInMillis( ) );
+    	HtmlDocFilter documentFilter= new HtmlDocFilter();
+        List<Integer> listIdDoc = PublishingService.getPublishedDocumentsIdsListByPortletIds(new int[]{this.getId( )}, date, date, HtmldocUtils.getPlugin());
+        Integer[] docId =listIdDoc.toArray(new Integer[listIdDoc.size()]);
+        documentFilter.setIds( docId );
+        documentFilter.setLoadBinaries( true );
+        List<HtmlDoc> listHtmlDocsPublished = (List<HtmlDoc>) PublishingService.getInstance( ).getPublishedDocumentsSinceDate( date, date, documentFilter, null );
+        
         DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
         HashMap<String, Object> model = new HashMap<String, Object>( );

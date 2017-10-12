@@ -40,8 +40,8 @@ public class HtmlDocFilter
 {
 
     // Variables declarations
-    private int [ ] _arrayTagsId;
-    private int [ ] _arrayId;
+    private Integer [ ] _arrayTagsId;
+    private Integer [ ] _arrayId;
 
     // The default value is true to assure ascendant compatibility
     private boolean _bLoadBinaries = true;
@@ -52,7 +52,7 @@ public class HtmlDocFilter
     /**
      * @return the _arrayTagsId
      */
-    public int [ ] getTagsId( )
+    public Integer [ ] getTagsId( )
     {
         return _arrayTagsId;
     }
@@ -61,7 +61,7 @@ public class HtmlDocFilter
      * @param arrayTagsId
      *            the _arrayTagsId to set
      */
-    public void setTagsId( int [ ] arrayTagsId )
+    public void setTagsId( Integer [ ] arrayTagsId )
     {
         _arrayTagsId = arrayTagsId;
     }
@@ -89,7 +89,7 @@ public class HtmlDocFilter
     /**
      * @return the _arrayId
      */
-    public int [ ] getIds( )
+    public Integer [ ] getIds( )
     {
         return _arrayId;
     }
@@ -98,7 +98,7 @@ public class HtmlDocFilter
      * @param arrayId
      *            the _arrayId to set
      */
-    public void setIds( int [ ] arrayId )
+    public void setIds( Integer [ ] arrayId )
     {
         _arrayId = arrayId;
     }
