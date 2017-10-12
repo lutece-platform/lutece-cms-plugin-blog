@@ -20,3 +20,11 @@ DELETE FROM core_user_right WHERE id_right = 'HTMLDOCS_MANAGEMENT';
 INSERT INTO core_user_right (id_right,id_user) VALUES ('HTMLDOCS_MANAGEMENT',1);
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
+
+--
+-- Update default editor
+--
+REPLACE INTO core_text_editor(`editor_name`, `editor_description`, `backOffice`) VALUES ('keditor', 'blog.editors.labelBackKeditor', 1);
+UPDATE core_datastore SET entity_value='keditor' WHERE entity_key='core.backOffice.defaultEditor';
+
+
