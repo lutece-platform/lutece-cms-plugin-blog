@@ -48,11 +48,11 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
 {
     // Constants
 
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet, name, content_id FROM htmldocs_portlet";
-    private static final String SQL_QUERY_SELECT = "SELECT id_portlet, name, content_id FROM htmldocs_portlet WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs_portlet ( id_portlet, name, content_id ) VALUES ( ?, ?, ? )";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet, name, content_id, id_page_template_document FROM htmldocs_portlet";
+    private static final String SQL_QUERY_SELECT = "SELECT id_portlet, name, content_id,id_page_template_document  FROM htmldocs_portlet WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs_portlet ( id_portlet, name, content_id, id_page_template_document ) VALUES ( ?, ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_portlet WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_portlet SET id_portlet = ?, name = ?, content_id = ? WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_portlet SET id_portlet = ?, name = ?, content_id = ?, id_page_template_document=? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status, document_order ) VALUES ( ? , ?, ?, ? )";
     private static final String SQL_QUERY_SELECT_PORTLET_BY_TYPE = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " + "FROM htmldocs_portlet b "
             + "LEFT JOIN htmldocs_list_portlet_htmldocs c ON b.id_portlet = c.id_portlet " + "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet "
@@ -72,6 +72,7 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
         daoUtil.setInt( 1, p.getId( ) );
         daoUtil.setString( 2, p.getPortletName( ) );
         daoUtil.setInt( 3, p.getContentId( ) );
+        daoUtil.setInt( 4, p.getPageTemplateDocument( ));
         daoUtil.executeUpdate( );
         daoUtil.free( );
         insertHtmlDocPublivcation( p );
@@ -107,7 +108,8 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
         daoUtil.setInt( 1, p.getId( ) );
         daoUtil.setString( 2, p.getPortletName( ) );
         daoUtil.setInt( 3, p.getContentId( ) );
-        daoUtil.setInt( 4, p.getId( ) );
+        daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
+        daoUtil.setInt( 5, p.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -138,6 +140,7 @@ public final class HtmldocsPortletDAO implements IHtmldocsPortletDAO
             portlet.setId( daoUtil.getInt( 1 ) );
             portlet.setPortletName( daoUtil.getString( 2 ) );
             portlet.setContentId( daoUtil.getInt( 3 ) );
+            portlet.setPageTemplateDocument( daoUtil.getInt( 4 ) );
         }
 
         daoUtil.free( );

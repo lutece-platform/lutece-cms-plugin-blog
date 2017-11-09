@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.blog.web.portlet;
 
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
+import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocsListPortlet;
+import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocsListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -61,12 +63,15 @@ public class HtmldocsPortletJspBean extends PortletJspBean
     public static final String MARK_EDIT_COMMENT = "editcomment";
     public static final String MARK_WEBAPP_URL = "webapp_url";
     public static final String MARK_LIST_HTMLDOC = "htmldoc_list";
+    public static final String MARK_LIST_PAGES = "pages_list";
     public static final String TEMPLATE_MODIFY_PORTLET = "admin/portlet/modify_portlet.html";
     public static final String PARAMETER_CONTENT_ID = "content_id";
     public static final String PARAMETER_HTML_CONTENT = "html_content";
     public static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     public static final String PARAMETER_PORTLET_NAME = "portlet_name";
     public static final String PARAMETER_HTMLDOC_SELECTED = "htmldoc_selected";
+    private static final String PARAMETER_PAGE_TEMPLATE_CODE = "page_template_code";
+
 
     /**
      * Returns the HtmldocsPortlet form of creation
@@ -84,6 +89,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         HashMap<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listHtmlDocs );
+        model.put( MARK_LIST_PAGES, HtmlDocsListPortletHome.loadPages( HtmldocsPortlet.RESOURCE_ID ) );
         // TODO implement repopulating the form with editcomment (and others..) in case of error in doCreate
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
 
@@ -107,6 +113,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         HashMap<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_HTML_CONTENT, htmlDoc.getHtmlContent( ) );
         model.put( MARK_EDIT_COMMENT, "" );
+        model.put( MARK_LIST_PAGES, HtmlDocsListPortletHome.loadPages( HtmldocsPortlet.RESOURCE_ID ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         // TODO implement repopulating the form with editcomment (and others..) in case of error in doModify
         HtmlTemplate template = getModifyTemplate( portlet, model );
@@ -140,6 +147,8 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         HtmldocsPortlet portlet = new HtmldocsPortlet( );
         AdminUser user = AdminUserService.getAdminUser( request );
         String strSelectedHtmldoc = request.getParameter( PARAMETER_HTMLDOC_SELECTED );
+        String strTemplateCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
+
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         int nPageId = Integer.parseInt( strPageId );
@@ -171,6 +180,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
             return strErrorUrl;
         }
 
+        portlet.setPageTemplateDocument(Integer.parseInt( strTemplateCode ));
         portlet.setPageId( nPageId );
         portlet.setContentId( nContentId );
         portlet.setPortletName( request.getParameter( PARAMETER_PORTLET_NAME ) );
@@ -196,6 +206,8 @@ public class HtmldocsPortletJspBean extends PortletJspBean
     {
         // fetches portlet attributes
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
+     // recovers portlet attributes
+        String strDocumentTypeCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
         int nPortletId = Integer.parseInt( strPortletId );
         HtmldocsPortlet portlet = (HtmldocsPortlet) PortletHome.findByPrimaryKey( nPortletId );
         HtmlDoc htmlDoc = HtmlDocHome.findByPrimaryKey( portlet.getContentId( ) );
@@ -207,7 +219,7 @@ public class HtmldocsPortletJspBean extends PortletJspBean
         {
             return strErrorUrl;
         }
-
+        portlet.setPageTemplateDocument( Integer.parseInt( strDocumentTypeCode ) );
         // updates the HtmlDoc
         htmlDoc.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
         // TODO error validation on edit comment length

@@ -83,8 +83,12 @@ public interface IHtmlDocsListPortletDAO extends IPortletInterfaceDAO
      * @return theDocumentListPortlet object
      */
     Portlet load( int nPortletId );
-
-    Map<Integer, String> loadPages( );
+    /**
+     * Load the portlet template whose type is specified in parameter
+     * @param strPortletType
+     * @return Map template
+     */
+    Map<Integer, String> loadPages( String strPortletType );
 
     /**
      * Load the list of documentTypes

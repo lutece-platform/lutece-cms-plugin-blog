@@ -70,7 +70,7 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
         HashMap<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listHtmlDocs );
-        model.put( MARK_LIST_PAGES, HtmlDocsListPortletHome.loadPages( ) );
+        model.put( MARK_LIST_PAGES, HtmlDocsListPortletHome.loadPages( HtmlDocsListPortlet.RESOURCE_ID ) );
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType, model );
 
         return template.getHtml( );
@@ -107,7 +107,7 @@ public class HtmldocsListPortletJspBean extends PortletJspBean
 
         listHtmlDocsNotPublished.addAll( listHtmlDocs );
         listHtmlDocsNotPublished.removeAll( listHtmlDocsPublished );
-        model.put( MARK_LIST_PAGES, HtmlDocsListPortletHome.loadPages( ) );
+        model.put( MARK_LIST_PAGES, HtmlDocsListPortletHome.loadPages( HtmlDocsListPortlet.RESOURCE_ID ) );
 
         model.put( MARK_LIST_HTMLDOC_PUBLISHED, listHtmlDocsPublished );
         model.put( MARK_LIST_HTMLDOC, listHtmlDocsNotPublished );

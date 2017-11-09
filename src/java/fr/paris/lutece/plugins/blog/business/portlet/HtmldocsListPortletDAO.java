@@ -65,7 +65,7 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
     private static final String SQL_QUERY_INSERT_HTMLDOCS_PORTLET = "INSERT INTO htmldocs_list_portlet_htmldocs ( id_portlet , id_html_doc, status, document_order ) VALUES ( ? , ?, ?, ? )";
     private static final String SQL_QUERY_DELETE_HTMLDOCS_PORTLET = " DELETE FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_html_doc, document_order, date_begin_publishing, date_end_publishing, status FROM htmldocs_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
-    private static final String SQL_QUERY_SELECT_PAGE_PORTLET = "SELECT id_page_template_document,description from  htmldocs_page_template";
+    private static final String SQL_QUERY_SELECT_PAGE_PORTLET = "SELECT id_page_template_document,description from  htmldocs_page_template where portlet_type= ?";
 
     // /////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data
@@ -172,9 +172,10 @@ public final class HtmldocsListPortletDAO implements IHtmlDocsListPortletDAO
      * {@inheritDoc }
      */
     @Override
-    public Map<Integer, String> loadPages( )
+    public Map<Integer, String> loadPages( String strPortletType)
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_PORTLET );
+        daoUtil.setString( 1, strPortletType );
         daoUtil.executeQuery( );
 
         Map<Integer, String> page = new HashMap<Integer, String>( );

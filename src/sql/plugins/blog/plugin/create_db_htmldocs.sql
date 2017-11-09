@@ -45,6 +45,8 @@ CREATE TABLE htmldocs_portlet (
 id_portlet int NOT NULL,
 name varchar(50) default '' NOT NULL,
 content_id int NOT NULL,
+id_page_template_document int default 0 NOT NULL,
+
 PRIMARY KEY (id_portlet)
 );
 
@@ -119,6 +121,7 @@ CREATE TABLE htmldocs_page_template (
 	page_template_path varchar(255) default NULL,
 	picture_path varchar(255) default NULL,
 	description varchar(255) default NULL,
+	portlet_type varchar(255) default NULL,
 	
 	PRIMARY KEY (id_page_template_document)
 );

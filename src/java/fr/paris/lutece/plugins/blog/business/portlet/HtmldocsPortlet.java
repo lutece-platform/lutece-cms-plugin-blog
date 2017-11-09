@@ -39,6 +39,8 @@ import java.util.HashMap;
 
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.plugins.blog.business.DocumentPageTemplate;
+import fr.paris.lutece.plugins.blog.business.DocumentPageTemplateHome;
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -56,7 +58,7 @@ public class HtmldocsPortlet extends PortletHtmlContent
     public static final String MARK_PORTLET_NAME = "portlet_name";
     public static final String MARK_PORTLET_ID = "portlet_id";
 
-
+    private int _nPageTemplateDocument;
 
 
 
@@ -88,6 +90,7 @@ public class HtmldocsPortlet extends PortletHtmlContent
         HtmlDoc htmldoc = HtmlDocHome.findByPrimaryKey( this.getContentId( ) );
         HtmlDocPublication docPub = HtmlDocPublicationHome.findDocPublicationByPimaryKey( this.getContentId( ), this.getId( ) );
         HashMap<String, Object> model = new HashMap<String, Object>( );
+        DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
         
         if ( docPub != null && docPub.getIdDocument( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
                 && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
@@ -101,8 +104,7 @@ public class HtmldocsPortlet extends PortletHtmlContent
         }
         model.put( MARK_PORTLET_ID, this.getId( ) );
 
-        
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_VIEW_PORTLET_HTMLDOC, request.getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), request.getLocale( ), model );
 
         return template.getHtml( );
 
@@ -188,5 +190,25 @@ public class HtmldocsPortlet extends PortletHtmlContent
     public String getPortletName( )
     {
         return _strName;
+    }
+    /**
+     * Sets the parent page identifier of the portlet to the value specified in parameter
+     *
+     * @param nPageTemplateDocument
+     *            the code
+     */
+    public void setPageTemplateDocument( int nPageTemplateDocument )
+    {
+        _nPageTemplateDocument = nPageTemplateDocument;
+    }
+
+    /**
+     * Returns the identifier of the parent page of the portlet
+     *
+     * @return the parent page identifier
+     */
+    public int getPageTemplateDocument( )
+    {
+        return _nPageTemplateDocument;
     }
 }

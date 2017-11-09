@@ -151,9 +151,14 @@ public class HtmlDocsListPortletHome extends PortletHome
         // FIXME : method should access to different home business methods
         return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
     }
-
-    public static Map<Integer, String> loadPages( )
+    
+    /**
+     * Load the portlet template whose type is specified in parameter
+     * @param strPortletType
+     * @return Map template
+     */
+    public static Map<Integer, String> loadPages( String strPortletType )
     {
-        return _dao.loadPages( );
+        return _dao.loadPages( strPortletType );
     }
 }
