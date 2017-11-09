@@ -43,6 +43,7 @@ import fr.paris.lutece.plugins.blog.business.DocumentPageTemplate;
 import fr.paris.lutece.plugins.blog.business.DocumentPageTemplateHome;
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocFilter;
+import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.utils.HtmldocUtils;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
@@ -89,8 +90,7 @@ public class HtmlDocsListPortlet extends PortletHtmlContent
         Integer[] docId =listIdDoc.toArray(new Integer[listIdDoc.size()]);
         documentFilter.setIds( docId );
         documentFilter.setLoadBinaries( true );
-        List<HtmlDoc> listHtmlDocsPublished = (List<HtmlDoc>) PublishingService.getInstance( ).getPublishedDocumentsSinceDate( date, date, documentFilter, null );
-        
+        List<HtmlDoc> listHtmlDocsPublished = (List<HtmlDoc>) HtmlDocHome.findByFilter( documentFilter, null );
         DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
         HashMap<String, Object> model = new HashMap<String, Object>( );
