@@ -91,6 +91,8 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
 
     private DocContent _docContent;
 
+    private String _strUrl;
+    
     private boolean _bShareable;
 
     private List<Tag> _tag = new ArrayList<Tag>( );
@@ -343,6 +345,26 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
         _docContent = docContent;
     }
 
+    /**
+     * Returns the Url
+     *
+     * @return The Url
+     */
+    public String getUrl( )
+    {
+        return _strUrl;
+    }
+
+    /**
+     * Sets the Url
+     *
+     * @param strUrl
+     *            The Url
+     */
+    public void setUrl( String strUrl )
+    {
+        _strUrl = strUrl;
+    }
     /**
      * Returns the Shareable
      * 

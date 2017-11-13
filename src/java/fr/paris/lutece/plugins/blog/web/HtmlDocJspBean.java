@@ -120,6 +120,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     protected static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
     protected static final String PARAMETER_TAG = "tag_doc";
     protected static final String PARAMETER_TAG_NAME = "tag_name";
+    protected static final String PARAMETER_URL= "url";
 
     protected static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
     protected static final String PARAMETER_SHAREABLE = "shareable";
@@ -569,6 +570,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         String strContentLabel = request.getParameter( PARAMETER_CONTENT_LABEL );
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strShareable = request.getParameter( PARAMETER_SHAREABLE );
+        String strUrl = request.getParameter( PARAMETER_URL );
+
 
         String strUpdate_attachment = request.getParameter( PARAMETER_UPDATE_ATTACHMENT );
         boolean bIsUpdatable = ( ( strUpdate_attachment == null ) || strUpdate_attachment.equals( "" ) ) ? false : true;
@@ -586,6 +589,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         _htmldoc.setEditComment( strEditComment );
         _htmldoc.setUpdateDate( getSqlDate( ) );
         _htmldoc.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _htmldoc.setUrl( strUrl );
+
 
         // Check constraints
         if ( !validateBean( _htmldoc, VALIDATION_ATTRIBUTES_PREFIX ) )

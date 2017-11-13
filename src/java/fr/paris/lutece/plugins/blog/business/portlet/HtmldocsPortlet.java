@@ -53,7 +53,6 @@ import javax.servlet.http.HttpServletRequest;
 public class HtmldocsPortlet extends PortletHtmlContent
 {
     public static final String RESOURCE_ID = "HTMLDOCS_PORTLET";
-    private static final String TEMPLATE_VIEW_PORTLET_HTMLDOC = "skin/plugins/blog/portlet/view_portlet_htmldoc.html";
     public static final String MARK_HTMLDOC = "htmldoc";
     public static final String MARK_PORTLET_NAME = "portlet_name";
     public static final String MARK_PORTLET_ID = "portlet_id";
