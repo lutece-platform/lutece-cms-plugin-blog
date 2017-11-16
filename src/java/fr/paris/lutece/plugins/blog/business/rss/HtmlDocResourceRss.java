@@ -74,7 +74,7 @@ public class HtmlDocResourceRss extends ResourceRss
     private static final String TEMPLATE_TASK_MODIFY_CONFIG = "admin/plugins/blog/rss/rss_modify_config.html";
 
     // JSPs
-    private static final String JSP_PAGE_HTMLDOCS = "/jsp/site/Portal.jsp?page=htmldoc";
+    private static final String JSP_PAGE_HTMLDOCS = "/jsp/site/Portal.jsp?page=blog";
 
     // Markers
     private static final String MARK_RSS_ITEM_TITLE = "item_title";
@@ -263,7 +263,7 @@ public class HtmlDocResourceRss extends ResourceRss
 
         IFeedResource resource = new FeedResource( );
         resource.setTitle( I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage ) ) );
-        resource.setLink( strSiteUrl + JSP_PAGE_HTMLDOCS );
+        resource.setLink( strSiteUrl );
         resource.setLanguage( strRssFileLanguage );
         resource.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
 
