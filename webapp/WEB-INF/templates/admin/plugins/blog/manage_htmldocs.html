@@ -120,7 +120,7 @@
                 <td>
                   <div class="btn-group">
                     <a href="jsp/admin/plugins/blog/ManagePublicationHtmlDocs.jsp?view=manageHtmlDocsPublication&amp;id=${htmldoc.id}"
-                      class="btn-publish btn btn-sm <#if htmldoc.htmldocPubilcation?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if htmldoc.htmldocPubilcation?size==0>Publier<#else>Gérer la publication</#if>">
+                      class="btn-publish btn btn-sm <#if htmldoc.htmldocPubilcation?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if htmldoc.htmldocPubilcation?size==0>Publier<#else>#i18n{blog.manage_htmldocs.managePublication}</#if>">
                       <i class="fa fa-globe"></i>
                      <#if htmldoc.htmldocPubilcation?size &gt; 0>
                         <span class="notification left bg-purple-active">${htmldoc.htmldocPubilcation?size}</span>
