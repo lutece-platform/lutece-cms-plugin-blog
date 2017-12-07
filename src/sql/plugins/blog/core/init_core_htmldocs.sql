@@ -8,9 +8,10 @@ INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home
 -- Data for table core_admin_right
 --
 DELETE FROM core_admin_right WHERE id_right IN ( 'HTMLDOCS_MANAGEMENT', 'HTMLDOCS_TAGS_MANAGEMENT');
+INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url ) VALUES
+('HTMLDOCS_MANAGEMENT','blog.adminFeature.ManageHtmldocs.name',2,'jsp/admin/plugins/blog/ManageHtmlDocs.jsp','blog.adminFeature.ManageHtmldocs.description',0,'blog','APPLICATIONS','images/admin/skin/plugins/blog/blog.png','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
-INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
-('HTMLDOCS_TAGS_MANAGEMENT','blog.adminFeature.ManageHtmldocsTags.name',1,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageHtmldocsTags.description',0,'blog','CONTENT',NULL,NULL,4);
+('HTMLDOCS_TAGS_MANAGEMENT','blog.adminFeature.ManageHtmldocsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageHtmldocsTags.description',0,'blog','APPLICATIONS',NULL,NULL,4);
 
 
 --
