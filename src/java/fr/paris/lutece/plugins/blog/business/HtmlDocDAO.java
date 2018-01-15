@@ -530,7 +530,7 @@ public final class HtmlDocDAO implements IHtmlDocDAO
 
             if ( filter.getLoadBinaries( ) )
             {
-                htmlDoc.setDocContent( DocContentHome.getDocsContent( htmlDoc.getId( ) ) );
+                htmlDoc.setDocContent( DocContentHome.getDocsContentByHtmlDoc(( htmlDoc.getId( ) )));
             }
 
             htmlDoc.setTag( TagHome.getTagListByDoc( htmlDoc.getId( ) ) );

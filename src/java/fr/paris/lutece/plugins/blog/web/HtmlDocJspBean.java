@@ -67,13 +67,18 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URLConnection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
@@ -177,6 +182,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
     private static final String ACTION_ADD_TAG = "addTag";
     private static final String ACTION_REMOVE_TAG = "removeTag";
     private static final String ACTION_UPDATE_PRIORITY_TAG = "updatePriorityTag";
+    private static final String ACTION_ADD_FILE_CONTENT = "addContent";
+    private static final String ACTION_REMOVE_FILE_CONTENT = "deleteContent";
+
     // Infos
     private static final String INFO_HTMLDOC_CREATED = "blog.info.htmldoc.created";
     private static final String INFO_HTMLDOC_UPDATED = "blog.info.htmldoc.updated";
@@ -380,9 +388,9 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         // HtmlDocHome.addInitialVersion( _htmldoc );
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
-        HtmlDocService.getInstance( ).createDocument( _htmldoc, docContent );
+        // MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        // DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
+        HtmlDocService.getInstance( ).createDocument( _htmldoc, _htmldoc.getDocContent( ) );
 
         addInfo( INFO_HTMLDOC_CREATED, getLocale( ) );
 
@@ -599,24 +607,8 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
         }
 
         _htmldoc.setVersion( latestVersionHtmlDoc.getVersion( ) + 1 );
-
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
-        if ( bIsUpdatable && docContent == null )
-        {
-
-            DocContentHome.remove( nId );
-            docContent = null;
-        }
-        else
-            if ( docContent == null )
-            {
-
-                docContent = _htmldoc.getDocContent( );
-
-            }
-
-        HtmlDocService.getInstance( ).updateDocument( _htmldoc, docContent );
+      
+        HtmlDocService.getInstance( ).updateDocument( _htmldoc, _htmldoc.getDocContent( ) );
 
         addInfo( INFO_HTMLDOC_UPDATED, getLocale( ) );
 
@@ -751,7 +743,62 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         return getPage( PROPERTY_PAGE_TITLE_DIFF_HTMLDOC, TEMPLATE_DIFF_HTMLDOC, model );
     }
+    /**
+     * Added docContent to the htmlDoc content list
+     * @param request The Http request
+     * @param htmldoc The HtmlDoc
+     */
+    @Action( ACTION_ADD_FILE_CONTENT )
+    public String addContent( HttpServletRequest request){
+    	
+    	String base64ImageString= request.getParameter( "fileContent" );  
+    	String strFileName= request.getParameter( "fileName" );    	 
+    	Date currentTime = new Date();
+    	strFileName= strFileName + currentTime.getTime( );
+    
+    	String delims="[,]";
+    	String[] parts = base64ImageString.split(delims);
+    	String imageString = parts[1];
+    	byte[] imageByteArray = Base64.getDecoder().decode(imageString );
 
+    	InputStream is = new ByteArrayInputStream(imageByteArray);
+
+    	//Find out image type
+    	String mimeType = null;
+    	String fileExtension = null;
+    	try {
+    	     mimeType = URLConnection.guessContentTypeFromStream(is); //mimeType is something like "image/jpeg"
+    	     String delimiter="[/]";
+    	     String[] tokens = mimeType.split(delimiter);
+    	     fileExtension = tokens[1];
+    	 } catch (IOException ioException){
+    		 AppLogService.error( ioException.getStackTrace( ), ioException );
+    	 }
+    	 
+    	 DocContent docContent = new DocContent( );
+         docContent.setBinaryValue( imageByteArray );
+         docContent.setValueContentType( mimeType );
+         docContent.setTextValue( strFileName );
+
+         _htmldoc.addConetnt(docContent);
+         
+         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
+    	
+    }
+    /**
+     * delete docContent in the htmlDoc content list
+     * @param request The Http request
+     * @param htmldoc The HtmlDoc
+     */
+    @Action( ACTION_REMOVE_FILE_CONTENT )
+    public String removeContent( HttpServletRequest request){
+    	
+    	String strFileName= request.getParameter( "fileName" );    	 
+        _htmldoc.deleteDocContent( strFileName);
+        return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
+   	
+   }
+    
     private ReferenceList getHtmldocFilterList( )
     {
         ReferenceList list = new ReferenceList( );
@@ -761,7 +808,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         return list;
     }
-
+    
     public DocContent setContent( MultipartHttpServletRequest mRequest, Locale locale )
     {
 
@@ -817,4 +864,7 @@ public class HtmlDocJspBean extends ManageHtmldocsJspBean
 
         return htmlDocList;
     }
+    
+
+
 }

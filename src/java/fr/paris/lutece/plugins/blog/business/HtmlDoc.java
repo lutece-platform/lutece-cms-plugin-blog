@@ -89,7 +89,7 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     @Size( message = "#i18n{blog.validation.description.size}" )
     private String _strDescription;
 
-    private DocContent _docContent;
+    private List<DocContent> _docContent= new ArrayList<DocContent>( );
 
     private String _strUrl;
     
@@ -325,25 +325,66 @@ public class HtmlDoc extends ReferenceItem implements Serializable, IExtendableR
     }
 
     /**
-     * Returns the DocContent
+     * Returns the list of DocContent
      *
      * @return The DocContent
      */
-    public DocContent getDocContent( )
+    public List<DocContent> getDocContent( )
     {
         return _docContent;
     }
 
     /**
-     * Sets the DocContent
+     * Sets the list DocContent
      *
      * @param DocContent
      *            The DocContent
      */
-    public void setDocContent( DocContent docContent )
+    public void setDocContent( List<DocContent> docContent )
     {
         _docContent = docContent;
     }
+    /**
+     * Sets the docConetnt list
+     *
+     * @param docContent
+     *            list The docContent list
+     */
+    public void addConetnt(  DocContent docContent )
+    {
+        for ( DocContent docCont : _docContent )
+        {
+
+            if ( docCont.getTextValue().equals(docContent.getTextValue( )) )
+            {
+
+                return;
+            }
+        }
+        _docContent.add( docContent );
+    }
+    /**
+    * delet the docContent
+    *
+    * @param docContent
+    *            The docContent
+    */
+   public void deleteDocContent( String strFileName )
+   {
+	   DocContent docContToRemove = null;
+	   for ( DocContent docCont : _docContent )
+       {
+
+           if ( docCont.getTextValue().equals( strFileName ) )
+           {
+
+        	   docContToRemove = docCont;
+               break;
+           }
+       }
+
+	   _docContent.remove( docContToRemove );
+   }
 
     /**
      * Returns the Url

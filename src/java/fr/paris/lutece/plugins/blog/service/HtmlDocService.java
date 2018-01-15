@@ -106,6 +106,49 @@ public class HtmlDocService
         HtmlDocSearchService.getInstance( ).addIndexerAction( htmlDoc.getId( ), IndexerAction.TASK_CREATE, HtmldocsPlugin.getPlugin( ) );
 
     }
+    /**
+     * Create an htmlDoc
+     * 
+     * @param htmlDoc
+     *            The HtmlDoc
+     * @param docContent
+     *            The Doc content
+     */
+    public void createDocument( HtmlDoc htmlDoc, List<DocContent> docContent )
+
+    {
+
+        TransactionManager.beginTransaction( HtmldocsPlugin.getPlugin( ) );
+
+        try
+        {
+            HtmlDocHome.addInitialVersion( htmlDoc );
+            for ( Tag tag : htmlDoc.getTag( ) )
+            {
+
+                TagHome.create( tag.getIdTag( ), htmlDoc.getId( ), tag.getPriority( ) );
+            }
+            if ( docContent != null )
+            {
+            	for(DocContent docCont:docContent){
+            		
+            		docCont.setIdHtmlDocument( htmlDoc.getId( ) );
+                    DocContentHome.create( docCont );
+            	}
+                
+
+            }
+            TransactionManager.commitTransaction( HtmldocsPlugin.getPlugin( ) );
+        }
+        catch( Exception e )
+        {
+            TransactionManager.rollBack( HtmldocsPlugin.getPlugin( ) );
+            throw new AppException( e.getMessage( ), e );
+        }
+
+        HtmlDocSearchService.getInstance( ).addIndexerAction( htmlDoc.getId( ), IndexerAction.TASK_CREATE, HtmldocsPlugin.getPlugin( ) );
+
+    }
 
     /**
      * Remvove an HtmlDoc
@@ -182,6 +225,51 @@ public class HtmlDocService
         HtmlDocSearchService.getInstance( ).addIndexerAction( htmlDoc.getId( ), IndexerAction.TASK_MODIFY, HtmldocsPlugin.getPlugin( ) );
 
     }
+    /**
+     * Update an HtmlDoc
+     * 
+     * @param htmlDoc
+     *            The Ht-mlDoc
+     * @param docContent
+     *            The Doc Content
+     */
+    public void updateDocument( HtmlDoc htmlDoc, List<DocContent> docContent )
+
+    {
+        TransactionManager.beginTransaction( HtmldocsPlugin.getPlugin( ) );
+
+        try
+        {
+            HtmlDocHome.addNewVersion( htmlDoc );
+            if ( docContent != null  )
+            {
+            	DocContentHome.remove(htmlDoc.getId( ));
+            	for(DocContent docCont: docContent){
+            		
+            		docCont.setIdHtmlDocument( htmlDoc.getId( ) );
+                    DocContentHome.create(docCont);
+
+            	}
+                
+            }
+          
+            TagHome.removeTagDoc( htmlDoc.getId( ) );
+            for ( Tag tag : htmlDoc.getTag( ) )
+            {
+
+                TagHome.create( tag.getIdTag( ), htmlDoc.getId( ), tag.getPriority( ) );
+            }
+            TransactionManager.commitTransaction( HtmldocsPlugin.getPlugin( ) );
+        }
+        catch( Exception e )
+        {
+            TransactionManager.rollBack( HtmldocsPlugin.getPlugin( ) );
+            throw new AppException( e.getMessage( ), e );
+        }
+
+        HtmlDocSearchService.getInstance( ).addIndexerAction( htmlDoc.getId( ), IndexerAction.TASK_MODIFY, HtmldocsPlugin.getPlugin( ) );
+
+    }
 
     /**
      * Returns an instance of a htmlDoc whose identifier is specified in parameter
@@ -194,7 +282,7 @@ public class HtmlDocService
 
     {
         HtmlDoc htmlDoc = HtmlDocHome.findByPrimaryKey( nIdDocument );
-        DocContent docContent = DocContentHome.getDocsContent( nIdDocument );
+        List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
         htmlDoc.setDocContent( docContent );
         htmlDoc.setTag( TagHome.loadByDoc( nIdDocument ) );
 

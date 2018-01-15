@@ -34,6 +34,9 @@
 
 package fr.paris.lutece.plugins.blog.business;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -47,6 +50,7 @@ public final class DocContentDAO implements IDocContentDAO
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_document ) FROM htmldocs_content";
     private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO htmldocs_content ( id_document, id_html_doc, text_value , binary_value, mime_type ) VALUES ( ? , ? , ? , ? , ? )";
     private static final String SQL_QUERY_SELECT_CONTENT = "SELECT  id_document, id_html_doc , text_value , binary_value, mime_type FROM htmldocs_content WHERE id_html_doc = ? ";
+    private static final String SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY = "SELECT  id_document, id_html_doc , text_value , binary_value, mime_type FROM htmldocs_content WHERE id_document = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_content WHERE id_html_doc = ?  ;";
     private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_content SET  id_html_doc = ?, text_value = ?, binary_value = ?, mime_type = ? WHERE id_html_doc = ?";
 
@@ -95,9 +99,36 @@ public final class DocContentDAO implements IDocContentDAO
      * {@inheritDoc }
      */
     @Override
+    public List<DocContent> loadDocContentByIdHtemldoc( int idHtmlDoc, Plugin plugin )
+    {
+    	List<DocContent> listDoc= new ArrayList<DocContent>( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT, plugin );
+        daoUtil.setInt( 1, idHtmlDoc );
+        daoUtil.executeQuery( );
+
+        while ( daoUtil.next( ) )
+        {
+            DocContent docContent = new DocContent( );
+
+            docContent.setId( daoUtil.getInt( 1 ) );
+            docContent.setIdHtmlDocument( daoUtil.getInt( 2 ) );
+            docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
+            docContent.setTextValue( daoUtil.getString( 3 ) );
+            docContent.setValueContentType( daoUtil.getString( 5 ) );
+
+            listDoc.add( docContent) ;
+        }
+        daoUtil.free( );
+
+        return listDoc;
+    }
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public DocContent loadDocContent( int idDocument, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, idDocument );
         daoUtil.executeQuery( );
 
