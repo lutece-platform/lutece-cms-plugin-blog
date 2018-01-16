@@ -51,10 +51,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
+ * This class provides the user interface to manage Blog features ( manage, create, modify, remove )
  */
-@Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "HTMLDOCS_MANAGEMENT" )
-public class TagJspBean extends ManageHtmldocsJspBean
+@Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
+public class TagJspBean extends ManageBlogJspBean
 {
     // Templates
     private static final String TEMPLATE_MANAGE_TAGS = "/admin/plugins/blog/tag/manage_tags.html";
@@ -255,7 +255,7 @@ public class TagJspBean extends ManageHtmldocsJspBean
      * @return The Jsp URL of the process result
      */
     @Action( ACTION_MODIFY_TAG )
-    public String doModifyHtmlDoc( HttpServletRequest request )
+    public String doModifyTag( HttpServletRequest request )
     {
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );

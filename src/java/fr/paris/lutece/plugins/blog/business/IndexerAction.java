@@ -23,7 +23,7 @@ public class IndexerAction
     public static final int TASK_DELETE = 3;
     private int _nIdAction;
     private int _nIdTask;
-    private int _nIdHtmldoc;
+    private int _nIdBlog;
 
     /**
      * gets the action id
@@ -51,20 +51,20 @@ public class IndexerAction
      * 
      * @return the record Id
      */
-    public int getIdHtmldoc( )
+    public int getIdBlog( )
     {
-        return _nIdHtmldoc;
+        return _nIdBlog;
     }
 
     /**
-     * set the IdHtmldoc
+     * set the IdBlog
      * 
-     * @param nIdHtmldocrecord
+     * @param nIdBlogrecord
      *            if
      */
-    public void setIdHtmldoc( int nIdHtmldoc )
+    public void setIdBlog( int nIdBlog )
     {
-        _nIdHtmldoc = nIdHtmldoc;
+        _nIdBlog = nIdBlog;
     }
 
     /**

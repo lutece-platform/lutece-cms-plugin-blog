@@ -1,7 +1,7 @@
 package fr.paris.lutece.plugins.blog.service.resource;
 
-import fr.paris.lutece.plugins.blog.business.HtmlDoc;
-import fr.paris.lutece.plugins.blog.service.HtmlDocService;
+import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResourceService;
@@ -25,7 +25,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
     @Override
     public boolean isInvoked( String strResourceType )
     {
-        return HtmlDoc.PROPERTY_RESOURCE_TYPE.equals( strResourceType );
+        return Blog.PROPERTY_RESOURCE_TYPE.equals( strResourceType );
     }
 
     /**
@@ -38,7 +38,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
         {
             int nIdDocument = Integer.parseInt( strIdResource );
 
-            return HtmlDocService.getInstance( ).loadDocument( nIdDocument );
+            return BlogService.getInstance( ).loadDocument( nIdDocument );
         }
 
         return null;
@@ -50,7 +50,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
     @Override
     public String getResourceType( )
     {
-        return HtmlDoc.PROPERTY_RESOURCE_TYPE;
+        return Blog.PROPERTY_RESOURCE_TYPE;
     }
 
     /**

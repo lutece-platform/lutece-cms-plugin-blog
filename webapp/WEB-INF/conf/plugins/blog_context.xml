@@ -4,33 +4,33 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" >
 
-    <bean id="blog.htmlDocDAO" class="fr.paris.lutece.plugins.blog.business.HtmlDocDAO" />
+    <bean id="blog.blogDAO" class="fr.paris.lutece.plugins.blog.business.BlogDAO" />
     <bean id="blog.docContentDAO" class="fr.paris.lutece.plugins.blog.business.DocContentDAO" />    
     <bean id="blog.tagDAO" class="fr.paris.lutece.plugins.blog.business.TagDAO" />
-    <bean id="blog.htmldocIndexerActionDAO" class="fr.paris.lutece.plugins.blog.business.IndexerActionDAO" />    
+    <bean id="blog.blogIndexerActionDAO" class="fr.paris.lutece.plugins.blog.business.IndexerActionDAO" />    
     
 
 
-    <bean id="blog.HtmldocsPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortletDAO" />
+    <bean id="blog.blogsPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogPortletDAO" />
     <bean id="blog.documentPageTemplateDAO" class="fr.paris.lutece.plugins.blog.business.DocumentPageTemplateDAO" />
     
      
     
     
-    <bean id="blog.htmldocIndexer" class="fr.paris.lutece.plugins.blog.service.docsearch.DefaultHtmldocIndexer" />    
-	<bean id="blog.htmldocSearchEngine" class="fr.paris.lutece.plugins.blog.service.docsearch.HtmldocLuceneSearchEngine" />
-	<bean id="blog.htmlDocsListPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.HtmldocsListPortletDAO" />
-    <bean id="blog.htmlDocPublicationDAO" class="fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublicationDAO" />
+    <bean id="blog.blogIndexer" class="fr.paris.lutece.plugins.blog.service.docsearch.DefaultBlogIndexer" />    
+	<bean id="blog.blogSearchEngine" class="fr.paris.lutece.plugins.blog.service.docsearch.BlogLuceneSearchEngine" />
+	<bean id="blog.blogsListPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletDAO" />
+    <bean id="blog.blogPublicationDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationDAO" />
     
     <bean id="blog.documentExtendableResourceService" class="fr.paris.lutece.plugins.blog.service.resource.DocumentExtendableResourceService" />
 	
-	<bean id="blog.htmlDocResourceRssConfigDAO"  class="fr.paris.lutece.plugins.blog.business.rss.HtmlDocResourceRssConfigDAO" />
+	<bean id="blog.blogResourceRssConfigDAO"  class="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRssConfigDAO" />
 	 
 	<!-- RSS -->
     <bean id="blog.resourceRssTypeForm" class="fr.paris.lutece.portal.business.rss.ResourceRssType" >
-    	<property name="key" value="ResourceRssTypeHtmlDoc" />
+    	<property name="key" value="ResourceRssTypeBlog" />
 		<property name="titleI18nKey" value="blog.resource_rss_type.label" />
-		<property name="className" value="fr.paris.lutece.plugins.blog.business.rss.HtmlDocResourceRss"/>
+		<property name="className" value="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRss"/>
 	</bean>
 	
        

@@ -1,9 +1,9 @@
 <div>${portlet_name!}</div>
-<#list htmldoc_list_published as doc>
+<#list blog_list_published as doc>
 <div class="portlet portlet-alaune">
 	<div class="media">
 		<div class="media-left">
-			<a href="jsp/site/Portal.jsp?page=htmldoc&id=${doc.id}&portlet_id=${portlet_id}">
+			<a href="jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}">
 				<img alt="..." src="servlet/plugins/htmldocs/file?id_file=${doc.id}" alt="Preview" class="media-object thumblist-medium">
     		</a>
 		</div>

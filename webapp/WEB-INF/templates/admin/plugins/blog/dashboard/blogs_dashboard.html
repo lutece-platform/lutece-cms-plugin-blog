@@ -1,0 +1,102 @@
+<div class="box box-solid box-primary">
+    <div class="box-header">
+        <h3 class="box-title">#i18n{blog.dashboard.columnLastModifiedDocument}</h3>
+        	<div class="box-tools pull-right">
+        		<a class="btn btn-primary btn-xs btn-flat" href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog" title="#i18n{blog.manage_blogs.buttonAdd}">
+        		    	<i class="fa fa-plus"></i>
+        		</a>
+        	</div>
+      </div>
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover table-condensed">
+            <thead class="sr-only">
+                <tr>
+                    <th></th>
+                    <th>#i18n{blog.dashboard.columnLastModifiedDocument}</th>
+                    <th>#i18n{blog.dashboard.columnActions}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <#list last_modified_document as blog>
+                <tr>
+                    <td>
+                      <img src="servlet/plugins/blogs/file?id_file=${blog.id}" alt="" class="img-responsive blog-thumbnails">
+                    </td>
+                    <td>
+                      <strong>${blog.id} - ${blog.name}</strong>
+                      <p><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small></p>
+                    </td>
+                    <td>
+                      <p>
+                        <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}"
+                      			class="btn btn-primary btn-sm btn-flat" title="#i18n{portal.util.labelModify}" >
+                    				<i class="fa fa-pencil"></i>
+                  			</a>
+                        <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}"
+                			  class="btn btn-primary btn-sm btn-flat" title="#i18n{blog.history_blog.labelPreview}" >
+              				    <i class="fa fa-eye"></i>
+            			       </a>
+            			       <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}"
+			                      class="btn btn-default btn-flat btn-publish" title="#i18n{blog.dashboard.managePublication}" >
+			                      <i class="fa fa-globe"></i>
+			                      </a>
+                        </p>
+                    </td>
+                </tr>
+                </#list>
+                <#if last_modified_document?size=0>
+                <tr>
+                    <td colspan="3">
+                        #i18n{blog.manage_documents.noDocument}
+                    </td>
+                </tr>
+                </#if>
+
+            </tbody>
+        </table>
+    </div><!-- /.box-body -->
+    <div class="box-footer text-center">
+        <a href="${url}" title="#i18n{document.plugin.description}">
+            #i18n{blog.plugin.description} <i class="fa fa-arrow-circle-right"></i>
+        </a>
+    </div><!-- /.box-footer-->
+</div>
+<script>
+$( function(){
+  $(".btn-publish").click(function (e) {
+    e.preventDefault();
+    $('#previewModalFrame').hide();
+    urlPublished = $(this).attr("href");
+    $('#loader').show();
+    $('#previewModal').modal({ show: true });
+  });
+
+  $('#previewModal').on('shown.bs.modal', function () {
+      $('#previewModalFrame').attr("src", urlPublished );
+      $('#previewModalFrame').load( function () {
+        $('#previewModalFrame').show();
+        $('#loader').hide();
+      });
+  });
+});
+</script>
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel">
+    <div class="modal-dialog modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove" aria-hidden="true"></i></button>
+                <h4 class="modal-title" id="previewModalLabel">Publication</h4>
+            </div>
+            <div class="modal-body">
+                <p id="loader" class="text-center">
+                    <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
+                    <span class="sr-only">Chargement...</span>
+                </p>
+                <iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>

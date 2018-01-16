@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-import fr.paris.lutece.plugins.blog.utils.HtmldocUtils;
+import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -46,13 +46,13 @@ import java.util.List;
 public final class IndexerActionDAO implements IIndexerActionDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_action ) FROM htmldocs_indexer_action";
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_action,id_htmldoc,id_task" + " FROM htmldocs_indexer_action WHERE id_action = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO htmldocs_indexer_action( id_action,id_htmldoc,id_task)" + " VALUES(?,?,?)";
-    private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_indexer_action WHERE id_action = ? ";
-    private static final String SQL_QUERY_SELECT = "SELECT id_action,id_htmldoc,id_task" + " FROM htmldocs_indexer_action  ";
+    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_action ) FROM blogs_indexer_action";
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_action,id_blog,id_task" + " FROM blogs_indexer_action WHERE id_action = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blogs_indexer_action( id_action,id_blog,id_task)" + " VALUES(?,?,?)";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM blogs_indexer_action WHERE id_action = ? ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_action,id_blog,id_task" + " FROM blogs_indexer_action  ";
     private static final String SQL_FILTER_ID_TASK = " id_task = ? ";
-    private static final String SQL_FILTER_ID_HTMLDOC = " id_htmldoc = ? ";
+    private static final String SQL_FILTER_ID_BLOG = " id_blog = ? ";
 
     /**
      * {@inheritDoc}
@@ -84,7 +84,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
     public synchronized void insert( IndexerAction indexerAction, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-        daoUtil.setInt( 2, indexerAction.getIdHtmldoc( ) );
+        daoUtil.setInt( 2, indexerAction.getIdBlog( ) );
         daoUtil.setInt( 3, indexerAction.getIdTask( ) );
 
         indexerAction.setIdAction( newPrimaryKey( plugin ) );
@@ -111,7 +111,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         {
             indexerAction = new IndexerAction( );
             indexerAction.setIdAction( daoUtil.getInt( 1 ) );
-            indexerAction.setIdHtmldoc( daoUtil.getInt( 2 ) );
+            indexerAction.setIdBlog( daoUtil.getInt( 2 ) );
             indexerAction.setIdTask( daoUtil.getInt( 3 ) );
         }
 
@@ -147,12 +147,12 @@ public final class IndexerActionDAO implements IIndexerActionDAO
             listStrFilter.add( SQL_FILTER_ID_TASK );
         }
 
-        if ( filter.containsIdHtmlDoc( ) )
+        if ( filter.containsIdBlog( ) )
         {
-            listStrFilter.add( SQL_FILTER_ID_HTMLDOC );
+            listStrFilter.add( SQL_FILTER_ID_BLOG );
         }
 
-        String strSQL = HtmldocUtils.buildRequetteWithFilter( SQL_QUERY_SELECT, listStrFilter, null );
+        String strSQL = BlogUtils.buildRequetteWithFilter( SQL_QUERY_SELECT, listStrFilter, null );
 
         DAOUtil daoUtil = new DAOUtil( strSQL, plugin );
 
@@ -164,9 +164,9 @@ public final class IndexerActionDAO implements IIndexerActionDAO
             nIndex++;
         }
 
-        if ( filter.containsIdHtmlDoc( ) )
+        if ( filter.containsIdBlog( ) )
         {
-            daoUtil.setInt( nIndex, filter.getIdHtmlDoc( ) );
+            daoUtil.setInt( nIndex, filter.getIdBlog( ) );
         }
 
         daoUtil.executeQuery( );
@@ -175,7 +175,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         {
             indexerAction = new IndexerAction( );
             indexerAction.setIdAction( daoUtil.getInt( 1 ) );
-            indexerAction.setIdHtmldoc( daoUtil.getInt( 2 ) );
+            indexerAction.setIdBlog( daoUtil.getInt( 2 ) );
             indexerAction.setIdTask( daoUtil.getInt( 3 ) );
 
             indexerActionList.add( indexerAction );

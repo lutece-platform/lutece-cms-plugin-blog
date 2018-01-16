@@ -38,7 +38,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
- * This class provides instances management methods (create, find, ...) for HtmlDoc objects
+ * This class provides instances management methods (create, find, ...) for Blog objects
  */
 public final class DocContentHome
 {

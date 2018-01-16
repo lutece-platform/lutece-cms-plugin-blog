@@ -44,13 +44,13 @@ import java.util.List;
 public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM htmldocs_page_template";
-    private static final String SQL_QUERY_SELECT = " SELECT id_page_template_document, description, page_template_path, picture_path FROM htmldocs_page_template WHERE id_page_template_document = ?";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO htmldocs_page_template ( id_page_template_document, description, page_template_path, picture_path ) VALUES ( ?, ?, ?, ? )";
-    private static final String SQL_QUERY_DELETE = " DELETE FROM htmldocs_page_template WHERE id_page_template_document = ?";
-    private static final String SQL_QUERY_UPDATE = " UPDATE htmldocs_page_template SET id_page_template_document = ?, description = ?, page_template_path = ?, picture_path = ? "
+    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM blog_page_template";
+    private static final String SQL_QUERY_SELECT = " SELECT id_page_template_document, description, page_template_path, picture_path FROM blog_page_template WHERE id_page_template_document = ?";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO blog_page_template ( id_page_template_document, description, page_template_path, picture_path ) VALUES ( ?, ?, ?, ? )";
+    private static final String SQL_QUERY_DELETE = " DELETE FROM blog_page_template WHERE id_page_template_document = ?";
+    private static final String SQL_QUERY_UPDATE = " UPDATE blog_page_template SET id_page_template_document = ?, description = ?, page_template_path = ?, picture_path = ? "
             + " WHERE id_page_template_document = ?";
-    private static final String SQL_QUERY_SELECTALL = " SELECT id_page_template_document , description, page_template_path, picture_path FROM htmldocs_page_template ORDER BY id_page_template_document ";
+    private static final String SQL_QUERY_SELECTALL = " SELECT id_page_template_document , description, page_template_path, picture_path FROM blog_page_template ORDER BY id_page_template_document ";
 
     // /////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data

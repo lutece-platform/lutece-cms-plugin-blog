@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-import fr.paris.lutece.plugins.blog.service.HtmldocsPlugin;
+import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -48,7 +48,7 @@ public final class TagHome
 {
     // Static variable pointed at the DAO instance
     private static ITagDAO _dao = SpringContextService.getBean( "blog.tagDAO" );
-    private static Plugin _plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
+    private static Plugin _plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
 
     /**
      * Private constructor - this class need not be instantiated

@@ -4,7 +4,7 @@ public class DocContent
 {
 
     private int _nIdDocContent;
-    private int _nIdHtmlDocument;
+    private int _nIdBlog;
     private String _strTextValue;
     private byte [ ] _bytes;
     private String _strValueContentType;
@@ -35,9 +35,9 @@ public class DocContent
      *
      * @return The _nIdDocument
      */
-    public int getIdHtmlDocument( )
+    public int getIdBlog( )
     {
-        return _nIdHtmlDocument;
+        return _nIdBlog;
     }
 
     /**
@@ -46,9 +46,9 @@ public class DocContent
      * @param nIdDocumentContent
      *            The _nIdDocContent
      */
-    public void setIdHtmlDocument( int nIdDocument )
+    public void setIdBlog( int nIdDocument )
     {
-        _nIdHtmlDocument = nIdDocument;
+        _nIdBlog= nIdDocument;
     }
 
     /**

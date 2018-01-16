@@ -1,2 +1,2 @@
-insert into htmldocs_page_template(id_page_template_document, page_template_path, picture_path, description, portlet_type)values(1,"skin/plugins/blog/portlet/view_portlet_htmldoc.html","no picture","default page blog", "HTMLDOCS_PORTLET");
-insert into htmldocs_page_template(id_page_template_document, page_template_path, picture_path, description, portlet_type)values(0,"skin/plugins/blog/portlet/default.html","no picture","default page list blog", "HTMLDOCS_LIST_PORTLET");
+insert into blog_page_template(id_page_template_document, page_template_path, picture_path, description, portlet_type)values(1,"skin/plugins/blog/portlet/view_portlet_blog.html","no picture","default page blog", "BLOGS_PORTLET");
+insert into blog_page_template(id_page_template_document, page_template_path, picture_path, description, portlet_type)values(0,"skin/plugins/blog/portlet/default.html","no picture","default page list blog", "BLOGS_LIST_PORTLET");

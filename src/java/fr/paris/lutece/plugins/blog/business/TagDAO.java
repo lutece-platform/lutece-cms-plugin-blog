@@ -48,19 +48,19 @@ public final class TagDAO implements ITagDAO
 {
 
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_tag ) FROM htmldocs_tag";
-    private static final String SQL_QUERY_INSERT_TAG = "INSERT INTO htmldocs_tag ( id_tag, name ) VALUES ( ? , ? )";
-    private static final String SQL_QUERY_SELECT_TAG = "SELECT  id_tag, name FROM htmldocs_tag WHERE id_tag = ? ";
-    private static final String SQL_QUERY_SELECT_ALL_TAG = "SELECT  id_tag, name FROM htmldocs_tag ";
-    private static final String SQL_QUERY_SELECT_TAG_BY_NAME = "SELECT  id_tag, name FROM htmldocs_tag WHERE name = ? ";
+    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_tag ) FROM blog_tag";
+    private static final String SQL_QUERY_INSERT_TAG = "INSERT INTO blog_tag ( id_tag, name ) VALUES ( ? , ? )";
+    private static final String SQL_QUERY_SELECT_TAG = "SELECT  id_tag, name FROM blog_tag WHERE id_tag = ? ";
+    private static final String SQL_QUERY_SELECT_ALL_TAG = "SELECT  id_tag, name FROM blog_tag ";
+    private static final String SQL_QUERY_SELECT_TAG_BY_NAME = "SELECT  id_tag, name FROM blog_tag WHERE name = ? ";
 
-    private static final String SQL_QUERY_DELETE = "DELETE FROM htmldocs_tag WHERE id_tag = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE htmldocs_tag SET  id_tag = ?, name = ? WHERE id_tag = ?";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM blog WHERE id_tag = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_tag SET  id_tag = ?, name = ? WHERE id_tag = ?";
 
-    private static final String SQL_QUERY_INSERT_TAG_DOC = "INSERT INTO htmldocs_tag_document ( id_tag, id_html_doc, priority ) VALUES ( ? , ?, ? )";
-    private static final String SQL_QUERY_SELECT_TAG_DOC = " SELECT  a.id_tag, t.name, a.priority FROM htmldocs_tag_document a Inner join htmldocs_tag t on (t.id_tag= a.id_tag) WHERE a.id_html_doc = ? ORDER BY priority";
-    private static final String SQL_QUERY_DELETE_BY_TAG = "DELETE FROM htmldocs_tag_document WHERE id_tag = ? AND id_html_doc = ?";
-    private static final String SQL_QUERY_DELETE_BY_DOC = "DELETE FROM htmldocs_tag_document WHERE id_html_doc = ? ";
+    private static final String SQL_QUERY_INSERT_TAG_DOC = "INSERT INTO blog_tag_document ( id_tag, id_blog, priority ) VALUES ( ? , ?, ? )";
+    private static final String SQL_QUERY_SELECT_TAG_DOC = " SELECT  a.id_tag, t.name, a.priority FROM blog_tag_document a Inner join blog_tag t on (t.id_tag= a.id_tag) WHERE a.id_blog = ? ORDER BY priority";
+    private static final String SQL_QUERY_DELETE_BY_TAG = "DELETE FROM blog_tag_document WHERE id_tag = ? AND id_blog = ?";
+    private static final String SQL_QUERY_DELETE_BY_DOC = "DELETE FROM blog_tag_document WHERE id_blog = ? ";
 
     /**
      * Generates a new primary key
@@ -256,17 +256,17 @@ public final class TagDAO implements ITagDAO
     @Override
     public ReferenceList selectTagsReferenceList( Plugin plugin )
     {
-        ReferenceList htmlDocList = new ReferenceList( );
+        ReferenceList blogList = new ReferenceList( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_TAG, plugin );
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )
         {
-            htmlDocList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            blogList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
         }
 
         daoUtil.free( );
-        return htmlDocList;
+        return blogList;
     }
 
     /**

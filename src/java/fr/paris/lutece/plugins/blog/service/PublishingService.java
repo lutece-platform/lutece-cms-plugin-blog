@@ -33,14 +33,14 @@
  */
 package fr.paris.lutece.plugins.blog.service;
 
-import fr.paris.lutece.plugins.blog.business.HtmlDoc;
-import fr.paris.lutece.plugins.blog.business.HtmlDocFilter;
-import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
+import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.BlogFilter;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.IndexerAction;
-import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublication;
-import fr.paris.lutece.plugins.blog.business.portlet.HtmlDocPublicationHome;
-import fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortletHome;
-import fr.paris.lutece.plugins.blog.service.docsearch.HtmlDocSearchService;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
+import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletType;
@@ -81,10 +81,10 @@ public class PublishingService
      */
     public void assign( int nDocumentId, int nPortletId )
     {
-        HtmlDocPublication documentPublication = new HtmlDocPublication( );
+        BlogPublication documentPublication = new BlogPublication( );
         documentPublication.setIdPortlet( nPortletId );
         documentPublication.setIdDocument( nDocumentId );
-        HtmlDocPublicationHome.create( documentPublication );
+        BlogPublicationHome.create( documentPublication );
     }
 
     /**
@@ -98,17 +98,17 @@ public class PublishingService
     public void publish( int nDocumentId, int nPortletId )
     {
         // Publishing of document : set status to Published
-        HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        BlogPublication documentPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
 
         if ( documentPublication != null )
         {
             documentPublication.setIdPortlet( nPortletId );
             documentPublication.setIdDocument( nDocumentId );
-            HtmlDocPublicationHome.update( documentPublication );
+            BlogPublicationHome.update( documentPublication );
 
         }
 
-        HtmlDocSearchService.getInstance( ).addIndexerAction( nDocumentId, IndexerAction.TASK_MODIFY, HtmldocsPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( nDocumentId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
 
     }
 
@@ -122,7 +122,7 @@ public class PublishingService
      */
     public void unAssign( int nDocumentId, int nPortletId )
     {
-        HtmlDocPublicationHome.remove( nPortletId, nDocumentId );
+        BlogPublicationHome.remove( nPortletId, nDocumentId );
     }
 
     /**
@@ -136,7 +136,7 @@ public class PublishingService
      */
     public boolean isPublished( int nDocumentId, int nPortletId )
     {
-        HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        BlogPublication documentPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
 
         return documentPublication != null ? true : false;
     }
@@ -150,7 +150,7 @@ public class PublishingService
      */
     public boolean isAssigned( int nDocumentId )
     {
-        Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.getDocPublicationByIdDoc( nDocumentId );
+        Collection<BlogPublication> listDocumentPublication = BlogPublicationHome.getDocPublicationByIdDoc( nDocumentId );
 
         return ( listDocumentPublication.size( ) > 0 );
     }
@@ -166,7 +166,7 @@ public class PublishingService
      */
     public boolean isAssigned( int nDocumentId, int nPortletId )
     {
-        HtmlDocPublication documentPublication = HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        BlogPublication documentPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
 
         return ( documentPublication != null );
     }
@@ -180,9 +180,9 @@ public class PublishingService
      *            the {@link Document} identifier
      * @return a {@link DocumentPublication} or null if no object match
      */
-    public HtmlDocPublication getDocumentPublication( int nPortletId, int nDocumentId )
+    public BlogPublication getDocumentPublication( int nPortletId, int nDocumentId )
     {
-        return HtmlDocPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        return BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
     }
 
     /**
@@ -190,9 +190,9 @@ public class PublishingService
      *
      * @return the {@link Collection} of the portlets
      */
-    public Collection<Portlet> getHtmlDocsPortlets( )
+    public Collection<Portlet> getBlogsPortlets( )
     {
-        Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
+        Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
         Collection<Portlet> listPortletsAll = new ArrayList<Portlet>( );
 
         for ( PortletType portletType : plugin.getPortletTypes( ) )
@@ -204,26 +204,26 @@ public class PublishingService
     }
 
     /**
-     * Loads the list of portlets htmldocs empty and htmldocslist
+     * Loads the list of portlets blogs empty and blogslist
      *
      * @return the {@link Collection} of the portlets
      */
-    public Collection<Portlet> getHtmlDocsPortletstoPublish( )
+    public Collection<Portlet> getBlogsPortletstoPublish( )
     {
-        Plugin plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
+        Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
         Collection<Portlet> listPortletsAll = new ArrayList<Portlet>( );
 
         for ( PortletType portletType : plugin.getPortletTypes( ) )
         {
             List<Portlet> listPortlet = PortletHome.findByType( portletType.getId( ) );
-            String className = HtmldocsPortletHome.class.getName( );
+            String className = BlogPortletHome.class.getName( );
             String strPortletTypeId = PortletTypeHome.getPortletTypeId( className );
 
             if ( portletType.getId( ).equals( strPortletTypeId ) )
             {
                 for ( Portlet pt : listPortlet )
                 {
-                    if ( HtmlDocPublicationHome.getDocPublicationByPortlet( pt.getId( ) ).size( ) == 0 )
+                    if ( BlogPublicationHome.getDocPublicationByPortlet( pt.getId( ) ).size( ) == 0 )
                     {
 
                         listPortletsAll.addAll( listPortlet );
@@ -243,18 +243,18 @@ public class PublishingService
     }
 
     /**
-     * Loads the list of the portlets whoes contain htmldoc specified by id
+     * Loads the list of the portlets whoes contain blog specified by id
      *
      * @param strDocumentId
-     *            the htmlDoc identifier
+     *            the blog identifier
      * @return the {@link Collection} of the portlets
      */
     public Collection<Portlet> getPortletsByDocumentId( String strDocumentId )
     {
-        Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.getDocPublicationByIdDoc( Integer.parseInt( strDocumentId ) );
+        Collection<BlogPublication> listDocumentPublication = BlogPublicationHome.getDocPublicationByIdDoc( Integer.parseInt( strDocumentId ) );
         Collection<Portlet> listPortlets = new ArrayList<Portlet>( );
 
-        for ( HtmlDocPublication documentPublication : listDocumentPublication )
+        for ( BlogPublication documentPublication : listDocumentPublication )
         {
             listPortlets.add( PortletHome.findByPrimaryKey( documentPublication.getIdPortlet( ) ) );
         }
@@ -263,7 +263,7 @@ public class PublishingService
     }
 
     /**
-     * Loads the list of the htmlDoc whose filter and date publication is specified Return published documents since the publication date. The is also filtered
+     * Loads the list of the blog whose filter and date publication is specified Return published documents since the publication date. The is also filtered
      * with the documentFilter
      *
      * @param datePublishing
@@ -271,48 +271,48 @@ public class PublishingService
      * @param dateEndPublishing
      *            The end publication date
      * @param documentFilter
-     *            The filter for the published htmldoc. The filter can be null or empty. The array of Ids will not be taked in account.
+     *            The filter for the published blog. The filter can be null or empty. The array of Ids will not be taked in account.
      * @param locale
-     *            The locale is used to get the list of htmldocs with the findByFilter method
-     * @return the list of the htmldoc in form of a List. return null if datePublishing is null
+     *            The locale is used to get the list of blogs with the findByFilter method
+     * @return the list of the blog in form of a List. return null if datePublishing is null
      */
-    public Collection<HtmlDoc> getPublishedDocumentsSinceDate( Date datePublishing, Date dateEndPublishing, HtmlDocFilter documentFilter, Locale locale )
+    public Collection<Blog> getPublishedDocumentsSinceDate( Date datePublishing, Date dateEndPublishing, BlogFilter documentFilter, Locale locale )
     {
         if ( datePublishing == null )
         {
             return null;
         }
 
-        Collection<HtmlDocPublication> listDocumentPublication = HtmlDocPublicationHome.findSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, 1 );
+        Collection<BlogPublication> listDocumentPublication = BlogPublicationHome.findSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, 1 );
 
         if ( ( listDocumentPublication == null ) || ( listDocumentPublication.size( ) == 0 ) )
         {
-            return new ArrayList<HtmlDoc>( );
+            return new ArrayList<Blog>( );
         }
 
         Integer [ ] arrayIds = new Integer [ listDocumentPublication.size( )];
         int i = 0;
-        HtmlDocFilter publishedDocumentFilter = documentFilter;
+        BlogFilter publishedDocumentFilter = documentFilter;
 
         if ( publishedDocumentFilter == null )
         {
-            publishedDocumentFilter = new HtmlDocFilter( );
+            publishedDocumentFilter = new BlogFilter( );
         }
 
-        for ( HtmlDocPublication documentPublication : listDocumentPublication )
+        for ( BlogPublication documentPublication : listDocumentPublication )
         {
             arrayIds [i++] = documentPublication.getIdDocument( );
         }
 
         publishedDocumentFilter.setIds( arrayIds );
 
-        Collection<HtmlDoc> listDocuments = HtmlDocHome.findByFilter( publishedDocumentFilter, locale );
+        Collection<Blog> listDocuments = BlogHome.findByFilter( publishedDocumentFilter, locale );
 
         return listDocuments;
     }
 
     /**
-     * Get the list of id of published htmldocs associated with a given collection of portlets.
+     * Get the list of id of published blogs associated with a given collection of portlets.
      * 
      * @param nPortletsIds
      *            The list of portlet ids.
@@ -324,7 +324,7 @@ public class PublishingService
      */
     public static List<Integer> getPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
     {
-        return HtmlDocPublicationHome.getPublishedDocumentsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
+        return BlogPublicationHome.getPublishedDocumentsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }
 
 }

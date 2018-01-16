@@ -22,18 +22,18 @@
     <!-- Admin features parameters -->
     <admin-features>
         <admin-feature>
-            <feature-id>HTMLDOCS_MANAGEMENT</feature-id>
-            <feature-title>blog.adminFeature.ManageHtmldocs.name</feature-title>
-            <feature-description>blog.adminFeature.ManageHtmldocs.description</feature-description>
+            <feature-id>BLOG_MANAGEMENT</feature-id>
+            <feature-title>blog.adminFeature.ManageBlogs.name</feature-title>
+            <feature-description>blog.adminFeature.ManageBlogs.description</feature-description>
             <feature-level>2</feature-level>
-            <feature-url>jsp/admin/plugins/blog/ManageHtmlDocs.jsp</feature-url>
+            <feature-url>jsp/admin/plugins/blog/ManageBlogs.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
             <feature-icon-url></feature-icon-url>
 		</admin-feature>
 		<admin-feature>
-            <feature-id>HTMLDOCS_TAGS_MANAGEMENT</feature-id>
-            <feature-title>blog.adminFeature.ManageHtmldocsTags.name</feature-title>
-            <feature-description>blog.adminFeature.ManageHtmldocsTags.description</feature-description>
+            <feature-id>BLOG_TAGS_MANAGEMENT</feature-id>
+            <feature-title>blog.adminFeature.ManageBlogsTags.name</feature-title>
+            <feature-description>blog.adminFeature.ManageBlogsTags.description</feature-description>
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/blog/ManageTags.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
@@ -49,7 +49,7 @@
     <search-indexers>
         <search-indexer>
             <search-indexer-class>
-                fr.paris.lutece.plugins.blog.service.search.HtmlDocsSearchIndexer
+                fr.paris.lutece.plugins.blog.service.search.BlogSearchIndexer
             </search-indexer-class>
         </search-indexer>
     </search-indexers>
@@ -57,24 +57,24 @@
     <applications>
         <application>
             <application-id>blog</application-id>
-            <application-class>fr.paris.lutece.plugins.blog.web.HtmlDocApp</application-class>
+            <application-class>fr.paris.lutece.plugins.blog.web.BlogApp</application-class>
         </application>
     </applications>
      <!-- servlets -->
     <servlets>
         <servlet>
             <servlet-name>FileServlet</servlet-name>
-            <url-pattern>/servlet/plugins/htmldocs/file</url-pattern>
-            <servlet-class>fr.paris.lutece.plugins.blog.web.HtmlDocFileServlet</servlet-class>
+            <url-pattern>/servlet/plugins/blogs/file</url-pattern>
+            <servlet-class>fr.paris.lutece.plugins.blog.web.BlogFileServlet</servlet-class>
         </servlet>
     </servlets>
      <!-- Daemons -->
 	<daemons>
 		<daemon>
-			<daemon-id>htmlDocIndexerDaemon</daemon-id>
+			<daemon-id>blogIndexerDaemon</daemon-id>
 			<daemon-name>blog.daemon.indexerDameon.name</daemon-name>
 			<daemon-description>blog.daemon.indexerDameon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.blog.service.docsearch.HtmldocSearchIndexerDaemon</daemon-class>
+			<daemon-class>fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchIndexerDaemon</daemon-class>
 		</daemon>
               
 	</daemons>
@@ -83,43 +83,43 @@
     <dashboard-components>
         <dashboard-component>
             <dashboard-component-name>BLOG</dashboard-component-name>
-            <dashboard-component-class>fr.paris.lutece.plugins.blog.web.HtmlDocDashboardComponent</dashboard-component-class>
-            <dashboard-feature-right>HTMLDOCS_MANAGEMENT</dashboard-feature-right>
+            <dashboard-component-class>fr.paris.lutece.plugins.blog.web.BlogDashboardComponent</dashboard-component-class>
+            <dashboard-feature-right>BLOGS_MANAGEMENT</dashboard-feature-right>
         </dashboard-component>
     </dashboard-components>
     
     <!-- Portlet parameters -->
     <portlets>
      <portlet>
-       <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortletHome</portlet-class>
-	   <portlet-type-id>HTMLDOCS_PORTLET</portlet-type-id>
-	   <portlet-type-name>blog.portlet.htmldocsHtmldocsPortlet.name</portlet-type-name>
-	   <portlet-creation-url>plugins/blog/CreatePortletHtmldocs.jsp</portlet-creation-url>
-	   <portlet-update-url>plugins/blog/ModifyPortletHtmldocs.jsp</portlet-update-url>
-	   <portlet-create-action-url>plugins/blog/DoCreatePortletHtmldocs.jsp</portlet-create-action-url>
-      <portlet-modify-action-url>plugins/blog/DoModifyPortletHtmldocs.jsp</portlet-modify-action-url>
+       <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome</portlet-class>
+	   <portlet-type-id>BLOG_PORTLET</portlet-type-id>
+	   <portlet-type-name>blog.portlet.blogsBlogsPortlet.name</portlet-type-name>
+	   <portlet-creation-url>plugins/blog/CreatePortletBlogs.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/blog/ModifyPortletBlogs.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/blog/DoCreatePortletBlogs.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/blog/DoModifyPortletBlogs.jsp</portlet-modify-action-url>
 	    <!-- optional entries -->
         <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
-        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portlethtmldocs.html</portlet-create-specific-template>
-        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portlethtmldocs.html</portlet-modify-specific-template>
+        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletblogs.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletblogs.html</portlet-modify-specific-template>
         <portlet-create-specific-form-template></portlet-create-specific-form-template>
         <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
      </portlet>
      
       <portlet>     
-       <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.HtmlDocsListPortletHome</portlet-class>
-	   <portlet-type-id>HTMLDOCSLIST_PORTLET</portlet-type-id>
-	   <portlet-type-name>blog.portlet.htmldocsListHtmldocsPortlet.name</portlet-type-name>
-	   <portlet-creation-url>plugins/blog/CreatePortletHtmldocsList.jsp</portlet-creation-url>
-	   <portlet-update-url>plugins/blog/ModifyPortletHtmldocsList.jsp</portlet-update-url>
-	   <portlet-create-action-url>plugins/blog/DoCreatePortletHtmldocsList.jsp</portlet-create-action-url>
-      <portlet-modify-action-url>plugins/blog/DoModifyPortletHtmldocsList.jsp</portlet-modify-action-url>
+       <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome</portlet-class>
+	   <portlet-type-id>BLOGLIST_PORTLET</portlet-type-id>
+	   <portlet-type-name>blog.portlet.blogsListBlogsPortlet.name</portlet-type-name>
+	   <portlet-creation-url>plugins/blog/CreatePortletBlogsList.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/blog/ModifyPortletBlogsList.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/blog/DoCreatePortletBlogsList.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/blog/DoModifyPortletBlogsList.jsp</portlet-modify-action-url>
 	    
         <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
-        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portlethtmldocslist.html</portlet-create-specific-template>
-        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portlethtmldocslist.html</portlet-modify-specific-template>
+        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletblogslist.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletblogslist.html</portlet-modify-specific-template>
         <portlet-create-specific-form-template></portlet-create-specific-form-template>
         <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
      </portlet>

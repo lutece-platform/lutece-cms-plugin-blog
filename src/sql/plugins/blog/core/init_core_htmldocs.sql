@@ -1,24 +1,26 @@
 --
 -- Dumping data for table core_portlet_type
 --
-INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES ('HTMLDOCS_PORTLET','blog.portlet.htmldocsHtmldocsPortlet.name','plugins/blog/CreatePortletHtmldocs.jsp','plugins/blog/ModifyPortletHtmldocs.jsp','fr.paris.lutece.plugins.blog.business.portlet.HtmldocsPortletHome','blog','plugins/blog/DoCreatePortletHtmldocs.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/blog/portlet/create_portlethtmldocs.html','','plugins/blog/DoModifyPortletHtmldocs.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/blog/portlet/modify_portlethtmldocs.html','');
-INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES ('HTMLDOCSLIST_PORTLET','blog.portlet.htmldocsListHtmldocsPortlet.name','plugins/blog/CreatePortletHtmldocsList.jsp','plugins/blog/ModifyPortletHtmldocsList.jsp','fr.paris.lutece.plugins.blog.business.portlet.HtmlDocsListPortletHome','blog','plugins/blog/DoCreatePortletHtmldocsList.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/blog/portlet/create_portlethtmldocslist.html','','plugins/blog/DoModifyPortletHtmldocsList.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/blog/portlet/modify_portlethtmldocslist.html','');
+DELETE FROM core_portlet_type where id_portlet_type ="BLOGS_PORTLET";
+DELETE FROM core_portlet_type where id_portlet_type ="BLOGSLIST_PORTLET";
+INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES ('BLOGS_PORTLET','blog.portlet.blogsBlogsPortlet.name','plugins/blog/CreatePortletBlog.jsp','plugins/blog/ModifyPortletBlog.jsp','fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome','blog','plugins/blog/DoCreatePortletBlog.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/blog/portlet/create_portletblogs.html','','plugins/blog/DoModifyPortletBlog.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/blog/portlet/modify_portletblogs.html','');
+INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES ('BLOGS_LIST_PORTLET','blog.portlet.blogsListBlogsPortlet.name','plugins/blog/CreatePortletBlogList.jsp','plugins/blog/ModifyPortletBlogList.jsp','fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome','blog','plugins/blog/DoCreatePortletBlogList.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/blog/portlet/create_portletbloglist.html','','plugins/blog/DoModifyPortletBlogList.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/blog/portlet/modify_portletblogslist.html','');
 
 --
 -- Data for table core_admin_right
 --
-DELETE FROM core_admin_right WHERE id_right IN ( 'HTMLDOCS_MANAGEMENT', 'HTMLDOCS_TAGS_MANAGEMENT');
+DELETE FROM core_admin_right WHERE id_right IN ( 'BLOG_MANAGEMENT', 'BLOG_TAGS_MANAGEMENT');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url ) VALUES
-('HTMLDOCS_MANAGEMENT','blog.adminFeature.ManageHtmldocs.name',2,'jsp/admin/plugins/blog/ManageHtmlDocs.jsp','blog.adminFeature.ManageHtmldocs.description',0,'blog','APPLICATIONS','images/admin/skin/plugins/blog/blog.png','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
+('BLOG_MANAGEMENT','blog.adminFeature.ManageBlogs.name',2,'jsp/admin/plugins/blog/ManageBlogs.jsp','blog.adminFeature.ManageBlogs.description',0,'blog','APPLICATIONS','images/admin/skin/plugins/blog/blog.png','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
-('HTMLDOCS_TAGS_MANAGEMENT','blog.adminFeature.ManageHtmldocsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageHtmldocsTags.description',0,'blog','APPLICATIONS',NULL,NULL,4);
+('BLOG_TAGS_MANAGEMENT','blog.adminFeature.ManageBlogsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageBlogsTags.description',0,'blog','APPLICATIONS',NULL,NULL,4);
 
 
 --
 -- Data for table core_user_right
 --
-DELETE FROM core_user_right WHERE id_right = 'HTMLDOCS_MANAGEMENT';
-INSERT INTO core_user_right (id_right,id_user) VALUES ('HTMLDOCS_MANAGEMENT',1);
+DELETE FROM core_user_right WHERE id_right = 'BLOG_MANAGEMENT';
+INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_MANAGEMENT',1);
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 

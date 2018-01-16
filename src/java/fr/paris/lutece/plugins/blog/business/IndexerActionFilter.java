@@ -12,7 +12,7 @@ public class IndexerActionFilter
      */
     public static final int ALL_INT = -1;
     private int _nIdTask = ALL_INT;
-    private int _nIdHtmlDoc = ALL_INT;
+    private int _nIdBlog = ALL_INT;
 
     /**
      * gets the id of task
@@ -46,33 +46,33 @@ public class IndexerActionFilter
     }
 
     /**
-     * Get the id of the HtmlDoc
+     * Get the id of the blog
      * 
-     * @return The id of the HtmlDoc
+     * @return The id of the blog
      */
-    public int getIdHtmlDoc( )
+    public int getIdBlog( )
     {
-        return _nIdHtmlDoc;
+        return _nIdBlog;
     }
 
     /**
-     * Set the id of the HtmlDoc
+     * Set the id of the blog
      * 
      * @param nId
-     *            The id of the HtmlDoc
+     *            The id of the Blog
      */
-    public void setIdHtmlDoc( int nId )
+    public void setIdBlog( int nId )
     {
-        this._nIdHtmlDoc = nId;
+        this._nIdBlog = nId;
     }
 
     /**
-     * Check if this filter contains an HtmlDoc id
+     * Check if this filter contains an Blog id
      * 
-     * @return True if this filter contains an HtmlDoc id, false otherwise
+     * @return True if this filter contains an Blog id, false otherwise
      */
-    public boolean containsIdHtmlDoc( )
+    public boolean containsIdBlog( )
     {
-        return ( _nIdHtmlDoc != ALL_INT );
+        return ( _nIdBlog != ALL_INT );
     }
 }

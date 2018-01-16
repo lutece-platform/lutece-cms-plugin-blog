@@ -1,6 +1,6 @@
 package fr.paris.lutece.plugins.blog.business;
 
-import fr.paris.lutece.plugins.blog.service.HtmldocsPlugin;
+import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -13,8 +13,8 @@ import java.util.List;
 public final class IndexerActionHome
 {
     // Static variable pointed at the DAO instance
-    private static IIndexerActionDAO _dao = SpringContextService.getBean( "blog.htmldocIndexerActionDAO" );
-    private static Plugin _plugin = PluginService.getPlugin( HtmldocsPlugin.PLUGIN_NAME );
+    private static IIndexerActionDAO _dao = SpringContextService.getBean( "blog.blogIndexerActionDAO" );
+    private static Plugin _plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
 
     /**
      * Private constructor - this class need not be instantiated

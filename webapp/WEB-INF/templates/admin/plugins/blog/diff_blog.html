@@ -1,0 +1,90 @@
+<@box>
+<@boxHeader title='Diff ${blog.contentLabel}' i18nTitleKey='Diff de ${blog.contentLabel}' boxTools=true>
+<form action="jsp/admin/plugins/blog/ManageBlogs.jsp" class="form-inline">
+    <input type="hidden" name="view" value="diffBlog">
+    <input type="hidden" name="id" value="${blog.id}">
+    <div class="form-group">
+        <select name="blog_version2" class="form-control">
+                <#list blog_version_list as blog_tmp>
+                <option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
+                </#list>
+            </select>
+    </div>
+    <div class="form-group">
+        <select name="blog_version2" class="form-control">
+                <#list blog_version_list as blog_tmp>
+                <option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
+                </#list>
+            </select>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default" name="button_search" value="1">#i18n{blog.diff_blog.labelButtonCompare}</button>
+    </div>
+</form>
+</@boxHeader>
+<@boxBody>
+<div class="row">
+    <div class="col-xs-12 col-md-12">
+        <h3>Version en cours</h3>
+        <div class="well" style="overflow: auto;">${blog_diff!}</div>
+    </div>
+</div>
+ 
+<div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <h3> Version ${blog2.version} <small>${blog2.updateDate}</small>
+            <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}"
+                class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelReset} ${blog2.version}">
+                    <i class="fa fa-undo"></i>
+                </a>
+            </h3>
+            <div class="well" style="overflow: auto;">${blog2.htmlContent}</div>
+        </div> 
+        <div class="col-xs-12col-sm-6">
+            <h3> Version ${blog.version} 
+                <small>${blog.updateDate}</small>
+                <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}"
+                class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelReset} ${blog.version}">
+                    <i class="fa fa-undo"></i>
+                </a>
+            </h3>
+           <div class="well" style="overflow: auto;">${blog.htmlContent}</div>
+        </div>
+    </div>
+   </@boxBody>
+</@box>
+<script type = 'text/javascript'>
+//lifted from daisy diff.js, just this part without the whole dojo/prev/next
+function updateOverlays(){
+
+    var images = document.getElementsByTagName("img");
+
+    for (var i = 0; i < images.length; i++) {
+        var image = images [i];
+        if (image.getAttribute('changeType') == "diff-removed-image" || image.getAttribute('changeType') == "diff-added-image") {
+            var filter;
+            var existingDivs = image.parentNode.getElementsByTagName('div');
+            if(existingDivs.length > 0 && existingDivs[0].className==image.getAttribute("changeType")){
+                filter = existingDivs[0];
+            }else {
+                filter = document.createElement("div");
+                filter.className= image.getAttribute("changeType");
+            }
+            //TODO this still places the div in a bad place sometimes, find a way to do it correctly !
+            // In particular this doesn't work very well with overflow:auto
+            filter.style.width = image.offsetWidth-4 + "px";
+            filter.style.height = image.offsetHeight-4 + "px";
+            filter.style.top = image.offsetTop + "px";
+            filter.style.left = image.offsetLeft + "px";
+            filter.style.position = "absolute";
+
+
+            if(existingDivs.length == 0 ){
+                image.parentNode.insertBefore(filter, image);
+            }
+        }
+    }
+}
+$( window ).load( updateOverlays );
+$( window ).resize( updateOverlays );
+</script>
