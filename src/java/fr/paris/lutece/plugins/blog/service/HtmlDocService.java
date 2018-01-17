@@ -371,5 +371,32 @@ public class HtmlDocService
         return listHtmlDocs;
 
     }
+    
+    /**
+     * Load the data of nLimit last modified blog objects and returns them as a list
+     * 
+     * @param nLimit
+     *            number of blog
+     * @return The list which contains the data of of nLimit last modified blog objects
+     */
+    public List<HtmlDoc> getlastModifiedBlogsList ( int nLimit )
+
+    {
+        List<HtmlDoc> listBlogsWithoutBinaries = new ArrayList<HtmlDoc>( );
+        List<HtmlDoc> listBlogs = HtmlDocHome.getLastModifiedHtmlDocsList( nLimit );
+
+        for ( HtmlDoc doc : listBlogs )
+        {
+        	HtmlDoc blog = new HtmlDoc( );
+        	List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( doc.getId( ) );
+            blog.setDocContent( docContent );
+            blog.setTag( TagHome.loadByDoc( doc.getId( ) ) );
+
+            listBlogsWithoutBinaries.add( blog );
+        }
+
+        return listBlogsWithoutBinaries;
+
+    }
 
 }

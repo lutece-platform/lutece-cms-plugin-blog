@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.blog.web;
 
 import fr.paris.lutece.plugins.blog.business.HtmlDoc;
 import fr.paris.lutece.plugins.blog.business.HtmlDocHome;
+import fr.paris.lutece.plugins.blog.service.HtmlDocService;
+import fr.paris.lutece.plugins.blog.service.docsearch.HtmlDocSearchService;
 import fr.paris.lutece.portal.business.right.Right;
 import fr.paris.lutece.portal.business.right.RightHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -87,7 +89,7 @@ public class HtmlDocDashboardComponent extends DashboardComponent
         }
 
         String strValue = DatastoreService.getDataValue( PROPERTY_NIMBER_DOCUMENT_LOADED, null );
-        List<HtmlDoc> lastModifiedDocument = HtmlDocHome.getLastModifiedHtmlDocsList( Integer.parseInt( strValue ) );
+        List<HtmlDoc> lastModifiedDocument = HtmlDocService.getInstance().getlastModifiedBlogsList( Integer.parseInt( strValue ) );
 
         UrlItem url = new UrlItem( right.getUrl( ) );
         url.addParameter( PARAMETER_PLUGIN_NAME, right.getPluginName( ) );

@@ -20,7 +20,9 @@
                 <#list last_modified_document as htmldoc>
                 <tr>
                     <td>
-                      <img src="servlet/plugins/htmldocs/file?id_file=${htmldoc.id}" alt="" class="img-responsive blog-thumbnails">
+                    <#list htmldoc.docContent as content>
+                      <img src="servlet/plugins/htmldocs/file?id_file=${content.id}" alt="" class="img-responsive blog-thumbnails">
+                    </#list> 
                     </td>
                     <td>
                       <strong>${htmldoc.id} - ${htmldoc.name}</strong>
