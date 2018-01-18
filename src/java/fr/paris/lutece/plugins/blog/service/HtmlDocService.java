@@ -384,11 +384,13 @@ public class HtmlDocService
     {
         List<HtmlDoc> listBlogsWithoutBinaries = new ArrayList<HtmlDoc>( );
         List<HtmlDoc> listBlogs = HtmlDocHome.getLastModifiedHtmlDocsList( nLimit );
-
+       
+        
         for ( HtmlDoc doc : listBlogs )
-        {
+        {	
         	HtmlDoc blog = new HtmlDoc( );
         	List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( doc.getId( ) );
+        	blog= doc;
             blog.setDocContent( docContent );
             blog.setTag( TagHome.loadByDoc( doc.getId( ) ) );
 
