@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.blog.business;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 public interface IDocContentDAO
@@ -23,6 +25,15 @@ public interface IDocContentDAO
      * @return an instance of DocContent
      */
     DocContent loadDocContent( int idDocument, Plugin plugin );
+    /**
+     * Returns an list of a DocContent whose htmldoc identifier  is specified in parameter
+     * 
+     * @param idHtmlDoc
+     * @param plugin
+     *            the plugin
+     * @return an instance of DocContent
+     */
+   List <DocContent> loadDocContentByIdHtemldoc( int idHtmlDoc, Plugin plugin );
 
     /**
      * Remove the DocContent whose identifier is specified in parameter

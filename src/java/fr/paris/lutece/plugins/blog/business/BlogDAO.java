@@ -530,7 +530,7 @@ public final class BlogDAO implements IBlogDAO
 
             if ( filter.getLoadBinaries( ) )
             {
-                blog.setDocContent( DocContentHome.getDocsContent( blog.getId( ) ) );
+                blog.setDocContent( DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) ) );
             }
 
             blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );

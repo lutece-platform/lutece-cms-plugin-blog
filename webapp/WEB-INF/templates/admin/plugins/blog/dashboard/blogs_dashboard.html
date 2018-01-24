@@ -20,7 +20,11 @@
                 <#list last_modified_document as blog>
                 <tr>
                     <td>
-                      <img src="servlet/plugins/blogs/file?id_file=${blog.id}" alt="" class="img-responsive blog-thumbnails">
+
+                    <#list blog.docContent as content>
+                      <img src="servlet/plugins/blogs/file?id_file=${content.id}" alt="" class="img-responsive blog-thumbnails">
+                       <#break>
+                    </#list> 
                     </td>
                     <td>
                       <strong>${blog.id} - ${blog.name}</strong>

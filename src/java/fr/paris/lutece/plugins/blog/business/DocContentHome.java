@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -99,6 +101,16 @@ public final class DocContentHome
     public static DocContent getDocsContent( int nIdDocument )
     {
         return _dao.loadDocContent( nIdDocument, _plugin );
+    }
+    /**
+     * Returns an list of a DocContent whose htmldoc identifier is specified in parameter
+     * 
+     * @param nIdHtmlDoc
+     * @return an instance of DocContent
+     */
+    public static List<DocContent> getDocsContentByHtmlDoc( int nIdHtmlDoc )
+    {
+        return _dao.loadDocContentByIdHtemldoc( nIdHtmlDoc, _plugin );
     }
 
 }

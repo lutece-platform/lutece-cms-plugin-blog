@@ -1,4 +1,4 @@
-<#include "/admin/util/editor/editor.html" />
+<#include "/admin/util/editor/editor_keditor.html" />
 <form class="form" method="post" name="modify_blog" id="form-editor" enctype="multipart/form-data" action="jsp/admin/plugins/blog/ManageBlogs.jsp">
     <@messages errors=errors />
     <input type="hidden" id="id" name="id" value="${blog.id}">
@@ -172,25 +172,32 @@
                 <div id="collapseAttachment" class="panel-collapse collapse" aria-expanded="false">
                   <div class="panel-body">
                       <div class="form-group">
+
                         <label for="attachment" class="sr-only">#i18n{blog.modify_blog.labelAttachment}</label>
-                        <input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" value="servlet/plugins/blogs/file?id_file=${blog.id}">
                         <div class="text-center">
-                          <#if blog.docContent??>
-                            <a href="servlet/plugins/blogs/file?id_file=${blog.id}" title="preview">
-                              ${blog.docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${blog.id}" alt="Preview" class="img-responsive img-thumbnail">
-                            </a>
-                          <#else>
-                            <img id="preview_attachment" src="images/none.jpg" alt="Preview" class="img-responsive img-thumbnail">
-                          </#if>
+			<#if true> <!--To the use of the image crop plugin -->
+				<#include "/skin/plugins/uploadimage/uploadimage.html" />
+				<@addRequiredJsUploadImages/>
+				<@cropimage  fieldName= "attachment"  file="images/admin/skin/plugins/uploadimage/picture.jpg"  cssClass="text-center"  synchronous= "false"/>
+			<#else>
+				<input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )" value="">
+			</#if>
+			<#if blog.docContent?? && blog.docContent?size!=0>
+			<#list blog.docContent as docContent >
+			<div id= "${docContent.textValue}">
+				<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("${docContent.textValue}") type="button" title="Supprimer" style="">
+					<span class="glyphicon glyphicon-remove-circle"></span> Supprimer
+				</button>
+                        <a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
+                          ${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="Preview" class="img-responsive img-thumbnail">
+                        </a>
+			</div>
+			</#list>
+                      </#if>
+                     <div id="imageappend"/>
                         </div>
                       </div>
-                      <div class="form-group" id="group_update_attachment">
-                        <div class="checkbox">
-                          <label for="update_attachment">
-                            <input name="update_attachment" id="update_attachment" value="1" type="checkbox"> Supprimer l'image
-                          </label>
-                        </div>
-                    </div>
+                      
                   </div>
                 </div>
               </div>
@@ -229,6 +236,8 @@
     </div>
 </form>
 <script src="js/plugins/blog/manage_tag.js"></script>
+<script src="js/plugins/blog/manage_image.js"></script>
+
 <script>
 function readURL( input ){
   if (input.files && input.files[0]) {
