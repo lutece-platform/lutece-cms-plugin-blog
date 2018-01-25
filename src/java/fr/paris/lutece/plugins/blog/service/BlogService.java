@@ -227,10 +227,10 @@ public class BlogService
 
     }
     /**
-     * Update an HtmlDoc
+     * Update an Blog
      * 
-     * @param htmlDoc
-     *            The Ht-mlDoc
+     * @param blog
+     *            The Blog
      * @param docContent
      *            The Doc Content
      */
@@ -242,6 +242,51 @@ public class BlogService
         try
         {
             BlogHome.addNewVersion( blog );
+            if ( docContent != null  )
+            {
+            	DocContentHome.remove(blog.getId( ));
+            	for(DocContent docCont: docContent){
+            		
+            		docCont.setIdBlog( blog.getId( ) );
+                    DocContentHome.create(docCont);
+
+            	}
+                
+            }
+          
+            TagHome.removeTagDoc( blog.getId( ) );
+            for ( Tag tag : blog.getTag( ) )
+            {
+
+                TagHome.create( tag.getIdTag( ), blog.getId( ), tag.getPriority( ) );
+            }
+            TransactionManager.commitTransaction( BlogPlugin.getPlugin( ) );
+        }
+        catch( Exception e )
+        {
+            TransactionManager.rollBack( BlogPlugin.getPlugin( ) );
+            throw new AppException( e.getMessage( ), e );
+        }
+
+        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
+
+    }
+
+    /**
+     * Update an Blog
+     * 
+     * @param blog
+     *            The blog
+     * @param docContent
+     *            The Doc Content
+     */
+    public void updateBlogWithoutVersion( Blog blog, List<DocContent> docContent )
+
+    {
+        TransactionManager.beginTransaction( BlogPlugin.getPlugin( ) );
+        BlogHome.update( blog );
+        try
+        {
             if ( docContent != null  )
             {
             	DocContentHome.remove(blog.getId( ));

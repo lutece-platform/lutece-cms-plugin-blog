@@ -131,6 +131,9 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_SHAREABLE = "shareable";
     protected static final String PARAMETER_PRIORITY = "tag_priority";
     protected static final String PARAMETER_TAG_ACTION = "tagAction";
+    protected static final String PARAMETER_ACTION_BUTTON = "button";
+    protected static final String PARAMETER_APPLY = "apply";
+
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
@@ -366,6 +369,7 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doCreateBlog( HttpServletRequest request )
     {
 
+    	 String strAction =  request.getParameter( PARAMETER_ACTION_BUTTON );
     	_blog.setCreationDate( getSqlDate( ) );
     	_blog.setUpdateDate( getSqlDate( ) );
     	_blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
@@ -384,6 +388,11 @@ public class BlogJspBean extends ManageBlogJspBean
         //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         //DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
         BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
+        
+        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
+        	
+        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+        }
 
         addInfo( INFO_BLOG_CREATED, getLocale( ) );
 
@@ -577,6 +586,8 @@ public class BlogJspBean extends ManageBlogJspBean
     @Action( ACTION_MODIFY_BLOG )
     public String doModifyBlog( HttpServletRequest request )
     {
+   	 
+    	String strAction =  request.getParameter( PARAMETER_ACTION_BUTTON );
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
@@ -584,10 +595,6 @@ public class BlogJspBean extends ManageBlogJspBean
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strShareable = request.getParameter( PARAMETER_SHAREABLE );
         String strUrl = request.getParameter( PARAMETER_URL );
-
-
-        String strUpdate_attachment = request.getParameter( PARAMETER_UPDATE_ATTACHMENT );
-        boolean bIsUpdatable = ( ( strUpdate_attachment == null ) || strUpdate_attachment.equals( "" ) ) ? false : true;
 
         Blog latestVersionBlog = BlogHome.findByPrimaryKey( nId );
         if ( _blog == null || ( _blog.getId( ) != nId ) )
@@ -611,12 +618,17 @@ public class BlogJspBean extends ManageBlogJspBean
             return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
         }
 
-        _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
-
-        BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
-
-        addInfo( INFO_BLOG_UPDATED, getLocale( ) );
-
+        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
+        	
+        	BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
+        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+        
+        }else{
+        	
+        	_blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
+        	BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
+        	addInfo( INFO_BLOG_UPDATED, getLocale( ) );
+        }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
 
