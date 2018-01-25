@@ -64,6 +64,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
 import java.util.ArrayList;
@@ -142,6 +143,8 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String PROPERTY_PAGE_TITLE_HISTORY_BLOG = "blog.history_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_PREVIEW_BLOG = "blog.preview_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_DIFF_BLOG = "blog.diff_blog.pageTitle";
+    protected static final String PROPERTY_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
+
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
 
@@ -159,6 +162,8 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_LIST_TAG = "list_tag";
     protected static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
     protected static final String MARK_TAG = "tags";
+    protected static final String MARK_USE_UPLOAD_IMAGE_PLUGIN = "is_crop_image";
+
 
     private static final String JSP_MANAGE_BLOGS = "jsp/admin/plugins/blog/ManageBlogs.jsp";
 
@@ -201,6 +206,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_PAGINATOR = "paginator";
     protected static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     protected static final String MARK_ASC_SORT = "asc_sort";
+
 
     // Session variable to store working values
     protected Blog _blog;
@@ -347,11 +353,14 @@ public class BlogJspBean extends ManageBlogJspBean
     public String getCreateBlog( HttpServletRequest request )
     {
     	_blog = ( _blog != null ) ? _blog : new Blog( );
+    	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ));
+
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_BLOG, TEMPLATE_CREATE_BLOG, model );
     }
@@ -546,6 +555,8 @@ public class BlogJspBean extends ManageBlogJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String strResetVersion = request.getParameter( PARAMETER_VERSION_BLOG );
+    	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
+
         int nVersion = -1;
         if ( strResetVersion != null )
         {
@@ -568,7 +579,7 @@ public class BlogJspBean extends ManageBlogJspBean
         Map<String, Object> model = getModel( );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
-
+        model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ));
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), Blog.PROPERTY_RESOURCE_TYPE );

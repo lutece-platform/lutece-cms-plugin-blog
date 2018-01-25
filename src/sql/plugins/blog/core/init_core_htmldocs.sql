@@ -23,6 +23,8 @@ DELETE FROM core_user_right WHERE id_right = 'BLOG_MANAGEMENT';
 INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_MANAGEMENT',1);
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
+
 
 --
 -- Update default editor
