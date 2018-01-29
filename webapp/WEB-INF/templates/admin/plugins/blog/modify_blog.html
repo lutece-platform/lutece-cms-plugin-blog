@@ -154,6 +154,7 @@
                  				</li>
                  		 </#list>
                     </ul>
+                    <#if permission_manage_create_tag>
                     <label for="tag_name" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
                       <div class="input-group">
                         <input type="text" id="tag_name" class="form-control" name="tag_name" value="" placeholder="#i18n{blog.manage_tags.buttonAdd}">
@@ -163,6 +164,7 @@
                           </button>
                         </span>
                     </div>
+                    </#if>
                   </div>
                 </div>
               </div>

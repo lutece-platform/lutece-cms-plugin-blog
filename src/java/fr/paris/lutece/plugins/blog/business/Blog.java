@@ -40,6 +40,7 @@ import org.hibernate.validator.constraints.*;
 import java.io.Serializable;
 
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.util.ReferenceItem;
 
@@ -50,11 +51,19 @@ import java.util.List;
 /**
  * This is the business class for the object Blog
  */
-public class Blog extends ReferenceItem implements Serializable, IExtendableResource
+public class Blog extends ReferenceItem implements Serializable, IExtendableResource, RBACResource
 {
     public static final String PROPERTY_RESOURCE_TYPE = "blogs";
 
     private static final long serialVersionUID = 1L;
+    
+    // Perimissions
+    public static final String PERMISSION_VIEW = "VIEW";
+    public static final String PERMISSION_CREATE = "CREATE";
+    public static final String PERMISSION_MODIFY = "MODIFY";
+    public static final String PERMISSION_DELETE = "DELETE";
+    public static final String PERMISSION_PUBLISH = "PUBLISH";
+
 
     // Variables declarations
     private int _nId;
@@ -601,4 +610,21 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     {
         return Integer.toString( _nId );
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public String getResourceId() {
+		
+		return String.valueOf( _nId );
+	}
+	 /**
+     * {@inheritDoc}
+     */
+	@Override
+	public String getResourceTypeCode() {
+
+		return PROPERTY_RESOURCE_TYPE;
+	}
 }

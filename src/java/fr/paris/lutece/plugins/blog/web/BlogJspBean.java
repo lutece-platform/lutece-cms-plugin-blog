@@ -34,7 +34,6 @@
 package fr.paris.lutece.plugins.blog.web;
 
 import fr.paris.lutece.plugins.blog.business.DocContent;
-import fr.paris.lutece.plugins.blog.business.DocContentHome;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
@@ -59,12 +58,15 @@ import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
 import java.util.ArrayList;
@@ -163,7 +165,13 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
     protected static final String MARK_TAG = "tags";
     protected static final String MARK_USE_UPLOAD_IMAGE_PLUGIN = "is_crop_image";
+    protected static final String MARK_PERMISSION_CREATE_BLOG = "permission_manage_create_blog";
+    protected static final String MARK_PERMISSION_MODIFY_BLOG = "permission_manage_modify_blog";
+    protected static final String MARK_PERMISSION_PUBLISH_BLOG = "permission_manage_publish_blog";
+    protected static final String MARK_PERMISSION_DELETE_BLOG = "permission_manage_delete_blog";
+    
 
+ 
 
     private static final String JSP_MANAGE_BLOGS = "jsp/admin/plugins/blog/ManageBlogs.jsp";
 
@@ -305,6 +313,14 @@ public class BlogJspBean extends ManageBlogJspBean
             _strSortedAttributeName = strSortedAttributeName;
             _bIsAscSort = bIsAscSort;
         }
+        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_CREATE, getUser( ) );
+        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_MODIFY, getUser( ) );
+        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_DELETE, getUser( ) );
+        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_PUBLISH, getUser( ) );
 
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_BLOG_LIST, listDocuments );
@@ -316,6 +332,11 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         model.put( MARK_NB_ITEMS_PER_PAGE, "" + _nItemsPerPage );
         model.put( MARK_TAG, _strTag );
+        
+        model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
+        model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
+        model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
+        model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionPublish );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_BLOG, TEMPLATE_MANAGE_BLOGS, model );
     }
@@ -348,14 +369,25 @@ public class BlogJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return the html code of the blog form
+     * @throws AccessDeniedException 
      */
     @View( VIEW_CREATE_BLOG )
-    public String getCreateBlog( HttpServletRequest request )
+    public String getCreateBlog( HttpServletRequest request ) throws AccessDeniedException
     {
+    	 if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                 Blog.PERMISSION_CREATE, getUser( ) ) )
+    	 {
+    		 throw new AccessDeniedException(  );
+    	 }
     	_blog = ( _blog != null ) ? _blog : new Blog( );
     	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
 
         Map<String, Object> model = getModel( );
+        
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Tag.PERMISSION_CREATE, getUser( ) );     
+
+        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );        
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
@@ -378,33 +410,36 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doCreateBlog( HttpServletRequest request )
     {
 
-    	 String strAction =  request.getParameter( PARAMETER_ACTION_BUTTON );
-    	_blog.setCreationDate( getSqlDate( ) );
-    	_blog.setUpdateDate( getSqlDate( ) );
-    	_blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-    	_blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
-    	_blog.setVersion( 1 );
-    	_blog.setAttachedPortletId( 0 );
-        populate( _blog, request );
-
-        // Check constraints
-        if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
-        {
-            return redirectView( request, VIEW_CREATE_BLOG );
-        }
-
-        // BlogHome.addInitialVersion( _blog );
-        //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        //DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
-        BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
-        
-        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
-        	
-        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-        }
-
-        addInfo( INFO_BLOG_CREATED, getLocale( ) );
-
+    	if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_CREATE, getUser( ) ) )
+   	 {
+			    	 String strAction =  request.getParameter( PARAMETER_ACTION_BUTTON );
+			    	_blog.setCreationDate( getSqlDate( ) );
+			    	_blog.setUpdateDate( getSqlDate( ) );
+			    	_blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+			    	_blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
+			    	_blog.setVersion( 1 );
+			    	_blog.setAttachedPortletId( 0 );
+			        populate( _blog, request );
+			
+			        // Check constraints
+			        if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
+			        {
+			            return redirectView( request, VIEW_CREATE_BLOG );
+			        }
+			
+			        // BlogHome.addInitialVersion( _blog );
+			        //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+			        //DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
+			        BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
+			        
+			        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
+			        	
+			        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+			        }
+			
+			        addInfo( INFO_BLOG_CREATED, getLocale( ) );
+   	 }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
     /**
@@ -416,14 +451,21 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doAddTag( HttpServletRequest request )
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
+
+    	if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
+                Tag.PERMISSION_CREATE, getUser( ) ) )
+   	 {
+	
         String strTagName = request.getParameter( PARAMETER_TAG_NAME );
 
         Tag tag = new Tag( Integer.parseInt( strIdTag ), _blog.getTag( ).size( ) + 1 );
         tag.setName( strTagName );
 
         _blog.addTag( tag );
-
+        
         return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+   	 }
+    	return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) );  
 
     }
     /**
@@ -435,11 +477,16 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doRemoveTag( HttpServletRequest request )
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
+                Tag.PERMISSION_DELETE, getUser( ) ) )
+   	 {
         Tag tag = new Tag( );
         tag.setIdTag( Integer.parseInt( strIdTag ) );
         _blog.deleteTag( tag );
 
         return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+   	 }
+        return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) ); 
 
     }
     /**
@@ -503,11 +550,21 @@ public class BlogJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return the html code to confirm
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_CONFIRM_REMOVE_BLOG )
-    public String getConfirmRemoveBlog( HttpServletRequest request )
+    public String getConfirmRemoveBlog( HttpServletRequest request ) throws AccessDeniedException
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+    	 
+    	String strId= request.getParameter( PARAMETER_ID_BLOG );
+        
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
+                Blog.PERMISSION_DELETE, getUser( ) ) )
+        {
+   		 throw new AccessDeniedException(  );
+        }
+        
+    	int nId = Integer.parseInt( strId );
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_BLOG ) );
         url.addParameter( PARAMETER_ID_BLOG, nId );
 
@@ -526,20 +583,26 @@ public class BlogJspBean extends ManageBlogJspBean
     @Action( ACTION_REMOVE_BLOG )
     public String doRemoveBlog( HttpServletRequest request )
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
+        String strId = request.getParameter( PARAMETER_ID_BLOG ) ;
 
-        if ( docPublication.size( ) > 0 )
+        int nId = Integer.parseInt( strId );
+        
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
+                Blog.PERMISSION_DELETE, getUser( ) ) )
         {
-            String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
-
-            return redirect( request, strMessageUrl );
+	        List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
+	
+	        if ( docPublication.size( ) > 0 )
+	        {
+	            String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
+	
+	            return redirect( request, strMessageUrl );
+	        }
+	        BlogService.getInstance( ).deleteDocument( nId );
+	        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
+	
+	        addInfo( INFO_BLOG_REMOVED, getLocale( ) );
         }
-        BlogService.getInstance( ).deleteDocument( nId );
-        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
-
-        addInfo( INFO_BLOG_REMOVED, getLocale( ) );
-
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
 
@@ -549,11 +612,20 @@ public class BlogJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return The HTML form to update info
+     * @throws AccessDeniedException 
      */
     @View( VIEW_MODIFY_BLOG )
-    public String getModifyBlog( HttpServletRequest request )
+    public String getModifyBlog( HttpServletRequest request ) throws AccessDeniedException
     {
+        String strId =  request.getParameter( PARAMETER_ID_BLOG ) ;
+
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
+                Blog.PERMISSION_MODIFY, getUser( ) ) )
+        {
+   		 throw new AccessDeniedException(  );
+        }
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+
         String strResetVersion = request.getParameter( PARAMETER_VERSION_BLOG );
     	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
 
@@ -577,6 +649,11 @@ public class BlogJspBean extends ManageBlogJspBean
         }
 
         Map<String, Object> model = getModel( );
+        
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Tag.PERMISSION_CREATE, getUser( ) );
+
+        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );        
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ));
@@ -598,47 +675,52 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doModifyBlog( HttpServletRequest request )
     {
    	 
+    	String strId= request.getParameter( PARAMETER_ID_BLOG );
     	String strAction =  request.getParameter( PARAMETER_ACTION_BUTTON );
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        int nId = Integer.parseInt( strId );
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
         String strContentLabel = request.getParameter( PARAMETER_CONTENT_LABEL );
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strShareable = request.getParameter( PARAMETER_SHAREABLE );
         String strUrl = request.getParameter( PARAMETER_URL );
-
-        Blog latestVersionBlog = BlogHome.findByPrimaryKey( nId );
-        if ( _blog == null || ( _blog.getId( ) != nId ) )
-        {
-        	_blog = latestVersionBlog;
-        }
-
-        _blog.setContentLabel( strContentLabel );
-        _blog.setDescription( strDescription );
-        _blog.setShareable( Boolean.parseBoolean( strShareable ) );
-        _blog.setHtmlContent( strHtmlContent );
-        _blog.setEditComment( strEditComment );
-        _blog.setUpdateDate( getSqlDate( ) );
-        _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-        _blog.setUrl( strUrl );
-
-
-        // Check constraints
-        if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
-        {
-            return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-        }
-
-        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
-        	
-        	BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
-        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
         
-        }else{
-        	
-        	_blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
-        	BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
-        	addInfo( INFO_BLOG_UPDATED, getLocale( ) );
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
+                Blog.PERMISSION_MODIFY, getUser( ) ) )
+        {
+	        Blog latestVersionBlog = BlogHome.findByPrimaryKey( nId );
+	        if ( _blog == null || ( _blog.getId( ) != nId ) )
+	        {
+	        	_blog = latestVersionBlog;
+	        }
+	
+	        _blog.setContentLabel( strContentLabel );
+	        _blog.setDescription( strDescription );
+	        _blog.setShareable( Boolean.parseBoolean( strShareable ) );
+	        _blog.setHtmlContent( strHtmlContent );
+	        _blog.setEditComment( strEditComment );
+	        _blog.setUpdateDate( getSqlDate( ) );
+	        _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+	        _blog.setUrl( strUrl );
+	
+	
+	        // Check constraints
+	        if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
+	        {
+	            return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+	        }
+	
+	        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
+	        	
+	        	BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
+	        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+	        
+	        }else{
+	        	
+	        	_blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
+	        	BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
+	        	addInfo( INFO_BLOG_UPDATED, getLocale( ) );
+	        }
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }

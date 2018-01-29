@@ -124,4 +124,19 @@
         <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
      </portlet>
    </portlets>
+   <!-- RBAC Resources -->
+    <rbac-resource-types>
+        <rbac-resource-type>
+            <rbac-resource-type-class>
+                fr.paris.lutece.plugins.blog.service.BlogIdService 
+            </rbac-resource-type-class>
+        </rbac-resource-type>
+    </rbac-resource-types>
+    <rbac-resource-types>
+        <rbac-resource-type>
+            <rbac-resource-type-class>
+                fr.paris.lutece.plugins.blog.service.TagIdService 
+            </rbac-resource-type-class>
+        </rbac-resource-type>
+    </rbac-resource-types>
 </plug-in>

@@ -33,8 +33,11 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
+import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
+import fr.paris.lutece.portal.business.rbac.RBAC;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
@@ -43,6 +46,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.url.UrlItem;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
 import java.util.List;
@@ -76,8 +80,6 @@ public class TagJspBean extends ManageBlogJspBean
 
     private static final String JSP_MANAGE_TAGS = "jsp/admin/plugins/blog/ManageTags.jsp";
 
-    // Properties
-    private static final String MESSAGE_CONFIRM_REMOVE_TAG = "blog.message.confirmRemoveTag";
 
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "blog.model.entity.tag.attribute.";
@@ -116,6 +118,17 @@ public class TagJspBean extends ManageBlogJspBean
         List<Tag> listTag = TagHome.getTagList( );
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_TAG_LIST, listTag, JSP_MANAGE_TAGS );
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Tag.PERMISSION_CREATE, getUser( ) );
+        boolean bPermissionModify = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Tag.PERMISSION_MODIFY, getUser( ) );
+        boolean bPermissionDelete = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Tag.PERMISSION_DELETE, getUser( ) );
+
+        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
+        model.put( MARK_PERMISSION_MODIFY_TAG, bPermissionModify );
+        model.put( MARK_PERMISSION_DELETE_TAG, bPermissionDelete );
+        
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_TAGS, TEMPLATE_MANAGE_TAGS, model );
@@ -127,13 +140,21 @@ public class TagJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return the html code of the tag form
+     * @throws AccessDeniedException 
      */
     @View( VIEW_CREATE_TAG )
-    public String getCreateTag( HttpServletRequest request )
+    public String getCreateTag( HttpServletRequest request ) throws AccessDeniedException
     {
+    	 if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                 Tag.PERMISSION_CREATE, getUser( ) ) )
+    	 {
+    		 throw new AccessDeniedException(  );
+    	 }
         _tag = ( _tag != null ) ? _tag : new Tag( );
 
         Map<String, Object> model = getModel( );
+        
+      
         model.put( MARK_TAG, _tag );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
@@ -153,34 +174,36 @@ public class TagJspBean extends ManageBlogJspBean
         String strRequestAjax = request.getParameter( ACTION_CREATE_TAG_AJAX_REQUEST );
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
-
-        // Check constraints
-        if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
-        {
-            return redirectView( request, VIEW_CREATE_TAG );
-        }
-
-        if ( TagHome.findByName( _tag.getName( ) ) == null )
-        {
-
-            Tag tag = TagHome.create( _tag );
-
-            if ( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith( strRequestAjax ) )
-            {
-
-                return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( tag.getIdTag( ) ) ) );
-            }
-
-            addInfo( INFO_TAG_CREATED, getLocale( ) );
-
-        }
-        else
-            if ( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith( strRequestAjax ) )
-            {
-
-                return JsonUtil.buildJsonResponse( new JsonResponse( "TAG_EXIST" ) );
-            }
-
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Tag.PERMISSION_CREATE, getUser( ) ) )
+   	 	{
+	        // Check constraints
+	        if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
+	        {
+	            return redirectView( request, VIEW_CREATE_TAG );
+	        }
+	
+	        if ( TagHome.findByName( _tag.getName( ) ) == null )
+	        {
+	
+	            Tag tag = TagHome.create( _tag );
+	
+	            if ( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith( strRequestAjax ) )
+	            {
+	
+	                return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( tag.getIdTag( ) ) ) );
+	            }
+	
+	            addInfo( INFO_TAG_CREATED, getLocale( ) );
+	
+	        }
+	        else
+	            if ( strRequestAjax != null && ACTION_CREATE_TAG_AJAX_REQUEST.endsWith( strRequestAjax ) )
+	            {
+	
+	                return JsonUtil.buildJsonResponse( new JsonResponse( "TAG_EXIST" ) );
+	            }
+   	 	}
         return redirectView( request, VIEW_MANAGE_TAGS );
     }
 
@@ -190,11 +213,19 @@ public class TagJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return the html code to confirm
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_CONFIRM_REMOVE_TAG )
-    public String getConfirmRemoveTag( HttpServletRequest request )
+    public String getConfirmRemoveTag( HttpServletRequest request ) throws AccessDeniedException
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_TAG ) );
+    	
+    	String strId= request.getParameter( PARAMETER_ID_TAG );
+        int nId = Integer.parseInt( strId );
+        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId,
+                Tag.PERMISSION_DELETE, getUser( ) ) )
+        {
+   		 throw new AccessDeniedException(  );
+        }
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_TAG ) );
         url.addParameter( PARAMETER_ID_TAG, nId );
 
@@ -213,11 +244,16 @@ public class TagJspBean extends ManageBlogJspBean
     @Action( ACTION_REMOVE_TAG )
     public String doRemoveTag( HttpServletRequest request )
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_TAG ) );
-        TagHome.remove( nId );
+    	String strId= request.getParameter( PARAMETER_ID_TAG );
+        int nId = Integer.parseInt( strId );
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId,
+                Tag.PERMISSION_DELETE, getUser( ) ) )
+        {
+	        TagHome.remove( nId );
+	
+	        addInfo( INFO_TAG_REMOVED, getLocale( ) );
 
-        addInfo( INFO_TAG_REMOVED, getLocale( ) );
-
+        }
         return redirectView( request, VIEW_MANAGE_TAGS );
     }
 
@@ -227,12 +263,19 @@ public class TagJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return The HTML form to update info
+     * @throws AccessDeniedException 
      */
     @View( VIEW_MODIFY_TAG )
-    public String getModifyTag( HttpServletRequest request )
+    public String getModifyTag( HttpServletRequest request ) throws AccessDeniedException
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_TAG ) );
+    	String strId= request.getParameter( PARAMETER_ID_TAG );
+        int nId = Integer.parseInt( strId );
 
+        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId,
+                Tag.PERMISSION_MODIFY, getUser( ) ) )
+        {
+   		 throw new AccessDeniedException(  );
+        }
         if ( _tag == null || ( _tag.getIdTag( ) != nId ) )
         {
 
@@ -257,23 +300,26 @@ public class TagJspBean extends ManageBlogJspBean
     @Action( ACTION_MODIFY_TAG )
     public String doModifyTag( HttpServletRequest request )
     {
+    	
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
-
-        // Check constraints
-        if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, String.valueOf(_tag.getIdTag( )),
+                Tag.PERMISSION_MODIFY, getUser( ) ) )
         {
-            return redirect( request, VIEW_MODIFY_TAG, PARAMETER_ID_TAG, _tag.getIdTag( ) );
+	        // Check constraints
+	        if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
+	        {
+	            return redirect( request, VIEW_MODIFY_TAG, PARAMETER_ID_TAG, _tag.getIdTag( ) );
+	        }
+	
+	        if ( TagHome.findByName( _tag.getName( ) ) == null )
+	        {
+	
+	            TagHome.update( _tag );
+	            addInfo( INFO_TAG_UPDATED, getLocale( ) );
+	
+	        }
         }
-
-        if ( TagHome.findByName( _tag.getName( ) ) == null )
-        {
-
-            TagHome.update( _tag );
-            addInfo( INFO_TAG_UPDATED, getLocale( ) );
-
-        }
-
         return redirectView( request, VIEW_MANAGE_TAGS );
     }
 

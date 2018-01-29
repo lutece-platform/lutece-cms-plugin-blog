@@ -39,12 +39,14 @@
                 <button type="submit" class="btn btn-default" name="button_search" id="button_search">#i18n{blog.manage_blogs.search}</button>
             </div>
         </form>
+        <#if permission_manage_create_blog>
         <form class="navbar-form navbar-right" action="jsp/admin/plugins/blog/ManageBlogs.jsp">
              <button class="btn btn-primary btn-flat" type="submit" name="view_createBlog">
                     <i class="fa fa-plus"></i>
                     <span class="hidden-xs">#i18n{blog.manage_blogs.buttonAdd}</span>
                 </button>
          </form>
+         </#if>
             <ul class="nav navbar-nav navbar-right hidden">
             <li>
                 <a href="jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs" title="#i18n{blog.manage_tags.title}">
@@ -86,6 +88,7 @@
                       ${blog.contentLabel!}
                     </a>
                   </p>
+            
                   <p>
                     <small>Cr&eacute;&eacute; par <strong>${blog.userCreator!}</strong> le ${blog.creationDate?date}</strong></small>
                   </p>
@@ -119,6 +122,7 @@
                 </td>
                 <td>
                   <div class="btn-group">
+		    <#if permission_manage_publish_blog>
                     <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}"
                       class="btn-publish btn btn-sm <#if blog.blogPubilcation?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPubilcation?size==0>Publier<#else>#i18n{blog.manage_blogs.managePublication}</#if>">
                       <i class="fa fa-globe"></i>
@@ -146,11 +150,14 @@
                          </ul>
                         </#if>
                       </div>
+		    </#if>
                     </td>
                     <td>
+			<#if permission_manage_modify_blog>
                         <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm " title="#i18n{portal.util.labelModify}">
                             <i class="fa fa-pencil fa-fw"></i>
                         </a>
+			</#if>
                         <div class="btn-group">
                             <#if blog.version !=1>
                                 <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}" class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelDiffPrevious}">
@@ -163,9 +170,11 @@
                                 </a>
                             </#if>
                         </div>
+			<#if permission_manage_delete_blog>
                         <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}" class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}">
                             <i class="fa fa-trash fa-fw"></i>
                         </a>
+			</#if>
                     </td>
                 </tr>
                 <#assign idx=idx + 1/>

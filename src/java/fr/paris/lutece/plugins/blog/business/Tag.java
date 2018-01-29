@@ -1,11 +1,22 @@
 package fr.paris.lutece.plugins.blog.business;
 
-public class Tag
+import fr.paris.lutece.portal.service.rbac.RBACResource;
+
+public class Tag implements RBACResource
 {
+	public static final String PROPERTY_RESOURCE_TYPE = "tag";
 
     private int _nIdTag;
     private String _strName;
     private int _nPriority;
+    
+    
+    // Perimissions
+    public static final String PERMISSION_VIEW = "VIEW";
+    public static final String PERMISSION_CREATE = "CREATE";
+    public static final String PERMISSION_DELETE = "DELETE";
+    public static final String PERMISSION_MODIFY = "MODIFY";
+
 
     public Tag( )
     {
@@ -81,5 +92,17 @@ public class Tag
     {
         _nPriority = nPriority;
     }
+
+	@Override
+	public String getResourceId() {
+		
+		return String.valueOf( _nIdTag );
+	}
+
+	@Override
+	public String getResourceTypeCode() {
+		
+		return PROPERTY_RESOURCE_TYPE;
+	}
 
 }

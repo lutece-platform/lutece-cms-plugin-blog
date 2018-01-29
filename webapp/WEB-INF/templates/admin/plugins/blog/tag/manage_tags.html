@@ -2,10 +2,12 @@
   <@boxHeader title="#i18n{blog.manage_tags.title}" boxTools=true>
     <@headerButtons>
       <form class="form-inline" method="post" name="manage_blogs" action="jsp/admin/plugins/blog/ManageTags.jsp">
+      	<#if permission_manage_create_tag>
         <button class="btn btn-primary btn-flat" type="submit" name="view_createTag" >
           <i class="fa fa-plus"></i>
           <span class="hidden-xs">#i18n{blog.manage_tags.buttonAdd}</span>
         </button>
+        </#if>
       </form>
     </@headerButtons>
   </@boxHeader>
@@ -28,16 +30,18 @@
           </td>
 
           <td>
-
+			<#if permission_manage_modify_tag>
             <a href="jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}"
                 class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}" >
               <i class="fa fa-pencil"></i>
             </a>
-
+            </#if>
+			<#if permission_manage_delete_tag>
             <a  href="jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}"
                 class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
               <i class="fa fa-trash"></i>
             </a>
+            </#if>
           </td>
         </tr>
         </#list>
