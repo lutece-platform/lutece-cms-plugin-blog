@@ -35,7 +35,8 @@ package fr.paris.lutece.plugins.blog.web;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
-
+import fr.paris.lutece.plugins.blog.service.BlogService;
+import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.right.Right;
 import fr.paris.lutece.portal.business.right.RightHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -44,6 +45,7 @@ import fr.paris.lutece.portal.service.database.AppConnectionService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
@@ -68,10 +70,16 @@ public class BlogDashboardComponent extends DashboardComponent
     private static final String MARK_URL = "url";
     private static final String MARK_ICON = "icon";
     private static final String MARK_LAST_MODIFIED_DOCUMENT = "last_modified_document";
+    protected static final String MARK_PERMISSION_CREATE_BLOG = "permission_manage_create_blog";
+    protected static final String MARK_PERMISSION_MODIFY_BLOG = "permission_manage_modify_blog";
+    protected static final String MARK_PERMISSION_PUBLISH_BLOG = "permission_manage_publish_blog";
+    protected static final String MARK_PERMISSION_DELETE_BLOG = "permission_manage_delete_blog";
+    
+    
     private static final String PROPERTY_NIMBER_DOCUMENT_LOADED = "number.documents.to.be.loaded";
 
     // TEMPALTES
-    private static final String TEMPLATE_DASHBOARD = "/admin/plugins/blog/dashboard/htmldocs_dashboard.html";
+    private static final String TEMPLATE_DASHBOARD = "/admin/plugins/blog/dashboard/blogs_dashboard.html";
 
     /**
      * {@inheritDoc}
@@ -87,15 +95,29 @@ public class BlogDashboardComponent extends DashboardComponent
             return StringUtils.EMPTY;
         }
 
-        String strValue = DatastoreService.getDataValue( PROPERTY_NIMBER_DOCUMENT_LOADED, null );
-        List<Blog> lastModifiedDocument = BlogHome.getLastModifiedBlogsList( Integer.parseInt( strValue ) );
+        String strValue = DatastoreService.getDataValue( PROPERTY_NIMBER_DOCUMENT_LOADED, "5" );
+        List<Blog> lastModifiedDocument = BlogService.getInstance().getLastModifiedBlogsList( Integer.parseInt( strValue ) );
 
 
         UrlItem url = new UrlItem( right.getUrl( ) );
         url.addParameter( PARAMETER_PLUGIN_NAME, right.getPluginName( ) );
+        
+        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_CREATE, user );
+        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_MODIFY, user);
+        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_DELETE, user );
+        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                Blog.PERMISSION_PUBLISH, user );
 
         Map<String, Object> model = new HashMap<String, Object>( );
 
+        model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
+        model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
+        model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
+        model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionPublish );
+        
         model.put( MARK_LAST_MODIFIED_DOCUMENT, lastModifiedDocument );
         model.put( MARK_URL, url.getUrl( ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );

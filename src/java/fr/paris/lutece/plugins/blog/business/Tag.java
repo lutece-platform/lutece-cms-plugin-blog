@@ -4,7 +4,7 @@ import fr.paris.lutece.portal.service.rbac.RBACResource;
 
 public class Tag implements RBACResource
 {
-	public static final String PROPERTY_RESOURCE_TYPE = "tag";
+	public static final String PROPERTY_RESOURCE_TYPE = "TAG";
 
     private int _nIdTag;
     private String _strName;

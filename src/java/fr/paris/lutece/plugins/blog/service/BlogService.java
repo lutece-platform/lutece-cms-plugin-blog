@@ -418,5 +418,24 @@ public class BlogService
         return listBlogs;
 
     }
+    
+    /**
+     * Load the data of nLimit last modified Blog objects and returns them as a list
+     * 
+     * @param nLimit
+     *            number of Blogument
+     * @return The list which contains the data of of nLimit last modified Blog objects
+     */
+    public List<Blog> getLastModifiedBlogsList( int nLimit )
+    {
+    	List<Blog> listBlog= BlogHome.getLastModifiedBlogsList( nLimit );
+        for(Blog blog: listBlog ){
+           
+        	List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
+            blog.setDocContent( docContent );
+        }
+        
+        return listBlog;
+    }
 
 }

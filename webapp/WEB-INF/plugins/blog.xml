@@ -84,7 +84,7 @@
         <dashboard-component>
             <dashboard-component-name>BLOG</dashboard-component-name>
             <dashboard-component-class>fr.paris.lutece.plugins.blog.web.BlogDashboardComponent</dashboard-component-class>
-            <dashboard-feature-right>BLOGS_MANAGEMENT</dashboard-feature-right>
+            <dashboard-feature-right>BLOG_MANAGEMENT</dashboard-feature-right>
         </dashboard-component>
     </dashboard-components>
     

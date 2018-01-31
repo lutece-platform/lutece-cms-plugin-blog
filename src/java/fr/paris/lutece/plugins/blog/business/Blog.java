@@ -53,7 +53,7 @@ import java.util.List;
  */
 public class Blog extends ReferenceItem implements Serializable, IExtendableResource, RBACResource
 {
-    public static final String PROPERTY_RESOURCE_TYPE = "blogs";
+    public static final String PROPERTY_RESOURCE_TYPE = "BLOG";
 
     private static final long serialVersionUID = 1L;
     
