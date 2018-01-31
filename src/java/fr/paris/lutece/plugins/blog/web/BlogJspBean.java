@@ -51,6 +51,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
@@ -129,6 +130,9 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_TAG = "tag_doc";
     protected static final String PARAMETER_TAG_NAME = "tag_name";
     protected static final String PARAMETER_URL= "url";
+    protected static final String PARAMETER_UNPUBLISHED= "unpublished";
+    protected static final String PARAMETER_DATE_UPDATE_BLOG_AFTER= "dateUpdateBlogAfter";
+    protected static final String PARAMETER_DATE_UPDATE_BLOG_BEFOR= "dateUpdateBlogBefor";
 
     protected static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
     protected static final String PARAMETER_SHAREABLE = "shareable";
@@ -214,12 +218,19 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_PAGINATOR = "paginator";
     protected static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     protected static final String MARK_ASC_SORT = "asc_sort";
+    protected static final String MARK_DATE_UPDATE_BLOG_AFTER = "dateUpdateBlogAfter";
+    protected static final String MARK_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
+    protected static final String MARK_UNPUBLISHED = "unpublished";
+
 
 
     // Session variable to store working values
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
+    protected boolean _bIsUnpulished = false;
+    protected String _dateUpdateBlogAfter;
+    protected String _dateUpdateBlogBefor;
     protected String _strCurrentPageIndex;
     protected int _nItemsPerPage;
     protected int _nDefaultItemsPerPage;
@@ -256,9 +267,14 @@ public class BlogJspBean extends ManageBlogJspBean
             _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
             _strTag = request.getParameterValues( PARAMETER_TAG );
+            _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
+            _dateUpdateBlogAfter =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
+            _dateUpdateBlogBefor =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
+            
         }
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked )
+        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) 
+        		|| _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null)
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
@@ -267,6 +283,13 @@ public class BlogJspBean extends ManageBlogJspBean
                 filter.setTag( _strTag );
             if ( _bIsChecked )
                 filter.setUser( user.getFirstName( ) );
+            if(_bIsUnpulished)
+            	filter.setIsUnpulished(_bIsUnpulished);
+            if( _dateUpdateBlogAfter != null )
+            	filter.setUpdateDateAfter(DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ));
+            if( _dateUpdateBlogBefor != null )
+            	filter.setUpdateDateBefor(DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ));
+            
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
 
         }
@@ -332,6 +355,9 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         model.put( MARK_NB_ITEMS_PER_PAGE, "" + _nItemsPerPage );
         model.put( MARK_TAG, _strTag );
+        model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
+        model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
+        model.put( MARK_UNPUBLISHED, _bIsUnpulished );
         
         model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );

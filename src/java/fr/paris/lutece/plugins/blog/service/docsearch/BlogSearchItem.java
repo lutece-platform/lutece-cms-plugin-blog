@@ -53,7 +53,7 @@ public class BlogSearchItem extends SearchItem
     public static final String FIELD_CATEGORY_ID = "category_id";
 
     /**
-     * Id announce
+     * Id Blog
      */
     public static final String FIELD_ID_HTML_DOC = "id_doc";
 
@@ -67,5 +67,11 @@ public class BlogSearchItem extends SearchItem
      *
      */
     public static final String FIELD_USER = "user";
+    
+    /**
+     * Blog Unpublished
+     */
+    
+    public static final String FIELD_UNPUBLISHED = "isUnpublished";
 
 }

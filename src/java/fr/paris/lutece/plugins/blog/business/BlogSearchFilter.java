@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.blog.business;
 
+import java.util.Date;
+
 /**
  * Search filter for blog
  */
@@ -9,6 +11,9 @@ public class BlogSearchFilter
     private String _strKeywords;
     private String [ ] _strTag;
     private String _strUser;
+    private boolean _bIsUnpulished;
+    private Date _dateUpdateDateAfter;
+    private Date _dateUpdateDateBefor;
 
     /**
      * Get the id of the filter
@@ -93,5 +98,67 @@ public class BlogSearchFilter
     {
         return _strUser;
     }
+    /**
+     * Returns the isUnpulished
+     * 
+     * @return The isUnpulished
+     */
+    public boolean getIsUnpulished( )
+    {
+        return _bIsUnpulished;
+    }
+
+    /**
+     * isUnpulished
+     */
+    public void setIsUnpulished( boolean isUnpulished )
+    {
+        _bIsUnpulished = isUnpulished;
+    }
+
+    
+    /**
+     * Returns the UpdateDateAfter
+     * 
+     * @return The UpdateDateAfter
+     */
+    public Date getUpdateDateAfter( )
+    {
+        return _dateUpdateDateAfter;
+    }
+
+    /**
+     * Sets the UpdateDateAfter
+     * 
+     * @param dateUpdateDateAfter
+     *            The UpdateDateAfter
+     */
+    public void setUpdateDateAfter( Date dateUpdateDateAfter )
+    {
+    	_dateUpdateDateAfter = dateUpdateDateAfter;
+    }
+
+    /**
+     * Returns the UpdateDateBefor
+     * 
+     * @return The UpdateDateBefor
+     */
+    public Date getUpdateDateBefor( )
+    {
+        return _dateUpdateDateBefor;
+    }
+
+    /**
+     * Sets the UpdateDateBefor
+     * 
+     * @param dateUpdateDateBefor
+     *            The UpdateDateBefor
+     */
+    public void setUpdateDateBefor( Date dateUpdateDateBefor )
+    {
+    	_dateUpdateDateBefor = dateUpdateDateBefor;
+    }
+
+
 
 }

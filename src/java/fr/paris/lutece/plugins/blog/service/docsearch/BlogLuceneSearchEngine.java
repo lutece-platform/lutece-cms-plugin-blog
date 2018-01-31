@@ -10,6 +10,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.index.Term;
 
 //import org.apache.lucene.queryParser.MultiFieldQueryParser;
@@ -19,11 +20,14 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.util.BytesRef;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,6 +44,8 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
     {
         ArrayList<SearchItem> listResults = new ArrayList<SearchItem>( );
         IndexSearcher searcher;
+        boolean bDateAfter = false;
+        boolean bDateBefore = false;
 
         // Searcher searcher = null;
         int nNbResults = 0;
@@ -82,6 +88,41 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
                 Query termQuery = new TermQuery( term );
                 queries.add( termQuery.toString( ) );
                 sectors.add( BlogSearchItem.FIELD_USER );
+                flags.add( BooleanClause.Occur.MUST );
+
+            }
+            
+            if (  filter.getUpdateDateAfter( ) !=null ||  filter.getUpdateDateBefor( ) !=null )
+            {
+                BytesRef strAfter = null;
+                BytesRef strBefore = null;
+
+                if ( filter.getUpdateDateAfter( ) != null )
+                {
+                    strAfter = new BytesRef( DateTools.dateToString( filter.getUpdateDateAfter( ), Resolution.MINUTE ) );
+                    bDateAfter = true;
+                }
+
+                if ( filter.getUpdateDateBefor( ) != null )
+                {
+                    Date dateBefore = filter.getUpdateDateBefor( );
+                    strBefore = new BytesRef( DateTools.dateToString( dateBefore, Resolution.MINUTE ) );
+                    bDateBefore = true;
+                }
+
+                Query queryDate = new TermRangeQuery( SearchItem.FIELD_DATE, strAfter, strBefore, bDateAfter, bDateBefore );
+                queries.add( queryDate.toString( ) );
+                sectors.add( BlogSearchItem.FIELD_DATE );
+                flags.add( BooleanClause.Occur.MUST );
+            }
+          
+            if ( filter.getIsUnpulished() )
+            {
+
+                Term term = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf(filter.getIsUnpulished( )) );
+                Query termQuery = new TermQuery( term );
+                queries.add( termQuery.toString( ) );
+                sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
                 flags.add( BooleanClause.Occur.MUST );
 
             }
