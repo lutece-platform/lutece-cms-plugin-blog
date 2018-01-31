@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.blog.web;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.portal.business.rbac.RBAC;
@@ -72,6 +73,8 @@ public class TagJspBean extends ManageBlogJspBean
     private static final String PROPERTY_PAGE_TITLE_MANAGE_TAGS = "blog.manage_tags.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_TAGS = "blog.modify_tags.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_TAG = "blog.create_tag.pageTitle";
+    
+    private static final String MESSAGE_ERROR_TAG_IS_AFFECTED = "blog.message.errorTagIsAffected";
 
     // Markers
     private static final String MARK_TAG_LIST = "tag_list";
@@ -246,6 +249,12 @@ public class TagJspBean extends ManageBlogJspBean
     {
     	String strId= request.getParameter( PARAMETER_ID_TAG );
         int nId = Integer.parseInt( strId );
+
+        if( BlogHome.getBlogByTag(nId).size() != 0 ){
+        	
+	        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_TAG_IS_AFFECTED, AdminMessage.TYPE_STOP );
+	        return redirect( request, strMessageUrl );
+        }
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId,
                 Tag.PERMISSION_DELETE, getUser( ) ) )
         {

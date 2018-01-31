@@ -46,11 +46,11 @@ import java.util.List;
 public final class IndexerActionDAO implements IIndexerActionDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_action ) FROM blogs_indexer_action";
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_action,id_blog,id_task" + " FROM blogs_indexer_action WHERE id_action = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blogs_indexer_action( id_action,id_blog,id_task)" + " VALUES(?,?,?)";
-    private static final String SQL_QUERY_DELETE = "DELETE FROM blogs_indexer_action WHERE id_action = ? ";
-    private static final String SQL_QUERY_SELECT = "SELECT id_action,id_blog,id_task" + " FROM blogs_indexer_action  ";
+    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_action ) FROM blog_indexer_action";
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_action,id_blog,id_task" + " FROM blog_indexer_action WHERE id_action = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_indexer_action( id_action,id_blog,id_task)" + " VALUES(?,?,?)";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM blog_indexer_action WHERE id_action = ? ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_action,id_blog,id_task" + " FROM blog_indexer_action  ";
     private static final String SQL_FILTER_ID_TASK = " id_task = ? ";
     private static final String SQL_FILTER_ID_BLOG = " id_blog = ? ";
 

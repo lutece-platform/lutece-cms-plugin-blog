@@ -54,7 +54,7 @@ public final class TagDAO implements ITagDAO
     private static final String SQL_QUERY_SELECT_ALL_TAG = "SELECT  id_tag, name FROM blog_tag ";
     private static final String SQL_QUERY_SELECT_TAG_BY_NAME = "SELECT  id_tag, name FROM blog_tag WHERE name = ? ";
 
-    private static final String SQL_QUERY_DELETE = "DELETE FROM blog WHERE id_tag = ? ";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM blog_tag WHERE id_tag = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE blog_tag SET  id_tag = ?, name = ? WHERE id_tag = ?";
 
     private static final String SQL_QUERY_INSERT_TAG_DOC = "INSERT INTO blog_tag_document ( id_tag, id_blog, priority ) VALUES ( ? , ?, ? )";

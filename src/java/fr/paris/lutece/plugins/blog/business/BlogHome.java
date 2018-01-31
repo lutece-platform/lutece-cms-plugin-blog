@@ -256,5 +256,17 @@ public final class BlogHome
 
         return listDocuments;
     }
+    
+    /**
+     * Load the data of Blog objects and returns them as a list
+     * 
+     * @param nIdTag
+     *            Tag Id
+     * @return The list which contains the data of Blog objects
+     */
+    public static List<Blog> getBlogByTag( int nIdTag )
+    {
+        return _dao.loadBlogByIdTag( nIdTag, _plugin );
+    }
 
 }

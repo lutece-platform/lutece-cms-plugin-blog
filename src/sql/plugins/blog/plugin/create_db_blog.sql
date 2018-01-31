@@ -3,8 +3,8 @@
 -- Structure for table blog
 --
 
-DROP TABLE IF EXISTS blog;
-CREATE TABLE blog (
+DROP TABLE IF EXISTS blog_blog;
+CREATE TABLE blog_blog (
 id_blog int NOT NULL,
 version int default '0' NOT NULL,
 content_label varchar(50) default '' NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE blog_tag_document (
 id_tag int NOT NULL,
 id_blog int NOT NULL,
 priority int NOT NULL,
-CONSTRAINT `fk_blog` FOREIGN KEY(`id_blog`) references blog (`id_blog`),
+CONSTRAINT `fk_blog` FOREIGN KEY(`id_blog`) references blog_blog (`id_blog`),
 CONSTRAINT `fk_id_tag` FOREIGN KEY(`id_tag`) references blog_tag(`id_tag`),
 
 PRIMARY KEY (id_tag, id_blog)
@@ -105,8 +105,8 @@ PRIMARY KEY (id_tag, id_blog)
 /*==============================================================*/
 /* Table structure for table blog_indexer_action				*/
 /*==============================================================*/
-DROP TABLE IF EXISTS blogs_indexer_action;
-CREATE TABLE blogs_indexer_action (
+DROP TABLE IF EXISTS blog_indexer_action;
+CREATE TABLE blog_indexer_action (
   id_action INT DEFAULT 0 NOT NULL,
   id_blog INT DEFAULT 0 NOT NULL,
   id_task INT DEFAULT 0 NOT NULL ,
@@ -149,7 +149,7 @@ CREATE TABLE blog_list_portlet_htmldocs (
 	document_order int default NULL,
 
 	
-    CONSTRAINT `fk_id_blog_portlet` FOREIGN KEY(`id_blog`) references blog(`id_blog`),
+    CONSTRAINT `fk_id_blog_portlet` FOREIGN KEY(`id_blog`) references blog_blog(`id_blog`),
 	PRIMARY KEY (id_portlet, id_blog)
 );
 
