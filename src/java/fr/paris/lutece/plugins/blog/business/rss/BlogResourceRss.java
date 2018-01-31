@@ -85,6 +85,7 @@ public class BlogResourceRss extends ResourceRss
     private static final String MARK_RSS_FILE_LANGUAGE = "file_language";
     private static final String MARK_PORTLET_LIST = "portlet_list";
     private static final String MARK_ID_PORTLET = "id_portlet";
+    private static final String MARK_RSS_ITEM_CONTENT_ID = "id_content";
 
     // Parameters
     private static final String PARAMETER_ID_BLOG = "id_blog";
@@ -229,12 +230,13 @@ public class BlogResourceRss extends ResourceRss
         {
 
             HashMap<String, Object> item = new HashMap<String, Object>( );
-            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( dcPub.getIdDocument( ) );
+            Blog blog = BlogService.getInstance( ).loadDocument( dcPub.getIdDocument( ) );
             item.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
             item.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) );
             item.put( MARK_RSS_SITE_URL, strSiteUrl );
             item.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
             item.put( MARK_RSS_ITEM_GUID, blog.getId( ) );
+            item.put( MARK_RSS_ITEM_CONTENT_ID, (blog.getDocContent().size()!=0 )?blog.getDocContent().get(0).getId():0 );
 
             listItem.add( item );
 
