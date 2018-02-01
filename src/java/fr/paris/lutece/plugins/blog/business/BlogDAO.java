@@ -51,7 +51,7 @@ import org.apache.commons.lang.StringUtils;
 public final class BlogDAO implements IBlogDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_blog ) FROM blog";
+    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_blog ) FROM blog_blog";
     private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM blog_versions";
     private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog ORDER BY update_date DESC LIMIT ?";
