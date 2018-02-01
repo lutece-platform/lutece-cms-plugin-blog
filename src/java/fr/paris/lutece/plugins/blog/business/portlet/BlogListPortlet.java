@@ -88,6 +88,12 @@ public class BlogListPortlet extends PortletHtmlContent
     	BlogFilter documentFilter= new BlogFilter();
         List<Integer> listIdDoc = PublishingService.getPublishedDocumentsIdsListByPortletIds(new int[]{this.getId( )}, date, date, BlogUtils.getPlugin());
         Integer[] docId =listIdDoc.toArray(new Integer[listIdDoc.size()]);
+        //Default we published a blog that as id=0
+        if(docId == null || docId.length == 0){
+        	
+        	docId = new Integer[1];
+        	docId[0]= 0;
+        }
         documentFilter.setIds( docId );
         documentFilter.setLoadBinaries( true );
         List<Blog> listBlogsPublished = (List<Blog>) BlogHome.findByFilter( documentFilter, null );
