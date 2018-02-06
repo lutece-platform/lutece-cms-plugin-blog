@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class BlogListPortlet extends PortletHtmlContent
 {
-    public static final String RESOURCE_ID = "BLOGS_LIST_PORTLET";
+    public static final String RESOURCE_ID = "BLOG_LIST_PORTLET";
 
     // ///////////////////////////////////////////////////////////////////////////////
     public static final String MARK_LIST_BLOG_PUBLISHED = "blog_list_published";

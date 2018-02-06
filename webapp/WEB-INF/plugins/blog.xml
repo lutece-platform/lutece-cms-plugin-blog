@@ -109,7 +109,7 @@
      
       <portlet>     
        <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome</portlet-class>
-	   <portlet-type-id>BLOGLIST_PORTLET</portlet-type-id>
+	   <portlet-type-id>BLOG_LIST_PORTLET</portlet-type-id>
 	   <portlet-type-name>blog.portlet.blogsListBlogsPortlet.name</portlet-type-name>
 	   <portlet-creation-url>plugins/blog/CreatePortletBlogsList.jsp</portlet-creation-url>
 	   <portlet-update-url>plugins/blog/ModifyPortletBlogsList.jsp</portlet-update-url>
