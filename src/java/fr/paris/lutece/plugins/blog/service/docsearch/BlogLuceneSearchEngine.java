@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.blog.service.docsearch;
 
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
+import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.search.LuceneSearchEngine;
 import fr.paris.lutece.portal.service.search.SearchItem;
@@ -68,7 +69,6 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
                 flags.add( BooleanClause.Occur.MUST );
 
             }
-
             if ( filter.getTag( ) != null )
             {
                 for ( String tag : filter.getTag( ) )
@@ -126,7 +126,12 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
                 flags.add( BooleanClause.Occur.MUST );
 
             }
-
+            Term term = new Term( BlogSearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );
+            Query termQuery = new TermQuery( term );
+            queries.add( termQuery.toString( ) );
+            sectors.add( BlogSearchItem.FIELD_TYPE );
+            flags.add( BooleanClause.Occur.MUST );
+            
             Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String [ queries.size( )] ), sectors.toArray( new String [ sectors.size( )] ),
                     flags.toArray( new BooleanClause.Occur [ flags.size( )] ), BlogSearchService.getInstance( ).getAnalyzer( ) );
 
