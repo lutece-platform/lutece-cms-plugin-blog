@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
@@ -178,7 +179,7 @@ public class TagJspBean extends ManageBlogJspBean
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Tag.PERMISSION_CREATE, getUser( ) ) )
+                Tag.PERMISSION_CREATE, AdminUserService.getAdminUser( request ) ) )
    	 	{
 	        // Check constraints
 	        if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -225,7 +226,7 @@ public class TagJspBean extends ManageBlogJspBean
     	String strId= request.getParameter( PARAMETER_ID_TAG );
         int nId = Integer.parseInt( strId );
         if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId,
-                Tag.PERMISSION_DELETE, getUser( ) ) )
+                Tag.PERMISSION_DELETE, AdminUserService.getAdminUser( request ) ) )
         {
    		 throw new AccessDeniedException(  );
         }
@@ -256,7 +257,7 @@ public class TagJspBean extends ManageBlogJspBean
 	        return redirect( request, strMessageUrl );
         }
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId,
-                Tag.PERMISSION_DELETE, getUser( ) ) )
+                Tag.PERMISSION_DELETE, AdminUserService.getAdminUser( request ) ) )
         {
 	        TagHome.remove( nId );
 	
@@ -313,7 +314,7 @@ public class TagJspBean extends ManageBlogJspBean
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, String.valueOf(_tag.getIdTag( )),
-                Tag.PERMISSION_MODIFY, getUser( ) ) )
+                Tag.PERMISSION_MODIFY, AdminUserService.getAdminUser( request ) ) )
         {
 	        // Check constraints
 	        if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
