@@ -20,6 +20,9 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortField.Type;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.TopDocs;
@@ -135,7 +138,16 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
             Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String [ queries.size( )] ), sectors.toArray( new String [ sectors.size( )] ),
                     flags.toArray( new BooleanClause.Occur [ flags.size( )] ), BlogSearchService.getInstance( ).getAnalyzer( ) );
 
-            TopDocs topDocs = searcher.search( queryMulti, LuceneSearchEngine.MAX_RESPONSES );
+            Sort sorter = new Sort(); 
+            String field = BlogSearchItem.FIELD_DATE_UPDATE; 
+            Type type = Type.LONG; 
+            boolean descending = true;
+
+            SortField sortField = new SortField(field, type, descending);
+
+            sorter.setSort(sortField);
+            
+            TopDocs topDocs = searcher.search( queryMulti, LuceneSearchEngine.MAX_RESPONSES, sorter );
             ScoreDoc [ ] hits = topDocs.scoreDocs;
             nNbResults = hits.length;
 
