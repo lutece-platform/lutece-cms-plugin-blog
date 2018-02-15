@@ -613,7 +613,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         int nId = Integer.parseInt( strId );
         
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
                 Blog.PERMISSION_DELETE, getUser( ) ) )
         {
 	        List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
