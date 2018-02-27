@@ -112,5 +112,14 @@ public final class DocContentHome
     {
         return _dao.loadDocContentByIdHtemldoc( nIdHtmlDoc, _plugin );
     }
+    /**
+     * Returns a list of a ContentType 
+     * @param plugin the plugin
+     * @return a list of a ContentType 
+     */
+    public static List<ContentType> getListContentType(  )
+    {
+        return _dao.loadListContentType( _plugin );
+    }
 
 }

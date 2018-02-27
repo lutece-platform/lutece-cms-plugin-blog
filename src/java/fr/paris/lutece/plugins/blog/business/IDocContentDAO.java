@@ -56,4 +56,18 @@ public interface IDocContentDAO
      */
     void store( DocContent docContent, Plugin plugin );
 
+    /**
+     * Returns an instance of a ContentType whose identifier is specified in parameter
+     * @param idType The identifier
+     * @param plugin the plugin
+     * @return an instance of a ContentType
+     */
+    ContentType loadContentType( int idType, Plugin plugin);
+    /**
+     * Returns a list of a ContentType 
+     * @param plugin the plugin
+     * @return a list of a ContentType 
+     */
+    List<ContentType> loadListContentType( Plugin plugin);
+
 }

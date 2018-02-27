@@ -1,9 +1,10 @@
 function getImage( ) {
-   var file = $('#attachment').get(0).files[0];;
+   var fileType = $('#fileType').val();
+   var file = $('#attachment').get(0).files[0];
    var reader = new FileReader();
    reader.readAsDataURL(file);
    reader.onload = function () {
-     doAddContent( "", reader.result);
+     doAddContent( "", reader.result, fileType);
      
    };
    reader.onerror = function (error) {
@@ -13,11 +14,11 @@ function getImage( ) {
 
 function getCroppedCanva(fieldName){
 
-	
+	var fileType = $('#fileType').val();
 	var $element= $('.img-container'+fieldName+' > img');
-
+  
 	result = $element.cropper('getCroppedCanvas', { width: "222", height:"555" });
-	doAddContent( fieldName, result.toDataURL() );
+	doAddContent( fieldName, result.toDataURL(), fileType );
 	
 };
 
@@ -28,13 +29,13 @@ function  deleteImage(fName){
 	  	
 };
 
-function doAddContent( fileName, result )
+function doAddContent( fileName, result, fileType )
 {
     $.ajax({
     url : baseUrl + "jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent",
     type: 'POST',
     dataType: "json",
-    data: {fileContent:result, fileName:fileName},
+    data: {fileContent:result, fileName:fileName, fileType:fileType},
     async: false,
     cache:true,
     success:function(data) {

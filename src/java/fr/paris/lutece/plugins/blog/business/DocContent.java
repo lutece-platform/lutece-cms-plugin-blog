@@ -1,5 +1,6 @@
 package fr.paris.lutece.plugins.blog.business;
 
+
 public class DocContent
 {
 
@@ -8,6 +9,7 @@ public class DocContent
     private String _strTextValue;
     private byte [ ] _bytes;
     private String _strValueContentType;
+    private ContentType _contentType;
 
     /**
      * Returns the IdDocContent
@@ -112,6 +114,27 @@ public class DocContent
     public String getValueContentType( )
     {
         return _strValueContentType;
+    }
+
+    /**
+     * Sets the ContentType
+     * 
+     * @param ContentType
+     *            The ContentType
+     */
+    public void setContentType( ContentType type )
+    {
+    	_contentType = type;
+    }
+
+    /**
+     * Gets the ContentType
+     * 
+     * @return The ContentType
+     */
+    public ContentType getContentType( )
+    {
+        return _contentType;
     }
 
 }

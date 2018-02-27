@@ -29,10 +29,26 @@ DROP TABLE IF EXISTS blog_content;
 CREATE TABLE blog_content (
 	id_blog int NOT NULL,
 	id_document int default 0 NOT NULL,
+	id_type int default 0 NOT NULL,
 	text_value long varchar,
 	mime_type varchar(255) default NULL,
 	binary_value long varbinary,
 	PRIMARY KEY (id_document)
+	CONSTRAINT `fk_content_type` FOREIGN KEY(`id_type`) references blog_content_type (`id_type`),
+
+
+);
+
+
+--
+-- Structure for table blog_content_type
+--
+DROP TABLE IF EXISTS blog_content_type;
+CREATE TABLE blog_content_type (
+	id_type int NOT NULL,
+	type_label varchar(50),
+	PRIMARY KEY (id_type)
+	
 );
 
 --

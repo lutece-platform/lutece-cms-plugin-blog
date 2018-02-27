@@ -102,6 +102,11 @@
                    <label for="attachment" class="sr-only">#i18n{blog.create_blog.labelAttachment}</label>
 
                     <div class="text-center">
+             <select name="fileType" id="fileType">
+             <#list image_type as type>
+				  <option value= "${type.idContentType}">${type.label}</option>             
+             </#list>
+             </select>
 		    <#if is_crop_image><!--To the use of the image crop plugin -->
 			<#include "/skin/plugins/uploadimage/uploadimage.html" />
 			<@addRequiredJsUploadImages/>

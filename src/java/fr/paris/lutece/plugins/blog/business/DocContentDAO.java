@@ -48,13 +48,16 @@ public final class DocContentDAO implements IDocContentDAO
 
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_document ) FROM blog_content";
-    private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_document, id_blog, text_value , binary_value, mime_type ) VALUES ( ? , ? , ? , ? , ? )";
-    private static final String SQL_QUERY_SELECT_CONTENT = "SELECT  id_document, id_blog , text_value , binary_value, mime_type FROM blog_content WHERE id_blog = ? ";
+    private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_document, id_blog, id_type, text_value , binary_value, mime_type ) VALUES ( ? , ? , ? , ? , ?, ? )";
+    private static final String SQL_QUERY_SELECT_CONTENT = "SELECT  id_document, id_blog, id_type, text_value , binary_value, mime_type FROM blog_content WHERE id_blog = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_content WHERE id_blog = ?  ;";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_content SET  id_blog = ?, text_value = ?, binary_value = ?, mime_type = ? WHERE id_blog = ?";
-    private static final String SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY = "SELECT  id_document, id_blog , text_value , binary_value, mime_type FROM blog_content WHERE id_document = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_content SET  id_blog = ?, id_type= ?, text_value = ?, binary_value = ?, mime_type = ? WHERE id_blog = ?";
+    private static final String SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY = "SELECT  id_document, id_blog, id_type , text_value , binary_value, mime_type FROM blog_content WHERE id_document = ? ";
 
+    private static final String SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY = "SELECT id_type, type_label FROM blog_content_type WHERE id_type = ? ";
+    private static final String SQL_QUERY_SELECT_CONTENT_TYPE = "SELECT id_type, type_label FROM blog_content_type ";
 
+    
     /**
      * Generates a new primary key
      * 
@@ -88,9 +91,10 @@ public final class DocContentDAO implements IDocContentDAO
 
         daoUtil.setInt( 1, docContent.getId( ) );
         daoUtil.setInt( 2, docContent.getIdBlog( ) );
-        daoUtil.setString( 3, docContent.getTextValue( ) );
-        daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
-        daoUtil.setString( 5, docContent.getValueContentType( ) );
+        daoUtil.setInt( 3, docContent.getContentType().getIdContentType() );
+        daoUtil.setString( 4, docContent.getTextValue( ) );
+        daoUtil.setBytes( 5, docContent.getBinaryValue( ) );
+        daoUtil.setString( 6, docContent.getValueContentType( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -100,11 +104,11 @@ public final class DocContentDAO implements IDocContentDAO
      * {@inheritDoc }
      */
     @Override
-    public List<DocContent> loadDocContentByIdHtemldoc( int idHtmlDoc, Plugin plugin )
+    public List<DocContent> loadDocContentByIdHtemldoc( int idBlog, Plugin plugin )
     {
     	List<DocContent> listDoc= new ArrayList<DocContent>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT, plugin );
-        daoUtil.setInt( 1, idHtmlDoc );
+        daoUtil.setInt( 1, idBlog );
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )
@@ -113,9 +117,10 @@ public final class DocContentDAO implements IDocContentDAO
 
             docContent.setId( daoUtil.getInt( 1 ) );
             docContent.setIdBlog( daoUtil.getInt( 2 ) );
-            docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
-            docContent.setTextValue( daoUtil.getString( 3 ) );
-            docContent.setValueContentType( daoUtil.getString( 5 ) );
+            docContent.setContentType( loadContentType( daoUtil.getInt( 3 ), plugin ) );
+            docContent.setBinaryValue( daoUtil.getBytes( 5 ) );
+            docContent.setTextValue( daoUtil.getString( 4 ) );
+            docContent.setValueContentType( daoUtil.getString( 6 ) );
 
             listDoc.add( docContent) ;
         }
@@ -129,26 +134,26 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public DocContent loadDocContent( int idDocument, Plugin plugin )
     {
+    	DocContent docContent= null;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, idDocument );
         daoUtil.executeQuery( );
 
         if ( daoUtil.next( ) )
         {
-            DocContent docContent = new DocContent( );
+            docContent = new DocContent( );
 
             docContent.setId( daoUtil.getInt( 1 ) );
             docContent.setIdBlog( daoUtil.getInt( 2 ) );
-            docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
-            docContent.setTextValue( daoUtil.getString( 3 ) );
-            docContent.setValueContentType( daoUtil.getString( 5 ) );
-            daoUtil.free( );
+            docContent.setContentType( loadContentType( daoUtil.getInt( 3 ), plugin ) );
+            docContent.setBinaryValue( daoUtil.getBytes( 5 ) );
+            docContent.setTextValue( daoUtil.getString( 4 ) );
+            docContent.setValueContentType( daoUtil.getString( 6 ) );
 
-            return docContent;
         }
         daoUtil.free( );
 
-        return null;
+        return docContent;
     }
 
     /**
@@ -175,12 +180,64 @@ public final class DocContentDAO implements IDocContentDAO
 
         // daoUtil.setInt( 1, docContent.getId( ));
         daoUtil.setInt( 1, docContent.getIdBlog( ) );
-        daoUtil.setString( 2, docContent.getTextValue( ) );
-        daoUtil.setBytes( 3, docContent.getBinaryValue( ) );
-        daoUtil.setString( 4, docContent.getValueContentType( ) );
-        daoUtil.setInt( 5, docContent.getIdBlog( ) );
+        daoUtil.setInt( 2, docContent.getContentType().getIdContentType() );
+
+        daoUtil.setString( 3, docContent.getTextValue( ) );
+        daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
+        daoUtil.setString( 5, docContent.getValueContentType( ) );
+        daoUtil.setInt( 6, docContent.getIdBlog( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
+    /**
+    * {@inheritDoc }
+    */
+   @Override
+   public ContentType loadContentType( int idType, Plugin plugin)
+   {
+	   ContentType contentType= null;
+       DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY, plugin );
+       daoUtil.setInt( 1, idType );
+       daoUtil.executeQuery( );
+
+       if ( daoUtil.next( ) )
+       {
+           contentType = new ContentType( );
+
+           contentType.setIdContentType( daoUtil.getInt( 1 ) );
+           contentType.setLabel( daoUtil.getString( 2 ) );
+
+       }
+       daoUtil.free( );
+
+       return contentType;
+   }
+   
+   /**
+    * {@inheritDoc }
+    */
+   @Override
+   public List<ContentType> loadListContentType( Plugin plugin)
+   {
+	   List<ContentType> listcontentType= new ArrayList<ContentType>();
+       DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE, plugin );
+  
+       daoUtil.executeQuery( );
+
+       while ( daoUtil.next( ) )
+       {
+    	   ContentType contentType = new ContentType( );
+
+           contentType.setIdContentType( daoUtil.getInt( 1 ) );
+           contentType.setLabel( daoUtil.getString( 2 ) );
+           listcontentType.add(contentType);
+
+       }
+       daoUtil.free( );
+
+       return listcontentType;
+   }
+
+
 }

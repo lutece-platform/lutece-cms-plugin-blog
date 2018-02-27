@@ -33,10 +33,12 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
+import fr.paris.lutece.plugins.blog.business.ContentType;
 import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
+import fr.paris.lutece.plugins.blog.business.DocContentHome;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
@@ -166,6 +168,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_DIFF = "blog_diff";
     protected static final String MARK_BLOG2 = "blog2";
     protected static final String MARK_LIST_TAG = "list_tag";
+    protected static final String MARK_LIST_IMAGE_TYPE = "image_type";
     protected static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
     protected static final String MARK_TAG = "tags";
     protected static final String MARK_USE_UPLOAD_IMAGE_PLUGIN = "is_crop_image";
@@ -413,6 +416,7 @@ public class BlogJspBean extends ManageBlogJspBean
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
                 Tag.PERMISSION_CREATE, getUser( ) );     
 
+        model.put(MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType());
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );        
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
@@ -679,6 +683,7 @@ public class BlogJspBean extends ManageBlogJspBean
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
                 Tag.PERMISSION_CREATE, getUser( ) );
 
+        model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType());
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );        
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
@@ -889,7 +894,8 @@ public class BlogJspBean extends ManageBlogJspBean
     public String addContent( HttpServletRequest request){
     	
     	String base64ImageString= request.getParameter( "fileContent" );  
-    	String strFileName= request.getParameter( "fileName" );    	 
+    	String strFileName= request.getParameter( "fileName" );
+    	String strFileType= request.getParameter( "fileType" );    	 
     	Date currentTime = new Date();
     	strFileName= strFileName + currentTime.getTime( );
     
@@ -916,6 +922,14 @@ public class BlogJspBean extends ManageBlogJspBean
          docContent.setBinaryValue( imageByteArray );
          docContent.setValueContentType( mimeType );
          docContent.setTextValue( strFileName );
+         
+         if(strFileType != null ){
+        	 
+        	 ContentType contType= new ContentType();
+        	 contType.setIdContentType(Integer.parseInt(strFileType));
+             docContent.setContentType(contType);
+         }
+         
 
          _blog.addConetnt(docContent);
          
