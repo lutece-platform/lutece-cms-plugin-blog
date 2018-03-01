@@ -204,6 +204,14 @@
                           ${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="Preview" class="img-responsive img-thumbnail">
                         </a>
 			</div>
+			<div>
+
+			 <select name="fileType" id="fileType" onchange="doUpdateContentType(${docContent.id},this.value)" >
+             <#list image_type as type>
+				  <option value= "${type.idContentType}" <#if type.idContentType= docContent.contentType.idContentType>selected</#if>>${type.label}</option>             
+             </#list>
+             </select>
+             </div>
 			</#list>
                       </#if>
                      <div id="imageappend"/>

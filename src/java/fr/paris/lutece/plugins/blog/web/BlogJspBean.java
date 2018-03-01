@@ -142,6 +142,8 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_TAG_ACTION = "tagAction";
     protected static final String PARAMETER_ACTION_BUTTON = "button";
     protected static final String PARAMETER_APPLY = "apply";
+    protected static final String PARAMETER_TYPE_ID = "idType";
+    protected static final String PARAMETER_CONTENT_ID = "idContent";
 
 
     // Properties for page titles
@@ -176,6 +178,12 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_PERMISSION_MODIFY_BLOG = "permission_manage_modify_blog";
     protected static final String MARK_PERMISSION_PUBLISH_BLOG = "permission_manage_publish_blog";
     protected static final String MARK_PERMISSION_DELETE_BLOG = "permission_manage_delete_blog";
+
+
+    
+
+    
+
     
 
  
@@ -207,6 +215,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_UPDATE_PRIORITY_TAG = "updatePriorityTag";
     private static final String ACTION_ADD_FILE_CONTENT = "addContent";
     private static final String ACTION_REMOVE_FILE_CONTENT = "deleteContent";
+    private static final String ACTION_UPDATE_CONTENT_TYPE = "updateContentType";
 
     // Infos
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
@@ -936,6 +945,7 @@ public class BlogJspBean extends ManageBlogJspBean
          return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
     	
     }
+    
     /**
      * delete docContent in the htmlDoc content list
      * @param request The Http request
@@ -949,6 +959,26 @@ public class BlogJspBean extends ManageBlogJspBean
         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
    	
    }
+    @Action( ACTION_UPDATE_CONTENT_TYPE )
+    public String updateContentType( HttpServletRequest request){
+    	
+    	String strContentTypeId= request.getParameter(PARAMETER_TYPE_ID ); 
+    	String strContentId= request.getParameter( PARAMETER_CONTENT_ID );
+    	for(DocContent content :_blog.getDocContent()){
+    	
+    		if( strContentId != null && content.getId()== Integer.parseInt(strContentId)){
+    			
+    			ContentType contType =new ContentType();
+    			contType.setIdContentType(Integer.parseInt(strContentTypeId));
+    			
+    			content.setContentType(contType);
+    			break;
+    		}
+    	}
+    	
+    	   return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
+    }
+    
     /**
      * 
      * @return

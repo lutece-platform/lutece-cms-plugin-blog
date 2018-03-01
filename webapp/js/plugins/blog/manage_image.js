@@ -77,3 +77,26 @@ function doDeleteContent( fileName )
     }
 	});
 }
+
+function doUpdateContentType( idContent, idTypeContent)
+{
+    $.ajax({
+    url : baseUrl + "jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType",
+    type: 'POST',
+    dataType: "json",
+    data: {idType:idTypeContent, idContent:idContent},
+    async: false,
+    cache:true,
+    success:function(data) {
+  	if ( data.status == 'OK' )
+		{
+			
+    	}	else	{
+				alert( "Echec" );
+			}
+		},
+  	error: function(jqXHR, textStatus, errorThrown) {
+			alert( "Error" );
+    }
+	});
+}
