@@ -48,6 +48,7 @@ public class BlogFilter
     private Boolean _bIsPublished;
     private String _dateMin;
     private String _dateMax;
+    private boolean _bOrderInPortlet;
 
     /**
      * @return the _arrayTagsId
@@ -173,5 +174,26 @@ public class BlogFilter
     public void setDateMax( String dateMax )
     {
         this._dateMax = dateMax;
+    }
+    
+    /**
+     * Get the boolean that indicates whether loaded by order in the portlet list
+     * 
+     * @return True if loaded by order in the portlet list, false otherwise
+     */
+    public boolean getOrderInPortlet( )
+    {
+        return _bOrderInPortlet;
+    }
+
+    /**
+     * Set the boolean that indicates whether loaded by order in the portlet list
+     * 
+     * @param bOrder
+     *            True if if loaded by order in the portlet list, false otherwise
+     */
+    public void setOrderInPortlet( boolean bOrder )
+    {
+        this._bOrderInPortlet = bOrder;
     }
 }

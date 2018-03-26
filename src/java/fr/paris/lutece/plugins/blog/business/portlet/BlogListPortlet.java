@@ -96,6 +96,7 @@ public class BlogListPortlet extends PortletHtmlContent
         }
         documentFilter.setIds( docId );
         documentFilter.setLoadBinaries( true );
+        documentFilter.setOrderInPortlet( true );
         List<Blog> listBlogsPublished = (List<Blog>) BlogHome.findByFilter( documentFilter, null );
         DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
