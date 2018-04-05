@@ -613,7 +613,12 @@ public final class BlogDAO implements IBlogDAO
             sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append(
                     "a.id_blog NOT IN (SELECT DISTINCT id_blog FROM blogs_tag_document) " );
         }
-
+        if ( filter.getPortletId() != 0 )
+        {
+            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append(
+                    "p.id_portlet="+String.valueOf(filter.getPortletId()) );
+        }
+        
         if ( StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) ) )
         {
             sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date < " )

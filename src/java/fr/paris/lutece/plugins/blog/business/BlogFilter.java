@@ -48,6 +48,7 @@ public class BlogFilter
     private Boolean _bIsPublished;
     private String _dateMin;
     private String _dateMax;
+    private int _nPortletId;
     private boolean _bOrderInPortlet;
 
     /**
@@ -195,5 +196,26 @@ public class BlogFilter
     public void setOrderInPortlet( boolean bOrder )
     {
         this._bOrderInPortlet = bOrder;
+    }
+    
+    /**
+     * Returns the nPortletId
+     *
+     * @return The nPortletId
+     */
+    public int getPortletId( )
+    {
+        return _nPortletId;
+    }
+
+    /**
+     * Sets the IdPortlet
+     *
+     * @param nPortletId
+     *            The nPortletId
+     */
+    public void setPortletId( int nPortletId )
+    {
+        _nPortletId = nPortletId;
     }
 }
