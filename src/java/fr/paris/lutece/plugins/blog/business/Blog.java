@@ -73,7 +73,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     private int _nVersion;
 
     @NotEmpty( message = "#i18n{blog.validation.blog.ContentLabel.notEmpty}" )
-    @Size( max = 50, message = "#i18n{blog.validation.blog.ContentLabel.size}" )
+    @Size( max = 255, message = "#i18n{blog.validation.blog.ContentLabel.size}" )
     private String _strContentLabel;
 
     private Timestamp _dateCreationDate;
@@ -85,14 +85,14 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     private String _strHtmlContent;
 
     @NotEmpty( message = "#i18n{blog.validation.blog.User.notEmpty}" )
-    @Size( max = 100, message = "#i18n{blog.validation.blog.User.size}" )
+    @Size( max = 255, message = "#i18n{blog.validation.blog.User.size}" )
     private String _strUser;
 
     @NotEmpty( message = "#i18n{blog.validation.blog.UserCreator.notEmpty}" )
-    @Size( max = 100, message = "#i18n{blog.validation.blog.UserCreator.size}" )
+    @Size( max = 255, message = "#i18n{blog.validation.blog.UserCreator.size}" )
     private String _strUserCreator;
 
-    @Size( max = 100, message = "#i18n{blog.validation.blog.EditComment.size}" )
+    @Size( max = 255, message = "#i18n{blog.validation.blog.EditComment.size}" )
     private String _strEditComment;
 
     @Size( message = "#i18n{blog.validation.description.size}" )
