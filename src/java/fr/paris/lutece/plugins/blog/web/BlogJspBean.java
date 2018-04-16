@@ -127,6 +127,8 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_DESCRIPTION = "description";
     protected static final String PARAMETER_VIEW = "view";
     protected static final String PARAMETER_BUTTON_SEARCH = "button_search";
+    protected static final String PARAMETER_BUTTON_RESET = "button_reset";
+
     protected static final String PARAMETER_SEARCH_TEXT = "search_text";
     protected static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
     protected static final String PARAMETER_TAG = "tag_doc";
@@ -273,6 +275,9 @@ public class BlogJspBean extends ManageBlogJspBean
         AdminUser user = AdminUserService.getAdminUser( request );
         List<Integer> listBlogsId = new ArrayList<Integer>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
+        String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
+
+        
         if ( strButtonSearch != null )
         {
             // CURRENT USER
@@ -283,6 +288,14 @@ public class BlogJspBean extends ManageBlogJspBean
             _dateUpdateBlogAfter =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
             _dateUpdateBlogBefor =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
             
+        }else if(strButtonReset != null){
+        	 _bIsChecked = false;
+             _strSearchText = null;
+             _strTag = null;
+             _bIsUnpulished = false;
+             _dateUpdateBlogAfter =null;
+             _dateUpdateBlogBefor =null;
+        	
         }
 
         if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) 
