@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
-import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
@@ -51,6 +50,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +120,7 @@ public class TagJspBean extends ManageBlogJspBean
     {
         _tag = null;
         List<Tag> listTag = TagHome.getTagList( );
+        Collections.sort(listTag, (tag1,tag2)-> tag1.getName().compareToIgnoreCase(tag2.getName()));
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_TAG_LIST, listTag, JSP_MANAGE_TAGS );
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
