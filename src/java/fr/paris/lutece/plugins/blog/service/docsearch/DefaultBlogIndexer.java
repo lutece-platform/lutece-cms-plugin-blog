@@ -125,13 +125,13 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
                 };
 
                 indexWriter.deleteDocuments( terms );
-
+                listIdBlog = new ArrayList<Integer>( );
                 listIdBlog.add( action.getIdBlog( ) );
-
+                this.indexListBlog( indexWriter, listIdBlog );
                 BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
             }
 
-            this.indexListBlog( indexWriter, listIdBlog );
+            
 
             listIdBlog = new ArrayList<Integer>( );
 
