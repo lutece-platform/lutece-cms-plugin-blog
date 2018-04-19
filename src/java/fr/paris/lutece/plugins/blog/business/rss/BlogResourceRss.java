@@ -85,7 +85,7 @@ public class BlogResourceRss extends ResourceRss
     private static final String MARK_RSS_FILE_LANGUAGE = "file_language";
     private static final String MARK_PORTLET_LIST = "portlet_list";
     private static final String MARK_ID_PORTLET = "id_portlet";
-    private static final String MARK_RSS_ITEM_CONTENT_ID = "id_content";
+    private static final String MARK_RSS_ITEM_CONTENT = "content_list";
 
     // Parameters
     private static final String PARAMETER_ID_BLOG = "id_blog";
@@ -236,7 +236,7 @@ public class BlogResourceRss extends ResourceRss
             item.put( MARK_RSS_SITE_URL, strSiteUrl );
             item.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
             item.put( MARK_RSS_ITEM_GUID, blog.getId( ) );
-            item.put( MARK_RSS_ITEM_CONTENT_ID, (blog.getDocContent().size()!=0 )?blog.getDocContent().get(0).getId():0 );
+            item.put( MARK_RSS_ITEM_CONTENT, blog.getDocContent() );
 
             listItem.add( item );
 
@@ -254,7 +254,7 @@ public class BlogResourceRss extends ResourceRss
     @Override
     public IFeedResource getFeed( )
     {
-        String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
+      /*  String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
         Locale locale = new Locale( strRssFileLanguage );
         Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
 
@@ -302,6 +302,8 @@ public class BlogResourceRss extends ResourceRss
         resource.setItems( listItems );
 
         return resource;
+        */
+    	return null;
     }
 
     /**
