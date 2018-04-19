@@ -49,7 +49,7 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_rss,id_portlet " + "FROM blog_rss_cf  WHERE id_rss=?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO blog_rss_cf( " + "id_rss, id_portlet )" + "VALUES (?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE blog_rss_cf " + "SET id_rss=?, id_portlet=?" + " WHERE id_rss=?";
-    private static final String SQL_QUERY_DELETE = "DELETE FROM blogs_rss_cf WHERE id_rss=? ";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM blog_rss_cf WHERE id_rss=? ";
     private static final String SQL_QUERY_FIND_ALL = "SELECT id_rss, id_portlet " + "FROM blog_rss_cf";
 
     /**

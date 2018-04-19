@@ -86,6 +86,8 @@ public class BlogResourceRss extends ResourceRss
     private static final String MARK_PORTLET_LIST = "portlet_list";
     private static final String MARK_ID_PORTLET = "id_portlet";
     private static final String MARK_RSS_ITEM_CONTENT = "content_list";
+    private static final String MARK_RSS_ITEM_BLOG = "blog";
+
 
     // Parameters
     private static final String PARAMETER_ID_BLOG = "id_blog";
@@ -222,6 +224,11 @@ public class BlogResourceRss extends ResourceRss
 
         String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
         String strSiteUrl = strWebAppUrl;
+        
+        model.put(MARK_RSS_ITEM_TITLE , I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage ) )) ;
+        model.put(MARK_RSS_SITE_URL , strSiteUrl );
+        model.put(MARK_RSS_FILE_LANGUAGE ,strRssFileLanguage );
+        model.put(MARK_RSS_ITEM_DESCRIPTION ,I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
 
         List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
         List<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>( );
@@ -231,12 +238,8 @@ public class BlogResourceRss extends ResourceRss
 
             HashMap<String, Object> item = new HashMap<String, Object>( );
             Blog blog = BlogService.getInstance( ).loadDocument( dcPub.getIdDocument( ) );
-            item.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
-            item.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) );
-            item.put( MARK_RSS_SITE_URL, strSiteUrl );
-            item.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
-            item.put( MARK_RSS_ITEM_GUID, blog.getId( ) );
-            item.put( MARK_RSS_ITEM_CONTENT, blog.getDocContent() );
+            item.put( MARK_RSS_ITEM_BLOG, blog );
+           
 
             listItem.add( item );
 
