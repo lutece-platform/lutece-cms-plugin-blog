@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import fr.paris.lutece.plugins.blog.business.DocumentPageTemplate;
 import fr.paris.lutece.plugins.blog.business.DocumentPageTemplateHome;
@@ -111,7 +112,12 @@ public class BlogListPortlet extends PortletHtmlContent
         	model.put( MARK_PORTLET_NAME, this.getName( ));
         
         }
-        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), request.getLocale( ), model );
+        Locale locale= null;
+        if( request != null ){
+        	locale= request.getLocale( );
+        }
+        
+        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale , model );
 
         return template.getHtml( );
     }
