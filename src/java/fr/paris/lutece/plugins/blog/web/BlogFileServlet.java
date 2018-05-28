@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.blog.web;
 import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -64,6 +65,9 @@ public class BlogFileServlet extends HttpServlet
     public static final String URL_SERVLET = "servlet/plugins/blog/file";
     private static final String LOG_UNKNOWN_ID_RESPONSE = "Calling Blogd file servlet with unknown id file : ";
     private static final String LOG_WRONG_ID_RESPONSE = "Calling Blogd file servlet with wrong format for parameter " + PARAMETER_ID_FILE + " : ";
+    private static final String PROPERTY_MAX_AGE = "blog.fileServlet.maxAge";
+    private static final long DEFAULT_MAX_AGE = 60 * 60 * 24 * 7; // 1 week
+    private static final long MAX_AGE = AppPropertiesService.getPropertyLong( PROPERTY_MAX_AGE, DEFAULT_MAX_AGE );
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -92,17 +96,11 @@ public class BlogFileServlet extends HttpServlet
                 throw new ServletException( LOG_UNKNOWN_ID_RESPONSE + strIdFile );
             }
 
-            /*
-             * if ( !isRequestAuthenticated( request ) ) { AppLogService.error( LOG_UNAUTHENTICATED_REQUEST ); throw new ServletException(
-             * LOG_UNAUTHENTICATED_REQUEST ); }
-             */
-
             httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + docContent.getTextValue( ) + "\";" );
             httpResponse.setHeader( "Content-type", docContent.getValueContentType( ) );
             httpResponse.addHeader( "Content-Encoding", "UTF-8" );
-            httpResponse.addHeader( "Pragma", "public" );
-            httpResponse.addHeader( "Expires", "0" );
-            httpResponse.addHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+            httpResponse.addHeader( "Cache-Control", "public,max-age=" + MAX_AGE );
+
 
             try
             {
@@ -172,15 +170,4 @@ public class BlogFileServlet extends HttpServlet
         return "Servlet serving file content";
     }
 
-    /**
-     * Checks if the request is authenticated or not
-     * 
-     * @param request
-     *            the HTTP request
-     * @return {@code true} if the request is authenticated, {@code false} otherwise
-     */
-    /*
-     * private boolean isRequestAuthenticated( HttpServletRequest request ) { return RequestAuthenticationService.getRequestAuthenticator(
-     * ).isRequestAuthenticated( request ); }
-     */
 }
