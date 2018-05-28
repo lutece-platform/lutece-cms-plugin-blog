@@ -36,6 +36,16 @@ public interface IDocContentDAO
    List <DocContent> loadDocContentByIdHtemldoc( int idHtmlDoc, Plugin plugin );
 
     /**
+     * Remove the DocContent identifier Blog is specified in parameter
+     * 
+     * @param nKey
+     *            the Id Blog
+     * @param plugin
+     *            the plugin
+     */
+    void delete( int nBlogId, Plugin plugin );
+
+    /**
      * Remove the DocContent whose identifier is specified in parameter
      * 
      * @param nKey
@@ -43,7 +53,7 @@ public interface IDocContentDAO
      * @param plugin
      *            the plugin
      */
-    void delete( int nDocumentId, Plugin plugin );
+    void deleteById( int nDocumentId, Plugin plugin );
 
     /**
      * Update of the DocContent which is specified in parameter

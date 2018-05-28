@@ -82,14 +82,25 @@ public final class DocContentHome
     }
 
     /**
+     * Remove the DocContent whose identifier Blog is specified in parameter
+     * 
+     * @param nKey
+     *            the Id DocContent
+     */
+    public static void remove( int nBlog )
+    {
+        _dao.delete( nBlog, _plugin );
+    }
+    
+    /**
      * Remove the DocContent whose identifier is specified in parameter
      * 
      * @param nKey
      *            the Id DocContent
      */
-    public static void remove( int nKey )
+    public static void removeById( int nKey )
     {
-        _dao.delete( nKey, _plugin );
+        _dao.deleteById( nKey, _plugin );
     }
 
     /**

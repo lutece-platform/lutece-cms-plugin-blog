@@ -195,7 +195,7 @@ public class BlogService
         try
         {
             BlogHome.addNewVersion( blog );
-            if ( docContent != null && DocContentHome.getDocsContent( blog.getId( ) ) != null )
+            if ( docContent != null && DocContentHome.getDocsContent( docContent.getId( )) != null )
             {
 
                 docContent.setIdBlog( blog.getId( ) );
@@ -226,6 +226,29 @@ public class BlogService
         BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
 
     }
+    
+    /**
+     * Update an BlocContent
+     *            The Ht-mlDoc
+     * @param docContent
+     *            The Doc Content
+     */
+    private void updateDocument(  DocContent docContent )
+
+    {
+     
+      if ( docContent != null && docContent.getId( ) != 0 )
+      {
+          DocContentHome.update( docContent );
+
+      }
+      else if ( docContent != null )
+      {
+          DocContentHome.create( docContent );
+      }
+            
+      
+    }
     /**
      * Update an Blog
      * 
@@ -244,12 +267,21 @@ public class BlogService
             BlogHome.addNewVersion( blog );
             if ( docContent != null  )
             {
-            	DocContentHome.remove(blog.getId( ));
+            	List<DocContent> listDocContent=DocContentHome.getDocsContentByHtmlDoc(blog.getId( ) );
+            	
             	for(DocContent docCont: docContent){
             		
-            		docCont.setIdBlog( blog.getId( ) );
-                    DocContentHome.create(docCont);
+               		if( listDocContent.removeIf(t -> t.getId() == docCont.getId( )) || docCont.getId() == 0){              			
+               			
+	               		docCont.setIdBlog( blog.getId( ) );
+	               		updateDocument( docCont );
+               		}
 
+            	}
+            	
+            	for( DocContent docCont: listDocContent){
+            		
+            		DocContentHome.removeById( docCont.getId() );
             	}
                 
             }
@@ -289,14 +321,22 @@ public class BlogService
         {
             if ( docContent != null  )
             {
-            	DocContentHome.remove(blog.getId( ));
+            	List<DocContent> listDocContent=DocContentHome.getDocsContentByHtmlDoc(blog.getId( ));
+            	
             	for(DocContent docCont: docContent){
             		
-            		docCont.setIdBlog( blog.getId( ) );
-                    DocContentHome.create(docCont);
+               		if( listDocContent.removeIf(t -> t.getId() == docCont.getId( )) || docCont.getId() == 0){              			
+               			
+	               		docCont.setIdBlog( blog.getId( ) );
+	               		updateDocument( docCont );
+               		}
 
             	}
-                
+            	
+            	for( DocContent docCont: listDocContent){
+            		
+            		DocContentHome.removeById( docCont.getId() );
+            	}
             }
           
             TagHome.removeTagDoc( blog.getId( ) );
@@ -392,8 +432,9 @@ public class BlogService
 
             listBlogsWithoutBinaries.add( findByPrimaryKeyWithoutBinaries( doc.getId( ) ) );
         }
-
-        return listBlogsWithoutBinaries;
+		
+      return listBlogsWithoutBinaries;
+        //return BlogHome.selectWithoutBinaries( );
 
     }
 

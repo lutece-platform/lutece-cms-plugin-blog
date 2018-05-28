@@ -741,7 +741,7 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
                 Blog.PERMISSION_MODIFY, getUser( ) ) )
         {
-	        Blog latestVersionBlog = BlogHome.findByPrimaryKey( nId );
+	        Blog latestVersionBlog = BlogService.getInstance( ).loadDocument( nId );
 	        if ( _blog == null || ( _blog.getId( ) != nId ) )
 	        {
 	        	_blog = latestVersionBlog;

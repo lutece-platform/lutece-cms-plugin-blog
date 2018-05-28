@@ -51,9 +51,11 @@ public final class DocContentDAO implements IDocContentDAO
     private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_document, id_blog, id_type, text_value , binary_value, mime_type ) VALUES ( ? , ? , ? , ? , ?, ? )";
     private static final String SQL_QUERY_SELECT_CONTENT = "SELECT  id_document, id_blog, id_type, text_value , binary_value, mime_type FROM blog_content WHERE id_blog = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_content WHERE id_blog = ?  ;";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_content SET  id_blog = ?, id_type= ?, text_value = ?, binary_value = ?, mime_type = ? WHERE id_blog = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_content SET  id_blog = ?, id_type= ?, text_value = ?, binary_value = ?, mime_type = ? WHERE id_document = ?";
     private static final String SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY = "SELECT  id_document, id_blog, id_type , text_value , binary_value, mime_type FROM blog_content WHERE id_document = ? ";
+    private static final String SQL_QUERY_DELETE_BY_ID = "DELETE FROM blog_content WHERE id_document = ?  ;";
 
+    
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY = "SELECT id_type, type_label FROM blog_content_type WHERE id_type = ? ";
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE = "SELECT id_type, type_label FROM blog_content_type ";
 
@@ -160,9 +162,23 @@ public final class DocContentDAO implements IDocContentDAO
      * {@inheritDoc }
      */
     @Override
-    public void delete( int nDocumentId, Plugin plugin )
+    public void delete( int nBlogId, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
+        daoUtil.setInt( 1, nBlogId );
+
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
+
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void deleteById( int nDocumentId, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID, plugin );
         daoUtil.setInt( 1, nDocumentId );
 
         daoUtil.executeUpdate( );
