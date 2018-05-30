@@ -3,16 +3,22 @@ var baseUrl = document.getElementsByTagName('base')[0].href;
 function createTag(){
 	var tg = $('#tag_name').val();
 	if( tg != null &&tg !=""){
-		doCreateTag( tg );
+		var idBlog = $('#id').val();
+		doCreateTag( tg, idBlog );
 	} else {
 		alert("OOOuuppps ! ");
 	}
 }
+function doAddTag( idTag, tgName ){
+	var idBlog = $('#id').val();
+	addTag( idTag, tgName, idBlog );
+	
+}
 
-function doAddTag( idTag, tgName )
+function addTag( idTag, tgName, idBlog )
 {
 	$.ajax({
-    url : baseUrl + "jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc="+idTag+"&tag_name="+tgName,
+    url : baseUrl + "jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc="+idTag+"&tag_name="+tgName+"&id="+idBlog,
     type: 'GET',
     dataType: "json",
     data: {},
@@ -32,11 +38,15 @@ function doAddTag( idTag, tgName )
     }
 	});
 }
-
-function doDeleteTag( idTag, tgName )
+function doDeleteTag( idTag, tgName ){
+	
+	var idBlog = $('#id').val();
+	deleteTag( idTag, tgName, idBlog );
+}
+function deleteTag( idTag, tgName, idBlog )
 {
 	$.ajax({
-    url : baseUrl + "jsp/admin/plugins/blog/DoDeleteTag.jsp?action=removeTag&tag_doc=" + idTag,
+    url : baseUrl + "jsp/admin/plugins/blog/DoDeleteTag.jsp?action=removeTag&tag_doc=" + idTag +"&id="+idBlog,
   	type: 'GET',
     dataType: "json",
   	data: {},
@@ -57,11 +67,15 @@ function doDeleteTag( idTag, tgName )
     }
 	});
 }
-
-function doUpdatePriorityTag( idTag, action )
+function doUpdatePriorityTag( idTag, action){
+	var idBlog = $('#id').val();
+	updatePriorityTag( idTag, action, idBlog );
+	
+}
+function updatePriorityTag( idTag, action, idBlog )
 {
 	$.ajax({
-    url : baseUrl + "jsp/admin/plugins/blog/DoUpdatePriority.jsp?tagAction="+action+"&tag_doc="+idTag,
+    url : baseUrl + "jsp/admin/plugins/blog/DoUpdatePriority.jsp?tagAction="+action+"&tag_doc="+idTag+ "&id="+idBlog,
     type: 'GET',
     dataType: "json",
     data: {},
@@ -87,9 +101,9 @@ function doUpdatePriorityTag( idTag, action )
 });
 }
 
-function doCreateTag( tgName ){
+function doCreateTag( tgName, idBlog ){
 	$.ajax({
-	    url : baseUrl + "jsp/admin/plugins/blog/DoCreateTag.jsp?createTagByAjax=createTagByAjax&name=" + tgName,
+	    url : baseUrl + "jsp/admin/plugins/blog/DoCreateTag.jsp?createTagByAjax=createTagByAjax&name=" + tgName+"&id="+idBlog,
 	    type: 'GET',
 	    dataType: "json",
 	    data: {},
