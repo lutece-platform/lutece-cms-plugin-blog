@@ -427,6 +427,7 @@ public class BlogJspBean extends ManageBlogJspBean
     	 }
     	 
     	_blog = ( _blog != null && _blog.getId( ) == 0) ? _blog : new Blog( );
+    	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
     	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
         Map<String, Object> model = getModel( );
 
@@ -474,7 +475,7 @@ public class BlogJspBean extends ManageBlogJspBean
             // MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
             // DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
             BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
-
+            _blogServiceSession.removeBlogFromSession(request.getSession(), _blog.getId( ));
             if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
             {
 
