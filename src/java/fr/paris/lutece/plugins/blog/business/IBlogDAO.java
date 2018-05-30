@@ -194,5 +194,7 @@ public interface IBlogDAO
      * @return the list of Blogs objects
      */
     List<Blog> loadBlogByIdTag( int nIdTag, Plugin plugin );
+    
+    List<Blog> selectWithoutBinaries( Plugin plugin );
 
 }

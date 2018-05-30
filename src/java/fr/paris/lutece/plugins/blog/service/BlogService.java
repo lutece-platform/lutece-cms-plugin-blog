@@ -409,16 +409,17 @@ public class BlogService
     public List<Blog> getListDocWhithContent( )
 
     {
-        List<Blog> listBlogsWhithContent = new ArrayList<Blog>( );
-        List<Blog> listBlogs = BlogHome.getBlogsList( );
+        List<Blog> listBlogs = BlogHome.selectWithoutBinaries( );
 
         for ( Blog doc : listBlogs )
         {
-
-            listBlogsWhithContent.add( loadDocument( doc.getId( ) ) );
+        	
+        	List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( doc.getId( ) );
+        	doc.setDocContent( docContent );
+            
         }
 
-        return listBlogsWhithContent;
+        return listBlogs;
 
     }
 
@@ -430,17 +431,8 @@ public class BlogService
     public List<Blog> getListDocWithoutBinaries( )
 
     {
-        List<Blog> listBlogsWithoutBinaries = new ArrayList<Blog>( );
-        List<Blog> listBlogs = BlogHome.getBlogsList( );
-
-        for ( Blog doc : listBlogs )
-        {
-
-            listBlogsWithoutBinaries.add( findByPrimaryKeyWithoutBinaries( doc.getId( ) ) );
-        }
-
-        return listBlogsWithoutBinaries;
-        // return BlogHome.selectWithoutBinaries( );
+    
+        return BlogHome.selectWithoutBinaries( );
 
     }
 

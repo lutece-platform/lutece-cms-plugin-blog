@@ -33,12 +33,14 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -72,6 +74,8 @@ public final class BlogDAO implements IBlogDAO
 
     private static final String SQL_QUERY_SELECT_BLOG_BY_ID_TAG = " SELECT b.id_blog, b.version, b.content_label, b.creation_date, b.update_date, b.html_content, b.user_editor, b.user_creator, b.attached_portlet_id, b.edit_comment, b.description, b.shareable, b.url, a.id_tag FROM blog_tag_document a Inner join blog_blog b on (b.id_blog = a.id_blog) WHERE a.id_tag = ? ORDER BY priority";
 
+    private static final String SQL_QUERY_SELECT_ALL_BLOG = " SELECT DISTINCT a.id_blog, a.version, a.content_label, a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id, a.edit_comment , a.description, a.shareable, a.url, p.id_portlet , p.date_begin_publishing, p.date_end_publishing, p.status, p.document_order, f.id_tag, t.name, f.priority FROM blog_blog a  LEFT OUTER JOIN blog_tag_document f ON a.id_blog = f.id_blog LEFT OUTER JOIN blog_list_portlet_htmldocs p ON  a.id_blog = p.id_blog LEFT OUTER JOIN blog_tag t ON t.id_tag = f.id_tag";
+    
     private static final String SQL_FILTER_WHERE_CLAUSE = " WHERE ";
     private static final String SQL_FILTER_AND = " AND ";
     private static final String SQL_FILTER_TAGS_BEGIN = " (";
@@ -716,6 +720,81 @@ public final class BlogDAO implements IBlogDAO
 
         daoUtil.free( );
         return listBlog;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<Blog> selectWithoutBinaries( Plugin plugin )
+    {
+        List<Blog> listDocuments = new ArrayList<Blog>( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_BLOG, plugin );
+        daoUtil.executeQuery( );
+
+        while ( daoUtil.next( ) )
+        {   
+            Blog blog = new Blog( );
+            int nIndex = 1;
+            int idBlog =  daoUtil.getInt( nIndex++ ) ;
+            blog.setId( idBlog );
+            blog.setVersion( daoUtil.getInt( nIndex++ ) );
+            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+            blog.setUser( daoUtil.getString( nIndex++ ) );
+            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+            blog.setEditComment( daoUtil.getString( nIndex++ ) );
+            blog.setDescription( daoUtil.getString( nIndex++ ) );
+            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+            blog.setUrl( daoUtil.getString( nIndex++ ) );
+            int nPortlet_id= daoUtil.getInt( nIndex++ );
+
+ 
+            BlogPublication blogPub = new BlogPublication( );
+            blogPub.setIdPortlet( nPortlet_id );
+            blogPub.setIdDocument( blog.getId() );
+            blogPub.setDateBeginPublishing( daoUtil.getDate(  nIndex++ ) );
+            blogPub.setDateEndPublishing( daoUtil.getDate(  nIndex++ ) );
+            blogPub.setStatus( daoUtil.getInt(  nIndex++ ) );
+            blogPub.setDocumentOrder( daoUtil.getInt(  nIndex++ ) );
+            if ( nPortlet_id != 0 )
+            {   
+              	blog.addBlogPublication(blogPub);
+            }
+            
+            int nTag_id= daoUtil.getInt( nIndex++  );
+            if( nTag_id != 0 ){
+            	
+            	Tag tag = new Tag( );
+                tag.setIdTag( nTag_id );
+                tag.setName( daoUtil.getString( nIndex++ ) );
+                tag.setPriority( daoUtil.getInt( nIndex++ ) );
+                
+                blog.addTag(tag);
+                
+            }
+
+            boolean isContain = listDocuments.stream().anyMatch(
+    	            b -> b.getId( ) == idBlog );
+
+            if( !isContain ){
+            	
+            	listDocuments.add( blog );
+            	
+            }else{
+            	
+            	listDocuments.removeIf(bg -> bg.getId( ) == idBlog );
+            	listDocuments.add( blog );
+            }
+            
+        }
+
+        daoUtil.free( );
+
+        return listDocuments;
     }
 
 }

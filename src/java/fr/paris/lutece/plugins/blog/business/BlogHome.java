@@ -268,5 +268,17 @@ public final class BlogHome
     {
         return _dao.loadBlogByIdTag( nIdTag, _plugin );
     }
+    
+    /**
+     * Returns a collection of blog objects
+     * 
+ 
+     */
+    public static List<Blog> selectWithoutBinaries(  )
+    {
+        List<Blog> listBlogs = _dao.selectWithoutBinaries(_plugin);
+
+        return listBlogs;
+    }
 
 }
