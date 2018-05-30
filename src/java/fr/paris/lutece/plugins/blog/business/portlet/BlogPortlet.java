@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.blog.business.portlet;
 import java.sql.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
@@ -101,8 +102,13 @@ public class BlogPortlet extends PortletHtmlContent
             model.put( MARK_BLOG, blog );
         }
         model.put( MARK_PORTLET_ID, this.getId( ) );
+        Locale locale = null;
+        if ( request != null )
+        {
+            locale = request.getLocale( );
+        }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), request.getLocale( ), model );
+        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale , model );
 
         return template.getHtml( );
 

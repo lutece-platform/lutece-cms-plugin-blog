@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.blog.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.plugins.blog.business.DocContent;
@@ -108,7 +107,7 @@ public class BlogService
     }
 
     /**
-     * Remvove an blog
+     * Remove an blog
      * 
      * @param nId
      *            The blog id
