@@ -361,16 +361,10 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void addConetnt( DocContent docContent )
     {
-        for ( DocContent docCont : _docContent )
-        {
-
-            if ( docCont.getTextValue( ).equals( docContent.getTextValue( ) ) )
-            {
-
-                return;
-            }
-        }
-        _docContent.add( docContent );
+    		 
+    	 boolean isContain = _docContent.stream().anyMatch(dc -> dc.getTextValue().equals(docContent.getTextValue()));
+      
+         if (!isContain) _docContent.add( docContent );
     }
 
     /**
@@ -381,19 +375,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void deleteDocContent( String strFileName )
     {
-        DocContent docContToRemove = null;
-        for ( DocContent docCont : _docContent )
-        {
-
-            if ( docCont.getTextValue( ).equals( strFileName ) )
-            {
-
-                docContToRemove = docCont;
-                break;
-            }
-        }
-
-        _docContent.remove( docContToRemove );
+    	_docContent.removeIf(dc -> dc.getTextValue().equals(strFileName));
+        
     }
 
     /**
@@ -464,16 +447,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void addTag( Tag tag )
     {
-        for ( Tag tg : _tag )
-        {
-
-            if ( tg.getIdTag( ) == tag.getIdTag( ) )
-            {
-
-                return;
-            }
-        }
-        _tag.add( tag );
+    	boolean isContain= _tag.stream().anyMatch(tg -> tg.getIdTag()== tag.getIdTag()); 
+        if(! isContain) _tag.add( tag );
     }
 
     /**
@@ -484,19 +459,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void deleteTag( Tag tag )
     {
-        Tag tagToRemove = null;
-        for ( Tag tg : _tag )
-        {
-
-            if ( tg.getIdTag( ) == tag.getIdTag( ) )
-            {
-
-                tagToRemove = tg;
-                break;
-            }
-        }
-
-        _tag.remove( tagToRemove );
+    	_tag.removeIf(tg -> tg.getIdTag()== tag.getIdTag());
+        
     }
 
     /**
@@ -528,16 +492,9 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void addBlogPublication( BlogPublication blogPubilcation )
     {
-        for ( BlogPublication pub : _blogPubilcation )
-        {
-
-            if ( pub.getIdDocument( ) == blogPubilcation.getIdDocument( ) && pub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) )
-            {
-
-                return;
-            }
-        }
-        _blogPubilcation.add( blogPubilcation );
+    	boolean isContain= _blogPubilcation.stream().anyMatch(blogPub-> ( blogPub.getIdDocument( ) == blogPubilcation.getIdDocument( ) && blogPub.getIdPortlet( )== blogPubilcation.getIdPortlet( )));
+        
+        if(!isContain)_blogPubilcation.add( blogPubilcation );
     }
 
     /**
@@ -548,20 +505,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void deleteBlogPublication( BlogPublication blogPubilcation )
     {
-        BlogPublication pubToRemove = null;
-
-        for ( BlogPublication pub : _blogPubilcation )
-        {
-
-            if ( pub.getIdDocument( ) == blogPubilcation.getIdDocument( ) && pub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) )
-            {
-
-                pubToRemove = pub;
-                break;
-            }
-        }
-
-        _blogPubilcation.remove( pubToRemove );
+        _blogPubilcation.removeIf(blogPub-> ( blogPub.getIdDocument( ) == blogPubilcation.getIdDocument( ) && blogPub.getIdPortlet( )== blogPubilcation.getIdPortlet( )) );
     }
 
     /**

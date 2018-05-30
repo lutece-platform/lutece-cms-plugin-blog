@@ -1087,22 +1087,12 @@ public class BlogJspBean extends ManageBlogJspBean
     {
 
         ReferenceList BlogList = TagHome.getTagsReferenceList( );
-        int index = 0;
 
-        for ( ReferenceItem item : TagHome.getTagsReferenceList( ) )
-        {
-            for ( Tag tg : _blog.getTag( ) )
+        for ( Tag tg : _blog.getTag( ) )
             {
-                if ( item.getCode( ).equals( String.valueOf( tg.getIdTag( ) ) ) )
-                {
-
-                    BlogList.remove( index );
-                    index--;
-                }
+            	BlogList.removeIf(item -> item.getCode().equals( String.valueOf(tg.getIdTag())));
+               
             }
-            index++;
-        }
-
         return BlogList;
     }
 
