@@ -63,17 +63,15 @@ public class BlogPortletJspBean extends PortletJspBean
     public static final String MARK_WEBAPP_URL = "webapp_url";
     public static final String MARK_LIST_HTMLDOC = "blog_list";
     public static final String MARK_LIST_PAGES = "pages_list";
-    
+
     public static final String PARAMETER_CONTENT_ID = "content_id";
     public static final String PARAMETER_HTML_CONTENT = "html_content";
     public static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     public static final String PARAMETER_PORTLET_NAME = "portlet_name";
     public static final String PARAMETER_HTMLDOC_SELECTED = "blog_selected";
     private static final String PARAMETER_PAGE_TEMPLATE_CODE = "page_template_code";
-    
-    public static final String TEMPLATE_MODIFY_PORTLET = "admin/portlet/modify_portlet.html";
-    
 
+    public static final String TEMPLATE_MODIFY_PORTLET = "admin/portlet/modify_portlet.html";
 
     /**
      * Returns the BlogPortlet form of creation
@@ -89,11 +87,11 @@ public class BlogPortletJspBean extends PortletJspBean
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
         List<Blog> listBlog = BlogHome.getBlogsList( );
         HashMap<String, Object> model = new HashMap<String, Object>( );
-    
+
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listBlog );
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
-        
+
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
 
         return template.getHtml( );
@@ -114,7 +112,7 @@ public class BlogPortletJspBean extends PortletJspBean
         BlogPortlet portlet = (BlogPortlet) PortletHome.findByPrimaryKey( nPortletId );
         Blog blog = BlogHome.findByPrimaryKey( portlet.getContentId( ) );
         HashMap<String, Object> model = new HashMap<String, Object>( );
-        
+
         model.put( MARK_HTML_CONTENT, blog.getHtmlContent( ) );
         model.put( MARK_EDIT_COMMENT, blog.getEditComment( ) );
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
@@ -144,22 +142,22 @@ public class BlogPortletJspBean extends PortletJspBean
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         int nPageId = Integer.parseInt( strPageId );
         Blog blog = new Blog( );
-        if ( strSelectedBlog == null || StringUtils.isEmpty(strSelectedBlog) || !StringUtils.isNumeric(strSelectedBlog) )
+        if ( strSelectedBlog == null || StringUtils.isEmpty( strSelectedBlog ) || !StringUtils.isNumeric( strSelectedBlog ) )
         {
-        	blog.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
-        	blog.setVersion( 1 );
-        	blog.setCreationDate( getSqlDate( ) );
-        	blog.setUpdateDate( getSqlDate( ) );
-        	blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
+            blog.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
+            blog.setVersion( 1 );
+            blog.setCreationDate( getSqlDate( ) );
+            blog.setUpdateDate( getSqlDate( ) );
+            blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
             // TODO error validation on edit comment length
-        	blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
+            blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
             blog.setUser( user.getFirstName( ) );
             blog.setUserCreator( user.getFirstName( ) );
             BlogHome.addInitialVersion( blog );
         }
         else
         {
-        	blog = BlogHome.findByPrimaryKey(Integer.parseInt(strSelectedBlog ));
+            blog = BlogHome.findByPrimaryKey( Integer.parseInt( strSelectedBlog ) );
         }
         int nContentId = blog.getId( );
 
@@ -171,7 +169,7 @@ public class BlogPortletJspBean extends PortletJspBean
             return strErrorUrl;
         }
 
-        portlet.setPageTemplateDocument(Integer.parseInt( strTemplateCode ));
+        portlet.setPageTemplateDocument( Integer.parseInt( strTemplateCode ) );
         portlet.setPageId( nPageId );
         portlet.setContentId( nContentId );
         portlet.setPortletName( request.getParameter( PARAMETER_PORTLET_NAME ) );
@@ -197,7 +195,7 @@ public class BlogPortletJspBean extends PortletJspBean
     {
         // fetches portlet attributes
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-       //recovers portlet attributes
+        // recovers portlet attributes
         String strDocumentTypeCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
         int nPortletId = Integer.parseInt( strPortletId );
         BlogPortlet portlet = (BlogPortlet) PortletHome.findByPrimaryKey( nPortletId );
@@ -224,7 +222,7 @@ public class BlogPortletJspBean extends PortletJspBean
         // displays the page with the updated portlet
         return getPageUrl( portlet.getPageId( ) );
     }
-    
+
     /**
      * Gets the current date in sql format
      *

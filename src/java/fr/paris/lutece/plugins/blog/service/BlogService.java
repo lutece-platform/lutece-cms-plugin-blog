@@ -159,12 +159,12 @@ public class BlogService
             }
             if ( docContent != null )
             {
-            	for(DocContent docCont:docContent){
-            		
-            		docCont.setIdBlog( blog.getId( ) );
+                for ( DocContent docCont : docContent )
+                {
+
+                    docCont.setIdBlog( blog.getId( ) );
                     DocContentHome.create( docCont );
-            	}
-                
+                }
 
             }
             TransactionManager.commitTransaction( BlogPlugin.getPlugin( ) );
@@ -195,7 +195,7 @@ public class BlogService
         try
         {
             BlogHome.addNewVersion( blog );
-            if ( docContent != null && DocContentHome.getDocsContent( docContent.getId( )) != null )
+            if ( docContent != null && DocContentHome.getDocsContent( docContent.getId( ) ) != null )
             {
 
                 docContent.setIdBlog( blog.getId( ) );
@@ -226,29 +226,30 @@ public class BlogService
         BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
 
     }
-    
+
     /**
-     * Update an BlocContent
-     *            The Ht-mlDoc
+     * Update an BlocContent The Ht-mlDoc
+     * 
      * @param docContent
      *            The Doc Content
      */
-    private void updateDocument(  DocContent docContent )
+    private void updateDocument( DocContent docContent )
 
     {
-     
-      if ( docContent != null && docContent.getId( ) != 0 )
-      {
-          DocContentHome.update( docContent );
 
-      }
-      else if ( docContent != null )
-      {
-          DocContentHome.create( docContent );
-      }
-            
-      
+        if ( docContent != null && docContent.getId( ) != 0 )
+        {
+            DocContentHome.update( docContent );
+
+        }
+        else
+            if ( docContent != null )
+            {
+                DocContentHome.create( docContent );
+            }
+
     }
+
     /**
      * Update an Blog
      * 
@@ -265,27 +266,30 @@ public class BlogService
         try
         {
             BlogHome.addNewVersion( blog );
-            if ( docContent != null  )
+            if ( docContent != null )
             {
-            	List<DocContent> listDocContent=DocContentHome.getDocsContentByHtmlDoc(blog.getId( ) );
-            	
-            	for(DocContent docCont: docContent){
-            		
-               		if( listDocContent.removeIf(t -> t.getId() == docCont.getId( )) || docCont.getId() == 0){              			
-               			
-	               		docCont.setIdBlog( blog.getId( ) );
-	               		updateDocument( docCont );
-               		}
+                List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
 
-            	}
-            	
-            	for( DocContent docCont: listDocContent){
-            		
-            		DocContentHome.removeById( docCont.getId() );
-            	}
-                
+                for ( DocContent docCont : docContent )
+                {
+
+                    if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
+                    {
+
+                        docCont.setIdBlog( blog.getId( ) );
+                        updateDocument( docCont );
+                    }
+
+                }
+
+                for ( DocContent docCont : listDocContent )
+                {
+
+                    DocContentHome.removeById( docCont.getId( ) );
+                }
+
             }
-          
+
             TagHome.removeTagDoc( blog.getId( ) );
             for ( Tag tag : blog.getTag( ) )
             {
@@ -319,26 +323,29 @@ public class BlogService
         BlogHome.update( blog );
         try
         {
-            if ( docContent != null  )
+            if ( docContent != null )
             {
-            	List<DocContent> listDocContent=DocContentHome.getDocsContentByHtmlDoc(blog.getId( ));
-            	
-            	for(DocContent docCont: docContent){
-            		
-               		if( listDocContent.removeIf(t -> t.getId() == docCont.getId( )) || docCont.getId() == 0){              			
-               			
-	               		docCont.setIdBlog( blog.getId( ) );
-	               		updateDocument( docCont );
-               		}
+                List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
 
-            	}
-            	
-            	for( DocContent docCont: listDocContent){
-            		
-            		DocContentHome.removeById( docCont.getId() );
-            	}
+                for ( DocContent docCont : docContent )
+                {
+
+                    if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
+                    {
+
+                        docCont.setIdBlog( blog.getId( ) );
+                        updateDocument( docCont );
+                    }
+
+                }
+
+                for ( DocContent docCont : listDocContent )
+                {
+
+                    DocContentHome.removeById( docCont.getId( ) );
+                }
             }
-          
+
             TagHome.removeTagDoc( blog.getId( ) );
             for ( Tag tag : blog.getTag( ) )
             {
@@ -356,7 +363,6 @@ public class BlogService
         BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
 
     }
-
 
     /**
      * Returns an instance of a blog whose identifier is specified in parameter
@@ -432,9 +438,9 @@ public class BlogService
 
             listBlogsWithoutBinaries.add( findByPrimaryKeyWithoutBinaries( doc.getId( ) ) );
         }
-		
-      return listBlogsWithoutBinaries;
-        //return BlogHome.selectWithoutBinaries( );
+
+        return listBlogsWithoutBinaries;
+        // return BlogHome.selectWithoutBinaries( );
 
     }
 
@@ -459,7 +465,7 @@ public class BlogService
         return listBlogs;
 
     }
-    
+
     /**
      * Load the data of nLimit last modified Blog objects and returns them as a list
      * 
@@ -469,13 +475,14 @@ public class BlogService
      */
     public List<Blog> getLastModifiedBlogsList( int nLimit )
     {
-    	List<Blog> listBlog= BlogHome.getLastModifiedBlogsList( nLimit );
-        for(Blog blog: listBlog ){
-           
-        	List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
+        List<Blog> listBlog = BlogHome.getLastModifiedBlogsList( nLimit );
+        for ( Blog blog : listBlog )
+        {
+
+            List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
             blog.setDocContent( docContent );
         }
-        
+
         return listBlog;
     }
 

@@ -94,8 +94,8 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
                 flags.add( BooleanClause.Occur.MUST );
 
             }
-            
-            if (  filter.getUpdateDateAfter( ) !=null ||  filter.getUpdateDateBefor( ) !=null )
+
+            if ( filter.getUpdateDateAfter( ) != null || filter.getUpdateDateBefor( ) != null )
             {
                 BytesRef strAfter = null;
                 BytesRef strBefore = null;
@@ -118,11 +118,11 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
                 sectors.add( BlogSearchItem.FIELD_DATE );
                 flags.add( BooleanClause.Occur.MUST );
             }
-          
-            if ( filter.getIsUnpulished() )
+
+            if ( filter.getIsUnpulished( ) )
             {
 
-                Term term = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf(filter.getIsUnpulished( )) );
+                Term term = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) ) );
                 Query termQuery = new TermQuery( term );
                 queries.add( termQuery.toString( ) );
                 sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
@@ -134,19 +134,19 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
             queries.add( termQuery.toString( ) );
             sectors.add( BlogSearchItem.FIELD_TYPE );
             flags.add( BooleanClause.Occur.MUST );
-            
+
             Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String [ queries.size( )] ), sectors.toArray( new String [ sectors.size( )] ),
                     flags.toArray( new BooleanClause.Occur [ flags.size( )] ), BlogSearchService.getInstance( ).getAnalyzer( ) );
 
-            Sort sorter = new Sort(); 
-            String field = BlogSearchItem.FIELD_DATE_UPDATE; 
-            Type type = Type.LONG; 
+            Sort sorter = new Sort( );
+            String field = BlogSearchItem.FIELD_DATE_UPDATE;
+            Type type = Type.LONG;
             boolean descending = true;
 
-            SortField sortField = new SortField(field, type, descending);
+            SortField sortField = new SortField( field, type, descending );
 
-            sorter.setSort(sortField);
-            
+            sorter.setSort( sortField );
+
             TopDocs topDocs = searcher.search( queryMulti, LuceneSearchEngine.MAX_RESPONSES, sorter );
             ScoreDoc [ ] hits = topDocs.scoreDocs;
             nNbResults = hits.length;

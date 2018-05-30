@@ -74,8 +74,7 @@ public class BlogDashboardComponent extends DashboardComponent
     protected static final String MARK_PERMISSION_MODIFY_BLOG = "permission_manage_modify_blog";
     protected static final String MARK_PERMISSION_PUBLISH_BLOG = "permission_manage_publish_blog";
     protected static final String MARK_PERMISSION_DELETE_BLOG = "permission_manage_delete_blog";
-    
-    
+
     private static final String PROPERTY_NIMBER_DOCUMENT_LOADED = "number.documents.to.be.loaded";
 
     // TEMPALTES
@@ -96,20 +95,15 @@ public class BlogDashboardComponent extends DashboardComponent
         }
 
         String strValue = DatastoreService.getDataValue( PROPERTY_NIMBER_DOCUMENT_LOADED, "5" );
-        List<Blog> lastModifiedDocument = BlogService.getInstance().getLastModifiedBlogsList( Integer.parseInt( strValue ) );
-
+        List<Blog> lastModifiedDocument = BlogService.getInstance( ).getLastModifiedBlogsList( Integer.parseInt( strValue ) );
 
         UrlItem url = new UrlItem( right.getUrl( ) );
         url.addParameter( PARAMETER_PLUGIN_NAME, right.getPluginName( ) );
-        
-        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_CREATE, user );
-        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_MODIFY, user);
-        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_DELETE, user );
-        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_PUBLISH, user );
+
+        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, user );
+        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_MODIFY, user );
+        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, user );
+        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH, user );
 
         Map<String, Object> model = new HashMap<String, Object>( );
 
@@ -117,7 +111,7 @@ public class BlogDashboardComponent extends DashboardComponent
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
         model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionPublish );
-        
+
         model.put( MARK_LAST_MODIFIED_DOCUMENT, lastModifiedDocument );
         model.put( MARK_URL, url.getUrl( ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );

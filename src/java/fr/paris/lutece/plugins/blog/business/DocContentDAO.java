@@ -55,11 +55,9 @@ public final class DocContentDAO implements IDocContentDAO
     private static final String SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY = "SELECT  id_document, id_blog, id_type , text_value , binary_value, mime_type FROM blog_content WHERE id_document = ? ";
     private static final String SQL_QUERY_DELETE_BY_ID = "DELETE FROM blog_content WHERE id_document = ?  ;";
 
-    
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY = "SELECT id_type, type_label FROM blog_content_type WHERE id_type = ? ";
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE = "SELECT id_type, type_label FROM blog_content_type ";
 
-    
     /**
      * Generates a new primary key
      * 
@@ -93,7 +91,7 @@ public final class DocContentDAO implements IDocContentDAO
 
         daoUtil.setInt( 1, docContent.getId( ) );
         daoUtil.setInt( 2, docContent.getIdBlog( ) );
-        daoUtil.setInt( 3, docContent.getContentType().getIdContentType() );
+        daoUtil.setInt( 3, docContent.getContentType( ).getIdContentType( ) );
         daoUtil.setString( 4, docContent.getTextValue( ) );
         daoUtil.setBytes( 5, docContent.getBinaryValue( ) );
         daoUtil.setString( 6, docContent.getValueContentType( ) );
@@ -108,7 +106,7 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public List<DocContent> loadDocContentByIdHtemldoc( int idBlog, Plugin plugin )
     {
-    	List<DocContent> listDoc= new ArrayList<DocContent>( );
+        List<DocContent> listDoc = new ArrayList<DocContent>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT, plugin );
         daoUtil.setInt( 1, idBlog );
         daoUtil.executeQuery( );
@@ -124,19 +122,20 @@ public final class DocContentDAO implements IDocContentDAO
             docContent.setTextValue( daoUtil.getString( 4 ) );
             docContent.setValueContentType( daoUtil.getString( 6 ) );
 
-            listDoc.add( docContent) ;
+            listDoc.add( docContent );
         }
         daoUtil.free( );
 
         return listDoc;
     }
+
     /**
      * {@inheritDoc }
      */
     @Override
     public DocContent loadDocContent( int idDocument, Plugin plugin )
     {
-    	DocContent docContent= null;
+        DocContent docContent = null;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, idDocument );
         daoUtil.executeQuery( );
@@ -171,7 +170,7 @@ public final class DocContentDAO implements IDocContentDAO
         daoUtil.free( );
 
     }
-    
+
     /**
      * {@inheritDoc }
      */
@@ -196,7 +195,7 @@ public final class DocContentDAO implements IDocContentDAO
 
         // daoUtil.setInt( 1, docContent.getId( ));
         daoUtil.setInt( 1, docContent.getIdBlog( ) );
-        daoUtil.setInt( 2, docContent.getContentType().getIdContentType() );
+        daoUtil.setInt( 2, docContent.getContentType( ).getIdContentType( ) );
 
         daoUtil.setString( 3, docContent.getTextValue( ) );
         daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
@@ -206,54 +205,54 @@ public final class DocContentDAO implements IDocContentDAO
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
+
     /**
-    * {@inheritDoc }
-    */
-   @Override
-   public ContentType loadContentType( int idType, Plugin plugin)
-   {
-	   ContentType contentType= null;
-       DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY, plugin );
-       daoUtil.setInt( 1, idType );
-       daoUtil.executeQuery( );
+     * {@inheritDoc }
+     */
+    @Override
+    public ContentType loadContentType( int idType, Plugin plugin )
+    {
+        ContentType contentType = null;
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY, plugin );
+        daoUtil.setInt( 1, idType );
+        daoUtil.executeQuery( );
 
-       if ( daoUtil.next( ) )
-       {
-           contentType = new ContentType( );
+        if ( daoUtil.next( ) )
+        {
+            contentType = new ContentType( );
 
-           contentType.setIdContentType( daoUtil.getInt( 1 ) );
-           contentType.setLabel( daoUtil.getString( 2 ) );
+            contentType.setIdContentType( daoUtil.getInt( 1 ) );
+            contentType.setLabel( daoUtil.getString( 2 ) );
 
-       }
-       daoUtil.free( );
+        }
+        daoUtil.free( );
 
-       return contentType;
-   }
-   
-   /**
-    * {@inheritDoc }
-    */
-   @Override
-   public List<ContentType> loadListContentType( Plugin plugin)
-   {
-	   List<ContentType> listcontentType= new ArrayList<ContentType>();
-       DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE, plugin );
-  
-       daoUtil.executeQuery( );
+        return contentType;
+    }
 
-       while ( daoUtil.next( ) )
-       {
-    	   ContentType contentType = new ContentType( );
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<ContentType> loadListContentType( Plugin plugin )
+    {
+        List<ContentType> listcontentType = new ArrayList<ContentType>( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE, plugin );
 
-           contentType.setIdContentType( daoUtil.getInt( 1 ) );
-           contentType.setLabel( daoUtil.getString( 2 ) );
-           listcontentType.add(contentType);
+        daoUtil.executeQuery( );
 
-       }
-       daoUtil.free( );
+        while ( daoUtil.next( ) )
+        {
+            ContentType contentType = new ContentType( );
 
-       return listcontentType;
-   }
+            contentType.setIdContentType( daoUtil.getInt( 1 ) );
+            contentType.setLabel( daoUtil.getString( 2 ) );
+            listcontentType.add( contentType );
 
+        }
+        daoUtil.free( );
+
+        return listcontentType;
+    }
 
 }

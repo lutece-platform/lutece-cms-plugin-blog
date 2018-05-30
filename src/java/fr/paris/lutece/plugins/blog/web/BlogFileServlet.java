@@ -101,7 +101,6 @@ public class BlogFileServlet extends HttpServlet
             httpResponse.addHeader( "Content-Encoding", "UTF-8" );
             httpResponse.addHeader( "Cache-Control", "public,max-age=" + MAX_AGE );
 
-
             try
             {
                 OutputStream os = httpResponse.getOutputStream( );

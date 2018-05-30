@@ -67,16 +67,16 @@ public class BlogSearchItem extends SearchItem
      *
      */
     public static final String FIELD_USER = "user";
-    
+
     /**
      * Blog Unpublished
      */
-    
+
     public static final String FIELD_UNPUBLISHED = "isUnpublished";
     /**
      * Blog UpdateDate
      */
-    
+
     public static final String FIELD_DATE_UPDATE = "dateUpdate";
 
 }

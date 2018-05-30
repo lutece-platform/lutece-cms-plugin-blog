@@ -66,7 +66,6 @@ public class BlogListPortlet extends PortletHtmlContent
     public static final String MARK_PORTLET_ID = "portlet_id";
     public static final String MARK_PORTLET_NAME = "portlet_name";
 
-
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants
     private int _nPageTemplateDocument;
@@ -84,21 +83,24 @@ public class BlogListPortlet extends PortletHtmlContent
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-    	GregorianCalendar calendar = new java.util.GregorianCalendar( );
-    	Date date= new Date( calendar.getTimeInMillis( ) );
-    	BlogFilter documentFilter= new BlogFilter();
-        List<Integer> listIdDoc = PublishingService.getPublishedDocumentsIdsListByPortletIds(new int[]{this.getId( )}, date, date, BlogUtils.getPlugin());
-        Integer[] docId =listIdDoc.toArray(new Integer[listIdDoc.size()]);
-        //Default we published a blog that as id=0
-        if(docId == null || docId.length == 0){
-        	
-        	docId = new Integer[1];
-        	docId[0]= 0;
+        GregorianCalendar calendar = new java.util.GregorianCalendar( );
+        Date date = new Date( calendar.getTimeInMillis( ) );
+        BlogFilter documentFilter = new BlogFilter( );
+        List<Integer> listIdDoc = PublishingService.getPublishedDocumentsIdsListByPortletIds( new int [ ] {
+            this.getId( )
+        }, date, date, BlogUtils.getPlugin( ) );
+        Integer [ ] docId = listIdDoc.toArray( new Integer [ listIdDoc.size( )] );
+        // Default we published a blog that as id=0
+        if ( docId == null || docId.length == 0 )
+        {
+
+            docId = new Integer [ 1];
+            docId [0] = 0;
         }
         documentFilter.setIds( docId );
         documentFilter.setLoadBinaries( true );
         documentFilter.setOrderInPortlet( true );
-        documentFilter.setPortletId(this.getId( ));
+        documentFilter.setPortletId( this.getId( ) );
 
         List<Blog> listBlogsPublished = (List<Blog>) BlogHome.findByFilter( documentFilter, null );
         DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
@@ -107,17 +109,19 @@ public class BlogListPortlet extends PortletHtmlContent
         model.put( MARK_LIST_BLOG_PUBLISHED, listBlogsPublished );
         model.put( MARK_PAGE_TEMPLATE, pageTemplate );
         model.put( MARK_PORTLET_ID, this.getId( ) );
-        if( this.getDisplayPortletTitle() == 0 ){
-  	
-        	model.put( MARK_PORTLET_NAME, this.getName( ));
-        
+        if ( this.getDisplayPortletTitle( ) == 0 )
+        {
+
+            model.put( MARK_PORTLET_NAME, this.getName( ) );
+
         }
-        Locale locale= null;
-        if( request != null ){
-        	locale= request.getLocale( );
+        Locale locale = null;
+        if ( request != null )
+        {
+            locale = request.getLocale( );
         }
-        
-        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale , model );
+
+        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale, model );
 
         return template.getHtml( );
     }
@@ -200,7 +204,8 @@ public class BlogListPortlet extends PortletHtmlContent
     /**
      * BlogDoPublication in the list _arrayBlogs
      * 
-     * @param doc The blog publication
+     * @param doc
+     *            The blog publication
      */
     public void addIdBlogs( BlogPublication doc )
     {
@@ -223,8 +228,10 @@ public class BlogListPortlet extends PortletHtmlContent
     /**
      * set BlogPublication in the list by order
      * 
-     * @param order The order in portlet publication
-     * @param doc The blog
+     * @param order
+     *            The order in portlet publication
+     * @param doc
+     *            The blog
      */
     public void addIdBlogs( int order, BlogPublication doc )
     {
@@ -253,7 +260,9 @@ public class BlogListPortlet extends PortletHtmlContent
 
     /**
      * Remove blog publication
-     * @param doc The blog Publication
+     * 
+     * @param doc
+     *            The blog Publication
      */
     public void removeBlogs( BlogPublication doc )
     {

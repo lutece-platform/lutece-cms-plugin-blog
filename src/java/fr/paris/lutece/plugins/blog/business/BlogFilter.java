@@ -176,7 +176,7 @@ public class BlogFilter
     {
         this._dateMax = dateMax;
     }
-    
+
     /**
      * Get the boolean that indicates whether loaded by order in the portlet list
      * 
@@ -197,7 +197,7 @@ public class BlogFilter
     {
         this._bOrderInPortlet = bOrder;
     }
-    
+
     /**
      * Returns the nPortletId
      *

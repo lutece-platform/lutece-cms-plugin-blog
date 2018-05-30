@@ -59,8 +59,6 @@ public class BlogPortlet extends PortletHtmlContent
 
     private int _nPageTemplateDocument;
 
-
-
     /**
      * Sets the identifier of the portlet type to value specified
      */
@@ -90,16 +88,17 @@ public class BlogPortlet extends PortletHtmlContent
         BlogPublication docPub = BlogPublicationHome.findDocPublicationByPimaryKey( this.getContentId( ), this.getId( ) );
         HashMap<String, Object> model = new HashMap<String, Object>( );
         DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
-        
+
         if ( docPub != null && docPub.getIdDocument( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
                 && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
         {
-        	if(this.getDisplayPortletTitle() == 0){
-        		
-        		model.put( MARK_PORTLET_NAME, this.getName( ) );
-            
+            if ( this.getDisplayPortletTitle( ) == 0 )
+            {
+
+                model.put( MARK_PORTLET_NAME, this.getName( ) );
+
             }
-        	model.put( MARK_BLOG, blog );
+            model.put( MARK_BLOG, blog );
         }
         model.put( MARK_PORTLET_ID, this.getId( ) );
 
@@ -190,6 +189,7 @@ public class BlogPortlet extends PortletHtmlContent
     {
         return _strName;
     }
+
     /**
      * Sets the parent page identifier of the portlet to the value specified in parameter
      *

@@ -98,6 +98,7 @@ public class BlogSearchFilter
     {
         return _strUser;
     }
+
     /**
      * Returns the isUnpulished
      * 
@@ -116,7 +117,6 @@ public class BlogSearchFilter
         _bIsUnpulished = isUnpulished;
     }
 
-    
     /**
      * Returns the UpdateDateAfter
      * 
@@ -135,7 +135,7 @@ public class BlogSearchFilter
      */
     public void setUpdateDateAfter( Date dateUpdateDateAfter )
     {
-    	_dateUpdateDateAfter = dateUpdateDateAfter;
+        _dateUpdateDateAfter = dateUpdateDateAfter;
     }
 
     /**
@@ -156,9 +156,7 @@ public class BlogSearchFilter
      */
     public void setUpdateDateBefor( Date dateUpdateDateBefor )
     {
-    	_dateUpdateDateBefor = dateUpdateDateBefor;
+        _dateUpdateDateBefor = dateUpdateDateBefor;
     }
-
-
 
 }

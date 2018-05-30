@@ -1,6 +1,5 @@
 package fr.paris.lutece.plugins.blog.business;
 
-
 public class DocContent
 {
 
@@ -50,7 +49,7 @@ public class DocContent
      */
     public void setIdBlog( int nIdDocument )
     {
-        _nIdBlog= nIdDocument;
+        _nIdBlog = nIdDocument;
     }
 
     /**
@@ -124,7 +123,7 @@ public class DocContent
      */
     public void setContentType( ContentType type )
     {
-    	_contentType = type;
+        _contentType = type;
     }
 
     /**

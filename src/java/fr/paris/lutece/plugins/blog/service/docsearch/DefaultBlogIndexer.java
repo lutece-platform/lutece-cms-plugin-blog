@@ -131,8 +131,6 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
                 BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
             }
 
-            
-
             listIdBlog = new ArrayList<Integer>( );
 
             // add all record which must be added
@@ -193,9 +191,9 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         doc.add( new TextField( BlogSearchItem.FIELD_TAGS, getTagToIndex( blog ), Field.Store.YES ) );
         FieldType ft = new FieldType( StringField.TYPE_STORED );
         ft.setOmitNorms( false );
-        doc.add(new Field( BlogSearchItem.FIELD_DATE, DateTools.timeToString(blog.getUpdateDate( ).getTime(), DateTools.Resolution.MINUTE), ft));
-        doc.add(new NumericDocValuesField( BlogSearchItem.FIELD_DATE_UPDATE, blog.getUpdateDate().getTime( )));
-        doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, (blog.getBlogPubilcation().size() == 0 )?"true":"false", Field.Store.YES ) );
+        doc.add( new Field( BlogSearchItem.FIELD_DATE, DateTools.timeToString( blog.getUpdateDate( ).getTime( ), DateTools.Resolution.MINUTE ), ft ) );
+        doc.add( new NumericDocValuesField( BlogSearchItem.FIELD_DATE_UPDATE, blog.getUpdateDate( ).getTime( ) ) );
+        doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, ( blog.getBlogPubilcation( ).size( ) == 0 ) ? "true" : "false", Field.Store.YES ) );
 
         // Add the uid as a field, so that index can be incrementally maintained.
         // This field is not stored with question/answer, it is indexed, but it is not

@@ -69,7 +69,7 @@ public class BlogApp extends MVCApplication
     protected static final String MESSAGE_PATH = "blog.xpage.blog.view.pagePathLabel";
     // Templates
 
-    private static final String TEMPLATE_VIEW_BLOG= "skin/plugins/blog/view_blog.html";
+    private static final String TEMPLATE_VIEW_BLOG = "skin/plugins/blog/view_blog.html";
 
     // Parameters
     protected static final String PARAMETER_ID_BLOG = "id";
@@ -105,7 +105,7 @@ public class BlogApp extends MVCApplication
         if ( idPortlet != null && !idPortlet.isEmpty( ) )
         {
 
-        	listBlogPub = BlogPublicationHome.getDocPublicationByPortlet( Integer.parseInt( idPortlet ) );
+            listBlogPub = BlogPublicationHome.getDocPublicationByPortlet( Integer.parseInt( idPortlet ) );
         }
         List<Blog> listBlogs = new ArrayList<Blog>( );
 

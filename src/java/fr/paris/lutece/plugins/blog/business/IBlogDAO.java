@@ -185,10 +185,13 @@ public interface IBlogDAO
      * @return The Collection of the Blogss
      */
     List<Blog> selectByFilter( BlogFilter filter );
+
     /**
      * Load the list of Blogs objects and returns them as a list
+     * 
      * @param nIdTag
-     * @param plugin  the Plugin
+     * @param plugin
+     *            the Plugin
      * @return the list of Blogs objects
      */
     List<Blog> loadBlogByIdTag( int nIdTag, Plugin plugin );

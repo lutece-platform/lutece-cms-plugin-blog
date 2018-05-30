@@ -5,7 +5,7 @@ public class ContentType
 
     private int _nIdContentType;
     private String _strLabel;
-    
+
     /**
      * Returns the IdContentType
      *
@@ -24,7 +24,7 @@ public class ContentType
      */
     public void setIdContentType( int nIdContentType )
     {
-    	_nIdContentType = nIdContentType;
+        _nIdContentType = nIdContentType;
     }
 
     /**
@@ -35,7 +35,7 @@ public class ContentType
      */
     public void setLabel( String strLabel )
     {
-    	_strLabel = strLabel;
+        _strLabel = strLabel;
     }
 
     /**

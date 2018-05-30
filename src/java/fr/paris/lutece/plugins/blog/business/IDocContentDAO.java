@@ -25,15 +25,16 @@ public interface IDocContentDAO
      * @return an instance of DocContent
      */
     DocContent loadDocContent( int idDocument, Plugin plugin );
+
     /**
-     * Returns an list of a DocContent whose htmldoc identifier  is specified in parameter
+     * Returns an list of a DocContent whose htmldoc identifier is specified in parameter
      * 
      * @param idHtmlDoc
      * @param plugin
      *            the plugin
      * @return an instance of DocContent
      */
-   List <DocContent> loadDocContentByIdHtemldoc( int idHtmlDoc, Plugin plugin );
+    List<DocContent> loadDocContentByIdHtemldoc( int idHtmlDoc, Plugin plugin );
 
     /**
      * Remove the DocContent identifier Blog is specified in parameter
@@ -68,16 +69,22 @@ public interface IDocContentDAO
 
     /**
      * Returns an instance of a ContentType whose identifier is specified in parameter
-     * @param idType The identifier
-     * @param plugin the plugin
+     * 
+     * @param idType
+     *            The identifier
+     * @param plugin
+     *            the plugin
      * @return an instance of a ContentType
      */
-    ContentType loadContentType( int idType, Plugin plugin);
+    ContentType loadContentType( int idType, Plugin plugin );
+
     /**
-     * Returns a list of a ContentType 
-     * @param plugin the plugin
-     * @return a list of a ContentType 
+     * Returns a list of a ContentType
+     * 
+     * @param plugin
+     *            the plugin
+     * @return a list of a ContentType
      */
-    List<ContentType> loadListContentType( Plugin plugin);
+    List<ContentType> loadListContentType( Plugin plugin );
 
 }

@@ -56,14 +56,13 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public static final String PROPERTY_RESOURCE_TYPE = "BLOG";
 
     private static final long serialVersionUID = 1L;
-    
+
     // Perimissions
     public static final String PERMISSION_VIEW = "VIEW";
     public static final String PERMISSION_CREATE = "CREATE";
     public static final String PERMISSION_MODIFY = "MODIFY";
     public static final String PERMISSION_DELETE = "DELETE";
     public static final String PERMISSION_PUBLISH = "PUBLISH";
-
 
     // Variables declarations
     private int _nId;
@@ -98,10 +97,10 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     @Size( message = "#i18n{blog.validation.description.size}" )
     private String _strDescription;
 
-    private List<DocContent> _docContent= new ArrayList<DocContent>( );
+    private List<DocContent> _docContent = new ArrayList<DocContent>( );
 
     private String _strUrl;
-    
+
     private boolean _bShareable;
 
     private List<Tag> _tag = new ArrayList<Tag>( );
@@ -353,18 +352,19 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     {
         _docContent = docContent;
     }
+
     /**
      * Sets the docConetnt list
      *
      * @param docContent
      *            list The docContent list
      */
-    public void addConetnt(  DocContent docContent )
+    public void addConetnt( DocContent docContent )
     {
         for ( DocContent docCont : _docContent )
         {
 
-            if ( docCont.getTextValue().equals(docContent.getTextValue( )) )
+            if ( docCont.getTextValue( ).equals( docContent.getTextValue( ) ) )
             {
 
                 return;
@@ -372,28 +372,29 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
         }
         _docContent.add( docContent );
     }
+
     /**
-    * delet the docContent
-    *
-    * @param docContent
-    *            The docContent
-    */
-   public void deleteDocContent( String strFileName )
-   {
-	   DocContent docContToRemove = null;
-	   for ( DocContent docCont : _docContent )
-       {
+     * delet the docContent
+     *
+     * @param docContent
+     *            The docContent
+     */
+    public void deleteDocContent( String strFileName )
+    {
+        DocContent docContToRemove = null;
+        for ( DocContent docCont : _docContent )
+        {
 
-           if ( docCont.getTextValue().equals( strFileName ) )
-           {
+            if ( docCont.getTextValue( ).equals( strFileName ) )
+            {
 
-        	   docContToRemove = docCont;
-               break;
-           }
-       }
+                docContToRemove = docCont;
+                break;
+            }
+        }
 
-	   _docContent.remove( docContToRemove );
-   }
+        _docContent.remove( docContToRemove );
+    }
 
     /**
      * Returns the Url
@@ -415,6 +416,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     {
         _strUrl = strUrl;
     }
+
     /**
      * Returns the Shareable
      * 
@@ -614,17 +616,20 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     /**
      * {@inheritDoc}
      */
-	@Override
-	public String getResourceId() {
-		
-		return String.valueOf( _nId );
-	}
-	 /**
+    @Override
+    public String getResourceId( )
+    {
+
+        return String.valueOf( _nId );
+    }
+
+    /**
      * {@inheritDoc}
      */
-	@Override
-	public String getResourceTypeCode() {
+    @Override
+    public String getResourceTypeCode( )
+    {
 
-		return PROPERTY_RESOURCE_TYPE;
-	}
+        return PROPERTY_RESOURCE_TYPE;
+    }
 }

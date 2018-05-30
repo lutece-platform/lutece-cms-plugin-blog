@@ -91,7 +91,7 @@ public final class DocContentHome
     {
         _dao.delete( nBlog, _plugin );
     }
-    
+
     /**
      * Remove the DocContent whose identifier is specified in parameter
      * 
@@ -113,6 +113,7 @@ public final class DocContentHome
     {
         return _dao.loadDocContent( nIdDocument, _plugin );
     }
+
     /**
      * Returns an list of a DocContent whose htmldoc identifier is specified in parameter
      * 
@@ -123,12 +124,15 @@ public final class DocContentHome
     {
         return _dao.loadDocContentByIdHtemldoc( nIdHtmlDoc, _plugin );
     }
+
     /**
-     * Returns a list of a ContentType 
-     * @param plugin the plugin
-     * @return a list of a ContentType 
+     * Returns a list of a ContentType
+     * 
+     * @param plugin
+     *            the plugin
+     * @return a list of a ContentType
      */
-    public static List<ContentType> getListContentType(  )
+    public static List<ContentType> getListContentType( )
     {
         return _dao.loadListContentType( _plugin );
     }

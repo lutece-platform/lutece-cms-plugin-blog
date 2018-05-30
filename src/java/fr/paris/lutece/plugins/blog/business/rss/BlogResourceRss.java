@@ -88,7 +88,6 @@ public class BlogResourceRss extends ResourceRss
     private static final String MARK_RSS_ITEM_CONTENT = "content_list";
     private static final String MARK_RSS_ITEM_BLOG = "blog";
 
-
     // Parameters
     private static final String PARAMETER_ID_BLOG = "id_blog";
     private static final String PARAMETER_ID_PORTLET = "id_portlet";
@@ -224,11 +223,11 @@ public class BlogResourceRss extends ResourceRss
 
         String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
         String strSiteUrl = strWebAppUrl;
-        
-        model.put(MARK_RSS_ITEM_TITLE , I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage ) )) ;
-        model.put(MARK_RSS_SITE_URL , strSiteUrl );
-        model.put(MARK_RSS_FILE_LANGUAGE ,strRssFileLanguage );
-        model.put(MARK_RSS_ITEM_DESCRIPTION ,I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
+
+        model.put( MARK_RSS_ITEM_TITLE, I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage ) ) );
+        model.put( MARK_RSS_SITE_URL, strSiteUrl );
+        model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
+        model.put( MARK_RSS_ITEM_DESCRIPTION, I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
 
         List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
         List<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>( );
@@ -239,7 +238,6 @@ public class BlogResourceRss extends ResourceRss
             HashMap<String, Object> item = new HashMap<String, Object>( );
             Blog blog = BlogService.getInstance( ).loadDocument( dcPub.getIdDocument( ) );
             item.put( MARK_RSS_ITEM_BLOG, blog );
-           
 
             listItem.add( item );
 
@@ -257,56 +255,44 @@ public class BlogResourceRss extends ResourceRss
     @Override
     public IFeedResource getFeed( )
     {
-      /*  String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
-        Locale locale = new Locale( strRssFileLanguage );
-        Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
-
-        BlogResourceRssConfig config = BlogResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
-
-        String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
-        String strSiteUrl = strWebAppUrl;
-
-        IFeedResource resource = new FeedResource( );
-        resource.setTitle( I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage ) ) );
-        resource.setLink( strSiteUrl );
-        resource.setLanguage( strRssFileLanguage );
-        resource.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
-
-        List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
-
-        List<IFeedResourceItem> listItems = new ArrayList<IFeedResourceItem>( );
-
-        for ( BlogPublication dcPub : listDocPub )
-        {
-
-            IFeedResourceItem item = new FeedResourceItem( );
-
-            String strTitle;
-            Map<String, Object> model = new HashMap<String, Object>( );
-
-            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( dcPub.getIdDocument( ) );
-            model.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
-            model.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) );
-            model.put( MARK_RSS_SITE_URL, strSiteUrl );
-            model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
-
-            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_BLOG_ITEM_TITLE, locale, model );
-            strTitle = template.getHtml( );
-
-            item.setTitle( strTitle );
-            item.setLink( strSiteUrl + JSP_PAGE_BLOGS + "&id=" + blog.getId( ) );
-            item.setDescription( blog.getDescription( ) );
-            item.setDate( blog.getCreationDate( ) );
-            item.setGUID( String.valueOf( blog.getId( ) ) );
-
-            listItems.add( item );
-        }
-
-        resource.setItems( listItems );
-
-        return resource;
-        */
-    	return null;
+        /*
+         * String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE ); Locale locale = new Locale( strRssFileLanguage ); Plugin
+         * plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
+         * 
+         * BlogResourceRssConfig config = BlogResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
+         * 
+         * String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL ); String strSiteUrl = strWebAppUrl;
+         * 
+         * IFeedResource resource = new FeedResource( ); resource.setTitle( I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage
+         * ) ) ); resource.setLink( strSiteUrl ); resource.setLanguage( strRssFileLanguage ); resource.setDescription( I18nService.getLocalizedString(
+         * PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
+         * 
+         * List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
+         * 
+         * List<IFeedResourceItem> listItems = new ArrayList<IFeedResourceItem>( );
+         * 
+         * for ( BlogPublication dcPub : listDocPub ) {
+         * 
+         * IFeedResourceItem item = new FeedResourceItem( );
+         * 
+         * String strTitle; Map<String, Object> model = new HashMap<String, Object>( );
+         * 
+         * Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( dcPub.getIdDocument( ) ); model.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
+         * model.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) ); model.put( MARK_RSS_SITE_URL, strSiteUrl ); model.put( MARK_RSS_FILE_LANGUAGE,
+         * strRssFileLanguage );
+         * 
+         * HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_BLOG_ITEM_TITLE, locale, model ); strTitle = template.getHtml( );
+         * 
+         * item.setTitle( strTitle ); item.setLink( strSiteUrl + JSP_PAGE_BLOGS + "&id=" + blog.getId( ) ); item.setDescription( blog.getDescription( ) );
+         * item.setDate( blog.getCreationDate( ) ); item.setGUID( String.valueOf( blog.getId( ) ) );
+         * 
+         * listItems.add( item ); }
+         * 
+         * resource.setItems( listItems );
+         * 
+         * return resource;
+         */
+        return null;
     }
 
     /**

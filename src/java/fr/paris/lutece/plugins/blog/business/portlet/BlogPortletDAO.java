@@ -72,7 +72,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
         daoUtil.setInt( 1, p.getId( ) );
         daoUtil.setString( 2, p.getPortletName( ) );
         daoUtil.setInt( 3, p.getContentId( ) );
-        daoUtil.setInt( 4, p.getPageTemplateDocument( ));
+        daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
         daoUtil.executeUpdate( );
         daoUtil.free( );
         insertBlogPublivcation( p );

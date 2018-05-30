@@ -133,10 +133,10 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_UPDATE_ATTACHMENT = "update_attachment";
     protected static final String PARAMETER_TAG = "tag_doc";
     protected static final String PARAMETER_TAG_NAME = "tag_name";
-    protected static final String PARAMETER_URL= "url";
-    protected static final String PARAMETER_UNPUBLISHED= "unpublished";
-    protected static final String PARAMETER_DATE_UPDATE_BLOG_AFTER= "dateUpdateBlogAfter";
-    protected static final String PARAMETER_DATE_UPDATE_BLOG_BEFOR= "dateUpdateBlogBefor";
+    protected static final String PARAMETER_URL = "url";
+    protected static final String PARAMETER_UNPUBLISHED = "unpublished";
+    protected static final String PARAMETER_DATE_UPDATE_BLOG_AFTER = "dateUpdateBlogAfter";
+    protected static final String PARAMETER_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
 
     protected static final String PARAMETER_TAG_TO_REMOVE = "tag_remove";
     protected static final String PARAMETER_SHAREABLE = "shareable";
@@ -146,7 +146,6 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_APPLY = "apply";
     protected static final String PARAMETER_TYPE_ID = "idType";
     protected static final String PARAMETER_CONTENT_ID = "idContent";
-
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
@@ -180,15 +179,6 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_PERMISSION_MODIFY_BLOG = "permission_manage_modify_blog";
     protected static final String MARK_PERMISSION_PUBLISH_BLOG = "permission_manage_publish_blog";
     protected static final String MARK_PERMISSION_DELETE_BLOG = "permission_manage_delete_blog";
-
-
-    
-
-    
-
-    
-
- 
 
     private static final String JSP_MANAGE_BLOGS = "jsp/admin/plugins/blog/ManageBlogs.jsp";
 
@@ -236,8 +226,6 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
     protected static final String MARK_UNPUBLISHED = "unpublished";
 
-
-
     // Session variable to store working values
     protected Blog _blog;
     protected boolean _bIsChecked = false;
@@ -263,7 +251,7 @@ public class BlogJspBean extends ManageBlogJspBean
     @View( value = VIEW_MANAGE_BLOGS, defaultView = true )
     public String getManageBlogs( HttpServletRequest request )
     {
-    	_blog = null;
+        _blog = null;
         _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
         _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
@@ -277,7 +265,6 @@ public class BlogJspBean extends ManageBlogJspBean
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
 
-        
         if ( strButtonSearch != null )
         {
             // CURRENT USER
@@ -285,21 +272,24 @@ public class BlogJspBean extends ManageBlogJspBean
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
             _strTag = request.getParameterValues( PARAMETER_TAG );
             _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
-            _dateUpdateBlogAfter =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
-            _dateUpdateBlogBefor =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
-            
-        }else if(strButtonReset != null){
-        	 _bIsChecked = false;
-             _strSearchText = null;
-             _strTag = null;
-             _bIsUnpulished = false;
-             _dateUpdateBlogAfter =null;
-             _dateUpdateBlogBefor =null;
-        	
-        }
+            _dateUpdateBlogAfter = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
+            _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) 
-        		|| _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null)
+        }
+        else
+            if ( strButtonReset != null )
+            {
+                _bIsChecked = false;
+                _strSearchText = null;
+                _strTag = null;
+                _bIsUnpulished = false;
+                _dateUpdateBlogAfter = null;
+                _dateUpdateBlogBefor = null;
+
+            }
+
+        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _bIsUnpulished
+                || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
@@ -308,13 +298,13 @@ public class BlogJspBean extends ManageBlogJspBean
                 filter.setTag( _strTag );
             if ( _bIsChecked )
                 filter.setUser( user.getFirstName( ) );
-            if(_bIsUnpulished)
-            	filter.setIsUnpulished(_bIsUnpulished);
-            if( _dateUpdateBlogAfter != null )
-            	filter.setUpdateDateAfter(DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ));
-            if( _dateUpdateBlogBefor != null )
-            	filter.setUpdateDateBefor(DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ));
-            
+            if ( _bIsUnpulished )
+                filter.setIsUnpulished( _bIsUnpulished );
+            if ( _dateUpdateBlogAfter != null )
+                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+            if ( _dateUpdateBlogBefor != null )
+                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
+
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
 
         }
@@ -322,7 +312,7 @@ public class BlogJspBean extends ManageBlogJspBean
         else
         {
 
-        	listBlogsId = BlogHome.getIdBlogsList( );
+            listBlogsId = BlogHome.getIdBlogsList( );
         }
 
         LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( (List<Integer>) listBlogsId, _nItemsPerPage, getHomeUrl( request ),
@@ -361,14 +351,10 @@ public class BlogJspBean extends ManageBlogJspBean
             _strSortedAttributeName = strSortedAttributeName;
             _bIsAscSort = bIsAscSort;
         }
-        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_CREATE, getUser( ) );
-        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_MODIFY, getUser( ) );
-        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_DELETE, getUser( ) );
-        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_PUBLISH, getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) );
+        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_MODIFY, getUser( ) );
+        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, getUser( ) );
+        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH, getUser( ) );
 
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_BLOG_LIST, listDocuments );
@@ -383,7 +369,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
         model.put( MARK_UNPUBLISHED, _bIsUnpulished );
-        
+
         model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
@@ -391,15 +377,18 @@ public class BlogJspBean extends ManageBlogJspBean
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_BLOG, TEMPLATE_MANAGE_BLOGS, model );
     }
+
     /**
      * Return View history page
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return the hostory page
      */
     @View( value = VIEW_HISTORY_BLOG )
     public String getHistoryBlog( HttpServletRequest request )
     {
-    	_blog = null;
+        _blog = null;
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         List<Blog> listBlogsVersions = BlogHome.getBlogsVersionsList( nId );
 
@@ -420,36 +409,31 @@ public class BlogJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return the html code of the blog form
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( VIEW_CREATE_BLOG )
     public String getCreateBlog( HttpServletRequest request ) throws AccessDeniedException
     {
-    	 if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                 Blog.PERMISSION_CREATE, getUser( ) ) )
-    	 {
-    		 throw new AccessDeniedException(  );
-    	 }
-    	_blog = ( _blog != null ) ? _blog : new Blog( );
-    	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
+        {
+            throw new AccessDeniedException( );
+        }
+        _blog = ( _blog != null ) ? _blog : new Blog( );
+        String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
 
         Map<String, Object> model = getModel( );
-        
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Tag.PERMISSION_CREATE, getUser( ) );     
 
-        model.put(MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType());
-        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );        
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
+
+        model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
+        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ));
-
+        model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_BLOG, TEMPLATE_CREATE_BLOG, model );
     }
-
-    
 
     /**
      * Process the data capture form of a new blog
@@ -462,41 +446,44 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doCreateBlog( HttpServletRequest request )
     {
 
-    	if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Blog.PERMISSION_CREATE, getUser( ) ) )
-   	 {
-			    	 String strAction =  request.getParameter( PARAMETER_ACTION_BUTTON );
-			    	_blog.setCreationDate( getSqlDate( ) );
-			    	_blog.setUpdateDate( getSqlDate( ) );
-			    	_blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-			    	_blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
-			    	_blog.setVersion( 1 );
-			    	_blog.setAttachedPortletId( 0 );
-			        populate( _blog, request );
-			
-			        // Check constraints
-			        if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
-			        {
-			            return redirectView( request, VIEW_CREATE_BLOG );
-			        }
-			
-			        // BlogHome.addInitialVersion( _blog );
-			        //MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-			        //DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
-			        BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
-			        
-			        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
-			        	
-			        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-			        }
-			
-			        addInfo( INFO_BLOG_CREATED, getLocale( ) );
-   	 }
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
+        {
+            String strAction = request.getParameter( PARAMETER_ACTION_BUTTON );
+            _blog.setCreationDate( getSqlDate( ) );
+            _blog.setUpdateDate( getSqlDate( ) );
+            _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setVersion( 1 );
+            _blog.setAttachedPortletId( 0 );
+            populate( _blog, request );
+
+            // Check constraints
+            if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
+            {
+                return redirectView( request, VIEW_CREATE_BLOG );
+            }
+
+            // BlogHome.addInitialVersion( _blog );
+            // MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            // DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
+            BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
+
+            if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
+            {
+
+                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+            }
+
+            addInfo( INFO_BLOG_CREATED, getLocale( ) );
+        }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
+
     /**
      * Return Json if the tag is added
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return Json The Json success or echec
      */
     @Action( ACTION_ADD_TAG )
@@ -504,24 +491,25 @@ public class BlogJspBean extends ManageBlogJspBean
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
 
-    	if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
-                Tag.PERMISSION_CREATE, getUser( ) ) )
-   	 {
-	
-        String strTagName = request.getParameter( PARAMETER_TAG_NAME );
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_CREATE, getUser( ) ) )
+        {
 
-        Tag tag = new Tag( Integer.parseInt( strIdTag ), _blog.getTag( ).size( ) + 1 );
-        tag.setName( strTagName );
+            String strTagName = request.getParameter( PARAMETER_TAG_NAME );
 
-        _blog.addTag( tag );
-        
-        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
-   	 }
-    	return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) );  
+            Tag tag = new Tag( Integer.parseInt( strIdTag ), _blog.getTag( ).size( ) + 1 );
+            tag.setName( strTagName );
+
+            _blog.addTag( tag );
+
+            return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+        }
+        return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) );
 
     }
+
     /**
      * Return Json if the tag is removed
+     * 
      * @param request
      * @return Json The Json success or echec
      */
@@ -529,23 +517,24 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doRemoveTag( HttpServletRequest request )
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
-                Tag.PERMISSION_DELETE, getUser( ) ) )
-   	 {
-        Tag tag = new Tag( );
-        tag.setIdTag( Integer.parseInt( strIdTag ) );
-        _blog.deleteTag( tag );
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, getUser( ) ) )
+        {
+            Tag tag = new Tag( );
+            tag.setIdTag( Integer.parseInt( strIdTag ) );
+            _blog.deleteTag( tag );
 
-        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
-   	 }
-        return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) ); 
+            return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+        }
+        return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) );
 
     }
+
     /**
-    * Return Json if the tag is updated
-    * @param request
-    * @return Json The Json success or echec
-    */
+     * Return Json if the tag is updated
+     * 
+     * @param request
+     * @return Json The Json success or echec
+     */
     @Action( ACTION_UPDATE_PRIORITY_TAG )
     public String doUpdatePriorityTag( HttpServletRequest request )
     {
@@ -602,21 +591,20 @@ public class BlogJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return the html code to confirm
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @Action( ACTION_CONFIRM_REMOVE_BLOG )
     public String getConfirmRemoveBlog( HttpServletRequest request ) throws AccessDeniedException
     {
-    	 
-    	String strId= request.getParameter( PARAMETER_ID_BLOG );
-        
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
-                Blog.PERMISSION_DELETE, getUser( ) ) )
+
+        String strId = request.getParameter( PARAMETER_ID_BLOG );
+
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, getUser( ) ) )
         {
-   		 throw new AccessDeniedException(  );
+            throw new AccessDeniedException( );
         }
-        
-    	int nId = Integer.parseInt( strId );
+
+        int nId = Integer.parseInt( strId );
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_BLOG ) );
         url.addParameter( PARAMETER_ID_BLOG, nId );
 
@@ -635,25 +623,24 @@ public class BlogJspBean extends ManageBlogJspBean
     @Action( ACTION_REMOVE_BLOG )
     public String doRemoveBlog( HttpServletRequest request )
     {
-        String strId = request.getParameter( PARAMETER_ID_BLOG ) ;
+        String strId = request.getParameter( PARAMETER_ID_BLOG );
 
         int nId = Integer.parseInt( strId );
-        
-        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
-                Blog.PERMISSION_DELETE, getUser( ) ) )
+
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, getUser( ) ) )
         {
-	        List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
-	
-	        if ( docPublication.size( ) > 0 )
-	        {
-	            String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
-	
-	            return redirect( request, strMessageUrl );
-	        }
-	        BlogService.getInstance( ).deleteDocument( nId );
-	        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
-	
-	        addInfo( INFO_BLOG_REMOVED, getLocale( ) );
+            List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
+
+            if ( docPublication.size( ) > 0 )
+            {
+                String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
+
+                return redirect( request, strMessageUrl );
+            }
+            BlogService.getInstance( ).deleteDocument( nId );
+            ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
+
+            addInfo( INFO_BLOG_REMOVED, getLocale( ) );
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
@@ -664,22 +651,21 @@ public class BlogJspBean extends ManageBlogJspBean
      * @param request
      *            The Http request
      * @return The HTML form to update info
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( VIEW_MODIFY_BLOG )
     public String getModifyBlog( HttpServletRequest request ) throws AccessDeniedException
     {
-        String strId =  request.getParameter( PARAMETER_ID_BLOG ) ;
+        String strId = request.getParameter( PARAMETER_ID_BLOG );
 
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
-                Blog.PERMISSION_MODIFY, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, getUser( ) ) )
         {
-   		 throw new AccessDeniedException(  );
+            throw new AccessDeniedException( );
         }
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
 
         String strResetVersion = request.getParameter( PARAMETER_VERSION_BLOG );
-    	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
+        String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
 
         int nVersion = -1;
         if ( strResetVersion != null )
@@ -691,25 +677,24 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             if ( strResetVersion != null )
             {
-            	_blog = BlogHome.findVersion( nId, nVersion );
+                _blog = BlogHome.findVersion( nId, nVersion );
             }
             else
             {
-            	_blog = BlogService.getInstance( ).loadDocument( nId );
+                _blog = BlogService.getInstance( ).loadDocument( nId );
             }
             // _blog.setEditComment("");
         }
 
         Map<String, Object> model = getModel( );
-        
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                Tag.PERMISSION_CREATE, getUser( ) );
 
-        model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType());
-        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );        
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
+
+        model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
+        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
-        model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ));
+        model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), Blog.PROPERTY_RESOURCE_TYPE );
@@ -727,9 +712,9 @@ public class BlogJspBean extends ManageBlogJspBean
     @Action( ACTION_MODIFY_BLOG )
     public String doModifyBlog( HttpServletRequest request )
     {
-   	 
-    	String strId= request.getParameter( PARAMETER_ID_BLOG );
-    	String strAction =  request.getParameter( PARAMETER_ACTION_BUTTON );
+
+        String strId = request.getParameter( PARAMETER_ID_BLOG );
+        String strAction = request.getParameter( PARAMETER_ACTION_BUTTON );
         int nId = Integer.parseInt( strId );
         String strHtmlContent = request.getParameter( PARAMETER_HTML_CONTENT );
         String strEditComment = request.getParameter( PARAMETER_EDIT_COMMENT );
@@ -737,43 +722,44 @@ public class BlogJspBean extends ManageBlogJspBean
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strShareable = request.getParameter( PARAMETER_SHAREABLE );
         String strUrl = request.getParameter( PARAMETER_URL );
-        
-        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId,
-                Blog.PERMISSION_MODIFY, getUser( ) ) )
+
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, getUser( ) ) )
         {
-	        Blog latestVersionBlog = BlogService.getInstance( ).loadDocument( nId );
-	        if ( _blog == null || ( _blog.getId( ) != nId ) )
-	        {
-	        	_blog = latestVersionBlog;
-	        }
-	
-	        _blog.setContentLabel( strContentLabel );
-	        _blog.setDescription( strDescription );
-	        _blog.setShareable( Boolean.parseBoolean( strShareable ) );
-	        _blog.setHtmlContent( strHtmlContent );
-	        _blog.setEditComment( strEditComment );
-	        _blog.setUpdateDate( getSqlDate( ) );
-	        _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-	        _blog.setUrl( strUrl );
-	
-	
-	        // Check constraints
-	        if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
-	        {
-	            return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-	        }
-	
-	        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
-	        	
-	        	BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
-	        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-	        
-	        }else{
-	        	
-	        	_blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
-	        	BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
-	        	addInfo( INFO_BLOG_UPDATED, getLocale( ) );
-	        }
+            Blog latestVersionBlog = BlogService.getInstance( ).loadDocument( nId );
+            if ( _blog == null || ( _blog.getId( ) != nId ) )
+            {
+                _blog = latestVersionBlog;
+            }
+
+            _blog.setContentLabel( strContentLabel );
+            _blog.setDescription( strDescription );
+            _blog.setShareable( Boolean.parseBoolean( strShareable ) );
+            _blog.setHtmlContent( strHtmlContent );
+            _blog.setEditComment( strEditComment );
+            _blog.setUpdateDate( getSqlDate( ) );
+            _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setUrl( strUrl );
+
+            // Check constraints
+            if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
+            {
+                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+            }
+
+            if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
+            {
+
+                BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
+                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+
+            }
+            else
+            {
+
+                _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
+                BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
+                addInfo( INFO_BLOG_UPDATED, getLocale( ) );
+            }
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
@@ -839,11 +825,11 @@ public class BlogJspBean extends ManageBlogJspBean
         Blog blog;
         if ( strVersion != null )
         {
-        	blog = BlogHome.findVersion( nId, nVersion );
+            blog = BlogHome.findVersion( nId, nVersion );
         }
         else
         {
-        	blog = BlogHome.findByPrimaryKey( nId );
+            blog = BlogHome.findByPrimaryKey( nId );
         }
 
         int nVersion2 = blog.getVersion( ) - 1;
@@ -855,7 +841,7 @@ public class BlogJspBean extends ManageBlogJspBean
         Blog blog2 = BlogHome.findVersion( nId, nVersion2 );
         if ( blog2 == null )
         {
-        	blog2 = BlogHome.findByPrimaryKey( nId );
+            blog2 = BlogHome.findByPrimaryKey( nId );
         }
 
         if ( blog2.getVersion( ) > blog.getVersion( ) )
@@ -892,8 +878,8 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         catch( Exception e )
         {
-            AppLogService.error( "Error generating daisy diff for blog " + nId + ":" + blog.getContentLabel( ) + "; versions (" + blog.getVersion( )
-                    + "," + blog2.getVersion( ) + ")", e );
+            AppLogService.error( "Error generating daisy diff for blog " + nId + ":" + blog.getContentLabel( ) + "; versions (" + blog.getVersion( ) + ","
+                    + blog2.getVersion( ) + ")", e );
         }
 
         List<Blog> listBlogsVersions = BlogHome.getBlogsVersionsList( nId );
@@ -906,92 +892,108 @@ public class BlogJspBean extends ManageBlogJspBean
 
         return getPage( PROPERTY_PAGE_TITLE_DIFF_BLOG, TEMPLATE_DIFF_BLOG, model );
     }
-    /**
 
+    /**
+     * 
      * Added docContent to the htmlDoc content list
-     * @param request The Http request
-     * @param htmldoc The HtmlDoc
+     * 
+     * @param request
+     *            The Http request
+     * @param htmldoc
+     *            The HtmlDoc
      */
     @Action( ACTION_ADD_FILE_CONTENT )
-    public String addContent( HttpServletRequest request){
-    	
-    	String base64ImageString= request.getParameter( "fileContent" );  
-    	String strFileName= request.getParameter( "fileName" );
-    	String strFileType= request.getParameter( "fileType" );    	 
-    	Date currentTime = new Date();
-    	strFileName= strFileName + currentTime.getTime( );
-    
-    	String delims="[,]";
-    	String[] parts = base64ImageString.split(delims);
-    	String imageString = parts[1];
-    	byte[] imageByteArray = Base64.getDecoder().decode(imageString );
+    public String addContent( HttpServletRequest request )
+    {
 
-    	InputStream is = new ByteArrayInputStream(imageByteArray);
+        String base64ImageString = request.getParameter( "fileContent" );
+        String strFileName = request.getParameter( "fileName" );
+        String strFileType = request.getParameter( "fileType" );
+        Date currentTime = new Date( );
+        strFileName = strFileName + currentTime.getTime( );
 
-    	//Find out image type
-    	String mimeType = null;
-    	String fileExtension = null;
-    	try {
-    	     mimeType = URLConnection.guessContentTypeFromStream(is); //mimeType is something like "image/jpeg"
-    	     String delimiter="[/]";
-    	     String[] tokens = mimeType.split(delimiter);
-    	     fileExtension = tokens[1];
-    	 } catch (IOException ioException){
-    		 AppLogService.error( ioException.getStackTrace( ), ioException );
-    	 }
-    	 
-    	 DocContent docContent = new DocContent( );
-         docContent.setBinaryValue( imageByteArray );
-         docContent.setValueContentType( mimeType );
-         docContent.setTextValue( strFileName );
-         
-         if(strFileType != null ){
-        	 
-        	 ContentType contType= new ContentType();
-        	 contType.setIdContentType(Integer.parseInt(strFileType));
-             docContent.setContentType(contType);
-         }
-         
+        String delims = "[,]";
+        String [ ] parts = base64ImageString.split( delims );
+        String imageString = parts [1];
+        byte [ ] imageByteArray = Base64.getDecoder( ).decode( imageString );
 
-         _blog.addConetnt(docContent);
-         
-         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
-    	
+        InputStream is = new ByteArrayInputStream( imageByteArray );
+
+        // Find out image type
+        String mimeType = null;
+        String fileExtension = null;
+        try
+        {
+            mimeType = URLConnection.guessContentTypeFromStream( is ); // mimeType is something like "image/jpeg"
+            String delimiter = "[/]";
+            String [ ] tokens = mimeType.split( delimiter );
+            fileExtension = tokens [1];
+        }
+        catch( IOException ioException )
+        {
+            AppLogService.error( ioException.getStackTrace( ), ioException );
+        }
+
+        DocContent docContent = new DocContent( );
+        docContent.setBinaryValue( imageByteArray );
+        docContent.setValueContentType( mimeType );
+        docContent.setTextValue( strFileName );
+
+        if ( strFileType != null )
+        {
+
+            ContentType contType = new ContentType( );
+            contType.setIdContentType( Integer.parseInt( strFileType ) );
+            docContent.setContentType( contType );
+        }
+
+        _blog.addConetnt( docContent );
+
+        return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
+
     }
-    
+
     /**
      * delete docContent in the htmlDoc content list
-     * @param request The Http request
-     * @param htmldoc The HtmlDoc
+     * 
+     * @param request
+     *            The Http request
+     * @param htmldoc
+     *            The HtmlDoc
      */
     @Action( ACTION_REMOVE_FILE_CONTENT )
-    public String removeContent( HttpServletRequest request){
-    	
-    	String strFileName= request.getParameter( "fileName" );    	 
-        _blog.deleteDocContent( strFileName);
+    public String removeContent( HttpServletRequest request )
+    {
+
+        String strFileName = request.getParameter( "fileName" );
+        _blog.deleteDocContent( strFileName );
         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
-   	
-   }
-    @Action( ACTION_UPDATE_CONTENT_TYPE )
-    public String updateContentType( HttpServletRequest request){
-    	
-    	String strContentTypeId= request.getParameter(PARAMETER_TYPE_ID ); 
-    	String strContentId= request.getParameter( PARAMETER_CONTENT_ID );
-    	for(DocContent content :_blog.getDocContent()){
-    	
-    		if( strContentId != null && content.getId()== Integer.parseInt(strContentId)){
-    			
-    			ContentType contType =new ContentType();
-    			contType.setIdContentType(Integer.parseInt(strContentTypeId));
-    			
-    			content.setContentType(contType);
-    			break;
-    		}
-    	}
-    	
-    	   return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
+
     }
-    
+
+    @Action( ACTION_UPDATE_CONTENT_TYPE )
+    public String updateContentType( HttpServletRequest request )
+    {
+
+        String strContentTypeId = request.getParameter( PARAMETER_TYPE_ID );
+        String strContentId = request.getParameter( PARAMETER_CONTENT_ID );
+        for ( DocContent content : _blog.getDocContent( ) )
+        {
+
+            if ( strContentId != null && content.getId( ) == Integer.parseInt( strContentId ) )
+            {
+
+                ContentType contType = new ContentType( );
+                contType.setIdContentType( Integer.parseInt( strContentTypeId ) );
+
+                content.setContentType( contType );
+                break;
+            }
+        }
+
+        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
+    }
+
     /**
      * 
      * @return
@@ -1006,9 +1008,9 @@ public class BlogJspBean extends ManageBlogJspBean
         return list;
     }
 
-
     /**
      * Set content of the blog
+     * 
      * @param mRequest
      * @param locale
      * @return the content of the blog
@@ -1060,7 +1062,7 @@ public class BlogJspBean extends ManageBlogJspBean
                 if ( item.getCode( ).equals( String.valueOf( tg.getIdTag( ) ) ) )
                 {
 
-                	BlogList.remove( index );
+                    BlogList.remove( index );
                     index--;
                 }
             }
@@ -1069,6 +1071,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         return BlogList;
     }
+
     /**
      * Gets the current
      *
@@ -1081,7 +1084,5 @@ public class BlogJspBean extends ManageBlogJspBean
 
         return ( sqlDate );
     }
-    
-
 
 }

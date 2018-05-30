@@ -151,9 +151,10 @@ public class BlogListPortletHome extends PortletHome
         // FIXME : method should access to different home business methods
         return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
     }
-    
+
     /**
      * Load the portlet template whose type is specified in parameter
+     * 
      * @param strPortletType
      * @return Map template
      */

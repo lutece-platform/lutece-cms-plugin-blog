@@ -195,8 +195,8 @@ public class BlogPublicationJspBean extends BlogJspBean
 
         Collection<ReferenceItem> listDocumentListPortlets = getListAuthorizedDocumentListPortlets( _blog.getId( ), pOrder,
                 ( strErrorFilter == null ) ? portletFilter : null );
-        Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( _blog.getId( ), pOrder,
-                ( strErrorFilter == null ) ? portletFilter : null );
+        Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( _blog.getId( ), pOrder, ( strErrorFilter == null ) ? portletFilter
+                : null );
 
         model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
         model.put( MARk_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
@@ -227,7 +227,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         if ( _blogPublication.getDateBeginPublishing( ) == null )
         {
 
-        	_blogPublication.setDateBeginPublishing( new Date( System.currentTimeMillis( ) ) );
+            _blogPublication.setDateBeginPublishing( new Date( System.currentTimeMillis( ) ) );
         }
         if ( _blogPublication.getDateEndPublishing( ) == null )
         {
@@ -249,7 +249,8 @@ public class BlogPublicationJspBean extends BlogJspBean
     /**
      * Unpublish a document in the portlet
      * 
-     * @param request  The request
+     * @param request
+     *            The request
      * @return view manage blog publication
      */
     @Action( ACTION_UNPUBLISHE_DOCUMENT )

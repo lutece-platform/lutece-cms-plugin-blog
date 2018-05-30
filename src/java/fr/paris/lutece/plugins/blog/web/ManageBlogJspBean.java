@@ -65,7 +65,7 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     private static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
     private static final String MARK_ASC_SORT = "asc_sort";
-    
+
     // Properties
     protected static final String MESSAGE_CONFIRM_REMOVE_TAG = "blog.message.confirmRemoveTag";
     protected static final String MARK_PERMISSION_CREATE_TAG = "permission_manage_create_tag";

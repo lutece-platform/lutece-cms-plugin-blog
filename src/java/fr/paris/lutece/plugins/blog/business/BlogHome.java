@@ -256,7 +256,7 @@ public final class BlogHome
 
         return listDocuments;
     }
-    
+
     /**
      * Load the data of Blog objects and returns them as a list
      * 

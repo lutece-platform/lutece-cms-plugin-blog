@@ -172,7 +172,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
      * {@inheritDoc }
      */
     @Override
-    public Map<Integer, String> loadPages( String strPortletType)
+    public Map<Integer, String> loadPages( String strPortletType )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_PORTLET );
         daoUtil.setString( 1, strPortletType );

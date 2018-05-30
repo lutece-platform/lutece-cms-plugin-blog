@@ -83,8 +83,10 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
      * @return theDocumentListPortlet object
      */
     Portlet load( int nPortletId );
+
     /**
      * Load the portlet template whose type is specified in parameter
+     * 
      * @param strPortletType
      * @return Map template
      */
