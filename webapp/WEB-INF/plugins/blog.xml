@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plug-in>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><plug-in>
     <name>blog</name>
     <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
     <version>1.0.0</version>
-    <documentation></documentation>
-    <installation></installation>
-    <changes></changes>
-    <user-guide></user-guide>
+    <documentation/>
+    <installation/>
+    <changes/>
+    <user-guide/>
     <description>blog.plugin.description</description>
     <provider>blog.plugin.provider</provider>
     <provider-url>http://dev.lutece.paris.fr</provider-url>
@@ -28,7 +27,7 @@
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/blog/ManageBlogs.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
-            <feature-icon-url></feature-icon-url>
+            <feature-icon-url/>
 		</admin-feature>
 		<admin-feature>
             <feature-id>BLOG_TAGS_MANAGEMENT</feature-id>
@@ -37,7 +36,7 @@
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/blog/ManageTags.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
-            <feature-icon-url></feature-icon-url>
+            <feature-icon-url/>
 		</admin-feature>
     </admin-features>    
 
@@ -103,8 +102,8 @@
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
         <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletblogs.html</portlet-create-specific-template>
         <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletblogs.html</portlet-modify-specific-template>
-        <portlet-create-specific-form-template></portlet-create-specific-form-template>
-        <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
+        <portlet-create-specific-form-template/>
+        <portlet-modify-specific-form-template/> 
      </portlet>
      
       <portlet>     
@@ -120,8 +119,8 @@
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
         <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletblogslist.html</portlet-create-specific-template>
         <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletblogslist.html</portlet-modify-specific-template>
-        <portlet-create-specific-form-template></portlet-create-specific-form-template>
-        <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
+        <portlet-create-specific-form-template/>
+        <portlet-modify-specific-form-template/> 
      </portlet>
    </portlets>
    <!-- RBAC Resources -->
