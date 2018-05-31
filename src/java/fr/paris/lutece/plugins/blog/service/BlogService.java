@@ -232,7 +232,7 @@ public class BlogService
      * @param docContent
      *            The Doc Content
      */
-    private void updateDocument( DocContent docContent )
+    private void updateDocContent( DocContent docContent )
 
     {
 
@@ -276,7 +276,7 @@ public class BlogService
                     {
 
                         docCont.setIdBlog( blog.getId( ) );
-                        updateDocument( docCont );
+                        updateDocContent( docCont );
                     }
 
                 }
@@ -333,7 +333,7 @@ public class BlogService
                     {
 
                         docCont.setIdBlog( blog.getId( ) );
-                        updateDocument( docCont );
+                        updateDocContent( docCont );
                     }
 
                 }

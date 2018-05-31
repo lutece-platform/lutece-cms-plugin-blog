@@ -199,7 +199,7 @@ public final class DocContentDAO implements IDocContentDAO
         daoUtil.setString( 3, docContent.getTextValue( ) );
         daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
         daoUtil.setString( 5, docContent.getValueContentType( ) );
-        daoUtil.setInt( 6, docContent.getIdBlog( ) );
+        daoUtil.setInt( 6, docContent.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
