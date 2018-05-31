@@ -81,6 +81,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -428,6 +429,8 @@ public class BlogJspBean extends ManageBlogJspBean
     	 
     	_blog = ( _blog != null && _blog.getId( ) == 0) ? _blog : new Blog( );
     	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
+    	_blog.getTag().sort((tg1, tg2) -> tg1.getPriority() - tg2.getPriority());
+
     	String useCropImage=DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
         Map<String, Object> model = getModel( );
 
@@ -535,10 +538,16 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
                 Tag.PERMISSION_DELETE, getUser( ) ) )
    	 {
-        Tag tag = new Tag( );
-        tag.setIdTag( Integer.parseInt( strIdTag ) );
+        Tag tag = _blog.getTag().stream().filter(tg -> tg.getIdTag()== Integer.parseInt( strIdTag )).collect(Collectors.toList()).get(0);
         _blog.deleteTag( tag );
+        
+        List<Tag> listTag=_blog.getTag().stream().map(tg -> {
+        	if((tg.getPriority() > tag.getPriority())){
+        		tg.setPriority(tg.getPriority() - 1);
+        	}
+		return tg;}).collect(Collectors.toList());
 
+        _blog.setTag(listTag);
             return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
         }
         return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) );
@@ -712,7 +721,7 @@ public class BlogJspBean extends ManageBlogJspBean
             }
             // _blog.setEditComment("");
         }
-
+    	_blog.getTag().sort((tg1, tg2) -> tg1.getPriority() - tg2.getPriority());
         Map<String, Object> model = getModel( );
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
@@ -779,7 +788,7 @@ public class BlogJspBean extends ManageBlogJspBean
 	        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
 	        	
 	        	BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
-            	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
+		    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
 
 	        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
 	        
@@ -787,7 +796,7 @@ public class BlogJspBean extends ManageBlogJspBean
 	        	
 	        	_blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
 	        	BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
-            	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
+		    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
 
 	        	addInfo( INFO_BLOG_UPDATED, getLocale( ) );
 	        }
