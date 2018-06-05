@@ -1,3 +1,4 @@
+<#include "blog_commons.html" />
 
 <div class="form-group">
   <label>Mod&egrave;le de pr&eacute;sentation</label>
@@ -6,7 +7,8 @@
      <option value="${key}">${value}</option>
   </#list>
 </select>
-</div>
+<@blogSearch />
+
 <div class="form-group">
   <div class="row">
     <div class="col-xs-12 col-sm-6">
@@ -33,28 +35,5 @@
   </div>
 </div>
 <script src="js/plugins/blog/portlet_list.js"></script>
-<#macro paginationCombo paginator nb_items_per_page=nb_items_per_page showall=0>
-	<label>${paginator.labelItemCountPerPage}</label>
-  <div class="input-group">
-	  <select data-max-item="${paginator.itemsCount}" class="input-xs" name="${paginator.itemsPerPageParameterName}" id="${paginator.itemsPerPageParameterName}" title="${paginator.labelItemCountPerPage}">
-  		<#list [ "10" , "20" , "50" , "100" ] as nb>
-  			<#if nb_items_per_page = nb >
-  				<option selected="selected" value="${nb}">${nb}</option>
-  			<#else>
-  				<option value="${nb}">${nb}</option>
-  			</#if>
-  		</#list>
-  		<#if showall ==1>
-  			<#if paginator.itemsCount &gt; 100 >
-  				<option <#if nb_items_per_page?number = paginator.itemsCount?number >selected="selected"</#if> value="${paginator.itemsCount}" class="${nb_items_per_page}">#i18n{portal.util.labelAll}</option>
-  			</#if>
-  		</#if>
-	  </select>
-	  <span class="input-group-btn">
-		<button class="btn btn-default btn-xs" type="submit" title="#i18n{portal.util.labelRefresh}" name="refresh" value= "refresh">
-			<i class="fa fa-repeat"></i>
-		</button>
-	</span>
-</div>
-</#macro>
+
 <@paginationAdmin paginator=paginator combo=1 />
