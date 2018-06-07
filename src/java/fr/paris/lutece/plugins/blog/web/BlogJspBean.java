@@ -504,8 +504,9 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doAddTag( HttpServletRequest request )
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
+        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );   
+        lockBlog( nIdBlog, request.getSession().getId( ));
 
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );      
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
     	
     	if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
@@ -534,8 +535,9 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doRemoveTag( HttpServletRequest request )
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
+        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );   
+        lockBlog( nIdBlog, request.getSession().getId( ));
 
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );       
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
     	
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
@@ -574,7 +576,8 @@ public class BlogJspBean extends ManageBlogJspBean
         String strIdTag = request.getParameter( PARAMETER_TAG );
         String strAction = request.getParameter( PARAMETER_TAG_ACTION );      
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        
+        lockBlog( nIdBlog, request.getSession().getId( ));
+
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
 
 
@@ -721,25 +724,21 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             nVersion = Integer.parseInt( strResetVersion );
         }
-    	_blog= _blogServiceSession.getBlogFromSession(request.getSession(), nId);
-        if ( _blog == null || ( _blog.getId( ) != nId ) || ( strResetVersion != null && _blog.getVersion( ) != nVersion ) )
+    
+        if ( strResetVersion != null && strResetVersion != null )
         {
-            if ( strResetVersion != null )
-            {
 
-            	_blog = BlogHome.findVersion( nId, nVersion );
-            	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
-
-            }
-            else
-            {
+          	_blog = BlogHome.findVersion( nId, nVersion );
+           	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
+         }
+         else
+         {
             	_blog = BlogService.getInstance( ).loadDocument( nId );
             	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
 
-
-            }
+         }
             // _blog.setEditComment("");
-        }
+        
         if( checkLockBlog( nId , request.getSession().getId( ))){
         	
         	UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
@@ -1021,6 +1020,7 @@ public class BlogJspBean extends ManageBlogJspBean
          
          _blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
          _blog.addConetnt(docContent);
+         lockBlog( nIdBlog, request.getSession().getId( ));
          
          return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
     	
@@ -1042,6 +1042,8 @@ public class BlogJspBean extends ManageBlogJspBean
 
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
         _blog.deleteDocContent( strFileName);
+        lockBlog( nIdBlog, request.getSession().getId( ));
+        
         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
 
     }
@@ -1070,8 +1072,9 @@ public class BlogJspBean extends ManageBlogJspBean
     			break;
     		}
     	}
-    	
-    	   return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
+        lockBlog( nIdBlog, request.getSession().getId( ));
+
+   	   return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
     }
 
 
@@ -1088,7 +1091,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         FileItem fileParameterBinaryValue = mRequest.getFile( "attachment" );
         // boolean bToResize = ( ( strToResize == null ) || strToResize.equals( "" ) ) ? false : true;
-
+        
         if ( fileParameterBinaryValue != null ) // If the field is a file
         {
 
