@@ -46,6 +46,7 @@ import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.BlogServiceSession;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
+import fr.paris.lutece.plugins.blog.utils.BlogLock;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
@@ -60,7 +61,6 @@ import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
-import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
@@ -78,6 +78,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -215,6 +216,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
     private static final String INFO_BLOG_UPDATED = "blog.info.blog.updated";
     private static final String INFO_BLOG_REMOVED = "blog.info.blog.removed";
+    private static final String BLOG_LOCKED = "blog.message.blogLocked";
 
     // Filter Marks
     protected static final String MARK_BLOG_FILTER_LIST = "blog_filter_list";
@@ -229,7 +231,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_UNPUBLISHED = "unpublished";
 
     // Session variable to store working values
-    
+    private static Map<Integer, BlogLock> _mapLockBlog= new Hashtable<Integer,BlogLock>();
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
@@ -479,6 +481,7 @@ public class BlogJspBean extends ManageBlogJspBean
             // DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
             BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
             _blogServiceSession.removeBlogFromSession(request.getSession(), _blog.getId( ));
+
             if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
             {
 
@@ -627,13 +630,19 @@ public class BlogJspBean extends ManageBlogJspBean
     {
 
         String strId = request.getParameter( PARAMETER_ID_BLOG );
-
+        int nId = Integer.parseInt( strId );
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, getUser( ) ) )
         {
             throw new AccessDeniedException( );
         }
-
-        int nId = Integer.parseInt( strId );
+        if( checkLockBlog(nId, request.getSession().getId( ))){
+        		  	
+        	UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strMessageUrl );
+           
+        }
+          
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_BLOG ) );
         url.addParameter( PARAMETER_ID_BLOG, nId );
 
@@ -659,6 +668,14 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, getUser( ) ) )
         {
 
+        	if( checkLockBlog( nId, request.getSession().getId( ))){
+    		  	
+            	UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+                String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+                return redirect( request, strMessageUrl );
+               
+            }
+        	
 	        List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
 	
 	        if ( docPublication.size( ) > 0 )
@@ -669,6 +686,8 @@ public class BlogJspBean extends ManageBlogJspBean
 	        }
 	        BlogService.getInstance( ).deleteDocument( nId );
 	    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
+        	unLockBlog(nId);
+
 	        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
 	
 	        addInfo( INFO_BLOG_REMOVED, getLocale( ) );
@@ -693,8 +712,7 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             throw new AccessDeniedException( );
         }
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-
+        int nId = Integer.parseInt( strId);
         String strResetVersion = request.getParameter( PARAMETER_VERSION_BLOG );
         String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
 
@@ -718,9 +736,19 @@ public class BlogJspBean extends ManageBlogJspBean
             	_blog = BlogService.getInstance( ).loadDocument( nId );
             	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
 
+
             }
             // _blog.setEditComment("");
         }
+        if( checkLockBlog( nId , request.getSession().getId( ))){
+        	
+        	UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strMessageUrl );
+        }
+        
+    	lockBlog( nId, request.getSession().getId( ));
+
     	_blog.getTag().sort((tg1, tg2) -> tg1.getPriority() - tg2.getPriority());
         Map<String, Object> model = getModel( );
 
@@ -761,8 +789,14 @@ public class BlogJspBean extends ManageBlogJspBean
 
         if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, getUser( ) ) )
         {
-
-	        Blog latestVersionBlog = BlogService.getInstance( ).loadDocument( nId );
+          
+        	if( checkLockBlog(Integer.parseInt( strId ), request.getSession().getId( ))){
+        		
+        		UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+                String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+                return redirect( request, strMessageUrl );
+           }
+	       Blog latestVersionBlog = BlogService.getInstance( ).loadDocument( nId );
 	        if ( _blog == null || ( _blog.getId( ) != nId ) )
 	        {
 	        	_blog = latestVersionBlog;
@@ -789,6 +823,7 @@ public class BlogJspBean extends ManageBlogJspBean
 	        	
 	        	BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
 		    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
+	        	unLockBlog(nId);
 
 	        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
 	        
@@ -797,7 +832,7 @@ public class BlogJspBean extends ManageBlogJspBean
 	        	_blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
 	        	BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
 		    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
-
+	        	unLockBlog(nId);
 	        	addInfo( INFO_BLOG_UPDATED, getLocale( ) );
 	        }
         }
@@ -1000,7 +1035,6 @@ public class BlogJspBean extends ManageBlogJspBean
      *            The HtmlDoc
      */
     @Action( ACTION_REMOVE_FILE_CONTENT )
-
     public String removeContent( HttpServletRequest request){
     	
     	String strFileName= request.getParameter( "fileName" );
@@ -1011,9 +1045,12 @@ public class BlogJspBean extends ManageBlogJspBean
         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
 
     }
-
+    /**
+     * 
+     * @param request
+     * @return
+     */
     @Action( ACTION_UPDATE_CONTENT_TYPE )
-
     public String updateContentType( HttpServletRequest request){
     	
     	String strContentTypeId= request.getParameter(PARAMETER_TYPE_ID ); 
@@ -1037,19 +1074,6 @@ public class BlogJspBean extends ManageBlogJspBean
     	   return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
     }
 
-    /**
-     * 
-     * @return
-     */
-    private ReferenceList getBlogFilterList( )
-    {
-        ReferenceList list = new ReferenceList( );
-        list.addItem( MARK_BLOG_FILTER_NAME, "Nom" );
-        list.addItem( MARK_BLOG_FILTER_DATE, "Date" );
-        list.addItem( MARK_BLOG_FILTER_USER, "Utilisateur" );
-
-        return list;
-    }
 
     /**
      * Set content of the blog
@@ -1088,6 +1112,20 @@ public class BlogJspBean extends ManageBlogJspBean
         return null;
     }
 
+
+    /**
+     * 
+     * @return
+     */
+    private ReferenceList getBlogFilterList( )
+    {
+        ReferenceList list = new ReferenceList( );
+        list.addItem( MARK_BLOG_FILTER_NAME, "Nom" );
+        list.addItem( MARK_BLOG_FILTER_DATE, "Date" );
+        list.addItem( MARK_BLOG_FILTER_USER, "Utilisateur" );
+
+        return list;
+    }
     /**
      * 
      * @return BlogList
@@ -1104,6 +1142,62 @@ public class BlogJspBean extends ManageBlogJspBean
             }
         return BlogList;
     }
+    /**
+     * Check if the blog is locked
+     * @param nIdBlog The Id blog
+     * @param strIdSession The Id session
+     * @return true return if the blog is locked else false
+     */
+    private boolean checkLockBlog(int nIdBlog, String strIdSession){
+    	
+    	if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId() != strIdSession){
+    			
+    		return true;
+       
+        }
+    	return false;
+    }
+    
+    /**
+     * Lock blog
+     * @param nIdBlog The Id blog
+     * @param strIdSession The Id session
+     */
+    private void lockBlog(int nIdBlog, String strIdSession){
+    		
+    	_mapLockBlog.remove(nIdBlog);
+    	_mapLockBlog.put(nIdBlog, new BlogLock(strIdSession, System.currentTimeMillis()));
+    	
+    }
+  
+    /**
+     * Unlock Blog
+     * @param nIdBlog The id Blog
+     */
+    private void unLockBlog(int nIdBlog){
+    		
+    	_mapLockBlog.remove( nIdBlog );
+    	
+    }
+    /**
+     * Unlock Blogs By Session Id
+     * @param strIdSession The Id session
+     */
+    public static void unLockedBlogByIdSession(String strIdSession){
+    	
+    	_mapLockBlog.values().removeIf(id -> id.getSessionId( ).compareTo(strIdSession) > 0);
+    }
+    
+    /**
+     * Unlock the blog if the lock clearance time has passed 
+     * @param nTime the clearance time
+     */
+   public static void unLockedBlogByTime(long nTime){
+    	
+	   long currentTime= System.currentTimeMillis();
+	   _mapLockBlog.values().removeIf(id -> id.getTime() + nTime <  currentTime );
+   }
+    
 
     /**
      * Gets the current

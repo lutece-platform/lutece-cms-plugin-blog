@@ -24,6 +24,7 @@ INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_MANAGEMENT',1);
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
 
 
 --

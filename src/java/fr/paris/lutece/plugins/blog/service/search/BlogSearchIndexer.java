@@ -35,8 +35,8 @@ package fr.paris.lutece.plugins.blog.service.search;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.service.BlogService;
-import fr.paris.lutece.plugins.blog.service.docsearch.DefaultBlogIndexer;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
+import fr.paris.lutece.plugins.blog.service.docsearch.DefaultBlogIndexer;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.search.SearchIndexer;

@@ -75,7 +75,12 @@
 			<daemon-description>blog.daemon.indexerDameon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchIndexerDaemon</daemon-class>
 		</daemon>
-              
+        <daemon>
+			<daemon-id>unlockedBlogDaemon</daemon-id>
+			<daemon-name>blog.daemon.unlockedBlogDaemon.name</daemon-name>
+			<daemon-description>blog.daemon.unlockedBlogDaemon.description</daemon-description>
+			<daemon-class>fr.paris.lutece.plugins.blog.service.UnlockedBlogDaemon</daemon-class>
+	    </daemon>          
 	</daemons>
     
     <!-- Dashboard components -->
