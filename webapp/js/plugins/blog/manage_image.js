@@ -45,10 +45,13 @@ function doAddContent( fileName, result, fileType, idBlog )
     success:function(data) {
   	if ( data.status == 'OK' )
 		{
-			$('#imagesrc'+fileName).val(result);
-			$('#imageappend').append('<div id= "'+data.result+'">'+'<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("'+data.result+'") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>' + '<img id="preview_attachmen" src="'+result+'" alt="Preview" > </div>');
+  			if(data.result == "BLOG_LOCKED"){
+				alert( "Billet Verrouillé" );
+			}else{
+				$('#imagesrc'+fileName).val(result);
+				$('#imageappend').append('<div id= "'+data.result+'">'+'<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("'+data.result+'") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>' + '<img id="preview_attachmen" src="'+result+'" alt="Preview" > </div>');
 			//$('#deleteButton'+fileName).show();
-	
+			}
     	}	else	{
 				alert( "Echec" );
 			}
@@ -71,6 +74,9 @@ function doDeleteContent( fileName, idBlog )
   	success:function(data) {
 	  	if ( data.status == 'OK' )
 			{
+	  		if(data.result == "BLOG_LOCKED"){
+  				alert( "Billet Verrouillé" );
+  			}
 
 	  	} else	{
 				alert("echec")
@@ -99,7 +105,9 @@ function updateContentType( idContent, idTypeContent, idBlog)
     success:function(data) {
   	if ( data.status == 'OK' )
 		{
-			
+  		if(data.result == "BLOG_LOCKED"){
+				alert( "Billet Verrouillé" );
+		}	
     	}	else	{
 				alert( "Echec" );
 			}

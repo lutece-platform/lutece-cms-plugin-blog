@@ -27,8 +27,12 @@ function addTag( idTag, tgName, idBlog )
     success:function(data) {
   	if ( data.status == 'OK' )
 		{
-			setListTag(  idTag, tgName  )
-			$( '#tag_doc option:selected' ).detach();
+  			if(data.result == "BLOG_LOCKED"){
+  				alert( "Billet Verrouillé" );
+  			}else{
+  				setListTag(  idTag, tgName  )
+  				$( '#tag_doc option:selected' ).detach();
+		    }
     	}	else	{
 				alert( "Echec" );
 			}
@@ -55,9 +59,13 @@ function deleteTag( idTag, tgName, idBlog )
   	success:function(data) {
 	  	if ( data.status == 'OK' )
 			{
+	  		if(data.result == "BLOG_LOCKED"){
+  				alert( "Billet Verrouillé" );
+  			}else{
 				var tg = '#tag_' + idTag;
 				$( tg ).detach();
 				$('#tag_doc').append( '<option value="' + idTag + '">' + tgName + '</option>' );
+  			}
 	  	} else	{
 				alert("echec")
 			}
@@ -84,7 +92,9 @@ function updatePriorityTag( idTag, action, idBlog )
     success:function(data) {
   	if ( data.status == 'OK' )
   		{
-			if( action == "moveUp" ){
+  			if(data.result == "BLOG_LOCKED"){
+				alert( "Billet Verrouillé" );
+			}else if( action == "moveUp" ){
 				$('#tag_' + data.result ).insertAfter( $('#tag_' + idTag) );
 			} else if( action == "moveDown" ){
 				$('#tag_' + idTag ).insertAfter( $('#tag_' + data.result) );
@@ -111,7 +121,9 @@ function doCreateTag( tgName, idBlog ){
 	  	cache:false,
 	    success:function(data) {
 		  	if ( data.status == 'OK' ){
-					if( data.result != 'TAG_EXIST'){
+		  		if(data.result == "BLOG_LOCKED"){
+	  				alert( "Billet Verrouillé" );
+	  			}else if( data.result != 'TAG_EXIST'){
 						setListTag(  data.result, tgName  )
 					} else {
 						alert('Ce tag existe déja !!!!');

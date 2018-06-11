@@ -504,8 +504,15 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doAddTag( HttpServletRequest request )
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );   
-        lockBlog( nIdBlog, request.getSession().getId( ));
+        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) ); 
+        String nIdSession= request.getSession().getId( );
+        if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
+        	
+        	lockBlog( nIdBlog, request.getSession().getId( ));
+        }else{
+        	
+        	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+        }
 
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
     	
@@ -535,9 +542,15 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doRemoveTag( HttpServletRequest request )
     {
         String strIdTag = request.getParameter( PARAMETER_TAG );
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );   
-        lockBlog( nIdBlog, request.getSession().getId( ));
-
+        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) ); 
+        String nIdSession= request.getSession().getId( );
+        if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
+        	
+        	lockBlog( nIdBlog, request.getSession().getId( ));
+        }else{
+        	
+        	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+        }
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
     	
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
@@ -576,7 +589,14 @@ public class BlogJspBean extends ManageBlogJspBean
         String strIdTag = request.getParameter( PARAMETER_TAG );
         String strAction = request.getParameter( PARAMETER_TAG_ACTION );      
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        lockBlog( nIdBlog, request.getSession().getId( ));
+        String nIdSession= request.getSession().getId( );
+        if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
+        	
+        	lockBlog( nIdBlog, request.getSession().getId( ));
+        }else{
+        	
+        	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+        }
 
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
 
@@ -981,6 +1001,14 @@ public class BlogJspBean extends ManageBlogJspBean
     public String addContent( HttpServletRequest request){
     	
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        String nIdSession= request.getSession().getId( );
+        if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
+        	
+        	lockBlog( nIdBlog, request.getSession().getId( ));
+        }else{
+        	
+        	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+        }
     	String base64ImageString= request.getParameter( "fileContent" );  
     	String strFileName= request.getParameter( "fileName" );
     	String strFileType= request.getParameter( "fileType" );    	 
@@ -1020,7 +1048,6 @@ public class BlogJspBean extends ManageBlogJspBean
          
          _blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
          _blog.addConetnt(docContent);
-         lockBlog( nIdBlog, request.getSession().getId( ));
          
          return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
     	
@@ -1039,10 +1066,16 @@ public class BlogJspBean extends ManageBlogJspBean
     	
     	String strFileName= request.getParameter( "fileName" );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-
+        String nIdSession= request.getSession().getId( );
+        if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
+        	
+        	lockBlog( nIdBlog, request.getSession().getId( ));
+        }else{
+        	
+        	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+        }
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
         _blog.deleteDocContent( strFileName);
-        lockBlog( nIdBlog, request.getSession().getId( ));
         
         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
 
@@ -1058,7 +1091,14 @@ public class BlogJspBean extends ManageBlogJspBean
     	String strContentTypeId= request.getParameter(PARAMETER_TYPE_ID ); 
     	String strContentId= request.getParameter( PARAMETER_CONTENT_ID );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-
+        String nIdSession= request.getSession().getId( );
+        if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
+        	
+        	lockBlog( nIdBlog, request.getSession().getId( ));
+        }else{
+        	
+        	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+        }
     	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
 
     	for(DocContent content :_blog.getDocContent()){
@@ -1072,7 +1112,6 @@ public class BlogJspBean extends ManageBlogJspBean
     			break;
     		}
     	}
-        lockBlog( nIdBlog, request.getSession().getId( ));
 
    	   return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
     }
@@ -1149,17 +1188,18 @@ public class BlogJspBean extends ManageBlogJspBean
      * Check if the blog is locked
      * @param nIdBlog The Id blog
      * @param strIdSession The Id session
-     * @return true return if the blog is locked else false
+     * @return return true if the blog is locked else false
      */
     private boolean checkLockBlog(int nIdBlog, String strIdSession){
     	
-    	if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId() != strIdSession){
+    	if( _mapLockBlog.get( nIdBlog ) != null && !_mapLockBlog.get( nIdBlog ).getSessionId().equals(strIdSession)){
     			
     		return true;
        
         }
     	return false;
     }
+    
     
     /**
      * Lock blog
