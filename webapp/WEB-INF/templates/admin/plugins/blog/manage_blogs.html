@@ -117,7 +117,7 @@
                 <td>
                   <p class="lead" style="margin-bottom:0">
                     <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}" s title="#i18n{portal.util.labelModify}">
-                      ${blog.contentLabel!}
+                      ${blog.contentLabel!} <#if blog.locked><i class="glyphicon glyphicon-lock"></i></#if>
                     </a>
                   </p>
             

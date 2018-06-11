@@ -102,10 +102,13 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     private String _strUrl;
 
     private boolean _bShareable;
+    
+    private boolean _bLocked;
 
     private List<Tag> _tag = new ArrayList<Tag>( );
 
     private List<BlogPublication> _blogPubilcation = new ArrayList<BlogPublication>( );
+   
 
     /**
      * Returns the Id
@@ -416,6 +419,23 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public void setShareable( boolean shareable )
     {
         _bShareable = shareable;
+    }
+    /**
+     * Returns the Locked
+     * 
+     * @return The Locked
+     */
+    public boolean getLocked( )
+    {
+        return _bLocked;
+    }
+
+    /**
+     * Locked
+     */
+    public void setLocked( boolean locked )
+    {
+        _bLocked = locked;
     }
 
     /**

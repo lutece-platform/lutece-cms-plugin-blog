@@ -334,6 +334,10 @@ public class BlogJspBean extends ManageBlogJspBean
 
             if ( document != null )
             {
+            	if(_mapLockBlog.containsKey(document.getId( )) && !_mapLockBlog.get(document.getId( )).getSessionId( ).equals(request.getSession( ).getId( )) ){
+            	  
+            		document.setLocked( true );
+            	}
                 listDocuments.add( document );
             }
         }
