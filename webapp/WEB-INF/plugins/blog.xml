@@ -128,6 +128,11 @@
         <portlet-modify-specific-form-template/> 
      </portlet>
    </portlets>
+   <listeners>
+		<listener>
+			<listener-class>fr.paris.lutece.plugins.blog.service.BlogSessionListner</listener-class>
+		</listener>
+	</listeners>
    <!-- RBAC Resources -->
     <rbac-resource-types>
         <rbac-resource-type>

@@ -1,8 +1,11 @@
 package fr.paris.lutece.plugins.blog.service;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
 import fr.paris.lutece.plugins.blog.web.BlogJspBean;
 
 
@@ -13,6 +16,7 @@ import fr.paris.lutece.plugins.blog.web.BlogJspBean;
 public class BlogSessionListner implements HttpSessionListener{
 	
 
+	    private static Map<String, HttpSession> _mapSession = new ConcurrentHashMap<String, HttpSession>( );
 	
 	    /**
 	     * {@inheritDoc}
@@ -20,7 +24,7 @@ public class BlogSessionListner implements HttpSessionListener{
 	    @Override
 	    public void sessionCreated( HttpSessionEvent se )
 	    {
-	        // nothing to do
+	    	_mapSession.put(se.getSession().getId(), se.getSession());
 	    }
 
 	    /**
@@ -31,7 +35,15 @@ public class BlogSessionListner implements HttpSessionListener{
 	    {
 	        String strSessionId = se.getSession( ).getId( );
 	        BlogJspBean.unLockedBlogByIdSession(strSessionId);
+	        _mapSession.remove(se.getSession().getId());
 	    }
+	    
+	    public static Map<String, HttpSession> getMapSession( ){
+	    	
+	    	return _mapSession;
+	    }
+	    
+	    
 	
 
 
