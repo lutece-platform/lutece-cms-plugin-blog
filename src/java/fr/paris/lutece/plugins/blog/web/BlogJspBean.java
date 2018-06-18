@@ -513,15 +513,16 @@ public class BlogJspBean extends ManageBlogJspBean
         String strIdTag = request.getParameter( PARAMETER_TAG );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) ); 
         String nIdSession= request.getSession().getId( );
+        _blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
         if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
         	
         	lockBlog( nIdBlog, request.getSession().getId( ));
-        }else{
+        }else if( _blog.getId() != 0 ){
         	
         	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
         }
 
-    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
+    	
     	
     	if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
                 Tag.PERMISSION_CREATE, getUser( ) ) ){
@@ -551,14 +552,15 @@ public class BlogJspBean extends ManageBlogJspBean
         String strIdTag = request.getParameter( PARAMETER_TAG );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) ); 
         String nIdSession= request.getSession().getId( );
+        _blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
         if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
         	
         	lockBlog( nIdBlog, request.getSession().getId( ));
-        }else{
+        }else if( _blog.getId() != 0 ){
         	
         	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
         }
-    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
+    	
     	
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag,
                 Tag.PERMISSION_DELETE, getUser( ) ) )
@@ -597,15 +599,15 @@ public class BlogJspBean extends ManageBlogJspBean
         String strAction = request.getParameter( PARAMETER_TAG_ACTION );      
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession= request.getSession().getId( );
+    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
         if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
         	
         	lockBlog( nIdBlog, request.getSession().getId( ));
-        }else{
+        }else if( _blog.getId() != 0 ) {
         	
         	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
         }
 
-    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
 
 
         for ( Tag tag : _blog.getTag( ) )
@@ -1012,10 +1014,12 @@ public class BlogJspBean extends ManageBlogJspBean
     	
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession= request.getSession().getId( );
+        _blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
+
         if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
         	
         	lockBlog( nIdBlog, request.getSession().getId( ));
-        }else{
+        }else if ( _blog.getId( ) != 0 ){
         	
         	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
         }
@@ -1056,7 +1060,6 @@ public class BlogJspBean extends ManageBlogJspBean
              docContent.setContentType(contType);
          }
          
-         _blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
          _blog.addConetnt(docContent);
          
          return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
@@ -1077,14 +1080,15 @@ public class BlogJspBean extends ManageBlogJspBean
     	String strFileName= request.getParameter( "fileName" );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession= request.getSession().getId( );
+    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
+
         if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
         	
         	lockBlog( nIdBlog, request.getSession().getId( ));
-        }else{
+        }else if ( _blog.getId( ) != 0 ){
         	
         	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
         }
-    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
         _blog.deleteDocContent( strFileName);
         
         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
@@ -1102,14 +1106,15 @@ public class BlogJspBean extends ManageBlogJspBean
     	String strContentId= request.getParameter( PARAMETER_CONTENT_ID );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession= request.getSession().getId( );
+    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
+
         if( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId().equals( nIdSession )){
         	
         	lockBlog( nIdBlog, request.getSession().getId( ));
-        }else{
+        }else if ( _blog.getId( ) != 0 ){
         	
         	return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
         }
-    	_blog= _blogServiceSession.getBlogFromSession(request.getSession( ), nIdBlog);
 
     	for(DocContent content :_blog.getDocContent()){
     	
