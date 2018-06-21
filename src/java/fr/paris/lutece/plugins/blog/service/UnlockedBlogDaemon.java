@@ -9,13 +9,14 @@ public class UnlockedBlogDaemon extends Daemon
 
     private static final String DURATION = "blog.duration.lock";
 
-    @Override
-    public void run( )
-    {
-
-        String duration = DatastoreService.getDataValue( DURATION, "600000" );
-        BlogJspBean.unLockedBlogByTime( Long.parseLong( duration ) );
-
-    }
+    //MILLISECOND (10 MINUTE) 
+    private static final String DEFAULT_DURATION = "600000";
+	@Override
+	public void run() {
+		
+		String duration= DatastoreService.getDataValue(DURATION, DEFAULT_DURATION);
+		BlogJspBean.unLockedBlogByTime(Long.parseLong( duration ));
+		
+	}
 
 }

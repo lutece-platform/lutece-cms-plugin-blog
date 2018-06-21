@@ -105,9 +105,9 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
             for ( BlogPublication docPub : p.getArrayBlogs( ) )
             {
                 daoUtil.setInt( 1, p.getId( ) );
-                daoUtil.setInt( 2, docPub.getIdDocument( ) );
+                daoUtil.setInt( 2, docPub.getIdBlog( ) );
                 daoUtil.setInt( 3, 1 );
-                daoUtil.setInt( 4, docPub.getDocumentOrder( ) );
+                daoUtil.setInt( 4, docPub.getBlogOrder( ) );
                 daoUtil.executeUpdate( );
             }
 
@@ -207,8 +207,8 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         while ( daoUtil.next( ) )
         {
             BlogPublication docPub = new BlogPublication( );
-            docPub.setIdDocument( daoUtil.getInt( 1 ) );
-            docPub.setDocumentOrder( daoUtil.getInt( 2 ) );
+            docPub.setIdBlog( daoUtil.getInt( 1 ) );
+            docPub.setBlogOrder( daoUtil.getInt( 2 ) );
             docPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
             docPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
             docPub.setStatus( daoUtil.getInt( 5 ) );

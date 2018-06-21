@@ -239,7 +239,7 @@ public class BlogPublicationJspBean extends BlogJspBean
 
             BlogPublicationHome.create( _blogPublication );
 
-            _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdDocument( ) );
+            _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdBlog( ) );
         }
 
         return getManageBlogPublication( request );
@@ -259,8 +259,8 @@ public class BlogPublicationJspBean extends BlogJspBean
 
         populate( _blogPublication, request );
 
-        BlogPublicationHome.remove( _blogPublication.getIdDocument( ), _blogPublication.getIdPortlet( ) );
-        _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdDocument( ) );
+        BlogPublicationHome.remove( _blogPublication.getIdBlog( ), _blogPublication.getIdPortlet( ) );
+        _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdBlog( ) );
 
         return getManageBlogPublication( request );
 
@@ -300,7 +300,7 @@ public class BlogPublicationJspBean extends BlogJspBean
             parsed = sdf.parse( dateEndPublishing );
             _dateEndPublishing = new java.sql.Date( parsed.getTime( ) );
         }
-        htmldocPublication.setIdDocument( nIdDoc );
+        htmldocPublication.setIdBlog( nIdDoc );
         htmldocPublication.setIdPortlet( nIdPortlet );
         htmldocPublication.setDateBeginPublishing( _dateBeginPublishing );
         htmldocPublication.setDateEndPublishing( _dateEndPublishing );

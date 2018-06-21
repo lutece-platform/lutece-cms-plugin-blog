@@ -12,7 +12,7 @@
 
 
     <bean id="blog.blogsPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogPortletDAO" />
-    <bean id="blog.documentPageTemplateDAO" class="fr.paris.lutece.plugins.blog.business.DocumentPageTemplateDAO" />
+    <bean id="blog.blogPageTemplateDAO" class="fr.paris.lutece.plugins.blog.business.BlogPageTemplateDAO" />
     
      
     
@@ -22,7 +22,7 @@
 	<bean id="blog.blogsListPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletDAO" />
     <bean id="blog.blogPublicationDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationDAO" />
     
-    <bean id="blog.documentExtendableResourceService" class="fr.paris.lutece.plugins.blog.service.resource.DocumentExtendableResourceService" />
+    <bean id="blog.blogExtendableResourceService" class="fr.paris.lutece.plugins.blog.service.resource.BlogExtendableResourceService" />
 	
 	<bean id="blog.blogResourceRssConfigDAO"  class="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRssConfigDAO" />
 	 

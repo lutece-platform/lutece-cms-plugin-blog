@@ -145,7 +145,7 @@ public class BlogSearchIndexer implements SearchIndexer
             return new ArrayList<Document>( 0 );
         }
 
-        Blog blog = BlogService.getInstance( ).loadDocument( documentId );
+        Blog blog = BlogService.getInstance( ).loadBlog( documentId );
         Document doc = DefaultBlogIndexer.getDocument( blog );
 
         if ( doc != null )

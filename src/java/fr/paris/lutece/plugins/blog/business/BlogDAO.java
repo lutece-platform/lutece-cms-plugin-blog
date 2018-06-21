@@ -754,11 +754,12 @@ public final class BlogDAO implements IBlogDAO
 
             BlogPublication blogPub = new BlogPublication( );
             blogPub.setIdPortlet( nPortlet_id );
-            blogPub.setIdDocument( blog.getId( ) );
-            blogPub.setDateBeginPublishing( daoUtil.getDate( nIndex++ ) );
-            blogPub.setDateEndPublishing( daoUtil.getDate( nIndex++ ) );
-            blogPub.setStatus( daoUtil.getInt( nIndex++ ) );
-            blogPub.setDocumentOrder( daoUtil.getInt( nIndex++ ) );
+
+            blogPub.setIdBlog( blog.getId() );
+            blogPub.setDateBeginPublishing( daoUtil.getDate(  nIndex++ ) );
+            blogPub.setDateEndPublishing( daoUtil.getDate(  nIndex++ ) );
+            blogPub.setStatus( daoUtil.getInt(  nIndex++ ) );
+            blogPub.setBlogOrder( daoUtil.getInt(  nIndex++ ) );
             if ( nPortlet_id != 0 )
             {
                 blog.addBlogPublication( blogPub );

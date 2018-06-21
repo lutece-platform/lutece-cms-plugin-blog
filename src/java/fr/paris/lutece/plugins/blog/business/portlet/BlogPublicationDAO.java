@@ -77,11 +77,11 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET, plugin );
 
         daoUtil.setInt( 1, blogPublication.getIdPortlet( ) );
-        daoUtil.setInt( 2, blogPublication.getIdDocument( ) );
+        daoUtil.setInt( 2, blogPublication.getIdBlog( ) );
         daoUtil.setDate( 3, blogPublication.getDateBeginPublishing( ) );
         daoUtil.setDate( 4, blogPublication.getDateEndPublishing( ) );
         daoUtil.setInt( 5, blogPublication.getStatus( ) );
-        daoUtil.setInt( 6, blogPublication.getDocumentOrder( ) );
+        daoUtil.setInt( 6, blogPublication.getBlogOrder( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -97,13 +97,13 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_BLOGS_PORTLET, plugin );
         daoUtil.setInt( 1, blogPublication.getIdPortlet( ) );
-        daoUtil.setInt( 2, blogPublication.getIdDocument( ) );
+        daoUtil.setInt( 2, blogPublication.getIdBlog( ) );
         daoUtil.setDate( 3, blogPublication.getDateBeginPublishing( ) );
         daoUtil.setDate( 4, blogPublication.getDateEndPublishing( ) );
         daoUtil.setInt( 5, blogPublication.getStatus( ) );
-        daoUtil.setInt( 6, blogPublication.getDocumentOrder( ) );
+        daoUtil.setInt( 6, blogPublication.getBlogOrder( ) );
 
-        daoUtil.setInt( 7, blogPublication.getIdDocument( ) );
+        daoUtil.setInt( 7, blogPublication.getIdBlog( ) );
 
         daoUtil.executeUpdate( );
 
@@ -166,11 +166,11 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
 
             BlogPublication blogPub = new BlogPublication( );
             blogPub.setIdPortlet( daoUtil.getInt( 1 ) );
-            blogPub.setIdDocument( daoUtil.getInt( 2 ) );
+            blogPub.setIdBlog( daoUtil.getInt( 2 ) );
             blogPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
             blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
             blogPub.setStatus( daoUtil.getInt( 5 ) );
-            blogPub.setDocumentOrder( daoUtil.getInt( 6 ) );
+            blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
 
             nListIdCategory.add( blogPub );
         }
@@ -197,11 +197,11 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
 
             BlogPublication blogPub = new BlogPublication( );
             blogPub.setIdPortlet( daoUtil.getInt( 1 ) );
-            blogPub.setIdDocument( daoUtil.getInt( 2 ) );
+            blogPub.setIdBlog( daoUtil.getInt( 2 ) );
             blogPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
             blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
             blogPub.setStatus( daoUtil.getInt( 5 ) );
-            blogPub.setDocumentOrder( daoUtil.getInt( 6 ) );
+            blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
 
             nListIdCategory.add( blogPub );
         }
@@ -228,11 +228,11 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         {
 
             blogPub.setIdPortlet( daoUtil.getInt( 1 ) );
-            blogPub.setIdDocument( daoUtil.getInt( 2 ) );
+            blogPub.setIdBlog( daoUtil.getInt( 2 ) );
             blogPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
             blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
             blogPub.setStatus( daoUtil.getInt( 5 ) );
-            blogPub.setDocumentOrder( daoUtil.getInt( 6 ) );
+            blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
 
         }
 
@@ -257,11 +257,11 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
 
             BlogPublication blogPub = new BlogPublication( );
             blogPub.setIdPortlet( daoUtil.getInt( 1 ) );
-            blogPub.setIdDocument( daoUtil.getInt( 2 ) );
+            blogPub.setIdBlog( daoUtil.getInt( 2 ) );
             blogPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
             blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
             blogPub.setStatus( daoUtil.getInt( 5 ) );
-            blogPub.setDocumentOrder( daoUtil.getInt( 6 ) );
+            blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
 
             nListIdCategory.add( blogPub );
         }
@@ -277,7 +277,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
     @Override
     public Collection<BlogPublication> selectSinceDatePublishingAndStatus( Date datePublishing, Date dateEndPublication, int nStatus, Plugin plugin )
     {
-        Collection<BlogPublication> listDocumentPublication = new ArrayList<BlogPublication>( );
+        Collection<BlogPublication> listBlogPublication = new ArrayList<BlogPublication>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS, plugin );
         daoUtil.setTimestamp( 1, new Timestamp( datePublishing.getTime( ) ) );
         daoUtil.setTimestamp( 2, new Timestamp( dateEndPublication.getTime( ) ) );
@@ -287,25 +287,25 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
 
         while ( daoUtil.next( ) )
         {
-            BlogPublication documentPublication = new BlogPublication( );
-            documentPublication.setIdPortlet( daoUtil.getInt( 1 ) );
-            documentPublication.setIdDocument( daoUtil.getInt( 2 ) );
-            documentPublication.setDocumentOrder( daoUtil.getInt( 3 ) );
-            documentPublication.setStatus( nStatus );
-            documentPublication.setDateBeginPublishing( daoUtil.getDate( 4 ) );
-            listDocumentPublication.add( documentPublication );
+            BlogPublication blogPublication = new BlogPublication( );
+            blogPublication.setIdPortlet( daoUtil.getInt( 1 ) );
+            blogPublication.setIdBlog( daoUtil.getInt( 2 ) );
+            blogPublication.setBlogOrder( daoUtil.getInt( 3 ) );
+            blogPublication.setStatus( nStatus );
+            blogPublication.setDateBeginPublishing( daoUtil.getDate( 4 ) );
+            listBlogPublication.add( blogPublication );
         }
 
         daoUtil.free( );
 
-        return listDocumentPublication;
+        return listBlogPublication;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Integer> getPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
+    public List<Integer> getPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
     {
         List<Integer> listIds = new ArrayList<Integer>( );
         if ( nPortletsIds == null || nPortletsIds.length == 0 )

@@ -159,7 +159,7 @@ public class BlogPublicationHome
     }
 
     /**
-     * Find the list of {@link DocumentPublication} objects specified the status and published at or after the specified date
+     * Find the list of {@link BlogPublication} objects specified the status and published at or after the specified date
      * 
      * @param datePublishing
      *            The publication date
@@ -167,7 +167,7 @@ public class BlogPublicationHome
      *            The end publication date
      * @param nStatus
      *            The status
-     * @return The {@link DocumentPublication} objects {@link Collection} ordered by documentOrder ascending. The list is empty if no objects found.
+     * @return The {@link BlogPublication} objects {@link Collection} ordered by BlogOrder ascending. The list is empty if no objects found.
      */
     public static Collection<BlogPublication> findSinceDatePublishingAndStatus( Date datePublishing, Date dateEndPublishing, int nStatus )
     {
@@ -184,12 +184,12 @@ public class BlogPublicationHome
      * @param dateEndPublishing
      *            The end publication date
      * @param plugin
-     *            The document plugin
-     * @return The list of documents id.
+     *            The Blog plugin
+     * @return The list of Blogs id.
      */
-    public static List<Integer> getPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
+    public static List<Integer> getPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
     {
-        return _dao.getPublishedDocumentsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
+        return _dao.getPublishedBlogsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }
 
 }

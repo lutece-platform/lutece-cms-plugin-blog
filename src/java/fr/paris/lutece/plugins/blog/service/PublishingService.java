@@ -72,117 +72,117 @@ public class PublishingService
     }
 
     /**
-     * Assign {@link Document} to a {@link Portlet}
+     * Assign {@link Blog} to a {@link Portlet}
      *
-     * @param nDocumentId
-     *            The {@link Document} identifier
+     * @param nBlogId
+     *            The {@link Blog} identifier
      * @param nPortletId
      *            The {@link Portlet} identifier
      */
-    public void assign( int nDocumentId, int nPortletId )
+    public void assign( int nBlogId, int nPortletId )
     {
-        BlogPublication documentPublication = new BlogPublication( );
-        documentPublication.setIdPortlet( nPortletId );
-        documentPublication.setIdDocument( nDocumentId );
-        BlogPublicationHome.create( documentPublication );
+        BlogPublication blogPublication = new BlogPublication( );
+        blogPublication.setIdPortlet( nPortletId );
+        blogPublication.setIdBlog( nBlogId );
+        BlogPublicationHome.create( blogPublication );
     }
 
     /**
-     * Publishing documents assigned to a portlet at the begin of the list
+     * Publishing blogs assigned to a portlet at the begin of the list
      *
-     * @param nDocumentId
-     *            the Document id
+     * @param nBlogId
+     *            the Blog id
      * @param nPortletId
      *            the portlet identifier
      */
-    public void publish( int nDocumentId, int nPortletId )
+    public void publish( int nBlogId, int nPortletId )
     {
-        // Publishing of document : set status to Published
-        BlogPublication documentPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        // Publishing of blog : set status to Published
+        BlogPublication blogPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nBlogId );
 
-        if ( documentPublication != null )
+        if ( blogPublication != null )
         {
-            documentPublication.setIdPortlet( nPortletId );
-            documentPublication.setIdDocument( nDocumentId );
-            BlogPublicationHome.update( documentPublication );
+            blogPublication.setIdPortlet( nPortletId );
+            blogPublication.setIdBlog( nBlogId );
+            BlogPublicationHome.update( blogPublication );
 
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( nDocumentId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( nBlogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
 
     }
 
     /**
-     * unAssign {@link Document} to a {@link Portlet}
+     * unAssign {@link Blog} to a {@link Portlet}
      *
-     * @param nDocumentId
-     *            The {@link Document} identifier
+     * @param nBlogId
+     *            The {@link Blog} identifier
      * @param nPortletId
      *            The {@link Portlet} identifier
      */
-    public void unAssign( int nDocumentId, int nPortletId )
+    public void unAssign( int nBlogId, int nPortletId )
     {
-        BlogPublicationHome.remove( nPortletId, nDocumentId );
+        BlogPublicationHome.remove( nPortletId, nBlogId );
     }
 
     /**
-     * Check if the specified {@link Document} is published into the specified {@link Portlet}
+     * Check if the specified {@link Blog} is published into the specified {@link Portlet}
      * 
-     * @param nDocumentId
-     *            The {@link Document} identifier
+     * @param nBlogId
+     *            The {@link Blog} identifier
      * @param nPortletId
      *            The {@link Portlet} identifier
-     * @return True if {@link Document} is published, false else (unpublished or not assigned)
+     * @return True if {@link Blog} is published, false else (unpublished or not assigned)
      */
-    public boolean isPublished( int nDocumentId, int nPortletId )
+    public boolean isPublished( int nBlogId, int nPortletId )
     {
-        BlogPublication documentPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        BlogPublication blogPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nBlogId );
 
-        return documentPublication != null ? true : false;
+        return blogPublication != null ? true : false;
     }
 
     /**
-     * Check if the specified {@link Document} is assigned (unpublished or published) into at least one {@link Portlet}
+     * Check if the specified {@link Blog} is assigned (unpublished or published) into at least one {@link Portlet}
      * 
-     * @param nDocumentId
-     *            The {@link Document} identifier
-     * @return True if {@link Document} is assigned (published or unpublished), false else (not assigned)
+     * @param nBlogId
+     *            The {@link Blog} identifier
+     * @return True if {@link Blog} is assigned (published or unpublished), false else (not assigned)
      */
-    public boolean isAssigned( int nDocumentId )
+    public boolean isAssigned( int nBlogId )
     {
-        Collection<BlogPublication> listDocumentPublication = BlogPublicationHome.getDocPublicationByIdDoc( nDocumentId );
+        Collection<BlogPublication> listBlogPublication = BlogPublicationHome.getDocPublicationByIdDoc( nBlogId );
 
-        return ( listDocumentPublication.size( ) > 0 );
+        return ( listBlogPublication.size( ) > 0 );
     }
 
     /**
-     * Check if the specified {@link Document} is assigned (unpublished or published) into the specified {@link Portlet}
+     * Check if the specified {@link Blog} is assigned (unpublished or published) into the specified {@link Portlet}
      * 
-     * @param nDocumentId
-     *            The {@link Document} identifier
+     * @param nBlogId
+     *            The {@link Blog} identifier
      * @param nPortletId
      *            The {@link Portlet} identifier
-     * @return True if {@link Document} is assigned (published or unpublished), false else (not assigned)
+     * @return True if {@link Blog} is assigned (published or unpublished), false else (not assigned)
      */
-    public boolean isAssigned( int nDocumentId, int nPortletId )
+    public boolean isAssigned( int nBlogId, int nPortletId )
     {
-        BlogPublication documentPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        BlogPublication blogPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nBlogId );
 
-        return ( documentPublication != null );
+        return ( blogPublication != null );
     }
 
     /**
-     * Return a {@link DocumentPublication} from a {@link Portlet} identifier and {@link Document} identifier
+     * Return a {@link BlogPublication} from a {@link Portlet} identifier and {@link Blog} identifier
      * 
      * @param nPortletId
      *            the {@link Portlet} identifier
-     * @param nDocumentId
-     *            the {@link Document} identifier
-     * @return a {@link DocumentPublication} or null if no object match
+     * @param nBlogId
+     *            the {@link Blog} identifier
+     * @return a {@link BlogPublication} or null if no object match
      */
-    public BlogPublication getDocumentPublication( int nPortletId, int nDocumentId )
+    public BlogPublication getBlogPublication( int nPortletId, int nBlogId )
     {
-        return BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nDocumentId );
+        return BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nBlogId );
     }
 
     /**
@@ -245,70 +245,70 @@ public class PublishingService
     /**
      * Loads the list of the portlets whoes contain blog specified by id
      *
-     * @param strDocumentId
+     * @param strBlogId
      *            the blog identifier
      * @return the {@link Collection} of the portlets
      */
-    public Collection<Portlet> getPortletsByDocumentId( String strDocumentId )
+    public Collection<Portlet> getPortletsByBlogId( String strBlogId )
     {
-        Collection<BlogPublication> listDocumentPublication = BlogPublicationHome.getDocPublicationByIdDoc( Integer.parseInt( strDocumentId ) );
+        Collection<BlogPublication> listBlogPublication = BlogPublicationHome.getDocPublicationByIdDoc( Integer.parseInt( strBlogId ) );
         Collection<Portlet> listPortlets = new ArrayList<Portlet>( );
 
-        for ( BlogPublication documentPublication : listDocumentPublication )
+        for ( BlogPublication blogPublication : listBlogPublication )
         {
-            listPortlets.add( PortletHome.findByPrimaryKey( documentPublication.getIdPortlet( ) ) );
+            listPortlets.add( PortletHome.findByPrimaryKey( blogPublication.getIdPortlet( ) ) );
         }
 
         return listPortlets;
     }
 
     /**
-     * Loads the list of the blog whose filter and date publication is specified Return published documents since the publication date. The is also filtered
-     * with the documentFilter
+     * Loads the list of the blog whose filter and date publication is specified Return published blogs since the publication date. The is also filtered
+     * with the blogFilter
      *
      * @param datePublishing
      *            The start publication date
      * @param dateEndPublishing
      *            The end publication date
-     * @param documentFilter
+     * @param blogFilter
      *            The filter for the published blog. The filter can be null or empty. The array of Ids will not be taked in account.
      * @param locale
      *            The locale is used to get the list of blogs with the findByFilter method
      * @return the list of the blog in form of a List. return null if datePublishing is null
      */
-    public Collection<Blog> getPublishedDocumentsSinceDate( Date datePublishing, Date dateEndPublishing, BlogFilter documentFilter, Locale locale )
+    public Collection<Blog> getPublishedBlogsSinceDate( Date datePublishing, Date dateEndPublishing, BlogFilter blogFilter, Locale locale )
     {
         if ( datePublishing == null )
         {
             return null;
         }
 
-        Collection<BlogPublication> listDocumentPublication = BlogPublicationHome.findSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, 1 );
+        Collection<BlogPublication> listBlogPublication = BlogPublicationHome.findSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, 1 );
 
-        if ( ( listDocumentPublication == null ) || ( listDocumentPublication.size( ) == 0 ) )
+        if ( ( listBlogPublication == null ) || ( listBlogPublication.size( ) == 0 ) )
         {
             return new ArrayList<Blog>( );
         }
 
-        Integer [ ] arrayIds = new Integer [ listDocumentPublication.size( )];
+        Integer [ ] arrayIds = new Integer [ listBlogPublication.size( )];
         int i = 0;
-        BlogFilter publishedDocumentFilter = documentFilter;
+        BlogFilter publishedBlogFilter = blogFilter;
 
-        if ( publishedDocumentFilter == null )
+        if ( publishedBlogFilter == null )
         {
-            publishedDocumentFilter = new BlogFilter( );
+            publishedBlogFilter = new BlogFilter( );
         }
 
-        for ( BlogPublication documentPublication : listDocumentPublication )
+        for ( BlogPublication blogPublication : listBlogPublication )
         {
-            arrayIds [i++] = documentPublication.getIdDocument( );
+            arrayIds [i++] = blogPublication.getIdBlog( );
         }
 
-        publishedDocumentFilter.setIds( arrayIds );
+        publishedBlogFilter.setIds( arrayIds );
 
-        Collection<Blog> listDocuments = BlogHome.findByFilter( publishedDocumentFilter, locale );
+        Collection<Blog> listBlogs = BlogHome.findByFilter( publishedBlogFilter );
 
-        return listDocuments;
+        return listBlogs;
     }
 
     /**
@@ -319,12 +319,12 @@ public class PublishingService
      * @param datePublishing
      *            TODO
      * @param plugin
-     *            The document plugin
-     * @return The list of documents id.
+     *            The blog plugin
+     * @return The list of blogs id.
      */
-    public static List<Integer> getPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
+    public static List<Integer> getPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin )
     {
-        return BlogPublicationHome.getPublishedDocumentsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
+        return BlogPublicationHome.getPublishedBlogsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }
 
 }

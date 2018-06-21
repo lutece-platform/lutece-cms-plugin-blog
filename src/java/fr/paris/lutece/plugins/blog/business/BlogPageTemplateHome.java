@@ -38,44 +38,44 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import java.util.List;
 
 /**
- * This class provides instances management methods (create, find, ...) for DocumentPageTemplate objects
+ * This class provides instances management methods (create, find, ...) for BlogPageTemplate objects
  */
-public final class DocumentPageTemplateHome
+public final class BlogPageTemplateHome
 {
     // Static variable pointed at the DAO instance
-    private static IDocumentPageTemplateDAO _dao = SpringContextService.getBean( "blog.documentPageTemplateDAO" );
+    private static IBlogPageTemplateDAO _dao = SpringContextService.getBean( "blog.blogPageTemplateDAO" );
 
-    /** Creates a new instance of DocumentPageTemplateHome */
-    private DocumentPageTemplateHome( )
+    /** Creates a new instance of BlogPageTemplateHome */
+    private BlogPageTemplateHome( )
     {
     }
 
     /**
-     * Creation of an instance of a document page template
+     * Creation of an instance of a blog page template
      *
-     * @param documentPageTemplate
+     * @param blogPageTemplate
      *            template An instance of a page template which contains the informations to store
      * @return The instance of a page template which has been created with its primary key.
      */
-    public static DocumentPageTemplate create( DocumentPageTemplate documentPageTemplate )
+    public static BlogPageTemplate create( BlogPageTemplate blogPageTemplate )
     {
-        _dao.insert( documentPageTemplate );
+        _dao.insert( blogPageTemplate );
 
-        return documentPageTemplate;
+        return blogPageTemplate;
     }
 
     /**
      * Update of the page template which is specified
      *
-     * @param documentPageTemplate
+     * @param blogPageTemplate
      *            The instance of the page template which contains the data to store
      * @return The instance of the page template which has been updated
      */
-    public static DocumentPageTemplate update( DocumentPageTemplate documentPageTemplate )
+    public static BlogPageTemplate update( BlogPageTemplate blogPageTemplate )
     {
-        _dao.store( documentPageTemplate );
+        _dao.store( blogPageTemplate );
 
-        return documentPageTemplate;
+        return blogPageTemplate;
     }
 
     /**
@@ -99,7 +99,7 @@ public final class DocumentPageTemplateHome
      *            The page template primary key
      * @return an instance of a page template
      */
-    public static DocumentPageTemplate findByPrimaryKey( int nKey )
+    public static BlogPageTemplate findByPrimaryKey( int nKey )
     {
         return _dao.load( nKey );
     }
@@ -109,7 +109,7 @@ public final class DocumentPageTemplateHome
      *
      * @return A collection of page templates objects
      */
-    public static List<DocumentPageTemplate> getPageTemplatesList( )
+    public static List<BlogPageTemplate> getPageTemplatesList( )
     {
         return _dao.selectPageTemplatesList( );
     }

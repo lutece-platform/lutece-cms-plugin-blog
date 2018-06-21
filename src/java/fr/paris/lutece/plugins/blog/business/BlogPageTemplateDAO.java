@@ -39,9 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class provides Data Access methods for DocumentPageTemplate objects
+ * This class provides Data Access methods for BlogPageTemplate objects
  */
-public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
+public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM blog_page_template";
@@ -83,34 +83,34 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
     /**
      * Insert a new record in the table.
      * 
-     * @param documentPageTemplate
-     *            The Instance of the object DocumentPageTemplate
+     * @param BlogPageTemplate
+     *            The Instance of the object BlogPageTemplate
      */
-    public synchronized void insert( DocumentPageTemplate documentPageTemplate )
+    public synchronized void insert( BlogPageTemplate blogPageTemplate )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
 
-        documentPageTemplate.setId( newPrimaryKey( ) );
+        blogPageTemplate.setId( newPrimaryKey( ) );
 
-        daoUtil.setInt( 1, documentPageTemplate.getId( ) );
-        daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
-        daoUtil.setString( 3, documentPageTemplate.getFile( ) );
-        daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
+        daoUtil.setInt( 1, blogPageTemplate.getId( ) );
+        daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
+        daoUtil.setString( 3, blogPageTemplate.getFile( ) );
+        daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
 
     /**
-     * load the data of DocumentPageTemplate from the table
+     * load the data of BlogPageTemplate from the table
      *
      * @param nPageTemplateId
-     *            The indentifier of the object DocumentPageTemplate
+     *            The indentifier of the object BlogPageTemplate
      * @return The Instance of the object PageTemplate
      */
-    public DocumentPageTemplate load( int nPageTemplateId )
+    public BlogPageTemplate load( int nPageTemplateId )
     {
-        DocumentPageTemplate documentPageTemplate = null;
+        BlogPageTemplate blogPageTemplate = null;
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nPageTemplateId );
 
@@ -118,16 +118,16 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
 
         if ( daoUtil.next( ) )
         {
-            documentPageTemplate = new DocumentPageTemplate( );
-            documentPageTemplate.setId( daoUtil.getInt( 1 ) );
-            documentPageTemplate.setDescription( daoUtil.getString( 2 ) );
-            documentPageTemplate.setFile( daoUtil.getString( 3 ) );
-            documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
+            blogPageTemplate = new BlogPageTemplate( );
+            blogPageTemplate.setId( daoUtil.getInt( 1 ) );
+            blogPageTemplate.setDescription( daoUtil.getString( 2 ) );
+            blogPageTemplate.setFile( daoUtil.getString( 3 ) );
+            blogPageTemplate.setPicture( daoUtil.getString( 4 ) );
         }
 
         daoUtil.free( );
 
-        return documentPageTemplate;
+        return blogPageTemplate;
     }
 
     /**
@@ -147,18 +147,18 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
     /**
      * Update the record in the table
      * 
-     * @param documentPageTemplate
+     * @param blogPageTemplate
      *            The instance of the PageTemplate to update
      */
-    public void store( DocumentPageTemplate documentPageTemplate )
+    public void store( BlogPageTemplate blogPageTemplate )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
 
-        daoUtil.setInt( 1, documentPageTemplate.getId( ) );
-        daoUtil.setString( 2, documentPageTemplate.getDescription( ) );
-        daoUtil.setString( 3, documentPageTemplate.getFile( ) );
-        daoUtil.setString( 4, documentPageTemplate.getPicture( ) );
-        daoUtil.setInt( 5, documentPageTemplate.getId( ) );
+        daoUtil.setInt( 1, blogPageTemplate.getId( ) );
+        daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
+        daoUtil.setString( 3, blogPageTemplate.getFile( ) );
+        daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
+        daoUtil.setInt( 5, blogPageTemplate.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -169,25 +169,25 @@ public final class DocumentPageTemplateDAO implements IDocumentPageTemplateDAO
      * 
      * @return A list of PageTemplates objects
      */
-    public List<DocumentPageTemplate> selectPageTemplatesList( )
+    public List<BlogPageTemplate> selectPageTemplatesList( )
     {
-        List<DocumentPageTemplate> listDocumentPageTemplates = new ArrayList<DocumentPageTemplate>( );
+        List<BlogPageTemplate> listBlogPageTemplates = new ArrayList<BlogPageTemplate>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )
         {
-            DocumentPageTemplate documentPageTemplate = new DocumentPageTemplate( );
+            BlogPageTemplate blogPageTemplate = new BlogPageTemplate( );
 
-            documentPageTemplate.setId( daoUtil.getInt( 1 ) );
-            documentPageTemplate.setDescription( daoUtil.getString( 2 ) );
-            documentPageTemplate.setFile( daoUtil.getString( 3 ) );
-            documentPageTemplate.setPicture( daoUtil.getString( 4 ) );
-            listDocumentPageTemplates.add( documentPageTemplate );
+            blogPageTemplate.setId( daoUtil.getInt( 1 ) );
+            blogPageTemplate.setDescription( daoUtil.getString( 2 ) );
+            blogPageTemplate.setFile( daoUtil.getString( 3 ) );
+            blogPageTemplate.setPicture( daoUtil.getString( 4 ) );
+            listBlogPageTemplates.add( blogPageTemplate );
         }
 
         daoUtil.free( );
 
-        return listDocumentPageTemplates;
+        return listBlogPageTemplates;
     }
 }

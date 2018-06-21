@@ -40,8 +40,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import fr.paris.lutece.plugins.blog.business.DocumentPageTemplate;
-import fr.paris.lutece.plugins.blog.business.DocumentPageTemplateHome;
+import fr.paris.lutece.plugins.blog.business.BlogPageTemplate;
+import fr.paris.lutece.plugins.blog.business.BlogPageTemplateHome;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogFilter;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
@@ -86,7 +86,7 @@ public class BlogListPortlet extends PortletHtmlContent
         GregorianCalendar calendar = new java.util.GregorianCalendar( );
         Date date = new Date( calendar.getTimeInMillis( ) );
         BlogFilter documentFilter = new BlogFilter( );
-        List<Integer> listIdDoc = PublishingService.getPublishedDocumentsIdsListByPortletIds( new int [ ] {
+        List<Integer> listIdDoc = PublishingService.getPublishedBlogsIdsListByPortletIds( new int [ ] {
             this.getId( )
         }, date, date, BlogUtils.getPlugin( ) );
         Integer [ ] docId = listIdDoc.toArray( new Integer [ listIdDoc.size( )] );
@@ -102,8 +102,8 @@ public class BlogListPortlet extends PortletHtmlContent
         documentFilter.setOrderInPortlet( true );
         documentFilter.setPortletId( this.getId( ) );
 
-        List<Blog> listBlogsPublished = (List<Blog>) BlogHome.findByFilter( documentFilter, null );
-        DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
+        List<Blog> listBlogsPublished = (List<Blog>) BlogHome.findByFilter( documentFilter );
+        BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
         HashMap<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_LIST_BLOG_PUBLISHED, listBlogsPublished );
@@ -214,7 +214,7 @@ public class BlogListPortlet extends PortletHtmlContent
         for ( BlogPublication dc : _arrayBlogs )
         {
 
-            if ( doc.getIdDocument( ) == dc.getIdDocument( ) )
+            if ( doc.getIdBlog( ) == dc.getIdBlog( ) )
             {
                 bool = true;
                 break;
@@ -241,7 +241,7 @@ public class BlogListPortlet extends PortletHtmlContent
         for ( BlogPublication dc : _arrayBlogs )
         {
 
-            if ( doc.getIdDocument( ) == dc.getIdDocument( ) )
+            if ( doc.getIdBlog( ) == dc.getIdBlog( ) )
             {
                 bool = true;
                 blog = dc;
@@ -270,7 +270,7 @@ public class BlogListPortlet extends PortletHtmlContent
         for ( BlogPublication dc : _arrayBlogs )
         {
 
-            if ( doc.getIdDocument( ) == dc.getIdDocument( ) )
+            if ( doc.getIdBlog( ) == dc.getIdBlog( ) )
             {
                 _arrayBlogs.remove( dc );
                 break;

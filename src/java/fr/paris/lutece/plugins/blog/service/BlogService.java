@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.blog.service;
 
 import java.util.List;
 
+import fr.paris.lutece.plugins.blog.business.BlogFilter;
 import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
 import fr.paris.lutece.plugins.blog.business.Blog;
@@ -48,7 +49,7 @@ import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.util.sql.TransactionManager;
 
 /**
- * This Service manages document actions (create, move, delete, validate ...) and notify listeners.
+ * This Service manages document actions (create, update, delete, validate ...) .
  */
 public class BlogService
 {
@@ -64,55 +65,39 @@ public class BlogService
     {
         return _singleton;
     }
-
+    
     /**
      * Create an blog
      * 
      * @param blog
      *            The Blog
-     * @param docContent
-     *            The Doc content
      */
-    public void createDocument( Blog blog, DocContent docContent )
+    public void createBlog( Blog blog )
 
     {
-
-        TransactionManager.beginTransaction( BlogPlugin.getPlugin( ) );
-
-        try
-        {
-            BlogHome.addInitialVersion( blog );
-            for ( Tag tag : blog.getTag( ) )
-            {
-
-                TagHome.create( tag.getIdTag( ), blog.getId( ), tag.getPriority( ) );
-            }
-            if ( docContent != null )
-            {
-
-                docContent.setIdBlog( blog.getId( ) );
-                DocContentHome.create( docContent );
-
-            }
-            TransactionManager.commitTransaction( BlogPlugin.getPlugin( ) );
-        }
-        catch( Exception e )
-        {
-            TransactionManager.rollBack( BlogPlugin.getPlugin( ) );
-            throw new AppException( e.getMessage( ), e );
-        }
-
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_CREATE, BlogPlugin.getPlugin( ) );
-
+    	 createBlog( blog, blog.getDocContent( ) );
     }
+    /**
+     * Update an Blog
+     * 
+     * @param blog
+     *            The Blog
+     */
+    public void updateBlog( Blog blog )
 
+    {
+    	 updateBlog( blog, blog.getDocContent( ));
+
+        
+    }
+   
     /**
      * Remove an blog
      * 
      * @param nId
      *            The blog id
      */
-    public void deleteDocument( int nId )
+    public void deleteBlog( int nId )
 
     {
         TransactionManager.beginTransaction( BlogPlugin.getPlugin( ) );
@@ -142,7 +127,7 @@ public class BlogService
      * @param docContent
      *            The Doc content
      */
-    public void createDocument( Blog blog, List<DocContent> docContent )
+    public void createBlog( Blog blog, List<DocContent> docContent )
 
     {
 
@@ -178,56 +163,10 @@ public class BlogService
 
     }
 
-    /**
-     * Update an Blog
-     * 
-     * @param blog
-     *            The Ht-mlDoc
-     * @param docContent
-     *            The Doc Content
-     */
-    public void updateDocument( Blog blog, DocContent docContent )
-
-    {
-        TransactionManager.beginTransaction( BlogPlugin.getPlugin( ) );
-
-        try
-        {
-            BlogHome.addNewVersion( blog );
-            if ( docContent != null && DocContentHome.getDocsContent( docContent.getId( ) ) != null )
-            {
-
-                docContent.setIdBlog( blog.getId( ) );
-                DocContentHome.update( docContent );
-
-            }
-            else
-                if ( docContent != null )
-                {
-
-                    docContent.setIdBlog( blog.getId( ) );
-                    DocContentHome.create( docContent );
-                }
-            TagHome.removeTagDoc( blog.getId( ) );
-            for ( Tag tag : blog.getTag( ) )
-            {
-
-                TagHome.create( tag.getIdTag( ), blog.getId( ), tag.getPriority( ) );
-            }
-            TransactionManager.commitTransaction( BlogPlugin.getPlugin( ) );
-        }
-        catch( Exception e )
-        {
-            TransactionManager.rollBack( BlogPlugin.getPlugin( ) );
-            throw new AppException( e.getMessage( ), e );
-        }
-
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
-
-    }
+   
 
     /**
-     * Update an BlocContent The Ht-mlDoc
+     * Update an BlogContent 
      * 
      * @param docContent
      *            The Doc Content
@@ -257,7 +196,7 @@ public class BlogService
      * @param docContent
      *            The Doc Content
      */
-    public void updateDocument( Blog blog, List<DocContent> docContent )
+    public void updateBlog( Blog blog, List<DocContent> docContent )
 
     {
         TransactionManager.beginTransaction( BlogPlugin.getPlugin( ) );
@@ -370,7 +309,7 @@ public class BlogService
      *            The blog primary key
      * @return an instance of blog
      */
-    public Blog loadDocument( int nIdDocument )
+    public Blog loadBlog( int nIdDocument )
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
@@ -389,7 +328,7 @@ public class BlogService
      *            The blog primary key
      * @return an instance of blog
      */
-    public Blog findByPrimaryKeyWithoutBinaries( int nIdDocument )
+   public Blog findByPrimaryKeyWithoutBinaries( int nIdDocument )
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
@@ -405,7 +344,7 @@ public class BlogService
      * 
      * @return the list which contains the data of all the blog objects
      */
-    public List<Blog> getListDocWhithContent( )
+    public List<Blog> getListBlogWhithBinaries( )
 
     {
         List<Blog> listBlogs = BlogHome.selectWithoutBinaries( );
@@ -427,7 +366,7 @@ public class BlogService
      * 
      * @return the list which contains the data of all the blog objects
      */
-    public List<Blog> getListDocWithoutBinaries( )
+    public List<Blog> getListBlogWithoutBinaries( )
 
     {
 
@@ -438,30 +377,32 @@ public class BlogService
     /**
      * Load the data of all the blog objects whose tag is specified in parameter
      * 
-     * @param tag
-     *            Tag param
+     * @param nIdtag
+     *            idTag param
      * @return the list which contains the data of all the blog objects
      */
-    public List<Blog> searchListDocByTag( Tag tag )
+    public List<Blog> searchListBlogByTag( int nIdTag )
 
     {
-        List<Blog> listBlogs = BlogHome.getBlogsList( );
+       return BlogHome.getBlogByTag( nIdTag );
 
-        for ( Blog doc : listBlogs )
-        {
-
-            doc.setTag( TagHome.getTagListByDoc( doc.getId( ) ) );
-        }
-
-        return listBlogs;
-
+    }
+    /**
+     * Returns a collection of blog objects
+     * 
+     * @param filter
+     *            The filter
+     */
+    public  List<Blog> findByFilter( BlogFilter filter )
+    {
+    	return BlogHome.findByFilter(filter);
     }
 
     /**
      * Load the data of nLimit last modified Blog objects and returns them as a list
      * 
      * @param nLimit
-     *            number of Blogument
+     *            number of Blog to load
      * @return The list which contains the data of of nLimit last modified Blog objects
      */
     public List<Blog> getLastModifiedBlogsList( int nLimit )
@@ -469,7 +410,7 @@ public class BlogService
         List<Blog> listBlog = BlogHome.getLastModifiedBlogsList( nLimit );
         for ( Blog blog : listBlog )
         {
-
+        	blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
             List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
             blog.setDocContent( docContent );
         }

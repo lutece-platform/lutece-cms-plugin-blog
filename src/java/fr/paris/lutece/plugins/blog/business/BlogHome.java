@@ -250,7 +250,7 @@ public final class BlogHome
      * @param locale
      *            The locale
      */
-    public static List<Blog> findByFilter( BlogFilter filter, Locale locale )
+    public static List<Blog> findByFilter( BlogFilter filter )
     {
         List<Blog> listDocuments = _dao.selectByFilter( filter );
 

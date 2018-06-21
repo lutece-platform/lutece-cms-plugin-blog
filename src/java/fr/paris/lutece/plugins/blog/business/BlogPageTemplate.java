@@ -34,9 +34,9 @@
 package fr.paris.lutece.plugins.blog.business;
 
 /**
- * This class represents business objects DocumentPageTemplate
+ * This class represents business objects BlogPageTemplate
  */
-public class DocumentPageTemplate
+public class BlogPageTemplate
 {
     private int _nId;
     private String _strDescription;

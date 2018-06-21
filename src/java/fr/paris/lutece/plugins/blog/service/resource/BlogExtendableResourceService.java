@@ -48,9 +48,9 @@ import java.util.Locale;
  * DocumentExtendableResourceService
  *
  */
-public class DocumentExtendableResourceService implements IExtendableResourceService
+public class BlogExtendableResourceService implements IExtendableResourceService
 {
-    private static final String MESSAGE_DOCUMENT_RESOURCE_TYPE_DESCRIPTION = "blog.resource.resourceTypeDescription";
+    private static final String MESSAGE_BLOG_RESOURCE_TYPE_DESCRIPTION = "blog.resource.resourceTypeDescription";
 
     /**
      * {@inheritDoc}
@@ -71,7 +71,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
         {
             int nIdDocument = Integer.parseInt( strIdResource );
 
-            return BlogService.getInstance( ).loadDocument( nIdDocument );
+            return BlogService.getInstance( ).loadBlog( nIdDocument );
         }
 
         return null;
@@ -92,7 +92,7 @@ public class DocumentExtendableResourceService implements IExtendableResourceSer
     @Override
     public String getResourceTypeDescription( Locale locale )
     {
-        return I18nService.getLocalizedString( MESSAGE_DOCUMENT_RESOURCE_TYPE_DESCRIPTION, locale );
+        return I18nService.getLocalizedString( MESSAGE_BLOG_RESOURCE_TYPE_DESCRIPTION, locale );
     }
 
     /**

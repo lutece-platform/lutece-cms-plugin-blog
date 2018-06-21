@@ -90,7 +90,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URLConnection;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.OutputKeys;
@@ -131,6 +130,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_HTML_CONTENT = "html_content";
     protected static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     protected static final String PARAMETER_DESCRIPTION = "description";
+    protected static final String PARAMETER_FILE_NAME = "fileName";
     protected static final String PARAMETER_VIEW = "view";
     protected static final String PARAMETER_BUTTON_SEARCH = "button_search";
     protected static final String PARAMETER_BUTTON_RESET = "button_reset";
@@ -484,11 +484,8 @@ public class BlogJspBean extends ManageBlogJspBean
                 return redirectView( request, VIEW_CREATE_BLOG );
             }
 
-            // BlogHome.addInitialVersion( _blog );
-            // MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-            // DocContent docContent = setContent( multipartRequest, request.getLocale( ) );
-            BlogService.getInstance( ).createDocument( _blog, _blog.getDocContent( ) );
-            _blogServiceSession.removeBlogFromSession( request.getSession( ), _blog.getId( ) );
+            BlogService.getInstance( ).createBlog( _blog, _blog.getDocContent( ) );
+            _blogServiceSession.removeBlogFromSession(request.getSession(), _blog.getId( ));
 
             if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
             {
@@ -718,22 +715,22 @@ public class BlogJspBean extends ManageBlogJspBean
                 return redirect( request, strMessageUrl );
 
             }
+	
+	        List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
+	
+	        if ( docPublication.size( ) > 0 )
+	        {
+	            String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
+	
+	            return redirect( request, strMessageUrl );
+	        }
+	        BlogService.getInstance( ).deleteBlog( nId );
+	    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
+        	unLockBlog(nId);
 
-            List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
-
-            if ( docPublication.size( ) > 0 )
-            {
-                String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
-
-                return redirect( request, strMessageUrl );
-            }
-            BlogService.getInstance( ).deleteDocument( nId );
-            _blogServiceSession.removeBlogFromSession( request.getSession( ), nId );
-            unLockBlog( nId );
-
-            ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
-
-            addInfo( INFO_BLOG_REMOVED, getLocale( ) );
+	        ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
+	
+	        addInfo( INFO_BLOG_REMOVED, getLocale( ) );
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
@@ -769,21 +766,19 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( strResetVersion != null && strResetVersion != null )
         {
 
-            _blog = BlogHome.findVersion( nId, nVersion );
-            _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
-        }
-        else
-        {
-            _blog = BlogService.getInstance( ).loadDocument( nId );
-            _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
+          	_blog = BlogHome.findVersion( nId, nVersion );
+           	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
+         }
+         else
+         {
+            	_blog = BlogService.getInstance( ).loadBlog( nId );
+            	_blogServiceSession.saveBlogInSession(request.getSession(), _blog);
 
-        }
-        // _blog.setEditComment("");
-
-        if ( checkLockBlog( nId, sessionId ) )
-        {
-
-            UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+         }
+        
+        if( checkLockBlog( nId , sessionId)){
+        	
+        	UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
             String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
             return redirect( request, strMessageUrl );
         }
@@ -846,43 +841,41 @@ public class BlogJspBean extends ManageBlogJspBean
                 UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
                 String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
                 return redirect( request, strMessageUrl );
-            }
-            Blog latestVersionBlog = BlogService.getInstance( ).loadDocument( nId );
+           }
+	       Blog latestVersionBlog = BlogService.getInstance( ).loadBlog( nId );
+	        
+	        _blog.setContentLabel( strContentLabel );
+	        _blog.setDescription( strDescription );
+	        _blog.setShareable( Boolean.parseBoolean( strShareable ) );
+	        _blog.setHtmlContent( strHtmlContent );
+	        _blog.setEditComment( strEditComment );
+	        _blog.setUpdateDate( getSqlDate( ) );
+	        _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+	        _blog.setUrl( strUrl );
+	
+	
+	        // Check constraints
+	        if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
+	        {
+	            return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+	        }
+	
+	        if( strAction != null && strAction.equals(PARAMETER_APPLY)){
+	        	
+	        	BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
+		    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
+	        	unLockBlog(nId);
 
-            _blog.setContentLabel( strContentLabel );
-            _blog.setDescription( strDescription );
-            _blog.setShareable( Boolean.parseBoolean( strShareable ) );
-            _blog.setHtmlContent( strHtmlContent );
-            _blog.setEditComment( strEditComment );
-            _blog.setUpdateDate( getSqlDate( ) );
-            _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-            _blog.setUrl( strUrl );
-
-            // Check constraints
-            if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )
-            {
-                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-            }
-
-            if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
-            {
-
-                BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
-                _blogServiceSession.removeBlogFromSession( request.getSession( ), nId );
-                unLockBlog( nId );
-
-                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-
-            }
-            else
-            {
-
-                _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
-                BlogService.getInstance( ).updateDocument( _blog, _blog.getDocContent( ) );
-                _blogServiceSession.removeBlogFromSession( request.getSession( ), nId );
-                unLockBlog( nId );
-                addInfo( INFO_BLOG_UPDATED, getLocale( ) );
-            }
+	        	return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
+	        
+	        }else{
+	        	
+	        	_blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
+	        	BlogService.getInstance( ).updateBlog( _blog, _blog.getDocContent( ) );
+		    	_blogServiceSession.removeBlogFromSession(request.getSession( ), nId);
+	        	unLockBlog(nId);
+	        	addInfo( INFO_BLOG_UPDATED, getLocale( ) );
+	        }
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
@@ -912,7 +905,7 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         else
         {
-            blog = BlogService.getInstance( ).loadDocument( nId );
+            blog = BlogService.getInstance( ).loadBlog( nId );
         }
         blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nId ) );
 
@@ -1038,57 +1031,53 @@ public class BlogJspBean extends ManageBlogJspBean
 
             lockBlog( nIdBlog, request.getSession( ).getId( ) );
         }
-        else
-            if ( _blog.getId( ) != 0 )
+        else if ( _blog.getId( ) != 0 )
             {
 
                 return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
             }
-        String base64ImageString = request.getParameter( "fileContent" );
-        String strFileName = request.getParameter( "fileName" );
-        String strFileType = request.getParameter( "fileType" );
-        Date currentTime = new Date( );
-        strFileName = strFileName + currentTime.getTime( );
+       
+    	String base64ImageString= request.getParameter( "fileContent" );  
+    	String strFileName= request.getParameter( PARAMETER_FILE_NAME );
+    	String strFileType= request.getParameter( "fileType" );    	 
+    	Date currentTime = new Date();
+    	strFileName= strFileName + currentTime.getTime( );
+    
+    	String delims="[,]";
+    	String[] parts = base64ImageString.split(delims);
+    	String imageString = parts[1];
+    	byte[] imageByteArray = Base64.getDecoder().decode(imageString );
 
-        String delims = "[,]";
-        String [ ] parts = base64ImageString.split( delims );
-        String imageString = parts [1];
-        byte [ ] imageByteArray = Base64.getDecoder( ).decode( imageString );
+    	InputStream is = new ByteArrayInputStream(imageByteArray);
 
-        InputStream is = new ByteArrayInputStream( imageByteArray );
-
-        // Find out image type
-        String mimeType = null;
-        String fileExtension = null;
-        try
-        {
-            mimeType = URLConnection.guessContentTypeFromStream( is ); // mimeType is something like "image/jpeg"
-            String delimiter = "[/]";
-            String [ ] tokens = mimeType.split( delimiter );
-            fileExtension = tokens [1];
-        }
-        catch( IOException ioException )
-        {
-            AppLogService.error( ioException.getStackTrace( ), ioException );
-        }
-
-        DocContent docContent = new DocContent( );
-        docContent.setBinaryValue( imageByteArray );
-        docContent.setValueContentType( mimeType );
-        docContent.setTextValue( strFileName );
-
-        if ( strFileType != null )
-        {
-
-            ContentType contType = new ContentType( );
-            contType.setIdContentType( Integer.parseInt( strFileType ) );
-            docContent.setContentType( contType );
-        }
-
-        _blog.addConetnt( docContent );
-
-        return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
-
+    	//Find out image type
+    	String mimeType = null;
+    	String fileExtension = null;
+    	try {
+    	     mimeType = URLConnection.guessContentTypeFromStream(is); //mimeType is something like "image/jpeg"
+    	     String delimiter="[/]";
+    	     String[] tokens = mimeType.split(delimiter);
+    	     fileExtension = tokens[1];
+    	 } catch (IOException ioException){
+    		 AppLogService.error( ioException.getStackTrace( ), ioException );
+    	 }
+    	 
+    	 DocContent docContent = new DocContent( );
+         docContent.setBinaryValue( imageByteArray );
+         docContent.setValueContentType( mimeType );
+         docContent.setTextValue( strFileName );
+         
+         if(strFileType != null ){
+        	 
+        	 ContentType contType= new ContentType();
+        	 contType.setIdContentType(Integer.parseInt(strFileType));
+             docContent.setContentType(contType);
+         }
+         
+         _blog.addConetnt(docContent);
+         
+         return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
+    	
     }
 
     /**
@@ -1100,10 +1089,10 @@ public class BlogJspBean extends ManageBlogJspBean
      *            The HtmlDoc
      */
     @Action( ACTION_REMOVE_FILE_CONTENT )
-    public String removeContent( HttpServletRequest request )
-    {
 
-        String strFileName = request.getParameter( "fileName" );
+    public String removeContent( HttpServletRequest request){
+    	
+    	String strFileName= request.getParameter( PARAMETER_FILE_NAME );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession = request.getSession( ).getId( );
         _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );

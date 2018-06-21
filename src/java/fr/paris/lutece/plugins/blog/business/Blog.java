@@ -514,11 +514,10 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void addBlogPublication( BlogPublication blogPubilcation )
     {
-        boolean isContain = _blogPubilcation.stream( ).anyMatch(
-                blogPub -> ( blogPub.getIdDocument( ) == blogPubilcation.getIdDocument( ) && blogPub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) ) );
 
-        if ( !isContain )
-            _blogPubilcation.add( blogPubilcation );
+    	boolean isContain= _blogPubilcation.stream().anyMatch(blogPub-> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( )== blogPubilcation.getIdPortlet( )));
+        
+        if(!isContain)_blogPubilcation.add( blogPubilcation );
     }
 
     /**
@@ -529,8 +528,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void deleteBlogPublication( BlogPublication blogPubilcation )
     {
-        _blogPubilcation.removeIf( blogPub -> ( blogPub.getIdDocument( ) == blogPubilcation.getIdDocument( ) && blogPub.getIdPortlet( ) == blogPubilcation
-                .getIdPortlet( ) ) );
+
+        _blogPubilcation.removeIf(blogPub-> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( )== blogPubilcation.getIdPortlet( )) );
     }
 
     /**

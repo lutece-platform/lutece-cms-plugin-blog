@@ -74,18 +74,15 @@ public class BlogResourceRss extends ResourceRss
     private static final String TEMPLATE_TASK_MODIFY_CONFIG = "admin/plugins/blog/rss/rss_modify_config.html";
 
     // JSPs
-    private static final String JSP_PAGE_BLOGS = "/jsp/site/Portal.jsp?page=blog";
 
     // Markers
     private static final String MARK_RSS_ITEM_TITLE = "item_title";
     private static final String MARK_RSS_ITEM_DESCRIPTION = "item_description";
-    private static final String MARK_RSS_ITEM_GUID = "item_guid";
 
     private static final String MARK_RSS_SITE_URL = "site_url";
     private static final String MARK_RSS_FILE_LANGUAGE = "file_language";
     private static final String MARK_PORTLET_LIST = "portlet_list";
     private static final String MARK_ID_PORTLET = "id_portlet";
-    private static final String MARK_RSS_ITEM_CONTENT = "content_list";
     private static final String MARK_RSS_ITEM_BLOG = "blog";
 
     // Parameters
@@ -236,7 +233,7 @@ public class BlogResourceRss extends ResourceRss
         {
 
             HashMap<String, Object> item = new HashMap<String, Object>( );
-            Blog blog = BlogService.getInstance( ).loadDocument( dcPub.getIdDocument( ) );
+            Blog blog = BlogService.getInstance( ).loadBlog( dcPub.getIdBlog( ) );
             item.put( MARK_RSS_ITEM_BLOG, blog );
 
             listItem.add( item );

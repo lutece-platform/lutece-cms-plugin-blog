@@ -109,11 +109,11 @@ public class BlogApp extends MVCApplication
         }
         List<Blog> listBlogs = new ArrayList<Blog>( );
 
-        for ( Blog doc : BlogService.getInstance( ).getListDocWithoutBinaries( ) )
+        for ( Blog doc : BlogService.getInstance( ).getListBlogWithoutBinaries( ) )
         {
             for ( BlogPublication pub : listBlogPub )
             {
-                if ( doc.getId( ) == pub.getIdDocument( ) )
+                if ( doc.getId( ) == pub.getIdBlog( ) )
                 {
                     doc.setAttachedPortletId( Integer.parseInt( idPortlet ) );
                     listBlogs.add( doc );
@@ -123,7 +123,7 @@ public class BlogApp extends MVCApplication
 
         }
 
-        Blog blog = BlogService.getInstance( ).loadDocument( nId );
+        Blog blog = BlogService.getInstance( ).loadBlog( nId );
         Map<String, Object> model = getModel( );
         model.put( MARK_BLOG, blog );
         model.put( MARK_LIST_DOC, listBlogs );

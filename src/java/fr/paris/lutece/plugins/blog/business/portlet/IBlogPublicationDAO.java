@@ -119,7 +119,7 @@ public interface IBlogPublicationDAO
     List<BlogPublication> loadAllBlogsPublication( Plugin plugin );
 
     /**
-     * Find the list of {@link DocumentPublication} objects specified the status and published at or after the specified date
+     * Find the list of {@link BlogPublication} objects specified the status and published at or after the specified date
      * 
      * @param datePublishing
      *            The publication end date
@@ -127,7 +127,7 @@ public interface IBlogPublicationDAO
      *            The publication date
      * @param nStatus
      *            The status
-     * @return The {@link DocumentPublication} objects {@link Collection} ordered by documentOrder ascending. The list is empty if no objects found.
+     * @return The {@link BlogPublication} objects {@link Collection} ordered by BlogOrder ascending. The list is empty if no objects found.
      */
     Collection<BlogPublication> selectSinceDatePublishingAndStatus( Date datePublishing, Date dateEndPublishing, int nStatus, Plugin plugin );
 
@@ -141,8 +141,8 @@ public interface IBlogPublicationDAO
      * @param datePublishing
      *            The publication end date
      * @param plugin
-     *            The document plugin
-     * @return The list of documents id.
+     *            The blog plugin
+     * @return The list of blogs id.
      */
-    List<Integer> getPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin );
+    List<Integer> getPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin );
 }

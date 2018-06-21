@@ -40,8 +40,8 @@ import java.util.Locale;
 
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.plugins.blog.business.DocumentPageTemplate;
-import fr.paris.lutece.plugins.blog.business.DocumentPageTemplateHome;
+import fr.paris.lutece.plugins.blog.business.BlogPageTemplate;
+import fr.paris.lutece.plugins.blog.business.BlogPageTemplateHome;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -88,9 +88,9 @@ public class BlogPortlet extends PortletHtmlContent
         Blog blog = BlogHome.findByPrimaryKey( this.getContentId( ) );
         BlogPublication docPub = BlogPublicationHome.findDocPublicationByPimaryKey( this.getContentId( ), this.getId( ) );
         HashMap<String, Object> model = new HashMap<String, Object>( );
-        DocumentPageTemplate pageTemplate = DocumentPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
+        BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
-        if ( docPub != null && docPub.getIdDocument( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
+        if ( docPub != null && docPub.getIdBlog( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
                 && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
         {
             if ( this.getDisplayPortletTitle( ) == 0 )

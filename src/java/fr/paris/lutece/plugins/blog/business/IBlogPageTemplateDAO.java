@@ -36,42 +36,42 @@ package fr.paris.lutece.plugins.blog.business;
 import java.util.List;
 
 /**
- * Interface for document page template DAO
+ * Interface for blog page template DAO
  */
-public interface IDocumentPageTemplateDAO
+public interface IBlogPageTemplateDAO
 {
     /**
      * Delete a record from the table
      *
      * @param nPageTemplateId
-     *            The indentifier of the object DocumentPageTemplate
+     *            The indentifier of the object BlogPageTemplate
      */
     void delete( int nPageTemplateId );
 
     /**
      * Insert a new record in the table.
      *
-     * @param documentPageTemplate
-     *            The Instance of the object DocumentPageTemplate
+     * @param blogPageTemplate
+     *            The Instance of the object blogPageTemplate
      */
-    void insert( DocumentPageTemplate documentPageTemplate );
+    void insert( BlogPageTemplate blogPageTemplate );
 
     /**
-     * load the data of DocumentPageTemplate from the table
+     * load the data of blogPageTemplate from the table
      *
      *
      * @param nPageTemplateId
      *            The indentifier of the object PageTemplate
      * @return The Instance of the object PageTemplate
      */
-    DocumentPageTemplate load( int nPageTemplateId );
+    BlogPageTemplate load( int nPageTemplateId );
 
     /**
      * Returns a list of all the page templates
      *
      * @return A list of PageTemplates objects
      */
-    List<DocumentPageTemplate> selectPageTemplatesList( );
+    List<BlogPageTemplate> selectPageTemplatesList( );
 
     /**
      * Update the record in the table
@@ -79,5 +79,5 @@ public interface IDocumentPageTemplateDAO
      * @param pageTemplate
      *            The instance of the PageTemplate to update
      */
-    void store( DocumentPageTemplate pageTemplate );
+    void store( BlogPageTemplate pageTemplate );
 }

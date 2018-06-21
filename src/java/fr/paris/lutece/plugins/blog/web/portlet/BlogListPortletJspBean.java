@@ -194,7 +194,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         // List<Blog> listBlog = BlogHome.getBlogsList( );
         for ( BlogPublication i : _portlet.getArrayBlogs( ) )
         {
-            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( i.getIdDocument( ) );
+            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( i.getIdBlog( ) );
             listBlogPublished.add( blog );
             listBlogsId.removeIf( blg -> blg.equals( blog.getId( ) ) );
         }
@@ -351,7 +351,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
         {
 
-            doc.setDocumentOrder( order );
+            doc.setBlogOrder( order );
             order++;
 
         }
@@ -401,7 +401,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
         {
 
-            doc.setDocumentOrder( order );
+            doc.setBlogOrder( order );
             order++;
 
         }
@@ -429,7 +429,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         int nIdDocument = Integer.parseInt( strIdDocument );
 
         BlogPublication doc = new BlogPublication( );
-        doc.setIdDocument( nIdDocument );
+        doc.setIdBlog( nIdDocument );
 
         if ( strAction != null && !strAction.isEmpty( ) && strAction.equals( PARAMETER_ACTION_PORTLET_ADD ) )
         {

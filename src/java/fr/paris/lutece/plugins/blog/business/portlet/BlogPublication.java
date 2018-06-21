@@ -41,32 +41,32 @@ import fr.paris.lutece.portal.business.portlet.PortletHome;
 public class BlogPublication
 {
 
-    private int _nIdDocument;
+    private int _nIdBlog;
     private int _nIdPortlet;
     private Date _dateBeginPublishing;
     private Date _dateEndPublishing;
-    private int _nDocumentOrder;
+    private int _nBlogOrder;
     private int _nStatus = 1;
 
     /**
-     * Returns the IdDocument
+     * Returns the IdBlog
      * 
-     * @return The IdDocument
+     * @return The IdBlog
      */
-    public int getIdDocument( )
+    public int getIdBlog( )
     {
-        return _nIdDocument;
+        return _nIdBlog;
     }
 
     /**
-     * Sets the IdDocument
+     * Sets the IdBlog
      * 
-     * @param nIdDocument
-     *            The IdDocument
+     * @param nIdBlog
+     *            The IdBlog
      */
-    public void setIdDocument( int nIdDocument )
+    public void setIdBlog( int nIdBlog )
     {
-        _nIdDocument = nIdDocument;
+        _nIdBlog = nIdBlog;
     }
 
     /**
@@ -80,10 +80,10 @@ public class BlogPublication
     }
 
     /**
-     * Sets the IdDocument
+     * Sets the IdBlog
      * 
-     * @param nIdDocument
-     *            The IdDocument
+     * @param nIdBlog
+     *            The IdBlog
      */
     public void setIdPortlet( int nIdPortlet )
     {
@@ -125,20 +125,20 @@ public class BlogPublication
     }
 
     /**
-     * @return the _nDocumentOrder
+     * @return the _nBlogOrder
      */
-    public int getDocumentOrder( )
+    public int getBlogOrder( )
     {
-        return _nDocumentOrder;
+        return _nBlogOrder;
     }
 
     /**
-     * @param nDocumentOrder
-     *            the _nDocumentOrder to set
+     * @param nBlogOrder
+     *            the _nBlogOrder to set
      */
-    public void setDocumentOrder( int nDocumentOrder )
+    public void setBlogOrder( int nBlogOrder )
     {
-        _nDocumentOrder = nDocumentOrder;
+        _nBlogOrder = nBlogOrder;
     }
 
     /**
