@@ -65,7 +65,6 @@ public class BlogPortletJspBean extends PortletJspBean
     public static final String MARK_LIST_PAGES = "pages_list";
     public static final String MARK_BLOG_ID = "blog_id";
 
-
     public static final String PARAMETER_CONTENT_ID = "content_id";
     public static final String PARAMETER_HTML_CONTENT = "html_content";
     public static final String PARAMETER_EDIT_COMMENT = "edit_comment";
@@ -120,7 +119,6 @@ public class BlogPortletJspBean extends PortletJspBean
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_BLOG_ID, blog.getId( ) );
-
 
         HtmlTemplate template = getModifyTemplate( portlet, model );
 

@@ -412,10 +412,10 @@ public class BlogService
 
         for ( Blog doc : listBlogs )
         {
-        	
-        	List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( doc.getId( ) );
-        	doc.setDocContent( docContent );
-            
+
+            List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( doc.getId( ) );
+            doc.setDocContent( docContent );
+
         }
 
         return listBlogs;
@@ -430,7 +430,7 @@ public class BlogService
     public List<Blog> getListDocWithoutBinaries( )
 
     {
-    
+
         return BlogHome.selectWithoutBinaries( );
 
     }

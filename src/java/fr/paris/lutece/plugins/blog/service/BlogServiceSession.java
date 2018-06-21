@@ -38,76 +38,81 @@ import javax.servlet.http.HttpSession;
 import fr.paris.lutece.plugins.blog.business.Blog;
 
 /**
- * This Service manages document actions (create, move, delete, validate ...)
- * and notify listeners.
+ * This Service manages document actions (create, move, delete, validate ...) and notify listeners.
  */
-public class BlogServiceSession {
+public class BlogServiceSession
+{
 
-	private static BlogServiceSession _singleton = new BlogServiceSession();
-	private final static String SESSION_BLOG = "blog.serviceblog";
+    private static BlogServiceSession _singleton = new BlogServiceSession( );
+    private final static String SESSION_BLOG = "blog.serviceblog";
 
-	/**
-	 * Get the unique instance of the service
-	 *
-	 * @return The unique instance
-	 */
-	public static BlogServiceSession getInstance() {
-		return _singleton;
-	}
+    /**
+     * Get the unique instance of the service
+     *
+     * @return The unique instance
+     */
+    public static BlogServiceSession getInstance( )
+    {
+        return _singleton;
+    }
 
-	/**
-	 * Save an blog in the session of the user
-	 *
-	 * @param session
-	 *            The session
-	 * @param Blog
-	 *            The blog to save
-	 */
-	public void saveBlogInSession(HttpSession session, Blog blog) {
-		session.setAttribute(SESSION_BLOG + blog.getId( ), blog);
-	}
+    /**
+     * Save an blog in the session of the user
+     *
+     * @param session
+     *            The session
+     * @param Blog
+     *            The blog to save
+     */
+    public void saveBlogInSession( HttpSession session, Blog blog )
+    {
+        session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
+    }
 
-	/**
-	 * Get the current blog form from the session
-	 * 
-	 * @param session
-	 *            The session of the user
-	 * @return The blog form
-	 */
-	public Blog getBlogFromSession(HttpSession session,Blog blog) {
-		return (Blog) session
-				.getAttribute(SESSION_BLOG + blog.getId( ));
-	}
-	/**
-	 * Get the current blog form from the session
-	 * 
-	 * @param session
-	 *            The session of the user
-	 * @return The idBlog 
-	 */
-	public Blog getBlogFromSession(HttpSession session, int idBlog) {
-		return (Blog) session
-				.getAttribute(SESSION_BLOG + idBlog);
-	}
+    /**
+     * Get the current blog form from the session
+     * 
+     * @param session
+     *            The session of the user
+     * @return The blog form
+     */
+    public Blog getBlogFromSession( HttpSession session, Blog blog )
+    {
+        return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+    }
 
-	/**
-	 * Remove any blog form responses stored in the session of the user
-	 * 
-	 * @param session
-	 *            The session
-	 */
-	public void removeBlogFromSession(HttpSession session, Blog blog) {
-		session.removeAttribute(SESSION_BLOG + blog.getId( ));
-	}
-	
-	/**
-	 * Remove any blog form responses stored in the session of the user
-	 * 
-	 * @param session
-	 *            The session
-	 */
-	public void removeBlogFromSession(HttpSession session, int idBlog) {
-		session.removeAttribute(SESSION_BLOG + idBlog);
-	}
+    /**
+     * Get the current blog form from the session
+     * 
+     * @param session
+     *            The session of the user
+     * @return The idBlog
+     */
+    public Blog getBlogFromSession( HttpSession session, int idBlog )
+    {
+        return (Blog) session.getAttribute( SESSION_BLOG + idBlog );
+    }
+
+    /**
+     * Remove any blog form responses stored in the session of the user
+     * 
+     * @param session
+     *            The session
+     */
+    public void removeBlogFromSession( HttpSession session, Blog blog )
+    {
+        session.removeAttribute( SESSION_BLOG + blog.getId( ) );
+    }
+
+    /**
+     * Remove any blog form responses stored in the session of the user
+     * 
+     * @param session
+     *            The session
+     */
+    public void removeBlogFromSession( HttpSession session, int idBlog )
+    {
+        session.removeAttribute( SESSION_BLOG + idBlog );
+    }
 
 }

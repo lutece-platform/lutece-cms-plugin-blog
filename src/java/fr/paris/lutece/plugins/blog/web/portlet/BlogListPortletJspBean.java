@@ -83,15 +83,15 @@ public class BlogListPortletJspBean extends PortletJspBean
     private static final String PARAMETER_PAGE_TEMPLATE_CODE = "page_template_code";
 
     private static final String PARAMETER_DOCUMENT_ID = "idDocument";
-    private static final String PARAMETER_DOCUMENT_ORDER= "orderDocument";
-    private static final String PARAMETER_REFRESH_BUTTON= "refresh";
+    private static final String PARAMETER_DOCUMENT_ORDER = "orderDocument";
+    private static final String PARAMETER_REFRESH_BUTTON = "refresh";
     protected static final String PARAMETER_TAG = "tag_doc";
 
     protected static final String PARAMETER_SEARCH_TEXT = "search_text";
-    protected static final String PARAMETER_UNPUBLISHED= "unpublished";
-    protected static final String PARAMETER_DATE_UPDATE_BLOG_AFTER= "dateUpdateBlogAfter";
-    protected static final String PARAMETER_DATE_UPDATE_BLOG_BEFOR= "dateUpdateBlogBefor";
-    
+    protected static final String PARAMETER_UNPUBLISHED = "unpublished";
+    protected static final String PARAMETER_DATE_UPDATE_BLOG_AFTER = "dateUpdateBlogAfter";
+    protected static final String PARAMETER_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
+
     protected static final String PARAMETER_BUTTON_SEARCH = "button_search";
     protected static final String PARAMETER_BUTTON_RESET = "button_reset";
 
@@ -99,14 +99,13 @@ public class BlogListPortletJspBean extends PortletJspBean
     protected static final String MARK_CURRENT_USER = "current_user";
     protected static final String MARK_ID_BLOG = "id";
     protected static final String MARK_SEARCH_TEXT = "search_text";
-    
+
     protected static final String MARK_PAGINATOR = "paginator";
     protected static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     protected static final String MARK_DATE_UPDATE_BLOG_AFTER = "dateUpdateBlogAfter";
     protected static final String MARK_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
     protected static final String MARK_UNPUBLISHED = "unpublished";
     protected static final String MARK_LIST_TAG = "list_tag";
-
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
@@ -125,8 +124,8 @@ public class BlogListPortletJspBean extends PortletJspBean
     protected String _strCurrentPageIndex;
     protected int _nItemsPerPage;
 
-    protected int _nDefaultItemsPerPage= AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 20);
-    
+    protected int _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 20 );
+
     // Session variable to store working values
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
@@ -157,46 +156,42 @@ public class BlogListPortletJspBean extends PortletJspBean
     protected HashMap<String, Object> getPaginatedListModel( HttpServletRequest request )
     {
 
-    	
-    	  List<Integer> listBlogsId = new ArrayList<Integer>( );
-          AdminUser user = AdminUserService.getAdminUser( request );
+        List<Integer> listBlogsId = new ArrayList<Integer>( );
+        AdminUser user = AdminUserService.getAdminUser( request );
 
-    	  
-    	  if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) 
-          		|| _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null)
-          {
-              BlogSearchFilter filter = new BlogSearchFilter( );
-              if ( StringUtils.isNotBlank( _strSearchText ) )
-                  filter.setKeywords( _strSearchText );
-              if ( _strTag != null && ( _strTag.length > 0 ) )
-                  filter.setTag( _strTag );
-              if ( _bIsChecked )
-                  filter.setUser( user.getFirstName( ) );
-              if(_bIsUnpulished)
-              	filter.setIsUnpulished(_bIsUnpulished);
-              if( _dateUpdateBlogAfter != null )
-              	filter.setUpdateDateAfter(DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ));
-              if( _dateUpdateBlogBefor != null )
-              	filter.setUpdateDateBefor(DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ));
-              
-              BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
+        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _bIsUnpulished
+                || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
+        {
+            BlogSearchFilter filter = new BlogSearchFilter( );
+            if ( StringUtils.isNotBlank( _strSearchText ) )
+                filter.setKeywords( _strSearchText );
+            if ( _strTag != null && ( _strTag.length > 0 ) )
+                filter.setTag( _strTag );
+            if ( _bIsChecked )
+                filter.setUser( user.getFirstName( ) );
+            if ( _bIsUnpulished )
+                filter.setIsUnpulished( _bIsUnpulished );
+            if ( _dateUpdateBlogAfter != null )
+                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+            if ( _dateUpdateBlogBefor != null )
+                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
 
-          }
+            BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
 
-          else
-          {
+        }
 
-          	listBlogsId = BlogHome.getIdBlogsList( );
-          }
+        else
+        {
 
-    	
-    	_strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nDefaultItemsPerPage ,_nItemsPerPage  );
+            listBlogsId = BlogHome.getIdBlogsList( );
+        }
+
+        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nDefaultItemsPerPage, _nItemsPerPage );
         List<Blog> listBlogPublished = new ArrayList<Blog>( );
         List<Blog> listBlogNotPublished = new ArrayList<Blog>( );
 
-       
-       // List<Blog> listBlog = BlogHome.getBlogsList( );
+        // List<Blog> listBlog = BlogHome.getBlogsList( );
         for ( BlogPublication i : _portlet.getArrayBlogs( ) )
         {
             Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( i.getIdDocument( ) );
@@ -226,14 +221,14 @@ public class BlogListPortletJspBean extends PortletJspBean
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listBlogNotPublished );
         model.put( MARK_LIST_HTMLDOC_PUBLISHED, listBlogPublished );
-      
+
         model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
         model.put( MARK_IS_CHECKED, _bIsChecked );
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
         model.put( MARK_UNPUBLISHED, _bIsUnpulished );
-        
+
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogListPortlet.RESOURCE_ID ) );
 
         return model;
@@ -243,32 +238,34 @@ public class BlogListPortletJspBean extends PortletJspBean
      * 
      * @param request
      */
-    private void setSearchBlog(HttpServletRequest request,String strButtonSearch, String strButtonReset){
-    	
-    	
-        
+    private void setSearchBlog( HttpServletRequest request, String strButtonSearch, String strButtonReset )
+    {
 
-    	  if ( strButtonSearch != null )
-          {
-              // CURRENT USER
-              _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
-              _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
-              _strTag = request.getParameterValues( PARAMETER_TAG );
-              _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
-              _dateUpdateBlogAfter =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
-              _dateUpdateBlogBefor =request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
-              
-          }else if(strButtonReset != null){
-          	 
-        	  _bIsChecked = false;
-              _strSearchText = null;
-              _strTag = null;
-              _bIsUnpulished = false;
-              _dateUpdateBlogAfter =null;
-              _dateUpdateBlogBefor =null;
-          	
-          }
+        if ( strButtonSearch != null )
+        {
+            // CURRENT USER
+            _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
+            _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
+            _strTag = request.getParameterValues( PARAMETER_TAG );
+            _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
+            _dateUpdateBlogAfter = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
+            _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
+
+        }
+        else
+            if ( strButtonReset != null )
+            {
+
+                _bIsChecked = false;
+                _strSearchText = null;
+                _strTag = null;
+                _bIsUnpulished = false;
+                _dateUpdateBlogAfter = null;
+                _dateUpdateBlogBefor = null;
+
+            }
     }
+
     /**
      * Returns the Download portlet creation form
      *
@@ -318,19 +315,21 @@ public class BlogListPortletJspBean extends PortletJspBean
     public String doCreate( HttpServletRequest request )
     {
 
-    	String button= request.getParameter( PARAMETER_REFRESH_BUTTON );
-    	_nDefaultItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
-    	 String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
-    	 String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
-         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
-         int nIdPage = Integer.parseInt( strIdPage );
-        		 
-    	if((button != null && button.equals( PARAMETER_REFRESH_BUTTON )) || strButtonSearch != null || strButtonReset!= null){
-    		
-    		setSearchBlog(request, strButtonSearch, strButtonReset);
-    		return "../../DoCreatePortlet.jsp?portlet_type_id="+BlogListPortlet.RESOURCE_ID+"&page_id="+strIdPage+"&"+Paginator.PARAMETER_PAGE_INDEX+"=1";
-    	}
-    	
+        String button = request.getParameter( PARAMETER_REFRESH_BUTTON );
+        _nDefaultItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
+        String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
+        String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
+        int nIdPage = Integer.parseInt( strIdPage );
+
+        if ( ( button != null && button.equals( PARAMETER_REFRESH_BUTTON ) ) || strButtonSearch != null || strButtonReset != null )
+        {
+
+            setSearchBlog( request, strButtonSearch, strButtonReset );
+            return "../../DoCreatePortlet.jsp?portlet_type_id=" + BlogListPortlet.RESOURCE_ID + "&page_id=" + strIdPage + "&" + Paginator.PARAMETER_PAGE_INDEX
+                    + "=1";
+        }
+
         int order = 1;
 
         // gets the identifier of the parent page
@@ -373,17 +372,18 @@ public class BlogListPortletJspBean extends PortletJspBean
     public String doModify( HttpServletRequest request )
     {
 
-    	_nDefaultItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
-    	String button= request.getParameter( PARAMETER_REFRESH_BUTTON );
-    	 String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
-         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
-    	
-    	if((button != null && button.equals( PARAMETER_REFRESH_BUTTON ))|| strButtonSearch != null || strButtonReset!= null){
-    		
-    		setSearchBlog(request, strButtonSearch, strButtonReset);
-    		return "../../DoModifyPortlet.jsp?portlet_id="+_portlet.getId( )+"&"+Paginator.PARAMETER_PAGE_INDEX+"=1";
-    	}
-    	
+        _nDefaultItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        String button = request.getParameter( PARAMETER_REFRESH_BUTTON );
+        String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
+        String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
+
+        if ( ( button != null && button.equals( PARAMETER_REFRESH_BUTTON ) ) || strButtonSearch != null || strButtonReset != null )
+        {
+
+            setSearchBlog( request, strButtonSearch, strButtonReset );
+            return "../../DoModifyPortlet.jsp?portlet_id=" + _portlet.getId( ) + "&" + Paginator.PARAMETER_PAGE_INDEX + "=1";
+        }
+
         int order = 1;
 
         // recovers portlet attributes

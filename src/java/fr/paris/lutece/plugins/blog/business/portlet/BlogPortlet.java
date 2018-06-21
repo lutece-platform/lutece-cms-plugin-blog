@@ -108,7 +108,7 @@ public class BlogPortlet extends PortletHtmlContent
             locale = request.getLocale( );
         }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale , model );
+        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale, model );
 
         return template.getHtml( );
 
