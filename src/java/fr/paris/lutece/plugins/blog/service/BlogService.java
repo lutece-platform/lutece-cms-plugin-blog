@@ -316,6 +316,7 @@ public class BlogService
         List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
         blog.setDocContent( docContent );
         blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
 
         return blog;
 
