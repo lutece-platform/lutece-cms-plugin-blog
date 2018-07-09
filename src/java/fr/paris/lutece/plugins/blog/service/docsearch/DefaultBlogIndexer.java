@@ -246,11 +246,11 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         }
         catch( SAXException e )
         {
-            throw new AppException( "Error during blog parsing."+ blog.getId( ), e );
+            throw new AppException( "Error during blog parsing. blog Id: "+ blog.getId( ), e );
         }
         catch( TikaException e )
         {
-            throw new AppException( "Error during blog parsing."+ blog.getId( ), e );
+            throw new AppException( "Error during blog parsing. blog Id: "+ blog.getId( ), e );
         }
 
         String strContent = handler.toString( );
