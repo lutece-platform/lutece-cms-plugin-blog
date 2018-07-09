@@ -237,7 +237,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
         String strContentToIndex = getContentToIndex( blog );
         // NOUVEAU
-        ContentHandler handler = new BodyContentHandler( );
+        ContentHandler handler = new BodyContentHandler( -1 );
         Metadata metadata = new Metadata( );
 
         try
