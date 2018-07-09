@@ -44,6 +44,7 @@ import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.apache.lucene.document.DateTools;
@@ -245,11 +246,11 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         }
         catch( SAXException e )
         {
-            throw new AppException( "Error during blog parsing." );
+            throw new AppException( "Error during blog parsing."+ blog.getId( ), e );
         }
         catch( TikaException e )
         {
-            throw new AppException( "Error during blog parsing." );
+            throw new AppException( "Error during blog parsing."+ blog.getId( ), e );
         }
 
         String strContent = handler.toString( );
