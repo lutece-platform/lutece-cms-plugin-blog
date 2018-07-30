@@ -49,6 +49,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -301,7 +302,10 @@ public class PublishingService
 
         for ( BlogPublication blogPublication : listBlogPublication )
         {
-            arrayIds [i++] = blogPublication.getIdBlog( );
+        	if(Arrays.asList(arrayIds).contains( blogPublication.getIdBlog( ) )){
+        		
+        		arrayIds [i++] = blogPublication.getIdBlog( );
+        	}
         }
 
         publishedBlogFilter.setIds( arrayIds );
