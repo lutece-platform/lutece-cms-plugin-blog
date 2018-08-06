@@ -56,8 +56,8 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
     private static final String SQL_QUERY_SELECT_PUBLICATION_PORTLET = "SELECT id_portlet , id_blog, date_begin_publishing, date_end_publishing, status, document_order FROM blog_list_portlet_htmldocs WHERE id_blog = ? and id_portlet = ? order by document_order";
     private static final String SQL_QUERY_SELECT_PUBLICATION_ALL = "SELECT id_portlet , id_blog, date_begin_publishing, date_end_publishing, status, document_order FROM blog_list_portlet_htmldocs order by document_order";
     private static final String SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET = "SELECT id_portlet , id_blog, date_begin_publishing, date_end_publishing, status, document_order FROM blog_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
-    private static final String SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS = " SELECT id_portlet, id_blog, document_order, date_begin_publishing FROM blog_list_portlet_htmldocs WHERE date_begin_publishing <= ? AND date_end_publishing >= ? AND status = ? ORDER BY document_order ";
-    private static final String SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS = " SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub WHERE  pub.status = ? AND pub.date_begin_publishing <= ? AND  pub.date_end_publishing >= ? AND pub.id_portlet IN ";
+    private static final String SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS = "SELECT id_portlet, id_blog, document_order, date_begin_publishing FROM blog_list_portlet_htmldocs WHERE date_begin_publishing >= ? AND date_end_publishing >= ? AND status = ? ORDER BY document_order ";
+    private static final String SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS = " SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub WHERE  pub.status = ? AND pub.date_begin_publishing >= ? AND  pub.date_end_publishing >= ? AND pub.id_portlet IN ";
 
     private static final String SQL_FILTER_BEGIN = " (";
     private static final String SQL_TAGS_END = ") ";
