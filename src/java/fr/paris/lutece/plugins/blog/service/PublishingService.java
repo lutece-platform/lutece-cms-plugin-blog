@@ -49,11 +49,12 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Publishing service
@@ -291,8 +292,7 @@ public class PublishingService
             return new ArrayList<Blog>( );
         }
 
-        Integer [ ] arrayIds = new Integer [ listBlogPublication.size( )];
-        int i = 0;
+        Set<Integer> sIds = new HashSet();
         BlogFilter publishedBlogFilter = blogFilter;
 
         if ( publishedBlogFilter == null )
@@ -302,13 +302,10 @@ public class PublishingService
 
         for ( BlogPublication blogPublication : listBlogPublication )
         {
-        	if(Arrays.asList(arrayIds).contains( blogPublication.getIdBlog( ) )){
-        		
-        		arrayIds [i++] = blogPublication.getIdBlog( );
-        	}
+            sIds.add( blogPublication.getIdBlog( ) );
         }
 
-        publishedBlogFilter.setIds( arrayIds );
+        publishedBlogFilter.setIds( sIds.toArray(new Integer[sIds.size()] ) );
 
         Collection<Blog> listBlogs = BlogHome.findByFilter( publishedBlogFilter );
 
