@@ -191,5 +191,20 @@ public class BlogPublicationHome
     {
         return _dao.getPublishedBlogsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }
+    
+    /**
+     * Get the list of id of published Blogs, associated with a given collection of porlets, which has been updated since the dateUpdated
+     * @param nPortletsIds
+     *          The list of portlet ids.
+     * @param dateUpdated
+     *          The date from the blogs had to be updated
+     * @param plugin
+     *          The plugin
+     * @return The list of Blogs id.
+     */
+    public static List<Integer> getLastPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdated, Plugin plugin )
+    {
+        return _dao.getLastPublishedBlogsIdsListByPortletIds( nPortletsIds, dateUpdated, plugin);
+    }
 
 }

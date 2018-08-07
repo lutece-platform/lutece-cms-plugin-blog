@@ -58,6 +58,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
     private static final String SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET = "SELECT id_portlet , id_blog, date_begin_publishing, date_end_publishing, status, document_order FROM blog_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
     private static final String SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS = "SELECT id_portlet, id_blog, document_order, date_begin_publishing FROM blog_list_portlet_htmldocs WHERE date_begin_publishing >= ? AND date_end_publishing >= ? AND status = ? ORDER BY document_order ";
     private static final String SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS = " SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub WHERE  pub.status = ? AND pub.date_begin_publishing <= ? AND  pub.date_end_publishing >= ? AND pub.id_portlet IN ";
+    private static final String SQL_QUERY_SELECT_LAST_BY_PORTLET_ID_AND_STATUS = "SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub, blog_blog doc WHERE doc.id_blog=pub.id_blog AND pub.status=? AND doc.update_date >=? AND pub.date_begin_publishing <= ? AND pub.date_end_publishing >= ? AND pub.id_portlet IN ";
 
     private static final String SQL_FILTER_BEGIN = " (";
     private static final String SQL_TAGS_END = ") ";
@@ -330,6 +331,51 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         daoUtil.setInt( nIndex++, 1 );
         daoUtil.setTimestamp( nIndex++, new Timestamp( datePublishing.getTime( ) ) );
         daoUtil.setTimestamp( nIndex++, new Timestamp( dateEndPublishing.getTime( ) ) );
+
+        for ( int nPortletId : nPortletsIds )
+        {
+            daoUtil.setInt( nIndex++, nPortletId );
+        }
+        daoUtil.executeQuery( );
+        while ( daoUtil.next( ) )
+        {
+            listIds.add( daoUtil.getInt( 1 ) );
+        }
+        daoUtil.free( );
+        return listIds;
+
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Integer> getLastPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdated, Plugin plugin )
+    {
+        List<Integer> listIds = new ArrayList<Integer>( );
+        if ( nPortletsIds == null || nPortletsIds.length == 0 )
+        {
+            return listIds;
+        }
+        StringBuilder sbSql = new StringBuilder( SQL_QUERY_SELECT_LAST_BY_PORTLET_ID_AND_STATUS );
+        sbSql.append( SQL_FILTER_BEGIN );
+
+        for ( int i = 0; i < nPortletsIds.length; i++ )
+        {
+            sbSql.append( CONSTANT_QUESTION_MARK );
+            if ( i + 1 < nPortletsIds.length )
+            {
+                sbSql.append( CONSTANT_COMMA );
+            }
+        }
+        sbSql.append( SQL_TAGS_END + "order by document_order" );
+
+        DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin );
+        int nIndex = 1;
+        daoUtil.setInt( nIndex++, 1 );
+        daoUtil.setTimestamp( nIndex++, new Timestamp( dateUpdated.getTime( ) ) );
+        daoUtil.setTimestamp( nIndex++, new Timestamp( System.currentTimeMillis( ) ) );
+        daoUtil.setTimestamp( nIndex++, new Timestamp( System.currentTimeMillis( ) ) );
 
         for ( int nPortletId : nPortletsIds )
         {

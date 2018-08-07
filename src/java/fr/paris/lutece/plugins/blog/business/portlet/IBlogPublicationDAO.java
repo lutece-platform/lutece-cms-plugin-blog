@@ -145,4 +145,15 @@ public interface IBlogPublicationDAO
      * @return The list of blogs id.
      */
     List<Integer> getPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date datePublishing, Date dateEndPublishing, Plugin plugin );
+
+    /**
+     * Get the list of published Blogs associated with given collection of portlets. Returns only the blogs updated after given dateUpdated
+     * @param nPortletsIds
+     *          The list of portlets ids
+     * @param dateUpdatedFrom
+     *          The date from the blogs had been updated
+     * @param plugin 
+     * @return  the list of blogs id
+     */
+    List<Integer> getLastPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdatedFrom, Plugin plugin );
 }
