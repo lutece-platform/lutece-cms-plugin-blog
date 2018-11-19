@@ -124,7 +124,7 @@ PRIMARY KEY (id_tag, id_blog)
 /*==============================================================*/
 DROP TABLE IF EXISTS blog_indexer_action;
 CREATE TABLE blog_indexer_action (
-  id_action INT DEFAULT 0 NOT NULL,
+  id_action INT NOT NULL,
   id_blog INT DEFAULT 0 NOT NULL,
   id_task INT DEFAULT 0 NOT NULL ,
   PRIMARY KEY (id_action)
@@ -150,7 +150,7 @@ CREATE TABLE blog_page_template (
 --
 DROP TABLE IF EXISTS blog_list_portlet;
 CREATE TABLE blog_list_portlet (
-	id_portlet int default NULL,
+	id_portlet int NOT NULL,
 	id_page_template_document int default 0 NOT NULL,
 	
 	PRIMARY KEY (id_portlet)
@@ -158,7 +158,7 @@ CREATE TABLE blog_list_portlet (
 
 DROP TABLE IF EXISTS blog_list_portlet_htmldocs;
 CREATE TABLE blog_list_portlet_htmldocs (
-	id_portlet int default NULL,
+	id_portlet int NOT NULL,
 	id_blog int NOT NULL,
     date_begin_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
 	date_end_publishing timestamp default  "2030-01-01 11:59:59" NOT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE blog_list_portlet_htmldocs (
 DROP TABLE IF EXISTS blog_rss_cf;
 
 CREATE TABLE blog_rss_cf (
-	id_rss int default 0 NOT NULL,
+	id_rss int NOT NULL,
 	id_portlet int default 0 NOT NULL,
 	
 	PRIMARY KEY (id_rss)
