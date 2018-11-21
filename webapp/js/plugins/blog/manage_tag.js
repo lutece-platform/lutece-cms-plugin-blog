@@ -2,11 +2,11 @@ var baseUrl = document.getElementsByTagName('base')[0].href;
 
 function createTag(){
 	var tg = $('#tag_name').val();
-	if( tg != null &&tg !=""){
+	if( tg != null && tg !=""){
 		var idBlog = $('#id').val();
 		doCreateTag( tg, idBlog );
 	} else {
-		alert("OOOuuppps ! ");
+		alert("Merci d'entrer une valeur de tag.");
 	}
 }
 function doAddTag( idTag, tgName ){

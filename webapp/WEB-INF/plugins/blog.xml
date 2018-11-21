@@ -98,10 +98,10 @@
        <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome</portlet-class>
 	   <portlet-type-id>BLOG_PORTLET</portlet-type-id>
 	   <portlet-type-name>blog.portlet.blogsBlogsPortlet.name</portlet-type-name>
-	   <portlet-creation-url>plugins/blog/CreatePortletBlogs.jsp</portlet-creation-url>
-	   <portlet-update-url>plugins/blog/ModifyPortletBlogs.jsp</portlet-update-url>
-	   <portlet-create-action-url>plugins/blog/DoCreatePortletBlogs.jsp</portlet-create-action-url>
-      <portlet-modify-action-url>plugins/blog/DoModifyPortletBlogs.jsp</portlet-modify-action-url>
+	   <portlet-creation-url>plugins/blog/CreatePortletBlog.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/blog/ModifyPortletBlog.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/blog/DoCreatePortletBlog.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/blog/DoModifyPortletBlog.jsp</portlet-modify-action-url>
 	    <!-- optional entries -->
         <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
@@ -115,15 +115,15 @@
        <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome</portlet-class>
 	   <portlet-type-id>BLOG_LIST_PORTLET</portlet-type-id>
 	   <portlet-type-name>blog.portlet.blogsListBlogsPortlet.name</portlet-type-name>
-	   <portlet-creation-url>plugins/blog/CreatePortletBlogsList.jsp</portlet-creation-url>
-	   <portlet-update-url>plugins/blog/ModifyPortletBlogsList.jsp</portlet-update-url>
-	   <portlet-create-action-url>plugins/blog/DoCreatePortletBlogsList.jsp</portlet-create-action-url>
-      <portlet-modify-action-url>plugins/blog/DoModifyPortletBlogsList.jsp</portlet-modify-action-url>
+	   <portlet-creation-url>plugins/blog/CreatePortletBlogList.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/blog/ModifyPortletBlogList.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/blog/DoCreatePortletBlogList.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/blog/DoModifyPortletBlogList.jsp</portlet-modify-action-url>
 	    
         <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
-        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletblogslist.html</portlet-create-specific-template>
-        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletblogslist.html</portlet-modify-specific-template>
+        <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletbloglist.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletbloglist.html</portlet-modify-specific-template>
         <portlet-create-specific-form-template/>
         <portlet-modify-specific-form-template/> 
      </portlet>
