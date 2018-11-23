@@ -36,14 +36,11 @@ package fr.paris.lutece.plugins.blog.business.rss;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
-import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.BlogPlugin;
+import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
-import fr.paris.lutece.portal.business.rss.FeedResource;
-import fr.paris.lutece.portal.business.rss.FeedResourceItem;
 import fr.paris.lutece.portal.business.rss.IFeedResource;
-import fr.paris.lutece.portal.business.rss.IFeedResourceItem;
 import fr.paris.lutece.portal.business.rss.ResourceRss;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -53,13 +50,8 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  *
@@ -226,7 +218,8 @@ public class BlogResourceRss extends ResourceRss
         model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
         model.put( MARK_RSS_ITEM_DESCRIPTION, I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
 
-        List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
+        Date dateNow = new Date();
+        List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortletAndPlublicationDate( config.getIdPortlet( ), dateNow, dateNow );
         List<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>( );
 
         for ( BlogPublication dcPub : listDocPub )

@@ -33,14 +33,14 @@
  */
 package fr.paris.lutece.plugins.blog.business.portlet;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public class BlogPublicationHome
 {
@@ -62,7 +62,7 @@ public class BlogPublicationHome
      *            The instance of the BlogPublication which contains the informations to store
      * @return The instance of BlogPub which has been created.
      */
-    public static BlogPublication create( BlogPublication blogPub )
+    public static BlogPublication create(BlogPublication blogPub )
     {
         _dao.insertBlogsId( blogPub, _plugin );
 
@@ -87,7 +87,7 @@ public class BlogPublicationHome
      *            The Blog id
      * @return list of BlogPublication
      */
-    public static List<BlogPublication> getDocPublicationByIdDoc( int nDocId )
+    public static List<BlogPublication> getDocPublicationByIdDoc(int nDocId )
     {
         return _dao.loadBlogsId( nDocId, _plugin );
 
@@ -100,9 +100,26 @@ public class BlogPublicationHome
      *            The protlet id
      * @return list of BlogPublication
      */
-    public static List<BlogPublication> getDocPublicationByPortlet( int nIdPortlet )
+    public static List<BlogPublication> getDocPublicationByPortlet(int nIdPortlet )
     {
         return _dao.loadBlogsByPortlet( nIdPortlet, _plugin );
+
+    }
+
+    /**
+     *
+     * @param nIdPortlet
+     *      The portlet id
+     * @param datePublishing
+     *      The publication date
+     * @param dateEndPublishing
+     *      The end publication date
+     * @return
+     *      list of BlogPublication
+     */
+    public static List<BlogPublication> getDocPublicationByPortletAndPlublicationDate(int nIdPortlet, Date datePublishing, Date dateEndPublishing )
+    {
+        return _dao.loadBlogsByPortletSinceDatePublishing( nIdPortlet, datePublishing, dateEndPublishing, _plugin );
 
     }
 
@@ -115,7 +132,7 @@ public class BlogPublicationHome
      *            The portlet id
      * @return BlogPublication
      */
-    public static BlogPublication findDocPublicationByPimaryKey( int nDocId, int nPortletId )
+    public static BlogPublication findDocPublicationByPimaryKey(int nDocId, int nPortletId )
     {
         return _dao.loadBlogsPublication( nDocId, nPortletId, _plugin );
 
@@ -169,7 +186,7 @@ public class BlogPublicationHome
      *            The status
      * @return The {@link BlogPublication} objects {@link Collection} ordered by BlogOrder ascending. The list is empty if no objects found.
      */
-    public static Collection<BlogPublication> findSinceDatePublishingAndStatus( Date datePublishing, Date dateEndPublishing, int nStatus )
+    public static Collection<BlogPublication> findSinceDatePublishingAndStatus(Date datePublishing, Date dateEndPublishing, int nStatus )
     {
         return _dao.selectSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, nStatus, _plugin );
     }
