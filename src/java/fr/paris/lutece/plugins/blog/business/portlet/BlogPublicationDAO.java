@@ -57,6 +57,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
     private static final String SQL_QUERY_SELECT_PUBLICATION_ALL = "SELECT id_portlet , id_blog, date_begin_publishing, date_end_publishing, status, document_order FROM blog_list_portlet_htmldocs order by document_order";
     private static final String SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET = "SELECT id_portlet , id_blog, date_begin_publishing, date_end_publishing, status, document_order FROM blog_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
     private static final String SQL_QUERY_SELECT_BY_DATE_PUBLISHING_AND_STATUS = "SELECT id_portlet, id_blog, document_order, date_begin_publishing FROM blog_list_portlet_htmldocs WHERE date_begin_publishing >= ? AND date_end_publishing >= ? AND status = ? ORDER BY document_order ";
+    private static final String SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET_AND_PUBLICATION_DATE = "SELECT id_portlet , id_blog, date_begin_publishing, date_end_publishing, status, document_order FROM blog_list_portlet_htmldocs WHERE id_portlet = ? AND date_begin_publishing <= ? AND date_end_publishing >= ? order by document_order ";
     private static final String SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS = " SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub WHERE  pub.status = ? AND pub.date_begin_publishing <= ? AND  pub.date_end_publishing >= ? AND pub.id_portlet IN ";
     private static final String SQL_QUERY_SELECT_LAST_BY_PORTLET_ID_AND_STATUS = "SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub, blog_blog doc WHERE doc.id_blog=pub.id_blog AND pub.status=? AND doc.update_date >=? AND pub.date_begin_publishing <= ? AND pub.date_end_publishing >= ? AND pub.id_portlet IN ";
 
@@ -189,6 +190,39 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET, plugin );
         daoUtil.setInt( 1, nIdPortlet );
+        daoUtil.executeQuery( );
+
+        List<BlogPublication> nListIdCategory = new ArrayList<BlogPublication>( );
+
+        while ( daoUtil.next( ) )
+        {
+
+            BlogPublication blogPub = new BlogPublication( );
+            blogPub.setIdPortlet( daoUtil.getInt( 1 ) );
+            blogPub.setIdBlog( daoUtil.getInt( 2 ) );
+            blogPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
+            blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
+            blogPub.setStatus( daoUtil.getInt( 5 ) );
+            blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
+
+            nListIdCategory.add( blogPub );
+        }
+
+        daoUtil.free( );
+
+        return nListIdCategory;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<BlogPublication> loadBlogsByPortletAndPublicationDate(int nIdPortlet, Date datePublishing, Date dateEndPublishing, Plugin plugin) {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET_AND_PUBLICATION_DATE, plugin );
+        daoUtil.setInt( 1, nIdPortlet );
+        daoUtil.setTimestamp( 2, new Timestamp( datePublishing.getTime( ) ) );
+        daoUtil.setTimestamp( 3, new Timestamp( dateEndPublishing.getTime( ) ) );
+
         daoUtil.executeQuery( );
 
         List<BlogPublication> nListIdCategory = new ArrayList<BlogPublication>( );

@@ -107,6 +107,24 @@ public class BlogPublicationHome
     }
 
     /**
+     * Retrieve all blogs by Portlet and between publication dates.
+     *
+     * @param nIdPortlet
+     *      The portlet id
+     * @param datePublishing
+     *      The publication date
+     * @param dateEndPublishing
+     *      The end publication date
+     * @return
+     *      list of BlogPublication
+     */
+    public static List<BlogPublication> getDocPublicationByPortletAndPlublicationDate(int nIdPortlet, Date datePublishing, Date dateEndPublishing )
+    {
+        return _dao.loadBlogsByPortletAndPublicationDate( nIdPortlet, datePublishing, dateEndPublishing, _plugin );
+
+    }
+
+    /**
      * load a BlogPublication by Blog id and portlet id
      * 
      * @param nDocId
