@@ -76,6 +76,20 @@ public interface IBlogPublicationDAO
     List<BlogPublication> loadBlogsByPortlet( int nIdPortlet, Plugin plugin );
 
     /**
+     * Load a list BLOGPublication by the portlet id, and published at or after the specified date.
+     *
+     * @param nIdPortlet
+     *              The portlet id
+     * @param datePublishing
+     *            The publication end date
+     * @param dateEndPublishing
+     *            The publication date
+     * @param plugin
+     * @return list of BLOGPublication
+     */
+    List<BlogPublication> loadBlogsByPortletAndPublicationDate(int nIdPortlet, Date datePublishing, Date dateEndPublishing, Plugin plugin);
+
+    /**
      * Delete the BLOGPublication by portlet id
      * 
      * @param nIdPortlet
