@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -217,7 +217,8 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
      * {@inheritDoc }
      */
     @Override
-    public List<BlogPublication> loadBlogsByPortletAndPublicationDate(int nIdPortlet, Date datePublishing, Date dateEndPublishing, Plugin plugin) {
+    public List<BlogPublication> loadBlogsByPortletAndPublicationDate( int nIdPortlet, Date datePublishing, Date dateEndPublishing, Plugin plugin )
+    {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DOC_PUBLICATION_BY_PORTLET_AND_PUBLICATION_DATE, plugin );
         daoUtil.setInt( 1, nIdPortlet );
         daoUtil.setTimestamp( 2, new Timestamp( datePublishing.getTime( ) ) );
@@ -379,7 +380,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         return listIds;
 
     }
-    
+
     /**
      * {@inheritDoc}
      */

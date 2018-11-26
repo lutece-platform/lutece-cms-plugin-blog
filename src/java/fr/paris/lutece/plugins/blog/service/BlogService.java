@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ public class BlogService
     {
         return _singleton;
     }
-    
+
     /**
      * Create an blog
      * 
@@ -75,8 +75,9 @@ public class BlogService
     public void createBlog( Blog blog )
 
     {
-    	 createBlog( blog, blog.getDocContent( ) );
+        createBlog( blog, blog.getDocContent( ) );
     }
+
     /**
      * Update an Blog
      * 
@@ -86,11 +87,10 @@ public class BlogService
     public void updateBlog( Blog blog )
 
     {
-    	 updateBlog( blog, blog.getDocContent( ));
+        updateBlog( blog, blog.getDocContent( ) );
 
-        
     }
-   
+
     /**
      * Remove an blog
      * 
@@ -163,10 +163,8 @@ public class BlogService
 
     }
 
-   
-
     /**
-     * Update an BlogContent 
+     * Update an BlogContent
      * 
      * @param docContent
      *            The Doc Content
@@ -329,7 +327,7 @@ public class BlogService
      *            The blog primary key
      * @return an instance of blog
      */
-   public Blog findByPrimaryKeyWithoutBinaries( int nIdDocument )
+    public Blog findByPrimaryKeyWithoutBinaries( int nIdDocument )
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
@@ -385,18 +383,19 @@ public class BlogService
     public List<Blog> searchListBlogByTag( int nIdTag )
 
     {
-       return BlogHome.getBlogByTag( nIdTag );
+        return BlogHome.getBlogByTag( nIdTag );
 
     }
+
     /**
      * Returns a collection of blog objects
      * 
      * @param filter
      *            The filter
      */
-    public  List<Blog> findByFilter( BlogFilter filter )
+    public List<Blog> findByFilter( BlogFilter filter )
     {
-    	return BlogHome.findByFilter(filter);
+        return BlogHome.findByFilter( filter );
     }
 
     /**
@@ -411,7 +410,7 @@ public class BlogService
         List<Blog> listBlog = BlogHome.getLastModifiedBlogsList( nLimit );
         for ( Blog blog : listBlog )
         {
-        	blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
+            blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
             List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
             blog.setDocContent( docContent );
         }

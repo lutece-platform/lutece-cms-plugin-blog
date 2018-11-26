@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -227,7 +227,7 @@ public class BlogResourceRss extends ResourceRss
         model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
         model.put( MARK_RSS_ITEM_DESCRIPTION, I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
 
-        Date dateNow = new Date();
+        Date dateNow = new Date( );
         List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortletAndPlublicationDate( config.getIdPortlet( ), dateNow, dateNow );
         List<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>( );
 

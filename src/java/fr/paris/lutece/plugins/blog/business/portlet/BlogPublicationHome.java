@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -110,15 +110,14 @@ public class BlogPublicationHome
      * Retrieve all blogs by Portlet and between publication dates.
      *
      * @param nIdPortlet
-     *      The portlet id
+     *            The portlet id
      * @param datePublishing
-     *      The publication date
+     *            The publication date
      * @param dateEndPublishing
-     *      The end publication date
-     * @return
-     *      list of BlogPublication
+     *            The end publication date
+     * @return list of BlogPublication
      */
-    public static List<BlogPublication> getDocPublicationByPortletAndPlublicationDate(int nIdPortlet, Date datePublishing, Date dateEndPublishing )
+    public static List<BlogPublication> getDocPublicationByPortletAndPlublicationDate( int nIdPortlet, Date datePublishing, Date dateEndPublishing )
     {
         return _dao.loadBlogsByPortletAndPublicationDate( nIdPortlet, datePublishing, dateEndPublishing, _plugin );
 
@@ -209,20 +208,21 @@ public class BlogPublicationHome
     {
         return _dao.getPublishedBlogsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }
-    
+
     /**
      * Get the list of id of published Blogs, associated with a given collection of porlets, which has been updated since the dateUpdated
+     * 
      * @param nPortletsIds
-     *          The list of portlet ids.
+     *            The list of portlet ids.
      * @param dateUpdated
-     *          The date from the blogs had to be updated
+     *            The date from the blogs had to be updated
      * @param plugin
-     *          The plugin
+     *            The plugin
      * @return The list of Blogs id.
      */
     public static List<Integer> getLastPublishedDocumentsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdated, Plugin plugin )
     {
-        return _dao.getLastPublishedBlogsIdsListByPortletIds( nPortletsIds, dateUpdated, plugin);
+        return _dao.getLastPublishedBlogsIdsListByPortletIds( nPortletsIds, dateUpdated, plugin );
     }
 
 }

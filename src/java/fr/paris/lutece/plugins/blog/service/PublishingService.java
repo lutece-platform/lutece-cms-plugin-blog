@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -265,8 +265,8 @@ public class PublishingService
     }
 
     /**
-     * Loads the list of the blog whose filter and date publication is specified Return published blogs since the publication date. The is also filtered
-     * with the blogFilter
+     * Loads the list of the blog whose filter and date publication is specified Return published blogs since the publication date. The is also filtered with
+     * the blogFilter
      *
      * @param datePublishing
      *            The start publication date
@@ -292,7 +292,7 @@ public class PublishingService
             return new ArrayList<Blog>( );
         }
 
-        Set<Integer> sIds = new HashSet();
+        Set<Integer> sIds = new HashSet( );
         BlogFilter publishedBlogFilter = blogFilter;
 
         if ( publishedBlogFilter == null )
@@ -305,7 +305,7 @@ public class PublishingService
             sIds.add( blogPublication.getIdBlog( ) );
         }
 
-        publishedBlogFilter.setIds( sIds.toArray(new Integer[sIds.size()] ) );
+        publishedBlogFilter.setIds( sIds.toArray( new Integer [ sIds.size( )] ) );
 
         Collection<Blog> listBlogs = BlogHome.findByFilter( publishedBlogFilter );
 
@@ -327,22 +327,21 @@ public class PublishingService
     {
         return BlogPublicationHome.getPublishedBlogsIdsListByPortletIds( nPortletsIds, datePublishing, dateEndPublishing, plugin );
     }
-    
+
     /**
      * Get the list of id of published Blogs, associated with a given collection of porlets, which has been updated since the dateUpdated
+     * 
      * @param nPortletsIds
-     *          The list of portlet ids.
+     *            The list of portlet ids.
      * @param dateUpdated
-     *          The date from the blogs had to be updated
+     *            The date from the blogs had to be updated
      * @param plugin
-     *          The plugin
+     *            The plugin
      * @return The list of Blogs id.
      */
     public static List<Integer> getLastPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdated, Plugin plugin )
     {
         return BlogPublicationHome.getLastPublishedDocumentsIdsListByPortletIds( nPortletsIds, dateUpdated, plugin );
     }
-    
-    
 
 }
