@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -515,9 +515,11 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public void addBlogPublication( BlogPublication blogPubilcation )
     {
 
-    	boolean isContain= _blogPubilcation.stream().anyMatch(blogPub-> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( )== blogPubilcation.getIdPortlet( )));
-        
-        if(!isContain)_blogPubilcation.add( blogPubilcation );
+        boolean isContain = _blogPubilcation.stream( ).anyMatch(
+                blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) ) );
+
+        if ( !isContain )
+            _blogPubilcation.add( blogPubilcation );
     }
 
     /**
@@ -529,7 +531,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public void deleteBlogPublication( BlogPublication blogPubilcation )
     {
 
-        _blogPubilcation.removeIf(blogPub-> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( )== blogPubilcation.getIdPortlet( )) );
+        _blogPubilcation.removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation
+                .getIdPortlet( ) ) );
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ public interface IBlogPublicationDAO
      * Load a list BLOGPublication by the portlet id, and published at or after the specified date.
      *
      * @param nIdPortlet
-     *              The portlet id
+     *            The portlet id
      * @param datePublishing
      *            The publication end date
      * @param dateEndPublishing
@@ -87,7 +87,7 @@ public interface IBlogPublicationDAO
      * @param plugin
      * @return list of BLOGPublication
      */
-    List<BlogPublication> loadBlogsByPortletAndPublicationDate(int nIdPortlet, Date datePublishing, Date dateEndPublishing, Plugin plugin);
+    List<BlogPublication> loadBlogsByPortletAndPublicationDate( int nIdPortlet, Date datePublishing, Date dateEndPublishing, Plugin plugin );
 
     /**
      * Delete the BLOGPublication by portlet id
@@ -162,12 +162,13 @@ public interface IBlogPublicationDAO
 
     /**
      * Get the list of published Blogs associated with given collection of portlets. Returns only the blogs updated after given dateUpdated
+     * 
      * @param nPortletsIds
-     *          The list of portlets ids
+     *            The list of portlets ids
      * @param dateUpdatedFrom
-     *          The date from the blogs had been updated
-     * @param plugin 
-     * @return  the list of blogs id
+     *            The date from the blogs had been updated
+     * @param plugin
+     * @return the list of blogs id
      */
     List<Integer> getLastPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdatedFrom, Plugin plugin );
 }
