@@ -54,6 +54,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE blog_portlet SET id_portlet = ?, name = ?, content_id = ?, id_page_template_document=? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_INSERT_BLOGS_PORTLET = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order ) VALUES ( ? , ?, ?, ? )";
+    private static final String SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_begin_publishing, date_end_publishing) VALUES ( ? , ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_SELECT_PORTLET_BY_TYPE = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " + "FROM blog_portlet b "
             + "LEFT JOIN blog_list_portlet_htmldocs c ON b.id_portlet = c.id_portlet " + "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet "
             + "INNER JOIN core_page f ON a.id_page = f.id_page WHERE c.id_portlet IS NULL ";
@@ -75,7 +76,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
         daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
         daoUtil.executeUpdate( );
         daoUtil.free( );
-        insertBlogPublivcation( p );
+        insertBlogPublication( p );
 
     }
 
@@ -115,7 +116,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
         daoUtil.free( );
 
         BlogPublicationHome.removeByIdPortlet( p.getId( ) );
-        insertBlogPublivcation( p );
+        insertBlogPublicationOnUpdate ( p );
 
     }
 
@@ -154,7 +155,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
      * @param portlet
      *            the BlogsPortlet to insert
      */
-    private void insertBlogPublivcation( BlogPortlet p )
+    private void insertBlogPublication( BlogPortlet p )
     {
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET );
@@ -246,5 +247,28 @@ public final class BlogPortletDAO implements IBlogPortletDAO
 
         return list;
     }
+
+	    /**
+	     * Insert a blog publication for a specified portlet
+	     * 
+	     * @param portlet
+	     *            the BlogPortlet to insert
+	     */
+	    private void insertBlogPublicationOnUpdate( BlogPortlet portlet )
+	    {
+	        
+	    	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE );
+
+	        daoUtil.setInt( 1, portlet.getId( ) );
+	        daoUtil.setInt( 2, portlet.getContentId( ) );
+	        daoUtil.setInt( 3, 1 );
+	        daoUtil.setInt( 4, 0 );
+	        daoUtil.setDate(5, portlet.getBlogPublication().getDateBeginPublishing());
+	        daoUtil.setDate(6, portlet.getBlogPublication().getDateEndPublishing( ));
+	        
+	        daoUtil.executeUpdate( );
+
+	        daoUtil.free( );
+	    }
 
 }

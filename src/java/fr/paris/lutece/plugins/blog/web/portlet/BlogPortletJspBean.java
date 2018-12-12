@@ -38,6 +38,7 @@ import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -202,7 +203,6 @@ public class BlogPortletJspBean extends PortletJspBean
         int nPortletId = Integer.parseInt( strPortletId );
         BlogPortlet portlet = (BlogPortlet) PortletHome.findByPrimaryKey( nPortletId );
         Blog blog = BlogHome.findByPrimaryKey( portlet.getContentId( ) );
-
         // retrieve portlet common attributes
         String strErrorUrl = setPortletCommonData( request, portlet );
 
@@ -218,6 +218,7 @@ public class BlogPortletJspBean extends PortletJspBean
         blog.setVersion( blog.getVersion( ) + 1 );
         BlogHome.addNewVersion( blog );
 
+        portlet.setBlogPublication(BlogPublicationHome.findDocPublicationByPimaryKey(portlet.getContentId( ), nPortletId));
         // updates the portlet
         portlet.update( );
 
