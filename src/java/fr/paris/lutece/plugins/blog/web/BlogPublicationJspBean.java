@@ -300,10 +300,14 @@ public class BlogPublicationJspBean extends BlogJspBean
             parsed = sdf.parse( dateEndPublishing );
             _dateEndPublishing = new java.sql.Date( parsed.getTime( ) );
         }
+        int nBlogOrder = BlogListPortletHome.getMinDocBlogOrder();
+        nBlogOrder = nBlogOrder - 1;
+
         htmldocPublication.setIdBlog( nIdDoc );
         htmldocPublication.setIdPortlet( nIdPortlet );
         htmldocPublication.setDateBeginPublishing( _dateBeginPublishing );
         htmldocPublication.setDateEndPublishing( _dateEndPublishing );
+        htmldocPublication.setBlogOrder( nBlogOrder );
 
     }
 
