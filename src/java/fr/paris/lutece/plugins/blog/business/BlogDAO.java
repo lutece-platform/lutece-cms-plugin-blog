@@ -62,8 +62,8 @@ public final class BlogDAO implements IBlogDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM blog_versions WHERE id_blog = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE blog_blog SET id_blog = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ?, url= ? WHERE id_blog = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog order by update_date DESC";
-    private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_blog FROM blog_blog ORDER BY update_date DESC";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog order by creation_date DESC";
+    private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_blog FROM blog_blog ORDER BY creation_date DESC";
     private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions where id_blog = ?";
     private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO blog_versions ( id_version, id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
@@ -92,7 +92,7 @@ public final class BlogDAO implements IBlogDAO
 
     /**
      * Generates a new primary key
-     * 
+     *
      * @param plugin
      *            The Plugin
      * @return The new primary key
@@ -114,7 +114,7 @@ public final class BlogDAO implements IBlogDAO
 
     /**
      * Generates a new primary key
-     * 
+     *
      * @param plugin
      *            The Plugin
      * @return The new primary key
@@ -547,7 +547,7 @@ public final class BlogDAO implements IBlogDAO
 
     /**
      * Return a dao initialized with the specified filter
-     * 
+     *
      * @param strQuerySelect
      *            the query
      * @param filter
@@ -623,17 +623,17 @@ public final class BlogDAO implements IBlogDAO
                     .append( "'" + filter.getDateMax( ) + "'" ).append( SQL_FILTER_AND ).append( "a.update_date > " ).append( "'" + filter.getDateMin( ) + "'" );
         }
         else
-            if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
-            {
-                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " )
-                        .append( "'" + filter.getDateMin( ) + "'" );
-            }
-            else
-                if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
-                {
-                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " )
-                            .append( "'" + filter.getDateMax( ) + "'" );
-                }
+        if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
+        {
+            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " )
+                    .append( "'" + filter.getDateMin( ) + "'" );
+        }
+        else
+        if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
+        {
+            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " )
+                    .append( "'" + filter.getDateMax( ) + "'" );
+        }
 
         String strWhere = sbWhere.toString( );
 
