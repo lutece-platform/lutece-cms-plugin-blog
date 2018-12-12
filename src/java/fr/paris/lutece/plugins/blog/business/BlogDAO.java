@@ -623,17 +623,17 @@ public final class BlogDAO implements IBlogDAO
                     .append( "'" + filter.getDateMax( ) + "'" ).append( SQL_FILTER_AND ).append( "a.update_date > " ).append( "'" + filter.getDateMin( ) + "'" );
         }
         else
-        if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
-        {
-            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " )
-                    .append( "'" + filter.getDateMin( ) + "'" );
-        }
-        else
-        if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
-        {
-            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " )
-                    .append( "'" + filter.getDateMax( ) + "'" );
-        }
+            if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
+            {
+                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " )
+                        .append( "'" + filter.getDateMin( ) + "'" );
+            }
+            else
+                if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
+                {
+                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " )
+                            .append( "'" + filter.getDateMax( ) + "'" );
+                }
 
         String strWhere = sbWhere.toString( );
 
