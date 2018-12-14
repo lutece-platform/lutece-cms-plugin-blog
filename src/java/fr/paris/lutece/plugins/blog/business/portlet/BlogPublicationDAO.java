@@ -258,11 +258,11 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         daoUtil.setInt( 2, nPortletId );
         daoUtil.executeQuery( );
 
-        BlogPublication blogPub = new BlogPublication( );
+        BlogPublication blogPub = null;
 
         if ( daoUtil.next( ) )
         {
-
+        	blogPub = new BlogPublication( );
             blogPub.setIdPortlet( daoUtil.getInt( 1 ) );
             blogPub.setIdBlog( daoUtil.getInt( 2 ) );
             blogPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );

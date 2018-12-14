@@ -41,7 +41,9 @@ import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
+import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
+import fr.paris.lutece.plugins.blog.web.BlogPublicationJspBean;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -56,6 +58,9 @@ import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,6 +116,7 @@ public class BlogListPortletJspBean extends PortletJspBean
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
 
     private static final String VIEW_MODIFY_PORTLET = "getModify";
+
 
     // //////////////////////////////////////////////////////////////////////////
     // Constants
@@ -417,8 +423,9 @@ public class BlogListPortletJspBean extends PortletJspBean
      * 
      * @param request
      * @return Json The Json succes or echec
+     * @throws ParseException 
      */
-    public String UpdatePortletDocument( HttpServletRequest request )
+    public String UpdatePortletDocument( HttpServletRequest request ) throws ParseException
     {
         // recovers portlet attributes
 
@@ -427,10 +434,14 @@ public class BlogListPortletJspBean extends PortletJspBean
         String strOrderDocument = request.getParameter( PARAMETER_DOCUMENT_ORDER );
 
         int nIdDocument = Integer.parseInt( strIdDocument );
-
-        BlogPublication doc = new BlogPublication( );
-        doc.setIdBlog( nIdDocument );
-
+        BlogPublication doc= PublishingService.getInstance().getBlogPublication(nIdDocument, _portlet.getPageId( ));
+        if( doc == null ){
+        	
+        	doc= new BlogPublication( );
+	        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+	        doc.setDateEndPublishing( new Date( sdf.parse( BlogPublicationJspBean.DATE_END_PUBLICATION ).getTime( ) ) );
+	        doc.setIdBlog( nIdDocument );
+        }
         if ( strAction != null && !strAction.isEmpty( ) && strAction.equals( PARAMETER_ACTION_PORTLET_ADD ) )
         {
 
