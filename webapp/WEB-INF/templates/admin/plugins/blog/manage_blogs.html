@@ -99,12 +99,10 @@
                     <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" />
                 </th>
                 <th></th>
-                <!--
-                  <th>
-                     #i18n{blog.manage_blogs.columnCreationDate}
+                <th>
+                    #i18n{blog.manage_blogs.columnCreationDate}
                     <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" />
-                  </th>
-                -->
+                </th>
                 <th>#i18n{blog.manage_blogs.columnUpdateDate} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="updateDate" /></th>
                 <th>Tags</th>
                 <th>Publication</th>
@@ -140,7 +138,7 @@
                     <i class="fa fa-eye fa-fw"></i>
                   </a>
                 </td>
-                <!-- <td>${blog.creationDate!} par <strong>${blog.userCreator!}</strong></td> -->
+                <td>${blog.creationDate!} par <strong>${blog.userCreator!}</strong></td>
                 <td>${blog.updateDate!} par <strong>${blog.user!}</strong></td>
                 <td>
                   <#list blog.tag as tg>
