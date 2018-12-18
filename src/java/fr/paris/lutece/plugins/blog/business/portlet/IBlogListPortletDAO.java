@@ -143,4 +143,11 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
      */
 
     Collection<ReferenceItem> selectPortletByType( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter );
+
+    /**
+     * Get the min of document blog order
+     *
+     * @return The minimum order from blog list portlet
+     */
+    int selectMinDocumentBlogOrder( );
 }

@@ -68,6 +68,8 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_blog, document_order, date_begin_publishing, date_end_publishing, status FROM blog_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
     private static final String SQL_QUERY_SELECT_PAGE_PORTLET = "SELECT id_page_template_document,description from  blog_page_template where portlet_type= ?";
 
+    private static final String SQL_QUERY_SELECT_MIN_DOC_ORDER = "SELECT MIN( document_order ) FROM blog_list_portlet_htmldocs ";
+
     // /////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data
 
@@ -373,6 +375,25 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         daoUtil.free( );
 
         return list;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public int selectMinDocumentBlogOrder( )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_MIN_DOC_ORDER );
+        daoUtil.executeQuery( );
+        int nKey = 1;
+
+        if ( daoUtil.next( ) )
+        {
+            nKey = daoUtil.getInt( 1 );
+        }
+
+        daoUtil.free( );
+        return nKey;
     }
 
 }

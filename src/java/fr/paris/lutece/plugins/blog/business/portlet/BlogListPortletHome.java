@@ -162,4 +162,11 @@ public class BlogListPortletHome extends PortletHome
     {
         return _dao.loadPages( strPortletType );
     }
+
+    /**
+     * Load the portlet template whose type is specified in parameter
+     *
+     * @return The minimum value of blog document order
+     */
+    public static int getMinDocBlogOrder() { return _dao.selectMinDocumentBlogOrder(); }
 }
