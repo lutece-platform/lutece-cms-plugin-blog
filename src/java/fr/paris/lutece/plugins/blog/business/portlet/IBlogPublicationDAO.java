@@ -99,14 +99,13 @@ public interface IBlogPublicationDAO
 
     /**
      * load a BLOGPublication by BLOG id and portlet id
-     * 
-     * @param nDocId
-     *            The blogs id
      * @param nPortletId
      *            The portlet id
+     * @param nDocId
+     *            The blogs id
      * @return blogPublication
      */
-    BlogPublication loadBlogsPublication( int nDocId, int nPortletId, Plugin plugin );
+    BlogPublication loadBlogsPublication( int nPortletId, int nDocId, Plugin plugin );
 
     /**
      * Update an instance of the BLOGPublication

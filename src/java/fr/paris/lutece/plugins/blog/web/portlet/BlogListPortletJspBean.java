@@ -434,7 +434,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         String strOrderDocument = request.getParameter( PARAMETER_DOCUMENT_ORDER );
 
         int nIdDocument = Integer.parseInt( strIdDocument );
-        BlogPublication doc= PublishingService.getInstance().getBlogPublication( _portlet.getId( ), nIdDocument );
+        BlogPublication doc= PublishingService.getInstance().getBlogPublication( _portlet.getId( ), nIdDocument  );
         if( doc == null ){
         	
         	doc= new BlogPublication( );

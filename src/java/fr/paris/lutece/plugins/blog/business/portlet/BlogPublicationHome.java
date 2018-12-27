@@ -126,15 +126,15 @@ public class BlogPublicationHome
     /**
      * load a BlogPublication by Blog id and portlet id
      * 
-     * @param nDocId
-     *            The Blogs id
      * @param nPortletId
      *            The portlet id
+     * @param nDocId
+     *            The Blogs id
      * @return BlogPublication
      */
-    public static BlogPublication findDocPublicationByPimaryKey( int nDocId, int nPortletId )
+    public static BlogPublication findDocPublicationByPimaryKey(int nPortletId,  int nDocId )
     {
-        return _dao.loadBlogsPublication( nDocId, nPortletId, _plugin );
+        return _dao.loadBlogsPublication(  nPortletId, nDocId, _plugin );
 
     }
 

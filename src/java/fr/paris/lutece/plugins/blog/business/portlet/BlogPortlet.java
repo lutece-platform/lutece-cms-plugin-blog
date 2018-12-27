@@ -86,7 +86,7 @@ public class BlogPortlet extends PortletHtmlContent
     {
         GregorianCalendar calendar = new java.util.GregorianCalendar( );
         Blog blog = BlogHome.findByPrimaryKey( this.getContentId( ) );
-        BlogPublication docPub = BlogPublicationHome.findDocPublicationByPimaryKey( this.getContentId( ), this.getId( ) );
+        BlogPublication docPub = BlogPublicationHome.findDocPublicationByPimaryKey( this.getId( ), this.getContentId( ) );
         HashMap<String, Object> model = new HashMap<String, Object>( );
         BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 

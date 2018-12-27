@@ -251,7 +251,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
      * {@inheritDoc }
      */
     @Override
-    public BlogPublication loadBlogsPublication( int nDocId, int nPortletId, Plugin plugin )
+    public BlogPublication loadBlogsPublication( int nPortletId, int nDocId, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PUBLICATION_PORTLET, plugin );
         daoUtil.setInt( 1, nDocId );

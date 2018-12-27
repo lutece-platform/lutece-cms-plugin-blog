@@ -218,7 +218,7 @@ public class BlogPortletJspBean extends PortletJspBean
         blog.setVersion( blog.getVersion( ) + 1 );
         BlogHome.addNewVersion( blog );
 
-        portlet.setBlogPublication(BlogPublicationHome.findDocPublicationByPimaryKey(portlet.getContentId( ), nPortletId));
+        portlet.setBlogPublication(BlogPublicationHome.findDocPublicationByPimaryKey(nPortletId, portlet.getContentId( ) ));
         // updates the portlet
         portlet.update( );
 
