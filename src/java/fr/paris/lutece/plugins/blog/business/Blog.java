@@ -107,7 +107,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     private List<Tag> _tag = new ArrayList<Tag>( );
 
-    private List<BlogPublication> _blogPubilcation = new ArrayList<BlogPublication>( );
+    private List<BlogPublication> _blogPublication = new ArrayList<BlogPublication>( );
 
     /**
      * Returns the Id
@@ -486,13 +486,13 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     }
 
     /**
-     * Returns the blogPubilcation list
+     * Returns the blogPublication list
      *
-     * @return The BlogPubilcation list
+     * @return The blogPublication list
      */
-    public List<BlogPublication> getBlogPubilcation( )
+    public List<BlogPublication> getBlogPublication( )
     {
-        return _blogPubilcation;
+        return _blogPublication;
     }
 
     /**
@@ -501,37 +501,37 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      * @param blogPublication
      *            list The blogPublication list
      */
-    public void setBlogPubilcation( List<BlogPublication> blogPublication )
+    public void setBlogPublication( List<BlogPublication> blogPublication )
     {
-        _blogPubilcation = blogPublication;
+        _blogPublication = blogPublication;
     }
 
     /**
-     * Sets the BlogPubilcation list
+     * Sets the blogPublication list
      *
-     * @param BlogPubilcation
-     *            list The BlogPubilcation list
+     * @param blogPublication
+     *            list The blogPublication list
      */
-    public void addBlogPublication( BlogPublication blogPubilcation )
+    public void addBlogPublication( BlogPublication blogPublication )
     {
 
-        boolean isContain = _blogPubilcation.stream( ).anyMatch(
-                blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) ) );
+        boolean isContain = _blogPublication.stream( ).anyMatch(
+                blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication.getIdPortlet( ) ) );
 
         if ( !isContain )
-            _blogPubilcation.add( blogPubilcation );
+            _blogPublication.add( blogPublication );
     }
 
     /**
-     * delet the BlogPubilcation
+     * delet the blogPublication
      *
-     * @param BlogPubilcation
-     *            The BlogPubilcation
+     * @param blogPublication
+     *            The blogPublication
      */
-    public void deleteBlogPublication( BlogPublication blogPubilcation )
+    public void deleteBlogPublication( BlogPublication blogPublication )
     {
 
-        _blogPubilcation.removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation
+        _blogPublication.removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication
                 .getIdPortlet( ) ) );
     }
 

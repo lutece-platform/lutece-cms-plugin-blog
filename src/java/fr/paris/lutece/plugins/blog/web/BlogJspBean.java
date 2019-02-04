@@ -910,7 +910,7 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             blog = BlogService.getInstance( ).loadBlog( nId );
         }
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nId ) );
+        blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nId ) );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );

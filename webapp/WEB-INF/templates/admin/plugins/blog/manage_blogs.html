@@ -18,9 +18,8 @@
                 <div class="input-group">
                     <input type="text" class="form-control" id="search_text" name="search_text" value="${search_text!''}">
                     <div class="input-group-addon">
-                        <label id="mydocs" for="current_user">
-                            <input type="checkbox" name="current_user" id="current_user" value="true" <#if is_checked>checked</#if> title="#i18n{blog.manage_blogs.sortByUserButton}">
-                        </label>
+                        <label id="mydocs" for="current_user">#i18n{blog.manage_blogs.sortByUserButton}</label>
+                            <input type="checkbox" name="current_user" id="current_user" value="true" <#if is_checked>checked</#if> title="#i18n{blog.manage_blogs.sortByUserButton}" />
                     </div>
                 </div>
             </div>

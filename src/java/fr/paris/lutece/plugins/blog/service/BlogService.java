@@ -314,7 +314,7 @@ public class BlogService
         List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
         blog.setDocContent( docContent );
         blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
 
         return blog;
 
@@ -332,7 +332,7 @@ public class BlogService
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
         blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
 
         return blog;
 
