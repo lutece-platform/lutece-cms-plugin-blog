@@ -167,13 +167,5 @@ public class BlogSearchIndexer implements SearchIndexer
     {
         BlogSearchService.getInstance( ).processIndexing( true );
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void indexDocuments(StringBuffer sbLogs) throws IOException, InterruptedException, SiteMessageException {
-        sbLogs.append(BlogSearchService.getInstance().processIndexing(true));
-    }
-
+    
 }
