@@ -18,7 +18,7 @@
 <div id="keditor-set-content"></div>
 <!-- Config Files -->
 <link rel="stylesheet" type="text/css" href="${webapp_url}js/editors/keditor/css/keditor-1.1.5.min.css">
-<link rel="stylesheet" type="text/css" href="${webapp_url}js/editors/keditor/css/keditor-1.1.5.min.css">
+<link rel="stylesheet" type="text/css" href="${webapp_url}js/jquery/plugins/spectrum-1.8.0/spectrum.css" />
 <script src="${webapp_url}js/editors/keditor/js/jquery-ui-1.11.4/jquery-ui.min.js"></script>
 <script src="${webapp_url}js/editors/keditor/js/jquery.nicescroll-3.6.6/jquery.nicescroll.min.js"></script>
 <script src="${webapp_url}js/editors/keditor/js/ckeditor-4.5.6/ckeditor.js"></script>
@@ -30,6 +30,7 @@
 <script src="${webapp_url}js/editors/keditor/js/keditor-component-googlemap-1.1.5.min.js"></script>
 <script src="${webapp_url}js/editors/keditor/js/keditor-component-audio-1.1.5-correction.js"></script>
 <script src="${webapp_url}js/editors/keditor/js/keditor-component-vimeo-1.1.5.min.js"></script>
+<script src="${webapp_url}js/jquery/plugins/spectrum-1.8.0/spectrum.js"></script>
 <!--
 <script src="${webapp_url}js/editors/keditor/dist/js/keditor-components-1.1.5.min.js"></script>
 -->
@@ -65,6 +66,7 @@
 <div data-type="keditor-style" data-href="${webapp_url}css/bootstrap.theme.min.css"></div>
 <div data-type="keditor-style" data-href="${webapp_url}css/font-awesome.min.css"></div>
 <div data-type="keditor-style" data-href="${webapp_url}css/page_template_styles.css"></div>
+<div data-type="keditor-style" data-href="${webapp_url}js/jquery/plugins/spectrum-1.8.0/spectrum.css"></div>
 
 <!-- Var for Lutece in Keditor -->
 <script type="text/javascript">
@@ -91,7 +93,56 @@ $( function(){
    /* Keditor init */
    $('#keditor-set-content').keditor({
        snippetsUrl: '${webapp_url!}js/editors/keditor/snippets/default/snippets.html',
-       iframeMode: true
+       iframeMode: true,
+       containerSettingEnabled: true,
+       containerSettingInitFunction: function (form, keditor) {
+           // Add control for settings form
+           form.append(
+        		   '<div class="form-horizontal">' +
+                   '   <div class="form-group">' +
+                   '       <div class="col-sm-12">' +
+                   '           <label>Background color</label>' +
+                   '           <input type="text" id="showPalette"/>' +
+                   '       </div>' +
+                   '   </div>' +
+                   '</div>'
+           );
+           
+           // Add event handle for background color textbox
+           form.find('#showPalette').on('change', function () {
+               // Get current setting container
+               var container = keditor.getSettingContainer();
+               // Find '.row' for setting background color
+               // Note: Make sure you have a div for setting background color
+               var row = container.find('.row');
+               // Set background color with value of textbox
+               row.css('background-color', this.value);
+           });
+       },
+       containerSettingShowFunction: function (form, container, keditor) {
+           // Find '.row' div
+           // Note: Make sure you have a div for setting background color
+           var row = container.find('.row');
+           // User "prop()" method to get properties of HTML element
+           var backgroundColor = row.prop('style').backgroundColor || '';
+           // User 'backgroundColor' for value of background color textbox
+           form.find('#showPalette').val(backgroundColor);
+           
+           form.find('#showPalette').spectrum({
+         	    showPalette: true,
+         	    color: backgroundColor,
+         	  	showButtons: false,
+         	  	appendTo: 'parent',
+         	    palette: [
+         	        ['black', 'white'],
+         	        ['rgb(223, 34, 90);', 'rgb(21, 127, 236);', 'rgb(127, 173, 83);', 'rgb(160, 160, 160);']
+         	    ]
+         	});
+       },
+       containerSettingHideFunction: function (form, keditor) {
+           // Clean value of background color textbox when hiding settings form
+    	   form.find('#showPalette').prop('color', '');
+       }
    });
 
    /* Lutece form validation set Keditor content to textarea */
