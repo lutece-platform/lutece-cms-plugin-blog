@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.blog.business.rss;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
@@ -41,8 +42,10 @@ import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.rss.FeedResource;
+import fr.paris.lutece.portal.business.rss.FeedResourceImage;
 import fr.paris.lutece.portal.business.rss.FeedResourceItem;
 import fr.paris.lutece.portal.business.rss.IFeedResource;
+import fr.paris.lutece.portal.business.rss.IFeedResourceImage;
 import fr.paris.lutece.portal.business.rss.IFeedResourceItem;
 import fr.paris.lutece.portal.business.rss.ResourceRss;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -62,6 +65,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  *
  * BlogResourceRss
@@ -73,8 +78,13 @@ public class BlogResourceRss extends ResourceRss
     private static final String TEMPLATE_RSS_BLOG_ITEM_TITLE = "admin/plugins/blog/rss/rss_blogs_item_title.html";
     private static final String TEMPLATE_TASK_CREATE_CONFIG = "admin/plugins/blog/rss/rss_create_config.html";
     private static final String TEMPLATE_TASK_MODIFY_CONFIG = "admin/plugins/blog/rss/rss_modify_config.html";
+    private static final String TEMPLATE_IMAGE_RSS = "/images/local/skin/plugins/rss/rss-image.png";
 
     // JSPs
+    private static final String JSP_PAGE_BLOG = "/jsp/site/Portal.jsp?page=blog";
+    
+    // Servlets
+    private static final String DOCUMENT_RESOURCE_SERVLET_URL = "/servlet/plugins/blogs/file";
 
     // Markers
     private static final String MARK_RSS_ITEM_TITLE = "item_title";
@@ -92,6 +102,7 @@ public class BlogResourceRss extends ResourceRss
 
     // Messages
     private static final String PROPERTY_SITE_LANGUAGE = "rss.language";
+    private static final String PROPERTY_TYPE_IMAGE = "blog.rss.content.type.img";
     private static final String PROPERTY_WEBAPP_PROD_URL = "lutece.prod.url";
     private static final String PROPERTY_DESCRIPTION_WIRE = "blog.resource_rss.description_wire";
     private static final String PROPERTY_TITLE_WIRE = "blog.resource_rss.title_wire";
@@ -254,44 +265,68 @@ public class BlogResourceRss extends ResourceRss
     @Override
     public IFeedResource getFeed( )
     {
-        /*
-         * String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE ); Locale locale = new Locale( strRssFileLanguage ); Plugin
-         * plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
-         * 
-         * BlogResourceRssConfig config = BlogResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
-         * 
-         * String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL ); String strSiteUrl = strWebAppUrl;
-         * 
-         * IFeedResource resource = new FeedResource( ); resource.setTitle( I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage
-         * ) ) ); resource.setLink( strSiteUrl ); resource.setLanguage( strRssFileLanguage ); resource.setDescription( I18nService.getLocalizedString(
-         * PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
-         * 
-         * List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
-         * 
-         * List<IFeedResourceItem> listItems = new ArrayList<IFeedResourceItem>( );
-         * 
-         * for ( BlogPublication dcPub : listDocPub ) {
-         * 
-         * IFeedResourceItem item = new FeedResourceItem( );
-         * 
-         * String strTitle; Map<String, Object> model = new HashMap<String, Object>( );
-         * 
-         * Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( dcPub.getIdDocument( ) ); model.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
-         * model.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) ); model.put( MARK_RSS_SITE_URL, strSiteUrl ); model.put( MARK_RSS_FILE_LANGUAGE,
-         * strRssFileLanguage );
-         * 
-         * HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_BLOG_ITEM_TITLE, locale, model ); strTitle = template.getHtml( );
-         * 
-         * item.setTitle( strTitle ); item.setLink( strSiteUrl + JSP_PAGE_BLOGS + "&id=" + blog.getId( ) ); item.setDescription( blog.getDescription( ) );
-         * item.setDate( blog.getCreationDate( ) ); item.setGUID( String.valueOf( blog.getId( ) ) );
-         * 
-         * listItems.add( item ); }
-         * 
-         * resource.setItems( listItems );
-         * 
-         * return resource;
-         */
-        return null;
+		String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
+		Locale locale = new Locale( strRssFileLanguage );
+		Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
+		String strTypeImage =  AppPropertiesService.getProperty( PROPERTY_TYPE_IMAGE );
+
+		BlogResourceRssConfig config = BlogResourceRssConfigHome.findByPrimaryKey( this.getId(), plugin );
+
+		String strSiteUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
+
+		IFeedResource resource = new FeedResource( );
+		resource.setTitle( I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, locale ) );
+		resource.setLink( strSiteUrl );
+		resource.setLanguage( strRssFileLanguage );
+		resource.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, locale ) );
+		
+		IFeedResourceImage image = new FeedResourceImage( );
+		image.setTitle( resource.getTitle( ) );
+		image.setLink( resource.getLink( ) );
+		image.setUrl( strSiteUrl + TEMPLATE_IMAGE_RSS );
+		
+		resource.setImage( image );
+
+		List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
+
+		List<IFeedResourceItem> listItems = new ArrayList<>( );
+		for (BlogPublication dcPub : listDocPub)
+		{
+			Blog blog = BlogService.getInstance( ).loadBlog( dcPub.getIdBlog( ) );
+
+			IFeedResourceItem item = new FeedResourceItem( );
+
+			Map<String, Object> model = new HashMap<>( );
+			model.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
+			model.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) );
+			model.put( MARK_RSS_SITE_URL, strSiteUrl );
+			model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
+
+			HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_BLOG_ITEM_TITLE, locale, model );
+			String strTitle = template.getHtml( );
+
+			item.setTitle( strTitle );
+			String url = strSiteUrl + JSP_PAGE_BLOG + "&id=" + blog.getId( );
+			if (StringUtils.isNotEmpty( blog.getUrl( ) ))
+			{
+				url = blog.getUrl( );
+			}
+			item.setLink( url );
+			item.setDescription( blog.getDescription( ) );
+			item.setDate( blog.getCreationDate( ) );
+			
+			for (DocContent dc : blog.getDocContent( ))
+			{
+				if (dc.getContentType( ).getIdContentType( ) == Integer.parseInt( strTypeImage ))
+				{
+					item.setGUID( strSiteUrl + DOCUMENT_RESOURCE_SERVLET_URL + "?id_file=" + dc.getId( ) );
+					break;
+				}
+			}
+			listItems.add( item );
+		}
+		resource.setItems( listItems );
+		return resource;
     }
 
     /**
