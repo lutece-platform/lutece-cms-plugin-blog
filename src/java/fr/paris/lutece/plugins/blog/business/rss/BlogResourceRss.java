@@ -102,7 +102,7 @@ public class BlogResourceRss extends ResourceRss
 
     // Messages
     private static final String PROPERTY_SITE_LANGUAGE = "rss.language";
-    private static final String PROPERTY_TYPE_IMAGE = "rss.content.type.img";
+    private static final String PROPERTY_TYPE_IMAGE = "blog.rss.content.type.img";
     private static final String PROPERTY_WEBAPP_PROD_URL = "lutece.prod.url";
     private static final String PROPERTY_DESCRIPTION_WIRE = "blog.resource_rss.description_wire";
     private static final String PROPERTY_TITLE_WIRE = "blog.resource_rss.title_wire";
