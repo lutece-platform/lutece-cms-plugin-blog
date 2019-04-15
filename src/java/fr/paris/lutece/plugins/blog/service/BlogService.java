@@ -346,7 +346,7 @@ public class BlogService
     public List<Blog> getListBlogWhithBinaries( )
 
     {
-        List<Blog> listBlogs = BlogHome.selectWithoutBinaries( );
+        List<Blog> listBlogs = getListBlogWithoutBinaries();
 
         for ( Blog doc : listBlogs )
         {
@@ -368,8 +368,13 @@ public class BlogService
     public List<Blog> getListBlogWithoutBinaries( )
 
     {
-
-        return BlogHome.selectWithoutBinaries( );
+    	List<Blog> blogList = BlogHome.selectWithoutBinaries( );
+    	for ( Blog blog : blogList )
+    	{
+    		blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( blog.getId( ) ) );
+    		blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
+    	}
+        return blogList;
 
     }
 
