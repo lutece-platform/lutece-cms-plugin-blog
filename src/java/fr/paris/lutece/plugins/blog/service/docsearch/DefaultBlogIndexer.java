@@ -47,6 +47,7 @@ import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
+import java.util.Date;
 import org.apache.lucene.document.DateTools;
 //import org.apache.lucene.demo.html.HTMLParser;
 import org.apache.lucene.document.Field;
@@ -220,14 +221,18 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
         doc.add( new StringField( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( blog.getId( ) ), Field.Store.YES ) );
         // Add the user firstName as a field, so that index can be incrementally maintained.
-        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUser( ), Field.Store.YES ) );
+        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUser( ).toLowerCase(), Field.Store.YES ) );
 
         doc.add( new TextField( BlogSearchItem.FIELD_TAGS, getTagToIndex( blog ), Field.Store.YES ) );
         FieldType ft = new FieldType( StringField.TYPE_STORED );
         ft.setOmitNorms( false );
         doc.add( new Field( BlogSearchItem.FIELD_DATE, DateTools.timeToString( blog.getUpdateDate( ).getTime( ), DateTools.Resolution.MINUTE ), ft ) );
         doc.add( new NumericDocValuesField( BlogSearchItem.FIELD_DATE_UPDATE, blog.getUpdateDate( ).getTime( ) ) );
-        doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, ( blog.getBlogPubilcation( ).size( ) == 0 ) ? "true" : "false", Field.Store.YES ) );
+        // is document published TODAY
+        Date today = new Date();
+        boolean isPublished =  blog.getBlogPubilcation().stream()
+                .anyMatch( publication -> today.after(publication.getDateBeginPublishing()) && today.before(publication.getDateEndPublishing() ));
+        doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, ( isPublished ) ? "false" : "true", Field.Store.YES ) );
 
         // Add the uid as a field, so that index can be incrementally maintained.
         // This field is not stored with question/answer, it is indexed, but it is not

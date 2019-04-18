@@ -73,6 +73,8 @@ import java.util.List;
 public class BlogLuceneSearchEngine implements IBlogSearchEngine
 {
 
+    private static final String WILDCARD = "*";
+
     /**
      * {@inheritDoc}
      */
@@ -120,7 +122,7 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
             if ( filter.getUser( ) != null )
             {
 
-                Term term = new Term( BlogSearchItem.FIELD_USER, filter.getUser( ) );
+                Term term = new Term( BlogSearchItem.FIELD_USER, filter.getUser( ) + WILDCARD );
                 Query termQuery = new TermQuery( term );
                 queries.add( termQuery.toString( ) );
                 sectors.add( BlogSearchItem.FIELD_USER );
