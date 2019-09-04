@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Plugin htmldocs</title>
+        <title>Plugin blog</title>
     </properties>
     <body>
-        <section name="Plugin htmldocs">
-            <!--
-            <p>
-                <img src="images/htmldocs.png" />
-            </p>
-            -->
+        <section name="Plugin blog">
             <subsection name="Introduction">
-                <p></p>
-            </subsection>
-            <subsection name="Configuration">
-                <p></p>
-            </subsection>
-            <subsection name="Usage">
-                <p></p>
+                <p>Ce plugin propose une gestion de contenu simple pour un site Lutece</p>
+                <p>
+                    <ul>
+                        <li>le module fournit un outil simple et ergonomique pour éditer et publier les billets</li>
+                        <li>les billets peuvent être catégorisés par les tags</li>
+                        <li>
+                            l'éditeur du billet propose un ensemble de gabarits prédéfinis pour structurer la page et des composants 
+                            pour définir les types de contenu que contiennent ces gabarits. Par de simples actions "drag and drop", 
+                            une page de billet peut être composée rapidement et il ne reste plus que la personnalisation de ces contenus.
+                        </li>
+                        <li>
+                            une liste de gabarits complète d'une à quatre colonnes pour les cas standard ( ex : 1 seule colonne, 2 colonnes 50%-50%, ... )
+                        </li>
+                        <li>
+                            une liste de composants avec styles prédéfinis pour satisfaire les cas les plus utilisés : texte (bloc de texte, chapeau, verbatim, 
+                            voir aussi, texte illustré), 
+                            photos (image simple, diaporama, galerie photos), Liste de fichiers, agenda, audio, vidéo (Phraseanet, Youtube, Vimeo, Dailymotion)
+                        </li>
+                        <li>
+                            la publication peut être préprogrammé pour une période prédéfinie
+                        </li>
+                    </ul>
+                </p>
             </subsection>
         </section>
     </body>

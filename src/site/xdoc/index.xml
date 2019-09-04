@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Plugin htmldocs</title>
+        <title>Plugin blog</title>
     </properties>
     <body>
-        <section name="Plugin htmldocs">
-            <!--
-            <p>
-                <img src="images/htmldocs.png" />
-            </p>
-            -->
+        <section name="Plugin blog">
             <subsection name="Introduction">
-				<p>Blog plugin allows to create portlets linked with objects that are manageable in the associated admin feature.</p>
-            </subsection>
-			<subsection name="Goal">
-			<p>
-				The blog plugin's goal is to simplify the site administration page.
-				In fact it allows to create and edit portlets content with the Keditor editor, which permits to paste tabs, images, lutece links and of course html content.
-				The Blog object contains the author name and all previous versions that can be easily restored at any moment.
-			</p>
-			</subsection>
-            <subsection name="Usage">
-            <p> There is two ways to create an Blog portlet :</p>
-			<ul>
-				<li>Create an blog post in the admin feature then link it to a new portlet</li>
-				<li>Dynamically create an blog portlet on the "site administration" page, and directly fill it in with the content of your choice</li>
-			</ul>
-			<p>Moreover, every changes applied to either the portlet or it's linked blog is applied to the other.</p>
+                <p>Ce plugin propose une gestion de contenu simple pour un site Lutece</p>
+                <p>
+                    <ul>
+                        <li>the module provides a simple and ergonomic tool to edit and publish posts</li>
+                        <li> posts can be categorized by tags</li>
+                        <li>
+                            the ticket editor offers a set of predefined templates to structure the page and components 
+                            to define the types of content contained in these templates. By simple "drag and drop" actions, 
+                            a ticket page can be quickly composed and all that remains is the personalization of this content.
+                        </li>
+                        <li>
+                            a complete list of templates from one to four columns for standard cases ( ex: 1 single column, 2 columns 50%-50%, ...)
+                        </li>
+                        <li>
+                            a list of components with predefined styles to satisfy the most frequently used cases: text (text block, cap, verbatim, 
+                            see also, illustrated text), 
+                            photos (simple image, slideshow, photo gallery), File list, calendar, audio, video (Phraseanet, Youtube, Vimeo, Dailymotion)
+                        </li>
+                        <li>
+                            the publication can be pre-programmed for a predefined period of time
+                        </li>
+                    </ul>
+                </p>
             </subsection>
         </section>
     </body>

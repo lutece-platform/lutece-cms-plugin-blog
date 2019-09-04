@@ -1,20 +1,22 @@
+![](https://dev.lutece.paris.fr/jenkins/buildStatus/icon?job=cms-plugin-blog-deploy)
+# Plugin blog
 
-#Plugin blog
+## Introduction
 
-##Introduction
-
-Blog plugin allows to create portlets linked with objects that are manageable in the associated admin feature.
-
-##Goal
-
-The Hmtldocs plugin's goal is to simplify the site administration page. In fact it allows to create and edit portlets content with the tinyMCE "inlite" theme editor, which permits to paste tabs, images, lutece links and of course html content.The Htmldoc object contains the author name and all previous versions that can be easily restored at any moment.
-
-##Usage
-
-There is two ways to create an htmldoc portlet : - Create an Htmldoc document in the admin feature then link it to a new portlet- Dynamically create an htmldoc portlet on the "site administration" page, and directly fill it in with the content of your choice Moreover, every changes applied to either the portlet or it's linked Htmldoc is applied to the other.
+Ce plugin propose une gestion de contenu simple pour un site Lutece
 
 
-[Maven documentation and reports](http://dev.lutece.paris.fr/plugins/plugin-blog/)
+ 
+* the module provides a simple and ergonomic tool to edit and publish posts
+* posts can be categorized by tags
+* the ticket editor offers a set of predefined templates to structure the page and components to define the types of content contained in these templates. By simple "drag and drop" actions,a ticket page can be quickly composed and all that remains is the personalization of this content.
+* a complete list of templates from one to four columns for standard cases ( ex: 1 single column, 2 columns 50%-50%, ...)
+* a list of components with predefined styles to satisfy the most frequently used cases: text (text block, cap, verbatim, see also, illustrated text),photos (simple image, slideshow, photo gallery), File list, calendar, audio, video (Phraseanet, Youtube, Vimeo, Dailymotion)
+* the publication can be pre-programmed for a predefined period of time
+
+
+
+[Maven documentation and reports](https://dev.lutece.paris.fr/plugins/plugin-blog/)
 
 
 
