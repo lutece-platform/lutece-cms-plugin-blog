@@ -3,7 +3,9 @@
 
 ## Introduction
 
-Ce plugin propose une gestion de contenu simple pour un site Lutece
+This plugin provides a simple content management feature to a Lutece site
+
+Here are the main features :
 
 
  
