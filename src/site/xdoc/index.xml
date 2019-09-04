@@ -6,7 +6,8 @@
     <body>
         <section name="Plugin blog">
             <subsection name="Introduction">
-                <p>Ce plugin propose une gestion de contenu simple pour un site Lutece</p>
+                <p>This plugin provides a simple content management feature to a Lutece site</p>
+                <p>Here are the main features :</p>
                 <p>
                     <ul>
                         <li>the module provides a simple and ergonomic tool to edit and publish posts</li>
