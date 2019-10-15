@@ -221,7 +221,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
         doc.add( new StringField( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( blog.getId( ) ), Field.Store.YES ) );
         // Add the user firstName as a field, so that index can be incrementally maintained.
-        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUser( ).toLowerCase(), Field.Store.YES ) );
+        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUserCreator( ).toLowerCase(), Field.Store.YES ) );
 
         doc.add( new TextField( BlogSearchItem.FIELD_TAGS, getTagToIndex( blog ), Field.Store.YES ) );
         FieldType ft = new FieldType( StringField.TYPE_STORED );
