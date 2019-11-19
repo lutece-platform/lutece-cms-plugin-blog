@@ -434,7 +434,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
         {
-            throw new AccessDeniedException( );
+            throw new AccessDeniedException( UNAUTHORIZED );
         }
 
         _blog = ( _blog != null && _blog.getId( ) == 0 ) ? _blog : new Blog( );
@@ -671,7 +671,7 @@ public class BlogJspBean extends ManageBlogJspBean
         int nId = Integer.parseInt( strId );
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, getUser( ) ) )
         {
-            throw new AccessDeniedException( );
+            throw new AccessDeniedException( UNAUTHORIZED );
         }
         if ( checkLockBlog( nId, request.getSession( ).getId( ) ) )
         {
@@ -750,7 +750,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, getUser( ) ) )
         {
-            throw new AccessDeniedException( );
+            throw new AccessDeniedException( UNAUTHORIZED );
         }
         int nId = Integer.parseInt( strId );
         String strResetVersion = request.getParameter( PARAMETER_VERSION_BLOG );

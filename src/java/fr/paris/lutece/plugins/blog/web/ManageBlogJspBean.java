@@ -51,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public abstract class ManageBlogJspBean extends MVCAdminJspBean
 {
+    protected static final String UNAUTHORIZED = "Unauthorized";
     // Rights
     public static final String RIGHT_MANAGEHTMLDOCS = "BLOG_MANAGEMENT";
 
