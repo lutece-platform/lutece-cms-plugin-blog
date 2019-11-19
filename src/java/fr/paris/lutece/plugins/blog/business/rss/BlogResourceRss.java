@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2019, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -214,49 +214,6 @@ public class BlogResourceRss extends ResourceRss
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_MODIFY_CONFIG, locale, model );
 
         return template.getHtml( );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-
-    @Override
-    public String createHtmlRss( )
-    {
-        HashMap<String, Object> model = new HashMap<String, Object>( );
-        Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
-        BlogResourceRssConfig config = BlogResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
-
-        String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
-        Locale locale = new Locale( strRssFileLanguage );
-
-        String strWebAppUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
-        String strSiteUrl = strWebAppUrl;
-
-        model.put( MARK_RSS_ITEM_TITLE, I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, new Locale( strRssFileLanguage ) ) );
-        model.put( MARK_RSS_SITE_URL, strSiteUrl );
-        model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
-        model.put( MARK_RSS_ITEM_DESCRIPTION, I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, new Locale( strRssFileLanguage ) ) );
-
-        Date dateNow = new Date( );
-        List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortletAndPlublicationDate( config.getIdPortlet( ), dateNow, dateNow );
-        List<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>( );
-
-        for ( BlogPublication dcPub : listDocPub )
-        {
-
-            HashMap<String, Object> item = new HashMap<String, Object>( );
-            Blog blog = BlogService.getInstance( ).loadBlog( dcPub.getIdBlog( ) );
-            item.put( MARK_RSS_ITEM_BLOG, blog );
-
-            listItem.add( item );
-
-        }
-        model.put( MARK_ITEM_LIST, listItem );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_PUSH_RSS_XML_BLOG, locale, model );
-
-        return template.getHtml( );
-
     }
 
     /**

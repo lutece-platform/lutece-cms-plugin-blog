@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2019, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -148,7 +148,7 @@ public class TagJspBean extends ManageBlogJspBean
     {
         if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) ) )
         {
-            throw new AccessDeniedException( );
+            throw new AccessDeniedException( UNAUTHORIZED );
         }
         _tag = ( _tag != null ) ? _tag : new Tag( );
 
@@ -221,7 +221,7 @@ public class TagJspBean extends ManageBlogJspBean
         int nId = Integer.parseInt( strId );
         if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_DELETE, AdminUserService.getAdminUser( request ) ) )
         {
-            throw new AccessDeniedException( );
+            throw new AccessDeniedException( UNAUTHORIZED );
         }
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_TAG ) );
         url.addParameter( PARAMETER_ID_TAG, nId );
@@ -276,7 +276,7 @@ public class TagJspBean extends ManageBlogJspBean
 
         if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_MODIFY, getUser( ) ) )
         {
-            throw new AccessDeniedException( );
+            throw new AccessDeniedException( UNAUTHORIZED );
         }
         if ( _tag == null || ( _tag.getIdTag( ) != nId ) )
         {

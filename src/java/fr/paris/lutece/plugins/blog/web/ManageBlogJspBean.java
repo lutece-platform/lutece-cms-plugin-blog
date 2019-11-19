@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2019, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public abstract class ManageBlogJspBean extends MVCAdminJspBean
 {
+    protected static final String UNAUTHORIZED = "Unauthorized";
     // Rights
     public static final String RIGHT_MANAGEHTMLDOCS = "BLOG_MANAGEMENT";
 
