@@ -82,7 +82,24 @@
 			<daemon-class>fr.paris.lutece.plugins.blog.service.UnlockedBlogDaemon</daemon-class>
 	    </daemon>          
 	</daemons>
-    
+    <!-- Insert Services -->
+    <insert-services>
+        <insert-service>
+            <insert-service-id>
+                BLOG_INSERT_SERVICE
+            </insert-service-id>
+            <insert-service-name>
+                blog.insertService.name
+            </insert-service-name>
+            <insert-service-bean-class>
+                fr.paris.lutece.plugins.blog.web.BlogServiceJspBean
+            </insert-service-bean-class>
+            <insert-service-label>
+                blog.insertService.label
+            </insert-service-label>
+        </insert-service>
+    </insert-services>
+
     <!-- Dashboard components -->
     <dashboard-components>
         <dashboard-component>
