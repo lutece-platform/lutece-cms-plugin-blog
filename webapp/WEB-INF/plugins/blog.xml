@@ -12,10 +12,10 @@
     <icon-url>images/admin/skin/feature_default_icon.png</icon-url>
     <copyright>Copyright (c) 2016 Your Company</copyright>
     <db-pool-required>1</db-pool-required>
-    
+
     <core-version-dependency>
         <min-core-version>4.1.0</min-core-version>
-        <max-core-version/>	
+        <max-core-version/>
     </core-version-dependency>
 
     <!-- Admin features parameters -->
@@ -38,7 +38,7 @@
             <feature-group>CONTENT</feature-group>
             <feature-icon-url/>
 		</admin-feature>
-    </admin-features>    
+    </admin-features>
 
     <!-- Specific plugin CSS stylesheet -->
     <admin-css-stylesheets>
@@ -80,9 +80,27 @@
 			<daemon-name>blog.daemon.unlockedBlogDaemon.name</daemon-name>
 			<daemon-description>blog.daemon.unlockedBlogDaemon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.blog.service.UnlockedBlogDaemon</daemon-class>
-	    </daemon>          
+	    </daemon>
 	</daemons>
-    
+
+    <!-- Insert Services -->
+    <insert-services>
+        <insert-service>
+            <insert-service-id>
+                BLOG_INSERT_SERVICE
+            </insert-service-id>
+            <insert-service-name>
+                blog.insertService.name
+            </insert-service-name>
+            <insert-service-bean-class>
+                fr.paris.lutece.plugins.blog.web.BlogServiceJspBean
+            </insert-service-bean-class>
+            <insert-service-label>
+                blog.insertService.label
+            </insert-service-label>
+        </insert-service>
+    </insert-services>
+
     <!-- Dashboard components -->
     <dashboard-components>
         <dashboard-component>
@@ -91,7 +109,7 @@
             <dashboard-feature-right>BLOG_MANAGEMENT</dashboard-feature-right>
         </dashboard-component>
     </dashboard-components>
-    
+
     <!-- Portlet parameters -->
     <portlets>
      <portlet>
@@ -108,10 +126,10 @@
         <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletblogs.html</portlet-create-specific-template>
         <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletblogs.html</portlet-modify-specific-template>
         <portlet-create-specific-form-template/>
-        <portlet-modify-specific-form-template/> 
+        <portlet-modify-specific-form-template/>
      </portlet>
-     
-      <portlet>     
+
+      <portlet>
        <portlet-class>fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome</portlet-class>
 	   <portlet-type-id>BLOG_LIST_PORTLET</portlet-type-id>
 	   <portlet-type-name>blog.portlet.blogsListBlogsPortlet.name</portlet-type-name>
@@ -119,13 +137,13 @@
 	   <portlet-update-url>plugins/blog/ModifyPortletBlogList.jsp</portlet-update-url>
 	   <portlet-create-action-url>plugins/blog/DoCreatePortletBlogList.jsp</portlet-create-action-url>
       <portlet-modify-action-url>plugins/blog/DoModifyPortletBlogList.jsp</portlet-modify-action-url>
-	    
+
         <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
         <portlet-create-specific-template>/admin/plugins/blog/portlet/create_portletbloglist.html</portlet-create-specific-template>
         <portlet-modify-specific-template>/admin/plugins/blog/portlet/modify_portletbloglist.html</portlet-modify-specific-template>
         <portlet-create-specific-form-template/>
-        <portlet-modify-specific-form-template/> 
+        <portlet-modify-specific-form-template/>
      </portlet>
    </portlets>
    <listeners>
@@ -137,14 +155,14 @@
     <rbac-resource-types>
         <rbac-resource-type>
             <rbac-resource-type-class>
-                fr.paris.lutece.plugins.blog.service.BlogIdService 
+                fr.paris.lutece.plugins.blog.service.BlogIdService
             </rbac-resource-type-class>
         </rbac-resource-type>
     </rbac-resource-types>
     <rbac-resource-types>
         <rbac-resource-type>
             <rbac-resource-type-class>
-                fr.paris.lutece.plugins.blog.service.TagIdService 
+                fr.paris.lutece.plugins.blog.service.TagIdService
             </rbac-resource-type-class>
         </rbac-resource-type>
     </rbac-resource-types>

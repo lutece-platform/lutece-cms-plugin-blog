@@ -1,0 +1,57 @@
+<div class="insert-service" >
+	<div class="row" >
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${.data_model.input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
+				<li>#i18n{blog.selector.page.pageChoice}</li>
+			</ol>
+			<#if pages_list?size = 0>
+			<div class="alert alert-danger text-center" role="alert">
+				<i class="fa fa-warning"></i> #i18n{blog.selector.page.noPage}	<button type="button" class="btn btn-sm" onclick="javascript:history.go(-1);"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
+			</div>
+			<#else>
+			<form method="post" name="fsubmit" id="fsubmit" class="form" action="jsp/admin/plugins/blog/DoSelectPage.jsp">
+				<input type="hidden" name="input" value="${.data_model.input}">
+				<input type="hidden" name="name" value="">
+				<ul class="list-group list-unstyled">
+					<#list pages_list as page>
+					<li class="list-group-item">
+						<input class="pull-left" type="radio" id="page_id_${page.id}" name="page_id" value="${page.id}">&nbsp;
+						<a href="jsp/admin/plugins/blog/SelectPage.jsp?page_id=${page.id}&input=${.data_model.input}">
+							${page.name} - ${page.description}
+						</a>
+					</li>
+				</#list>
+				</ul>
+				<nav>
+					<ul class="pager">
+						<li>
+							<a href="javascript:history.go(-1);" title="#i18n{portal.util.labelPrevious}">
+								<i class="fa fa-chevron-left"></i>&nbsp;#i18n{portal.util.labelPrevious}
+							</a>
+						</li>
+						<li>
+							<a href="#" id="a-sub" class="sr-only" >
+								#i18n{portal.util.labelNext} <i class="fa fa-chevron-right"></i>
+							</a>
+							<button type="submit" id="btn-sub">
+								#i18n{portal.util.labelNext} <i class="fa fa-chevron-right"></i>
+							</button>
+						</li>
+					</ul>
+				</nav>
+			</form>
+		</#if>
+	</div>
+</div>
+</div>
+<script>
+	$(document).ready( function(){
+		$("#btn-sub").remove();
+		$("#a-sub").removeClass("sr-only");
+		$("#a-sub").click( function( e ){
+			$("#fsubmit").submit();
+			return false;
+		});
+	});
+</script>
