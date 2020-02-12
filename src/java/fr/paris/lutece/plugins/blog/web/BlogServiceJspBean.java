@@ -5,10 +5,8 @@ import fr.paris.lutece.plugins.blog.business.BlogFilter;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
-import fr.paris.lutece.plugins.blog.service.PublishingService;
-import fr.paris.lutece.plugins.blog.utils.IntegerUtils;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
+import fr.paris.lutece.plugins.document.utils.IntegerUtils;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.Portlet;
@@ -60,16 +58,13 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
     private static final String PARAMETER_TARGET = "target";
     private static final String PARAMETER_NAME = "name";
     private static final String PARAMETER_INPUT = "input";
-    private static final String PARAMETER_SUBCATEGORY = "subcategory";
 
     // Marker
     private static final String MARK_DOCUMENTS_LIST = "blog_list";
     private static final String MARK_PORTLETS_LIST = "portlets_list";
     private static final String MARK_PAGES_LIST = "pages_list";
     private static final String MARK_PORTLET_ID = "portlet_id";
-    private static final String MARK_INPUT = "input";
     private static final String MARK_LINK_LIST_ID = "link_list_id";
-    private static final String MARK_TYPE_FILTER = "type_filter";
     private static final String MARK_URL = "url";
     private static final String MARK_TARGET = "target";
     private static final String MARK_ALT = "alt";
@@ -81,7 +76,6 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
     // private
     private AdminUser _user;
     private String _input;
-    private String _strTypeFilter;
 
     /**
      * Initialize data
@@ -92,7 +86,6 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
     {
         _user = AdminUserService.getAdminUser( request );
         _input = request.getParameter( PARAMETER_INPUT );
-        _strTypeFilter = request.getParameter( PARAMETER_SUBCATEGORY );
     }
 
     @Override
@@ -121,27 +114,13 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
 
         listPages = PageHome.getChildPages( nPageId );
 
-        Map<String, Object> model = getDefaultModel(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         model.put( MARK_PAGES_LIST, listPages );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_PAGE, _user.getLocale(  ), model );
 
         return template.getHtml(  );
-    }
-
-    public String getTypeFilter(  )
-    {
-        return ( _strTypeFilter == null ) ? EMPTY_STRING : _strTypeFilter;
-    }
-
-    private Map<String, Object> getDefaultModel(  )
-    {
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_INPUT, _input );
-        model.put( MARK_TYPE_FILTER, getTypeFilter(  ) );
-
-        return model;
     }
 
     /**
@@ -184,7 +163,6 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
         UrlItem url = new UrlItem( JSP_SELECT_PORTLET );
         url.addParameter( PARAMETER_PAGE_ID, nPageId );
         url.addParameter( PARAMETER_INPUT, _input );
-        url.addParameter( PARAMETER_SUBCATEGORY, getTypeFilter(  ) );
 
         return url.getUrl(  );
     }
@@ -210,17 +188,12 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
         {
             if ( portlet.getPortletTypeId(  ).equals( BlogListPortletHome.getInstance(  ).getPortletTypeId(  ) ) )
             {
-                if ( StringUtils.isNotBlank( getTypeFilter(  ) ) )
+                listPortlets.add( portlet );
+            }
+            else
+            {
+                if ( portlet.getPortletTypeId(  ).equals( BlogPortletHome.getInstance(  ).getPortletTypeId(  ) ) )
                 {
-                    // filter by type
-                    if ( Integer.parseInt(getTypeFilter(  )) == ( (BlogListPortlet) portlet ).getPageTemplateDocument(  ) )
-                    {
-                        listPortlets.add( portlet );
-                    }
-                }
-                else
-                {
-                    // no type filter
                     listPortlets.add( portlet );
                 }
             }
@@ -229,7 +202,7 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
 
         listPortletsAll.clear(  );
 
-        Map<String, Object> model = getDefaultModel(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         model.put( MARK_PORTLETS_LIST, listPortlets );
 
@@ -279,7 +252,6 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
         UrlItem url = new UrlItem( JSP_SELECT_BLOG );
         url.addParameter( PARAMETER_PORTLET_ID, nPortletId );
         url.addParameter( PARAMETER_INPUT, strInputId );
-        url.addParameter( PARAMETER_SUBCATEGORY, getTypeFilter(  ) );
 
         return url.getUrl(  );
     }
@@ -306,10 +278,10 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
         Collection<Blog> listBlogs = BlogHome.findByFilter(blogFilter);
 
 
-        Map<String, Object> model = getDefaultModel(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
         model.put( MARK_DOCUMENTS_LIST, listBlogs );
-        model.put( MARK_PORTLET_ID, nPortletId );
+        model.put( MARK_PORTLET_ID, strPortletId );
         model.put( MARK_LINK_LIST_ID, strInputId );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_SELECTOR_BLOG, _user.getLocale(  ), model );
@@ -335,18 +307,16 @@ public class BlogServiceJspBean extends InsertServiceJspBean implements InsertSe
 
         HashMap<String, Object> model = new HashMap<String, Object>();
 
-        Blog blog;
-
         if ( ( strBlogId == null ) || !strBlogId.matches( REGEX_ID ) || ( strPortletId == null ) ||
                 !strPortletId.matches( REGEX_ID ) )
         {
             return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
         }
 
-        blog = BlogHome.findByPrimaryKey(IntegerUtils.convert( strBlogId ));
+        Blog blog = BlogHome.findByPrimaryKey(IntegerUtils.convert( strBlogId ));
 
         UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
-        url.addParameter( PARAMETER_BLOG_ID, blog.getId(  ) );
+        url.addParameter( PARAMETER_BLOG_ID, strBlogId );
         url.addParameter( PARAMETER_PORTLET_ID, strPortletId );
         model.put( MARK_URL, url.getUrl(  ) );
         model.put( MARK_TARGET, strTarget );

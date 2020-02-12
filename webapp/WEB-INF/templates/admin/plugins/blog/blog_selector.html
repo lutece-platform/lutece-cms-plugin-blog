@@ -2,59 +2,59 @@
 	<div class="row" >
 		<div class="col-md-12">
 			<ol class="breadcrumb">
-			  <li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${input}&amp;selected_text="><i class="fa fa-home"></i></a></li>
-			  <li><a href="javascript:history.go(-1);"> Page </a></li>
-			  <li><a href="javascript:history.go(-1);"> Rubrique </a></li>
-			  <li>#i18n{document.selector.document.documentChoiceTitle}</li>
+				<li><a href="jsp/admin/insert/GetAvailableInsertServices.jsp?input=${link_list_id}&amp;selected_text="><i class="fa fa-home"></i></a></li>
+				<li><a href="javascript:history.go(-1);"> Page </a></li>
+				<li><a href="javascript:history.go(-1);"> Rubrique </a></li>
+				<li>#i18n{blog.selector.blog.blogChoiceTitle}</li>
 			</ol>
-			<#if documents_list?size = 0>
-				<div class="alert alert-danger">#i18n{document.selector.document.noDocument}</div>
-				<p>
-					<button type="button" class="btn" onclick="javascript:history.go(-1);"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
-				</p>
+			<#if blog_list?size = 0>
+			<div class="alert alert-danger">#i18n{blog.selector.blog.noBlog}</div>
+			<p>
+				<button type="button" class="btn" onclick="javascript:history.go(-1);"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}</button>
+			</p>
 			<#else>
-			<form method="post" name="fsubmit" class="form"	action="jsp/admin/plugins/document/DoInsertDocumentLink.jsp">
+			<form method="post" name="fsubmit" class="form"	action="jsp/admin/plugins/blog/DoInsertBlogLink.jsp">
 				<div class="row" >
 					<div class="col-sm-4">
-						<input type="hidden" name="input" value="${input}">
+						<input type="hidden" name="input" value="${link_list_id}">
 						<input type="hidden" name="portlet_id" value="${portlet_id}">
 						<input type="hidden" name="subcategory" value="${type_filter}">
-						<h4>#i18n{document.selector.document.insertListTitle} </h4>
+						<h4>#i18n{blog.selector.blog.insertListTitle} </h4>
 						<div class="form-group">
-							<label for="name">#i18n{document.selector.document.linkName}</label>
+							<label for="name">#i18n{blog.selector.blog.linkName}</label>
 							<input type="text" name="name" id="name" value="" class="form-control" maxlength="50">
 						</div>
 						<div class="form-group">
-							<label for="alt">#i18n{document.selector.document.captionTitle}</label>
+							<label for="alt">#i18n{blog.selector.blog.captionTitle}</label>
 							<input type="text" name="alt" id="alt" value="" class="form-control" maxlength="50">
 						</div>
 						<div class="form-group">
-							<label for="target">#i18n{document.selector.document.captionTarget}</label>
+							<label for="target">#i18n{blog.selector.blog.captionTarget}</label>
 							<select name="target" id="target" class="form-control">
-								<option value="_self">#i18n{document.selector.document.target.self}</option>
-								<option value="_blank">#i18n{document.selector.document.target.blank}</option>
-								<option value="_parent">#i18n{document.selector.document.target.parent}</option>
-								<option value="_top">#i18n{document.selector.document.target.top}</option>
+								<option value="_self">#i18n{blog.selector.blog.target.self}</option>
+								<option value="_blank">#i18n{blog.selector.blog.target.blank}</option>
+								<option value="_parent">#i18n{blog.selector.blog.target.parent}</option>
+								<option value="_top">#i18n{blog.selector.blog.target.top}</option>
 							</select>
 						</div>
 					</div>
-					<div class="col-sm-8">	
+					<div class="col-sm-8">
 						<div class="form-group" style="overflow:auto;height:360px;">
 							<table class="table table-striped table-condensed" >
 								<tr>
 									<th></th>
-									<th>#i18n{document.selector.document.colTitle}</th>
-									<th>#i18n{document.selector.document.colSummary}</th>
+									<th>#i18n{blog.selector.blog.colTitle}</th>
+									<th>#i18n{blog.selector.blog.colSummary}</th>
 								</tr>
-								<#list documents_list as document>
+								<#list blog_list as blog>
 								<tr>
 									<td>
-										<input class="radio" type="radio" id="document_id_${document.id}" name="document_id" value="${document.id}">
+										<input class="radio" type="radio" id="blog_id_${blog.id}" name="id" value="${blog.id}">
 									</td>
-									<td>${document.title?if_exists}</td>
-									<td>${document.summary?if_exists}</td>
+									<td>${blog.name?if_exists}</td>
+									<td>${blog.description?if_exists}</td>
 								</tr>
-								</#list>
+							</#list>
 							</table>
 						</div>
 					</div>
@@ -63,12 +63,22 @@
 							<i class="fa fa-chevron-left"></i>&nbsp;#i18n{portal.util.labelBack}
 						</button>
 						<button type="submit" class="btn btn-primary btn-flat">
-							<i class="fa fa-check"></i> #i18n{portal.util.labelValidate} 
+							<i class="fa fa-check"></i> #i18n{portal.util.labelValidate}
 						</button>
 					</div>
 				</div>
-				</form>
-			</#if>
-		</div>
+			</form>
+		</#if>
 	</div>
 </div>
+</div>
+<script>
+	$(document).ready( function(){
+		$("#btn-sub").remove();
+		$("#a-sub").removeClass("sr-only");
+		$("#a-sub").click( function( e ){
+			$("#fsubmit").submit();
+			return false;
+		});
+	});
+</script>
