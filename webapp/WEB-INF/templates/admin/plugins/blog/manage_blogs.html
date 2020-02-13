@@ -188,6 +188,13 @@
                             <i class="fa fa-pencil fa-fw"></i>
                         </a>
 			</#if>
+
+            <#if permission_manage_create_blog>
+                        <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?action=duplicateBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm " title="#i18n{blog.manage_blogs.labelDuplicateBolg}">
+                            <i class="fa fa-clone fa-fw"></i>
+                        </a>
+            </#if>
+
                         <div class="btn-group">
                             <#if blog.version !=1>
                                 <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}" class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelDiffPrevious}">

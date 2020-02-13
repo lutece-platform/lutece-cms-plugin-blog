@@ -74,6 +74,7 @@ import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -214,6 +215,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_ADD_FILE_CONTENT = "addContent";
     private static final String ACTION_REMOVE_FILE_CONTENT = "deleteContent";
     private static final String ACTION_UPDATE_CONTENT_TYPE = "updateContentType";
+    private static final String ACTION_DUPLICATE_BLOG = "duplicateBlog";
 
     // Infos
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
@@ -232,6 +234,8 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_DATE_UPDATE_BLOG_AFTER = "dateUpdateBlogAfter";
     protected static final String MARK_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
     protected static final String MARK_UNPUBLISHED = "unpublished";
+
+    public static final String CONSTANT_DUPLICATE_BLOG_NAME = "Copie de ";
 
     // Session variable to store working values
     private static Map<Integer, BlogLock> _mapLockBlog = new Hashtable<Integer, BlogLock>( );
@@ -254,7 +258,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Build the Manage View
-     * 
+     *
      * @param request
      *            The HTTP request
      * @return The page
@@ -397,7 +401,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Return View history page
-     * 
+     *
      * @param request
      *            The request
      * @return the hostory page
@@ -500,7 +504,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Return Json if the tag is added
-     * 
+     *
      * @param request
      *            The request
      * @return Json The Json success or echec
@@ -542,7 +546,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Return Json if the tag is removed
-     * 
+     *
      * @param request
      * @return Json The Json success or echec
      */
@@ -587,7 +591,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Return Json if the tag is updated
-     * 
+     *
      * @param request
      * @return Json The Json success or echec
      */
@@ -734,6 +738,33 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
+
+    @Action(ACTION_DUPLICATE_BLOG)
+    public String doDuplicateBlog(HttpServletRequest request) throws AccessDeniedException {
+
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
+        {
+            throw new AccessDeniedException( UNAUTHORIZED );
+        }
+
+        int nIdBlog = Integer.parseInt(request.getParameter(PARAMETER_ID_BLOG));
+        _blog = BlogService.getInstance().loadBlog(nIdBlog);
+
+        Timestamp sqlDate = getSqlDate();
+
+        _blog.setContentLabel(CONSTANT_DUPLICATE_BLOG_NAME +_blog.getContentLabel());
+        _blog.setCreationDate(sqlDate);
+        _blog.setUpdateDate(sqlDate);
+        _blog.setUser(AdminUserService.getAdminUser(request).getFirstName());
+        _blog.setUserCreator(AdminUserService.getAdminUser(request).getFirstName());
+        _blog.setVersion(1);
+        _blog.setAttachedPortletId(0);
+
+        BlogService.getInstance( ).createBlog( _blog, _blog.getDocContent( ) );
+
+        return redirectView( request, VIEW_MANAGE_BLOGS );
+    }
+
 
     /**
      * Returns the form to update info about a blog
