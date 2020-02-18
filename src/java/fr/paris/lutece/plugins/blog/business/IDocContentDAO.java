@@ -119,5 +119,27 @@ public interface IDocContentDAO
      * @return a list of a ContentType
      */
     List<ContentType> loadListContentType( Plugin plugin );
+    
+    /**
+     * Link a blog with a document
+     * @param nIdBlog
+     * 
+     * @param nIdDocument
+     * 
+     * @param plugin
+     * 
+     */
+    void insertDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin);
+    
+
+    /**
+     * Remove the link between the document and the blog 
+     * 
+     * @param nDocumentId
+     *              the document Id
+     * @param plugin
+     *          the plugin
+     */
+    void deleteInBlogById( int nDocumentId, Plugin plugin );
 
 }

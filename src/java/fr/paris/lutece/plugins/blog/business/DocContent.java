@@ -33,6 +33,12 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import java.util.List;
+
+/**
+ * @author eahuma
+ *
+ */
 public class DocContent
 {
 
@@ -42,6 +48,7 @@ public class DocContent
     private byte [ ] _bytes;
     private String _strValueContentType;
     private ContentType _contentType;
+    private List<Blog> _blogs;
 
     /**
      * Returns the IdDocContent
@@ -168,5 +175,28 @@ public class DocContent
     {
         return _contentType;
     }
+
+    /**
+     * Gets the blogs
+     * 
+     * @return the blogs
+     */
+    public List<Blog> getBlogs( )
+    {
+        return _blogs;
+    }
+
+    /**
+     * Sets the blogs
+     * 
+     * @param blogs 
+     *          the blogs
+     */
+    public void setBlogs( List<Blog> blogs )
+    {
+        this._blogs = blogs;
+    }
+    
+    
 
 }

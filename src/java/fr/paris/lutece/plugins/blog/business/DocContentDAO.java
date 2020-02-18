@@ -47,11 +47,13 @@ public final class DocContentDAO implements IDocContentDAO
 
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_document ) FROM blog_content";
-    private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_document, id_blog, id_type, text_value , binary_value, mime_type ) VALUES ( ? , ? , ? , ? , ?, ? )";
-    private static final String SQL_QUERY_SELECT_CONTENT = "SELECT  id_document, id_blog, id_type, text_value , binary_value, mime_type FROM blog_content WHERE id_blog = ? ";
-    private static final String SQL_QUERY_DELETE = "DELETE FROM blog_content WHERE id_blog = ?  ;";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_content SET  id_blog = ?, id_type= ?, text_value = ?, binary_value = ?, mime_type = ? WHERE id_document = ?";
-    private static final String SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY = "SELECT  id_document, id_blog, id_type , text_value , binary_value, mime_type FROM blog_content WHERE id_document = ? ";
+    private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_document, id_type, text_value , binary_value, mime_type ) VALUES ( ?, ? , ? , ?, ? )";
+    private static final String SQL_QUERY_INSERT_CONTENT_IN_BLOG = "INSERT INTO blog_blog_content ( id_blog, id_document ) VALUES ( ?, ? )";
+    private static final String SQL_QUERY_SELECT_CONTENT = "SELECT a.id_document, id_type, text_value , binary_value, mime_type FROM blog_content a , blog_blog_content b WHERE b.id_blog = ?  AND a.id_document = b.id_document";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog_content WHERE id_blog = ?  ;";
+    private static final String SQL_QUERY_DELETE_BY_ID_IN_BLOG = "DELETE FROM blog_blog_content WHERE id_document = ?  ;";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_content SET id_type= ?, text_value = ?, binary_value = ?, mime_type = ? WHERE id_document = ?";
+    private static final String SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY = "SELECT  id_document, id_type , text_value , binary_value, mime_type FROM blog_content WHERE id_document = ? ";
     private static final String SQL_QUERY_DELETE_BY_ID = "DELETE FROM blog_content WHERE id_document = ?  ;";
 
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY = "SELECT id_type, type_label FROM blog_content_type WHERE id_type = ? ";
@@ -89,14 +91,26 @@ public final class DocContentDAO implements IDocContentDAO
         docContent.setId( newPrimaryKey( plugin ) );
 
         daoUtil.setInt( 1, docContent.getId( ) );
-        daoUtil.setInt( 2, docContent.getIdBlog( ) );
-        daoUtil.setInt( 3, docContent.getContentType( ).getIdContentType( ) );
-        daoUtil.setString( 4, docContent.getTextValue( ) );
-        daoUtil.setBytes( 5, docContent.getBinaryValue( ) );
-        daoUtil.setString( 6, docContent.getValueContentType( ) );
+        daoUtil.setInt( 2, docContent.getContentType( ).getIdContentType( ) );
+        daoUtil.setString( 3, docContent.getTextValue( ) );
+        daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
+        daoUtil.setString( 5, docContent.getValueContentType( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
+    }
+    
+    @Override
+    public void insertDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT_IN_BLOG, plugin );
+        
+        daoUtil.setInt( 1, nIdBlog );
+        daoUtil.setInt( 2, nIdDocument );
+
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
+        
     }
 
     /**
@@ -115,11 +129,10 @@ public final class DocContentDAO implements IDocContentDAO
             DocContent docContent = new DocContent( );
 
             docContent.setId( daoUtil.getInt( 1 ) );
-            docContent.setIdBlog( daoUtil.getInt( 2 ) );
-            docContent.setContentType( loadContentType( daoUtil.getInt( 3 ), plugin ) );
-            docContent.setBinaryValue( daoUtil.getBytes( 5 ) );
-            docContent.setTextValue( daoUtil.getString( 4 ) );
-            docContent.setValueContentType( daoUtil.getString( 6 ) );
+            docContent.setContentType( loadContentType( daoUtil.getInt( 2 ), plugin ) );
+            docContent.setTextValue( daoUtil.getString( 3 ) );
+            docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
+            docContent.setValueContentType( daoUtil.getString( 5 ) );
 
             listDoc.add( docContent );
         }
@@ -144,11 +157,10 @@ public final class DocContentDAO implements IDocContentDAO
             docContent = new DocContent( );
 
             docContent.setId( daoUtil.getInt( 1 ) );
-            docContent.setIdBlog( daoUtil.getInt( 2 ) );
-            docContent.setContentType( loadContentType( daoUtil.getInt( 3 ), plugin ) );
-            docContent.setBinaryValue( daoUtil.getBytes( 5 ) );
-            docContent.setTextValue( daoUtil.getString( 4 ) );
-            docContent.setValueContentType( daoUtil.getString( 6 ) );
+            docContent.setContentType( loadContentType( daoUtil.getInt( 2 ), plugin ) );
+            docContent.setTextValue( daoUtil.getString( 3 ) );
+            docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
+            docContent.setValueContentType( daoUtil.getString( 5 ) );
 
         }
         daoUtil.free( );
@@ -183,6 +195,17 @@ public final class DocContentDAO implements IDocContentDAO
         daoUtil.free( );
 
     }
+    
+    @Override
+    public void deleteInBlogById( int nDocumentId, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_IN_BLOG, plugin );
+        daoUtil.setInt( 1, nDocumentId );
+
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
+        
+    }
 
     /**
      * {@inheritDoc }
@@ -193,13 +216,12 @@ public final class DocContentDAO implements IDocContentDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
 
         // daoUtil.setInt( 1, docContent.getId( ));
-        daoUtil.setInt( 1, docContent.getIdBlog( ) );
-        daoUtil.setInt( 2, docContent.getContentType( ).getIdContentType( ) );
+        daoUtil.setInt( 1, docContent.getContentType( ).getIdContentType( ) );
 
-        daoUtil.setString( 3, docContent.getTextValue( ) );
-        daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
-        daoUtil.setString( 5, docContent.getValueContentType( ) );
-        daoUtil.setInt( 6, docContent.getId( ) );
+        daoUtil.setString( 2, docContent.getTextValue( ) );
+        daoUtil.setBytes( 3, docContent.getBinaryValue( ) );
+        daoUtil.setString( 4, docContent.getValueContentType( ) );
+        daoUtil.setInt( 5, docContent.getId( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -247,11 +269,10 @@ public final class DocContentDAO implements IDocContentDAO
             contentType.setIdContentType( daoUtil.getInt( 1 ) );
             contentType.setLabel( daoUtil.getString( 2 ) );
             listcontentType.add( contentType );
-
+                                                                                                                                                                                                                                                                                                                                                                                                                            
         }
         daoUtil.free( );
 
         return listcontentType;
     }
-
 }
