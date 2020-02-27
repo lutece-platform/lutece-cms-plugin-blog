@@ -63,9 +63,9 @@
     </properties>
 
     <scm>
-      <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-blog.git</connection>
-      <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-blog.git</developerConnection>
-      <url>https://github.com/lutece-platform/lutece-cms-plugin-blog.git</url>
-      <tag>HEAD</tag>
+        <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-blog.git</connection>
+        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-blog.git</developerConnection>
+        <url>https://github.com/lutece-platform/lutece-cms-plugin-blog.git</url>
+        <tag>HEAD</tag>
     </scm>
 </project>
