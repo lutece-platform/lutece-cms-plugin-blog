@@ -58,15 +58,15 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
     @Override
     public synchronized void insert( BlogResourceRssConfig config, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-
-        int nPos = 0;
-
-        daoUtil.setInt( ++nPos, config.getIdRss( ) );
-        daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            int nPos = 0;
+    
+            daoUtil.setInt( ++nPos, config.getIdRss( ) );
+            daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -75,16 +75,16 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
     @Override
     public void store( BlogResourceRssConfig config, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
-
-        int nPos = 0;
-
-        daoUtil.setInt( ++nPos, config.getIdRss( ) );
-        daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
-
-        daoUtil.setInt( ++nPos, config.getIdRss( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
+            int nPos = 0;
+    
+            daoUtil.setInt( ++nPos, config.getIdRss( ) );
+            daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
+    
+            daoUtil.setInt( ++nPos, config.getIdRss( ) );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -94,24 +94,21 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
     public BlogResourceRssConfig load( int nIdRss, Plugin plugin )
     {
         BlogResourceRssConfig config = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
-
-        daoUtil.setInt( 1, nIdRss );
-
-        daoUtil.executeQuery( );
-
-        int nPos = 0;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
-            config = new BlogResourceRssConfig( );
-            config.setIdRss( daoUtil.getInt( ++nPos ) );
-            config.setIdPortlet( daoUtil.getInt( ++nPos ) );
-
+            daoUtil.setInt( 1, nIdRss );
+    
+            daoUtil.executeQuery( );
+    
+            int nPos = 0;
+    
+            if ( daoUtil.next( ) )
+            {
+                config = new BlogResourceRssConfig( );
+                config.setIdRss( daoUtil.getInt( ++nPos ) );
+                config.setIdPortlet( daoUtil.getInt( ++nPos ) );
+            }
         }
-
-        daoUtil.free( );
-
         return config;
     }
 
@@ -121,11 +118,11 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
     @Override
     public void delete( int nIdRss, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-
-        daoUtil.setInt( 1, nIdRss );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdRss );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -134,24 +131,21 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
     @Override
     public List<BlogResourceRssConfig> loadAll( Plugin plugin )
     {
-        List<BlogResourceRssConfig> configList = new ArrayList<BlogResourceRssConfig>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL, plugin );
-
-        daoUtil.executeQuery( );
-
-        int nPos = 0;
-
-        if ( daoUtil.next( ) )
+        List<BlogResourceRssConfig> configList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL, plugin ) )
         {
-            BlogResourceRssConfig config = new BlogResourceRssConfig( );
-            config.setIdRss( daoUtil.getInt( ++nPos ) );
-            config.setIdPortlet( daoUtil.getInt( ++nPos ) );
-
-            configList.add( config );
+            daoUtil.executeQuery( );
+    
+            int nPos = 0;
+            if ( daoUtil.next( ) )
+            {
+                BlogResourceRssConfig config = new BlogResourceRssConfig( );
+                config.setIdRss( daoUtil.getInt( ++nPos ) );
+                config.setIdPortlet( daoUtil.getInt( ++nPos ) );
+    
+                configList.add( config );
+            }
         }
-
-        daoUtil.free( );
-
         return configList;
     }
 }

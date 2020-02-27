@@ -150,8 +150,6 @@ public interface IBlogPublicationDAO
      * @param nPortletsIds
      *            The list of portlet ids.
      * @param datePublishing
-     *            TODO
-     * @param datePublishing
      *            The publication end date
      * @param plugin
      *            The blog plugin

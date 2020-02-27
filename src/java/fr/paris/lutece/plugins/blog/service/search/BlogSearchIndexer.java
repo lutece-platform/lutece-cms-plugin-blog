@@ -107,7 +107,7 @@ public class BlogSearchIndexer implements SearchIndexer
     @Override
     public List<String> getListType( )
     {
-        List<String> listType = new ArrayList<String>( 1 );
+        List<String> listType = new ArrayList<>( 1 );
         listType.add( BLOGS );
 
         return listType;
@@ -142,7 +142,7 @@ public class BlogSearchIndexer implements SearchIndexer
         {
             AppLogService.error( strDocumentId + " not parseable to an int", ne );
 
-            return new ArrayList<Document>( 0 );
+            return new ArrayList<>( 0 );
         }
 
         Blog blog = BlogService.getInstance( ).loadBlog( documentId );
@@ -150,13 +150,13 @@ public class BlogSearchIndexer implements SearchIndexer
 
         if ( doc != null )
         {
-            List<Document> listDocument = new ArrayList<Document>( 1 );
+            List<Document> listDocument = new ArrayList<>( 1 );
             listDocument.add( doc );
 
             return listDocument;
         }
 
-        return new ArrayList<Document>( 0 );
+        return new ArrayList<>( 0 );
     }
 
     /**
@@ -166,7 +166,6 @@ public class BlogSearchIndexer implements SearchIndexer
     public void indexDocuments( ) throws IOException, InterruptedException, SiteMessageException
     {
         BlogSearchService.getInstance( ).processIndexing( true );
-        // DefaultblogIndexer.getDocuments("");
     }
 
 }

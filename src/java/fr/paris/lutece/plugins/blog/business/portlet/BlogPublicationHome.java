@@ -132,7 +132,7 @@ public class BlogPublicationHome
      *            The Blogs id
      * @return BlogPublication
      */
-    public static BlogPublication findDocPublicationByPimaryKey(int nPortletId,  int nDocId )
+    public static BlogPublication findDocPublicationByPimaryKey( int nPortletId,  int nDocId )
     {
         return _dao.loadBlogsPublication(  nPortletId, nDocId, _plugin );
 
@@ -197,7 +197,6 @@ public class BlogPublicationHome
      * @param nPortletsIds
      *            The list of portlet ids.
      * @param datePublishing
-     *            TODO
      * @param dateEndPublishing
      *            The end publication date
      * @param plugin

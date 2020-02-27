@@ -44,7 +44,7 @@ public class BlogServiceSession
 {
 
     private static BlogServiceSession _singleton = new BlogServiceSession( );
-    private final static String SESSION_BLOG = "blog.serviceblog";
+    private static final String SESSION_BLOG = "blog.serviceblog";
 
     /**
      * Get the unique instance of the service

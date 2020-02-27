@@ -89,9 +89,7 @@ public class BlogListPortletHome extends PortletHome
     public String getPortletTypeId( )
     {
         String strCurrentClassName = this.getClass( ).getName( );
-        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
-
-        return strPortletTypeId;
+        return PortletTypeHome.getPortletTypeId( strCurrentClassName );
     }
 
     /**
@@ -103,25 +101,6 @@ public class BlogListPortletHome extends PortletHome
     {
         return _dao;
     }
-
-    /**
-     * Load the list of documentTypes
-     * 
-     * @param nDocumentId
-     *            the document ID
-     * @param strCodeDocumentType
-     *            The code
-     * @param pOrder
-     *            order of the portlets
-     * @param pFilter
-     *            The portlet filter
-     * @return The Collection of the ReferenceItem
-     */
-    /*
-     * public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder,
-     * PortletFilter pFilter ) { //FIXME : method should access to different home business methods return _dao.selectByDocumentIdAndDocumentType( nDocumentId,
-     * strCodeDocumentType, pOrder, pFilter ); }
-     */
 
     /**
      * Check whether a portlet is an alias portlet
@@ -168,5 +147,8 @@ public class BlogListPortletHome extends PortletHome
      *
      * @return The minimum value of blog document order
      */
-    public static int getMinDocBlogOrder() { return _dao.selectMinDocumentBlogOrder(); }
+    public static int getMinDocBlogOrder()
+    {
+        return _dao.selectMinDocumentBlogOrder();
+    }
 }

@@ -48,7 +48,7 @@ import fr.paris.lutece.plugins.blog.web.BlogJspBean;
 public class BlogSessionListner implements HttpSessionListener
 {
 
-    private static Map<String, HttpSession> _mapSession = new ConcurrentHashMap<String, HttpSession>( );
+    private static Map<String, HttpSession> _mapSession = new ConcurrentHashMap<>( );
 
     /**
      * {@inheritDoc}

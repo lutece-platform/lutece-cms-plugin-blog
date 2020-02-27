@@ -92,22 +92,6 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
     Map<Integer, String> loadPages( String strPortletType );
 
     /**
-     * Load the list of documentTypes
-     * 
-     * @param nDocumentId
-     *            the document ID
-     * @param strCodeDocumentType
-     *            The code
-     * @param pOrder
-     *            order of the portlets
-     * @param pFilter
-     *            The portlet filter
-     * @return The Collection of the ReferenceItem
-     */
-    /*
-     * Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter );
-     */
-    /**
      * Update the record in the table
      *
      *

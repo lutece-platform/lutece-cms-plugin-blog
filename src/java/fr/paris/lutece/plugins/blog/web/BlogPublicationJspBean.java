@@ -41,12 +41,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.business.portlet.PortletFilter;
 import fr.paris.lutece.plugins.blog.business.portlet.PortletOrder;
 import fr.paris.lutece.plugins.blog.service.BlogService;
@@ -67,10 +71,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
  */
@@ -78,6 +78,7 @@ import org.apache.commons.lang.StringUtils;
 public class BlogPublicationJspBean extends BlogJspBean
 {
 
+    private static final long serialVersionUID = -2768032240064881165L;
     private static final String TEMPLATE_PUBLICATION_HTMLDOC = "/admin/plugins/blog/publication_blog.html";
     private static final String TEMPLATE_PORTLET_PAGE_PATH = "/admin/plugins/blog/portlet_page_path.html";
 
@@ -96,7 +97,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     private static final String MARK_LIST_PAGE = "page_list";
 
     private static final String MARK_DOCUMENT_PORTLET_LIST = "document_portlet_list";
-    private static final String MARk_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
+    private static final String MARK_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
     private static final String MARK_PORTLET_FILTER = "portlet_filter";
     private static final String MARK_LABEL_DISPLAY_LATEST_PORTLETS = "label_display_latest_portlets";
     public static final String DATE_END_PUBLICATION = AppPropertiesService.getProperty( "blog.date.end.publication", "2030-01-01 11:59:59" );
@@ -199,7 +200,7 @@ public class BlogPublicationJspBean extends BlogJspBean
                 : null );
 
         model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
-        model.put( MARk_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
+        model.put( MARK_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_PORTLET_LIST, PublishingService.getInstance( ).getBlogsPortletstoPublish( ) );
 
@@ -282,31 +283,31 @@ public class BlogPublicationJspBean extends BlogJspBean
         String strIdPortlet = request.getParameter( PARAMETER_PORTLET_ID );
         int nIdPortlet = Integer.parseInt( strIdPortlet != null ? strIdPortlet : "0" );
 
-        String dateBeginPublishing = request.getParameter( PARAMETER_PUBLISHED_DATE );
-        String dateEndPublishing = request.getParameter( PARAMETER_UNPUBLISHED_DATE );
-        java.sql.Date _dateBeginPublishing = null;
-        java.sql.Date _dateEndPublishing = null;
+        String dateBeginPublishingStr = request.getParameter( PARAMETER_PUBLISHED_DATE );
+        String dateEndPublishingStr = request.getParameter( PARAMETER_UNPUBLISHED_DATE );
+        java.sql.Date dateBeginPublishing = null;
+        java.sql.Date dateEndPublishing = null;
 
         SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy" );
         java.util.Date parsed = null;
 
-        if ( dateBeginPublishing != null && !dateBeginPublishing.isEmpty( ) )
+        if ( dateBeginPublishingStr != null && !dateBeginPublishingStr.isEmpty( ) )
         {
-            parsed = sdf.parse( dateBeginPublishing );
-            _dateBeginPublishing = new java.sql.Date( parsed.getTime( ) );
+            parsed = sdf.parse( dateBeginPublishingStr );
+            dateBeginPublishing = new java.sql.Date( parsed.getTime( ) );
         }
-        if ( dateEndPublishing != null && !dateEndPublishing.isEmpty( ) )
+        if ( dateEndPublishingStr != null && !dateEndPublishingStr.isEmpty( ) )
         {
-            parsed = sdf.parse( dateEndPublishing );
-            _dateEndPublishing = new java.sql.Date( parsed.getTime( ) );
+            parsed = sdf.parse( dateEndPublishingStr );
+            dateEndPublishing = new java.sql.Date( parsed.getTime( ) );
         }
         int nBlogOrder = BlogListPortletHome.getMinDocBlogOrder();
         nBlogOrder = nBlogOrder - 1;
 
         htmldocPublication.setIdBlog( nIdDoc );
         htmldocPublication.setIdPortlet( nIdPortlet );
-        htmldocPublication.setDateBeginPublishing( _dateBeginPublishing );
-        htmldocPublication.setDateEndPublishing( _dateEndPublishing );
+        htmldocPublication.setDateBeginPublishing( dateBeginPublishing );
+        htmldocPublication.setDateEndPublishing( dateEndPublishing );
         htmldocPublication.setBlogOrder( nBlogOrder );
 
     }
@@ -384,7 +385,7 @@ public class BlogPublicationJspBean extends BlogJspBean
      */
     private Collection<ReferenceItem> getListAuthorizedDocumentListPortlets( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
-        Collection<ReferenceItem> listPortlets = new ArrayList<ReferenceItem>( );
+        Collection<ReferenceItem> listPortlets = new ArrayList<>( );
 
         // Check role PERMISSION_MANAGE for DocumentListPortlet
         if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogListPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, getUser( ) ) )
@@ -393,9 +394,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
 
         // check ROLE PERMISSION_MANAGE for PAGE and WORKGROUP
-        Collection<ReferenceItem> listFilteredPortlets = filterByWorkgroup( listPortlets, pFilter );
-
-        return listFilteredPortlets;
+        return filterByWorkgroup( listPortlets, pFilter );
     }
 
     /**
@@ -410,7 +409,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     private Collection<ReferenceItem> filterByWorkgroup( Collection<ReferenceItem> listPortlets, PortletFilter pFilter )
     {
         // check ROLE PERMISSION_MANAGE for PAGE and WORKGROUP
-        Collection<ReferenceItem> listFilteredPortlets = new ArrayList<ReferenceItem>( );
+        Collection<ReferenceItem> listFilteredPortlets = new ArrayList<>( );
 
         // Check role PERMISSION_MANAGE for workgroup and page and check if
         // portlet isn't autopublished
@@ -420,7 +419,7 @@ public class BlogPublicationJspBean extends BlogJspBean
 
             if ( ( portlet != null ) && PortletService.getInstance( ).isAuthorized( portlet, getUser( ) ) )
             {
-                Map<String, Object> subModel = new HashMap<String, Object>( );
+                Map<String, Object> subModel = new HashMap<>( );
                 subModel.put( MARK_LIST_PAGE, PortalService.getPagePath( PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode( ) ) ).getPageId( ) ) );
                 subModel.put( MARK_PORTLET, item );
 
@@ -466,7 +465,7 @@ public class BlogPublicationJspBean extends BlogJspBean
      */
     private Collection<ReferenceItem> getListAuthorizedDocumentPortlets( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
-        Collection<ReferenceItem> listPortlets = new ArrayList<ReferenceItem>( );
+        Collection<ReferenceItem> listPortlets = new ArrayList<>( );
 
         // Check role PERMISSION_MANAGE for DocumentPortlet
         if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, getUser( ) ) )
@@ -474,9 +473,7 @@ public class BlogPublicationJspBean extends BlogJspBean
             listPortlets.addAll( BlogPortletHome.findByFilter( nDocumentId, pOrder, pFilter ) );
         }
 
-        Collection<ReferenceItem> listFilteredPortlets = filterByWorkgroup( listPortlets, pFilter );
-
-        return listFilteredPortlets;
+        return filterByWorkgroup( listPortlets, pFilter );
     }
 
 }

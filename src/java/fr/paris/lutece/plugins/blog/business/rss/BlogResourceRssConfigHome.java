@@ -104,9 +104,7 @@ public final class BlogResourceRssConfigHome
      */
     public static BlogResourceRssConfig findByPrimaryKey( int nIdBlogResourceRssConfig, Plugin plugin )
     {
-        BlogResourceRssConfig taskNotifyBlogConfig = _dao.load( nIdBlogResourceRssConfig, plugin );
-
-        return taskNotifyBlogConfig;
+        return _dao.load( nIdBlogResourceRssConfig, plugin );
     }
 
     /**
@@ -119,8 +117,6 @@ public final class BlogResourceRssConfigHome
      */
     public static List<BlogResourceRssConfig> getAll( Plugin plugin )
     {
-        List<BlogResourceRssConfig> listTaskNotifyFormConfig = _dao.loadAll( plugin );
-
-        return listTaskNotifyFormConfig;
+        return _dao.loadAll( plugin );
     }
 }

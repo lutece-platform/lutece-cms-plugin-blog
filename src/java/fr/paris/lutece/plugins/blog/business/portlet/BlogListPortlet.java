@@ -70,7 +70,7 @@ public class BlogListPortlet extends PortletHtmlContent
     // Constants
     private int _nPageTemplateDocument;
     private int _nPortletId;
-    private List<BlogPublication> _arrayBlogs = new ArrayList<BlogPublication>( );
+    private List<BlogPublication> _arrayBlogs = new ArrayList<>( );
 
     /**
      * Sets the identifier of the portlet type to the value specified in the BlogsListPortletHome class
@@ -102,10 +102,10 @@ public class BlogListPortlet extends PortletHtmlContent
         documentFilter.setOrderInPortlet( true );
         documentFilter.setPortletId( this.getId( ) );
 
-        List<Blog> listBlogsPublished = (List<Blog>) BlogHome.findByFilter( documentFilter );
+        List<Blog> listBlogsPublished = BlogHome.findByFilter( documentFilter );
         BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_BLOG_PUBLISHED, listBlogsPublished );
         model.put( MARK_PAGE_TEMPLATE, pageTemplate );
         model.put( MARK_PORTLET_ID, this.getId( ) );
@@ -222,7 +222,9 @@ public class BlogListPortlet extends PortletHtmlContent
 
         }
         if ( !bool )
+        {
             _arrayBlogs.add( doc );
+        }
     }
 
     /**

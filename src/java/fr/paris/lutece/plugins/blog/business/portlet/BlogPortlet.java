@@ -87,7 +87,7 @@ public class BlogPortlet extends PortletHtmlContent
         GregorianCalendar calendar = new java.util.GregorianCalendar( );
         Blog blog = BlogHome.findByPrimaryKey( this.getContentId( ) );
         BlogPublication docPub = BlogPublicationHome.findDocPublicationByPimaryKey( this.getId( ), this.getContentId( ) );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
         if ( docPub != null && docPub.getIdBlog( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
@@ -129,7 +129,6 @@ public class BlogPortlet extends PortletHtmlContent
     public void remove( )
     {
         BlogPublicationHome.removeByIdPortlet( this.getId( ) );
-        // BlogHome.remove( this.getContentId( ) );
         BlogPortletHome.getInstance( ).remove( this );
     }
 

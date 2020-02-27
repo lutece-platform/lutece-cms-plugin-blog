@@ -73,7 +73,7 @@ public class BlogApp extends MVCApplication
 
     // Parameters
     protected static final String PARAMETER_ID_BLOG = "id";
-    protected static final String PARAMETER_ID_Portlet = "portlet_id";
+    protected static final String PARAMETER_ID_PORTLET = "portlet_id";
 
     protected static final String PARAMETER_VIEW = "view";
 
@@ -98,16 +98,16 @@ public class BlogApp extends MVCApplication
     public XPage getBlogDetails( HttpServletRequest request )
     {
 
-        List<BlogPublication> listBlogPub = new ArrayList<BlogPublication>( );
+        List<BlogPublication> listBlogPub = new ArrayList<>( );
 
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        String idPortlet = request.getParameter( PARAMETER_ID_Portlet );
+        String idPortlet = request.getParameter( PARAMETER_ID_PORTLET );
         if ( idPortlet != null && !idPortlet.isEmpty( ) )
         {
 
             listBlogPub = BlogPublicationHome.getDocPublicationByPortlet( Integer.parseInt( idPortlet ) );
         }
-        List<Blog> listBlogs = new ArrayList<Blog>( );
+        List<Blog> listBlogs = new ArrayList<>( );
 
         for ( Blog doc : BlogService.getInstance( ).getListBlogWithoutBinaries( ) )
         {

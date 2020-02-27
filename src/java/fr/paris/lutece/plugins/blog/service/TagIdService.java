@@ -36,8 +36,6 @@ package fr.paris.lutece.plugins.blog.service;
 import java.util.List;
 import java.util.Locale;
 
-import fr.paris.lutece.plugins.blog.business.Blog;
-import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.portal.service.rbac.Permission;

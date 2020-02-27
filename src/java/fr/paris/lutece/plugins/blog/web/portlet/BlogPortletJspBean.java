@@ -59,6 +59,7 @@ import java.util.List;
 public class BlogPortletJspBean extends PortletJspBean
 {
 
+    private static final long serialVersionUID = 5744334133144418317L;
     public static final String MARK_HTML_CONTENT = "htmlcontent";
     public static final String MARK_EDIT_COMMENT = "editcomment";
     public static final String MARK_WEBAPP_URL = "webapp_url";
@@ -88,7 +89,7 @@ public class BlogPortletJspBean extends PortletJspBean
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
         List<Blog> listBlog = BlogHome.getBlogsList( );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listBlog );
@@ -113,7 +114,7 @@ public class BlogPortletJspBean extends PortletJspBean
         int nPortletId = Integer.parseInt( strPortletId );
         BlogPortlet portlet = (BlogPortlet) PortletHome.findByPrimaryKey( nPortletId );
         Blog blog = BlogHome.findByPrimaryKey( portlet.getContentId( ) );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_HTML_CONTENT, blog.getHtmlContent( ) );
         model.put( MARK_EDIT_COMMENT, blog.getEditComment( ) );

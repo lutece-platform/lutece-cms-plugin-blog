@@ -58,7 +58,6 @@ import org.apache.lucene.index.LogDocMergePolicy;
 import org.apache.lucene.index.LogMergePolicy;
 import org.apache.lucene.search.IndexSearcher;
 
-//import org.apache.lucene.search.Searcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -110,7 +109,7 @@ public final class BlogSearchService
             throw new AppException( "Analyser class name not found in blogs.properties", null );
         }
 
-        _indexer = (IBlogSearchIndexer) SpringContextService.getBean( "blog.blogIndexer" );
+        _indexer = SpringContextService.getBean( "blog.blogIndexer" );
 
         try
         {
@@ -157,7 +156,7 @@ public final class BlogSearchService
         try
         {
             IBlogSearchEngine engine = SpringContextService.getBean( BEAN_SEARCH_ENGINE );
-            List<SearchResult> listResults = new ArrayList<SearchResult>( );
+            List<SearchResult> listResults = new ArrayList<>( );
             nNbItems = engine.getSearchResults( filter, PluginService.getPlugin( BlogPlugin.PLUGIN_NAME ), listResults );
 
             for ( SearchResult searchResult : listResults )
@@ -185,10 +184,9 @@ public final class BlogSearchService
      */
     public IndexSearcher getSearcher( )
     {
-        IndexReader dir = null;
         IndexSearcher searcher = null;
 
-        try
+        try 
         {
             IndexReader ir = DirectoryReader.open( FSDirectory.open( Paths.get( getIndex( ) ) ) );
             searcher = new IndexSearcher( ir );
@@ -196,18 +194,6 @@ public final class BlogSearchService
         catch( IOException e )
         {
             AppLogService.error( e.getMessage( ), e );
-
-            if ( dir != null )
-            {
-                try
-                {
-                    dir.close( );
-                }
-                catch( IOException e1 )
-                {
-                    AppLogService.error( e1.getMessage( ), e );
-                }
-            }
         }
 
         return searcher;

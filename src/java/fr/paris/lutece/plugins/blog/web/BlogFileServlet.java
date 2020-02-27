@@ -66,7 +66,7 @@ public class BlogFileServlet extends HttpServlet
     private static final String LOG_UNKNOWN_ID_RESPONSE = "Calling Blogd file servlet with unknown id file : ";
     private static final String LOG_WRONG_ID_RESPONSE = "Calling Blogd file servlet with wrong format for parameter " + PARAMETER_ID_FILE + " : ";
     private static final String PROPERTY_MAX_AGE = "blog.fileServlet.maxAge";
-    private static final long DEFAULT_MAX_AGE = 60 * 60 * 24 * 7; // 1 week
+    private static final long DEFAULT_MAX_AGE = 60L * 60 * 24 * 7; // 1 week
     private static final long MAX_AGE = AppPropertiesService.getPropertyLong( PROPERTY_MAX_AGE, DEFAULT_MAX_AGE );
 
     /**

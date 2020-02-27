@@ -69,13 +69,14 @@ public final class BlogPortletDAO implements IBlogPortletDAO
     public void insert( Portlet portlet )
     {
         BlogPortlet p = (BlogPortlet) portlet;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setString( 2, p.getPortletName( ) );
-        daoUtil.setInt( 3, p.getContentId( ) );
-        daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setString( 2, p.getPortletName( ) );
+            daoUtil.setInt( 3, p.getContentId( ) );
+            daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
+            daoUtil.executeUpdate( );
+        }
         insertBlogPublication( p );
 
     }
@@ -89,10 +90,11 @@ public final class BlogPortletDAO implements IBlogPortletDAO
     @Override
     public void delete( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -105,15 +107,16 @@ public final class BlogPortletDAO implements IBlogPortletDAO
     public void store( Portlet portlet )
     {
         BlogPortlet p = (BlogPortlet) portlet;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setString( 2, p.getPortletName( ) );
-        daoUtil.setInt( 3, p.getContentId( ) );
-        daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
-        daoUtil.setInt( 5, p.getId( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setString( 2, p.getPortletName( ) );
+            daoUtil.setInt( 3, p.getContentId( ) );
+            daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
+            daoUtil.setInt( 5, p.getId( ) );
+    
+            daoUtil.executeUpdate( );
+        }
 
         BlogPublicationHome.removeByIdPortlet( p.getId( ) );
         insertBlogPublicationOnUpdate ( p );
@@ -131,21 +134,20 @@ public final class BlogPortletDAO implements IBlogPortletDAO
     public Portlet load( int nIdPortlet )
     {
         BlogPortlet portlet = new BlogPortlet( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nIdPortlet );
-
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            portlet.setId( daoUtil.getInt( 1 ) );
-            portlet.setPortletName( daoUtil.getString( 2 ) );
-            portlet.setContentId( daoUtil.getInt( 3 ) );
-            portlet.setPageTemplateDocument( daoUtil.getInt( 4 ) );
+            daoUtil.setInt( 1, nIdPortlet );
+    
+            daoUtil.executeQuery( );
+    
+            if ( daoUtil.next( ) )
+            {
+                portlet.setId( daoUtil.getInt( 1 ) );
+                portlet.setPortletName( daoUtil.getString( 2 ) );
+                portlet.setContentId( daoUtil.getInt( 3 ) );
+                portlet.setPageTemplateDocument( daoUtil.getInt( 4 ) );
+            }
         }
-
-        daoUtil.free( );
-
         return portlet;
     }
 
@@ -157,17 +159,14 @@ public final class BlogPortletDAO implements IBlogPortletDAO
      */
     private void insertBlogPublication( BlogPortlet p )
     {
-
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET );
-
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setInt( 2, p.getContentId( ) );
-        daoUtil.setInt( 3, 1 );
-        daoUtil.setInt( 4, 0 );
-        daoUtil.executeUpdate( );
-
-        daoUtil.free( );
-
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setInt( 2, p.getContentId( ) );
+            daoUtil.setInt( 3, 1 );
+            daoUtil.setInt( 4, 0 );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -177,15 +176,15 @@ public final class BlogPortletDAO implements IBlogPortletDAO
     public ReferenceList selectBlogPortletReferenceList( Plugin plugin )
     {
         ReferenceList blogPortletList = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
-            blogPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                blogPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
         }
-
-        daoUtil.free( );
         return blogPortletList;
     }
 
@@ -208,42 +207,39 @@ public final class BlogPortletDAO implements IBlogPortletDAO
 
         strSQl.append( pOrder.getSQLOrderBy( ) );
 
-        DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) );
-
-        if ( strFilter != null )
+        ReferenceList list = new ReferenceList( );
+        try ( DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) ) )
         {
-            if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
+            if ( strFilter != null )
             {
-                for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
+                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
                 {
-                    daoUtil.setString( i + 1, "%" + pFilter.getPageName( ) [i] + "%" );
-                }
-            }
-            else
-                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
-                {
-                    for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                    for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
                     {
-                        daoUtil.setString( i + 1, "%" + pFilter.getPortletName( ) [i] + "%" );
+                        daoUtil.setString( i + 1, "%" + pFilter.getPageName( ) [i] + "%" );
                     }
                 }
                 else
-                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
                     {
-                        daoUtil.setInt( 1, pFilter.getIdPage( ) );
+                        for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                        {
+                            daoUtil.setString( i + 1, "%" + pFilter.getPortletName( ) [i] + "%" );
+                        }
                     }
+                    else
+                        if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                        {
+                            daoUtil.setInt( 1, pFilter.getIdPage( ) );
+                        }
+            }
+    
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
+            {
+                list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
         }
-
-        daoUtil.executeQuery( );
-
-        ReferenceList list = new ReferenceList( );
-
-        while ( daoUtil.next( ) )
-        {
-            list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
-        }
-
-        daoUtil.free( );
 
         return list;
     }
@@ -256,19 +252,16 @@ public final class BlogPortletDAO implements IBlogPortletDAO
 	     */
 	    private void insertBlogPublicationOnUpdate( BlogPortlet portlet )
 	    {
-	        
-	    	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE );
-
-	        daoUtil.setInt( 1, portlet.getId( ) );
-	        daoUtil.setInt( 2, portlet.getContentId( ) );
-	        daoUtil.setInt( 3, 1 );
-	        daoUtil.setInt( 4, 0 );
-	        daoUtil.setDate(5, portlet.getBlogPublication().getDateBeginPublishing());
-	        daoUtil.setDate(6, portlet.getBlogPublication().getDateEndPublishing( ));
-	        
-	        daoUtil.executeUpdate( );
-
-	        daoUtil.free( );
+	    	try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE ) )
+	    	{
+    	        daoUtil.setInt( 1, portlet.getId( ) );
+    	        daoUtil.setInt( 2, portlet.getContentId( ) );
+    	        daoUtil.setInt( 3, 1 );
+    	        daoUtil.setInt( 4, 0 );
+    	        daoUtil.setDate(5, portlet.getBlogPublication().getDateBeginPublishing());
+    	        daoUtil.setDate(6, portlet.getBlogPublication().getDateEndPublishing( ));
+    	        
+    	        daoUtil.executeUpdate( );
+	    	}
 	    }
-
 }

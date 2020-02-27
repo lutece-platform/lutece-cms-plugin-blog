@@ -33,18 +33,16 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.sql.DAOUtil;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  * This class provides Data Access methods for Blog objects
@@ -99,16 +97,15 @@ public final class BlogDAO implements IBlogDAO
      */
     public int newPrimaryKey( Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-        daoUtil.executeQuery( );
         int nKey = 1;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
         {
-            nKey = daoUtil.getInt( 1 ) + 1;
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                nKey = daoUtil.getInt( 1 ) + 1;
+            }
         }
-
-        daoUtil.free( );
         return nKey;
     }
 
@@ -121,16 +118,16 @@ public final class BlogDAO implements IBlogDAO
      */
     public int newVersionPrimaryKey( Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK_VERSION, plugin );
-        daoUtil.executeQuery( );
         int nKey = 1;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK_VERSION, plugin ) )
         {
-            nKey = daoUtil.getInt( 1 ) + 1;
+            daoUtil.executeQuery( );
+    
+            if ( daoUtil.next( ) )
+            {
+                nKey = daoUtil.getInt( 1 ) + 1;
+            }
         }
-
-        daoUtil.free( );
         return nKey;
     }
 
@@ -140,51 +137,53 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public void insert( Blog blog, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-        blog.setId( newPrimaryKey( plugin ) );
-        int nIndex = 1;
-
-        daoUtil.setInt( nIndex++, blog.getId( ) );
-        daoUtil.setInt( nIndex++, blog.getVersion( ) );
-        daoUtil.setString( nIndex++, blog.getContentLabel( ) );
-        daoUtil.setTimestamp( nIndex++, blog.getCreationDate( ) );
-        daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
-        daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
-        daoUtil.setString( nIndex++, blog.getUser( ) );
-        daoUtil.setString( nIndex++, blog.getUserCreator( ) );
-        daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
-        daoUtil.setString( nIndex++, blog.getEditComment( ) );
-        daoUtil.setString( nIndex++, blog.getDescription( ) );
-        daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
-        daoUtil.setString( nIndex++, blog.getUrl( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        {
+            blog.setId( newPrimaryKey( plugin ) );
+            int nIndex = 1;
+    
+            daoUtil.setInt( nIndex++, blog.getId( ) );
+            daoUtil.setInt( nIndex++, blog.getVersion( ) );
+            daoUtil.setString( nIndex++, blog.getContentLabel( ) );
+            daoUtil.setTimestamp( nIndex++, blog.getCreationDate( ) );
+            daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
+            daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
+            daoUtil.setString( nIndex++, blog.getUser( ) );
+            daoUtil.setString( nIndex++, blog.getUserCreator( ) );
+            daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
+            daoUtil.setString( nIndex++, blog.getEditComment( ) );
+            daoUtil.setString( nIndex++, blog.getDescription( ) );
+            daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
+            daoUtil.setString( nIndex++, blog.getUrl( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     public void insertVersion( Blog blog, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_VERSION, plugin );
-        int nVersion = newVersionPrimaryKey( plugin );
-        int nIndex = 1;
-
-        daoUtil.setInt( nIndex++, nVersion );
-        daoUtil.setInt( nIndex++, blog.getId( ) );
-        daoUtil.setInt( nIndex++, blog.getVersion( ) );
-        daoUtil.setString( nIndex++, blog.getContentLabel( ) );
-        daoUtil.setTimestamp( nIndex++, blog.getCreationDate( ) );
-        daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
-        daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
-        daoUtil.setString( nIndex++, blog.getUser( ) );
-        daoUtil.setString( nIndex++, blog.getUserCreator( ) );
-        daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
-        daoUtil.setString( nIndex++, blog.getEditComment( ) );
-        daoUtil.setString( nIndex++, blog.getDescription( ) );
-        daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
-        daoUtil.setString( nIndex++, blog.getUrl( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_VERSION, plugin ) )
+        {
+            int nVersion = newVersionPrimaryKey( plugin );
+            int nIndex = 1;
+    
+            daoUtil.setInt( nIndex++, nVersion );
+            daoUtil.setInt( nIndex++, blog.getId( ) );
+            daoUtil.setInt( nIndex++, blog.getVersion( ) );
+            daoUtil.setString( nIndex++, blog.getContentLabel( ) );
+            daoUtil.setTimestamp( nIndex++, blog.getCreationDate( ) );
+            daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
+            daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
+            daoUtil.setString( nIndex++, blog.getUser( ) );
+            daoUtil.setString( nIndex++, blog.getUserCreator( ) );
+            daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
+            daoUtil.setString( nIndex++, blog.getEditComment( ) );
+            daoUtil.setString( nIndex++, blog.getDescription( ) );
+            daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
+            daoUtil.setString( nIndex++, blog.getUrl( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -193,33 +192,34 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public Blog load( int nKey, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
-        daoUtil.setInt( 1, nKey );
-        daoUtil.executeQuery( );
         Blog blog = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            blog = new Blog( );
-            int nIndex = 1;
-
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
+            daoUtil.setInt( 1, nKey );
+            daoUtil.executeQuery( );
+    
+            if ( daoUtil.next( ) )
+            {
+                blog = new Blog( );
+                int nIndex = 1;
+    
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+    
+            }
 
         }
-
-        daoUtil.free( );
         return blog;
     }
 
@@ -229,33 +229,33 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public Blog loadByName( String strName, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_NAME, plugin );
-        daoUtil.setString( 1, strName );
-        daoUtil.executeQuery( );
         Blog blog = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_NAME, plugin ) )
         {
-            blog = new Blog( );
-            int nIndex = 1;
-
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
-
+            daoUtil.setString( 1, strName );
+            daoUtil.executeQuery( );
+    
+            if ( daoUtil.next( ) )
+            {
+                blog = new Blog( );
+                int nIndex = 1;
+    
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+    
+            }
         }
-
-        daoUtil.free( );
         return blog;
     }
 
@@ -265,34 +265,34 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public Blog loadVersion( int nId, int nVersion, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_VERSION, plugin );
-        daoUtil.setInt( 1, nId );
-        daoUtil.setInt( 2, nVersion );
-        daoUtil.executeQuery( );
         Blog blog = null;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_VERSION, plugin ) )
         {
-            blog = new Blog( );
-            int nIndex = 1;
-
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
+            daoUtil.setInt( 1, nId );
+            daoUtil.setInt( 2, nVersion );
+            daoUtil.executeQuery( );
+    
+            if ( daoUtil.next( ) )
+            {
+                blog = new Blog( );
+                int nIndex = 1;
+    
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+            }
 
         }
-
-        daoUtil.free( );
         return blog;
     }
 
@@ -302,10 +302,11 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public void delete( int nKey, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nKey );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nKey );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -314,10 +315,11 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public void deleteVersions( int nKey, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_VERSIONS, plugin );
-        daoUtil.setInt( 1, nKey );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_VERSIONS, plugin ) )
+        {
+            daoUtil.setInt( 1, nKey );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -326,27 +328,28 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public void store( Blog blog, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
-        int nIndex = 1;
-
-        daoUtil.setInt( nIndex++, blog.getId( ) );
-        daoUtil.setInt( nIndex++, blog.getVersion( ) );
-        daoUtil.setString( nIndex++, blog.getContentLabel( ) );
-        daoUtil.setTimestamp( nIndex++, blog.getCreationDate( ) );
-        daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
-        daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
-        daoUtil.setString( nIndex++, blog.getUser( ) );
-        daoUtil.setString( nIndex++, blog.getUserCreator( ) );
-        daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
-        daoUtil.setString( nIndex++, blog.getEditComment( ) );
-        daoUtil.setString( nIndex++, blog.getDescription( ) );
-        daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
-        daoUtil.setString( nIndex++, blog.getUrl( ) );
-
-        daoUtil.setInt( nIndex, blog.getId( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
+            int nIndex = 1;
+    
+            daoUtil.setInt( nIndex++, blog.getId( ) );
+            daoUtil.setInt( nIndex++, blog.getVersion( ) );
+            daoUtil.setString( nIndex++, blog.getContentLabel( ) );
+            daoUtil.setTimestamp( nIndex++, blog.getCreationDate( ) );
+            daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
+            daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
+            daoUtil.setString( nIndex++, blog.getUser( ) );
+            daoUtil.setString( nIndex++, blog.getUserCreator( ) );
+            daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
+            daoUtil.setString( nIndex++, blog.getEditComment( ) );
+            daoUtil.setString( nIndex++, blog.getDescription( ) );
+            daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
+            daoUtil.setString( nIndex++, blog.getUrl( ) );
+    
+            daoUtil.setInt( nIndex, blog.getId( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -355,33 +358,34 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public List<Blog> selectBlogsList( Plugin plugin )
     {
-        List<Blog> blogList = new ArrayList<Blog>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Blog> blogList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
-            Blog blog = new Blog( );
-            int nIndex = 1;
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                Blog blog = new Blog( );
+                int nIndex = 1;
+    
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+    
+                blogList.add( blog );
+            }
 
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
-
-            blogList.add( blog );
         }
-
-        daoUtil.free( );
         return blogList;
     }
 
@@ -391,34 +395,35 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public List<Blog> selectlastModifiedBlogsList( Plugin plugin, int nLimit )
     {
-        List<Blog> blogList = new ArrayList<Blog>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_DOCUMENTS, plugin );
-        daoUtil.setInt( 1, nLimit );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Blog> blogList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_LAST_DOCUMENTS, plugin ) )
         {
-            Blog blog = new Blog( );
-            int nIndex = 1;
+            daoUtil.setInt( 1, nLimit );
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                Blog blog = new Blog( );
+                int nIndex = 1;
+    
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+    
+                blogList.add( blog );
+            }
 
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
-
-            blogList.add( blog );
         }
-
-        daoUtil.free( );
         return blogList;
     }
 
@@ -428,34 +433,34 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public List<Blog> selectBlogsVersionsList( int nId, Plugin plugin )
     {
-        List<Blog> blogVersionsList = new ArrayList<Blog>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_VERSION, plugin );
-        daoUtil.setInt( 1, nId );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Blog> blogVersionsList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_VERSION, plugin ) )
         {
-            Blog blog = new Blog( );
-            int nIndex = 1;
-
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
-
-            blogVersionsList.add( blog );
+            daoUtil.setInt( 1, nId );
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                Blog blog = new Blog( );
+                int nIndex = 1;
+    
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+    
+                blogVersionsList.add( blog );
+            }
         }
-
-        daoUtil.free( );
         return blogVersionsList;
     }
 
@@ -465,16 +470,16 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public List<Integer> selectIdBlogsList( Plugin plugin )
     {
-        List<Integer> blogList = new ArrayList<Integer>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Integer> blogList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID, plugin ) )
         {
-            blogList.add( daoUtil.getInt( 1 ) );
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                blogList.add( daoUtil.getInt( 1 ) );
+            }
         }
-
-        daoUtil.free( );
         return blogList;
     }
 
@@ -485,15 +490,15 @@ public final class BlogDAO implements IBlogDAO
     public ReferenceList selectBlogsReferenceList( Plugin plugin )
     {
         ReferenceList blogList = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
-            blogList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            daoUtil.executeQuery( );
+    
+            while ( daoUtil.next( ) )
+            {
+                blogList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
         }
-
-        daoUtil.free( );
         return blogList;
     }
 
@@ -507,7 +512,7 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public List<Blog> selectByFilter( BlogFilter filter )
     {
-        List<Blog> listDocuments = new ArrayList<Blog>( );
+        List<Blog> listDocuments = new ArrayList<>( );
         DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter );
         daoUtil.executeQuery( );
 
@@ -528,7 +533,7 @@ public final class BlogDAO implements IBlogDAO
             blog.setEditComment( daoUtil.getString( nIndex++ ) );
             blog.setDescription( daoUtil.getString( nIndex++ ) );
             blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
+            blog.setUrl( daoUtil.getString( nIndex ) );
 
             if ( filter.getLoadBinaries( ) )
             {
@@ -614,7 +619,8 @@ public final class BlogDAO implements IBlogDAO
         if ( filter.getPortletId( ) != 0 )
         {
             sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY )
-                    .append( "p.id_portlet=" + String.valueOf( filter.getPortletId( ) ) );
+                    .append( "p.id_portlet=" )
+                    .append( String.valueOf( filter.getPortletId( ) ) );
         }
 
         if ( StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) ) )
@@ -690,35 +696,37 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public List<Blog> loadBlogByIdTag( int nIdTag, Plugin plugin )
     {
-        List<Blog> listBlog = new ArrayList<Blog>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BLOG_BY_ID_TAG, plugin );
-        daoUtil.setInt( 1, nIdTag );
-        daoUtil.executeQuery( );
-        Blog blog = null;
-
-        while ( daoUtil.next( ) )
+        List<Blog> listBlog = new ArrayList<>( );
+        
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BLOG_BY_ID_TAG, plugin ) )
         {
-            blog = new Blog( );
-            int nIndex = 1;
-
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex++ ) );
-            listBlog.add( blog );
+            daoUtil.setInt( 1, nIdTag );
+            daoUtil.executeQuery( );
+            Blog blog = null;
+    
+            while ( daoUtil.next( ) )
+            {
+                blog = new Blog( );
+                int nIndex = 1;
+    
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+                listBlog.add( blog );
+    
+            }
 
         }
-
-        daoUtil.free( );
         return listBlog;
     }
 
@@ -728,7 +736,7 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public List<Blog> selectWithoutBinaries( Plugin plugin )
     {
-        List<Blog> listDocuments = new ArrayList<Blog>( );
+        List<Blog> listDocuments = new ArrayList<>( );
         
         try (DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_BLOG, plugin ))
         {
