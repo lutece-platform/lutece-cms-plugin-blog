@@ -10,7 +10,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-blog</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <name>Lutece blog plugin</name>
 
     <repositories>
@@ -66,6 +66,6 @@
       <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-blog.git</connection>
       <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-blog.git</developerConnection>
       <url>https://github.com/lutece-platform/lutece-cms-plugin-blog.git</url>
-      <tag>HEAD</tag>
+      <tag>lutece-cms-plugin-blog-1.0.3</tag>
     </scm>
 </project>
