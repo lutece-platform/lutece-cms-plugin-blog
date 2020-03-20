@@ -103,14 +103,15 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public void insertDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT_IN_BLOG, plugin );
+     try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT_IN_BLOG, plugin ) )
+     {
         
         daoUtil.setInt( 1, nIdBlog );
         daoUtil.setInt( 2, nIdDocument );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
-        
+     }     
     }
 
     /**
@@ -199,12 +200,13 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public void deleteInBlogById( int nDocumentId, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_IN_BLOG, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_IN_BLOG, plugin ) )
+        {
         daoUtil.setInt( 1, nDocumentId );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
-        
+        }
     }
 
     /**

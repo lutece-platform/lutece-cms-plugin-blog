@@ -61,15 +61,10 @@ public final class DocContentHome
      * @param docContent
      *            The Document Content
      *
-     * @return
-     *      docContent with it's primary key
      */
-    public static DocContent create( DocContent docContent )
+    public static void create( DocContent docContent )
     {
         _dao.insertDocContent( docContent, _plugin );
-        
-        return docContent;
-
     }
     
     /**
