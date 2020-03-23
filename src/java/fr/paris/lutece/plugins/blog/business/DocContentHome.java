@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,12 +66,12 @@ public final class DocContentHome
     {
         _dao.insertDocContent( docContent, _plugin );
     }
-    
+
     /**
      * @param nIdBlog
-     *              the  blog id
+     *            the blog id
      * @param nIdDocument
-     *              the document id
+     *            the document id
      */
     public static void insertInBlog( int nIdBlog, int nIdDocument )
     {
@@ -102,17 +102,17 @@ public final class DocContentHome
     {
         _dao.delete( nBlog, _plugin );
     }
-    
+
     /**
      * Remove the correspondance beetween the document and the blog
      * 
      * @param nDocumentId
-     *                  the document id 
+     *            the document id
      */
     public static void removeInBlogById( int nDocumentId )
     {
         _dao.deleteInBlogById( nDocumentId, _plugin );
-        
+
     }
 
     /**

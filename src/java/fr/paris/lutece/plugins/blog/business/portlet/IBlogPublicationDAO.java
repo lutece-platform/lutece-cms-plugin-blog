@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,6 +99,7 @@ public interface IBlogPublicationDAO
 
     /**
      * load a BLOGPublication by BLOG id and portlet id
+     * 
      * @param nPortletId
      *            The portlet id
      * @param nDocId

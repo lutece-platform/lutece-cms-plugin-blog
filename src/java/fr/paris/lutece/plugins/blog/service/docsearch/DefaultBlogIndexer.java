@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -104,7 +104,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      * @throws IOException
      *             If an IO Exception occurred
      */
-    private void indexListBlog( IndexWriter indexWriter, List<Integer> listIdBlog ) throws  IOException
+    private void indexListBlog( IndexWriter indexWriter, List<Integer> listIdBlog ) throws IOException
     {
         Iterator<Integer> it = listIdBlog.iterator( );
 
@@ -120,8 +120,8 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      * {@inheritDoc}
      */
     @Override
-    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLogs ) throws IOException, InterruptedException,
-            SiteMessageException
+    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLogs )
+            throws IOException, InterruptedException, SiteMessageException
     {
         Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
         List<Integer> listIdBlog = new ArrayList<>( );
@@ -130,14 +130,14 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         {
             // incremental indexing
             // delete all record which must be deleted
-            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask(
-                    IndexerAction.TASK_DELETE, plugin ) )
+            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : BlogSearchService.getInstance( )
+                    .getAllIndexerActionByTask( IndexerAction.TASK_DELETE, plugin ) )
             {
                 sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_DELETE );
 
                 Term term = new Term( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdBlog( ) ) );
                 Term [ ] terms = {
-                    term
+                        term
                 };
 
                 indexWriter.deleteDocuments( terms );
@@ -151,7 +151,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
                 Term term = new Term( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdBlog( ) ) );
                 Term [ ] terms = {
-                    term
+                        term
                 };
 
                 indexWriter.deleteDocuments( terms );
@@ -214,7 +214,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
         doc.add( new StringField( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( blog.getId( ) ), Field.Store.YES ) );
         // Add the user firstName as a field, so that index can be incrementally maintained.
-        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUserCreator( ).toLowerCase(), Field.Store.YES ) );
+        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUserCreator( ).toLowerCase( ), Field.Store.YES ) );
 
         doc.add( new TextField( BlogSearchItem.FIELD_TAGS, getTagToIndex( blog ), Field.Store.YES ) );
         FieldType ft = new FieldType( StringField.TYPE_STORED );
@@ -222,9 +222,9 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         doc.add( new Field( SearchItem.FIELD_DATE, DateTools.timeToString( blog.getUpdateDate( ).getTime( ), DateTools.Resolution.MINUTE ), ft ) );
         doc.add( new NumericDocValuesField( BlogSearchItem.FIELD_DATE_UPDATE, blog.getUpdateDate( ).getTime( ) ) );
         // is document published TODAY
-        Date today = new Date();
-        boolean isPublished =  blog.getBlogPubilcation().stream()
-                .anyMatch( publication -> today.after(publication.getDateBeginPublishing()) && today.before(publication.getDateEndPublishing() ));
+        Date today = new Date( );
+        boolean isPublished = blog.getBlogPubilcation( ).stream( )
+                .anyMatch( publication -> today.after( publication.getDateBeginPublishing( ) ) && today.before( publication.getDateEndPublishing( ) ) );
         doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, ( isPublished ) ? "false" : "true", Field.Store.YES ) );
 
         // Add the uid as a field, so that index can be incrementally maintained.

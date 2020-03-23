@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,6 @@ public class BlogListPortletJspBean extends PortletJspBean
 
     private static final String VIEW_MODIFY_PORTLET = "getModify";
 
-
     // //////////////////////////////////////////////////////////////////////////
     // Constants
     private static final long serialVersionUID = 1L;
@@ -167,9 +166,9 @@ public class BlogListPortletJspBean extends PortletJspBean
 
         List<Integer> listBlogsId = new ArrayList<>( );
         AdminUser user = AdminUserService.getAdminUser( request );
-        
-        if ( StringUtils.isNotBlank( _strSearchText ) || ArrayUtils.isNotEmpty( _strTag ) || _bIsChecked || _bIsUnpulished
-                || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
+
+        if ( StringUtils.isNotBlank( _strSearchText ) || ArrayUtils.isNotEmpty( _strTag ) || _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null
+                || _dateUpdateBlogBefor != null )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
@@ -315,8 +314,8 @@ public class BlogListPortletJspBean extends PortletJspBean
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );
-        _portlet = ( _portlet != null && request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet : (BlogListPortlet) PortletHome
-                .findByPrimaryKey( nPortletId );
+        _portlet = ( _portlet != null && request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet
+                : (BlogListPortlet) PortletHome.findByPrimaryKey( nPortletId );
         HashMap<String, Object> model = getPaginatedListModel( request );
 
         HtmlTemplate template = getModifyTemplate( _portlet, model );
@@ -345,8 +344,8 @@ public class BlogListPortletJspBean extends PortletJspBean
         {
 
             setSearchBlog( request, strButtonSearch, strButtonReset );
-            return "../../DoCreatePortlet.jsp?portlet_type_id=" + BlogListPortlet.RESOURCE_ID + "&page_id=" + strIdPage + "&" + AbstractPaginator.PARAMETER_PAGE_INDEX
-                    + "=1";
+            return "../../DoCreatePortlet.jsp?portlet_type_id=" + BlogListPortlet.RESOURCE_ID + "&page_id=" + strIdPage + "&"
+                    + AbstractPaginator.PARAMETER_PAGE_INDEX + "=1";
         }
 
         int order = 1;
@@ -436,7 +435,7 @@ public class BlogListPortletJspBean extends PortletJspBean
      * 
      * @param request
      * @return Json The Json succes or echec
-     * @throws ParseException 
+     * @throws ParseException
      */
     public String UpdatePortletDocument( HttpServletRequest request ) throws ParseException
     {
@@ -447,13 +446,13 @@ public class BlogListPortletJspBean extends PortletJspBean
         String strOrderDocument = request.getParameter( PARAMETER_DOCUMENT_ORDER );
 
         int nIdDocument = Integer.parseInt( strIdDocument );
-        BlogPublication doc= PublishingService.getInstance().getBlogPublication( _portlet.getId( ), nIdDocument  );
-        if( doc == null )
+        BlogPublication doc = PublishingService.getInstance( ).getBlogPublication( _portlet.getId( ), nIdDocument );
+        if ( doc == null )
         {
-        	doc = new BlogPublication( );
-	        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-	        doc.setDateEndPublishing( new Date( sdf.parse( BlogPublicationJspBean.DATE_END_PUBLICATION ).getTime( ) ) );
-	        doc.setIdBlog( nIdDocument );
+            doc = new BlogPublication( );
+            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+            doc.setDateEndPublishing( new Date( sdf.parse( BlogPublicationJspBean.DATE_END_PUBLICATION ).getTime( ) ) );
+            doc.setIdBlog( nIdDocument );
         }
         if ( strAction != null && !strAction.isEmpty( ) && strAction.equals( PARAMETER_ACTION_PORTLET_ADD ) )
         {

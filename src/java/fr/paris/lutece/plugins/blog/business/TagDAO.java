@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ public final class TagDAO implements ITagDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 nKey = daoUtil.getInt( 1 ) + 1;
@@ -92,10 +92,10 @@ public final class TagDAO implements ITagDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG, plugin ) )
         {
             tag.setIdTag( newPrimaryKey( plugin ) );
-    
+
             daoUtil.setInt( 1, tag.getIdTag( ) );
             daoUtil.setString( 2, tag.getName( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -110,16 +110,16 @@ public final class TagDAO implements ITagDAO
         {
             daoUtil.setInt( 1, idTag );
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 Tag tag = new Tag( );
-    
+
                 tag.setIdTag( daoUtil.getInt( 1 ) );
                 tag.setName( daoUtil.getString( 2 ) );
-    
+
                 daoUtil.free( );
-    
+
                 return tag;
             }
         }
@@ -136,16 +136,16 @@ public final class TagDAO implements ITagDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_TAG, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 Tag tag = new Tag( );
-    
+
                 tag.setIdTag( daoUtil.getInt( 1 ) );
                 tag.setName( daoUtil.getString( 2 ) );
-    
+
                 listTag.add( tag );
-    
+
             }
         }
 
@@ -177,7 +177,7 @@ public final class TagDAO implements ITagDAO
             daoUtil.setInt( 1, tag.getIdTag( ) );
             daoUtil.setString( 2, tag.getName( ) );
             daoUtil.setInt( 3, tag.getIdTag( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -193,7 +193,7 @@ public final class TagDAO implements ITagDAO
             daoUtil.setInt( 1, nIdTag );
             daoUtil.setInt( 2, nIdDoc );
             daoUtil.setInt( 3, nPriority );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -208,7 +208,7 @@ public final class TagDAO implements ITagDAO
         {
             daoUtil.setInt( 1, idTag );
             daoUtil.setInt( 2, idDoc );
-    
+
             daoUtil.executeUpdate( );
         }
 
@@ -238,7 +238,7 @@ public final class TagDAO implements ITagDAO
         {
             daoUtil.setInt( 1, idDoc );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 Tag tag = new Tag( );
@@ -262,7 +262,7 @@ public final class TagDAO implements ITagDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_TAG, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 blogList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
@@ -282,16 +282,16 @@ public final class TagDAO implements ITagDAO
         {
             daoUtil.setInt( 1, idDoc );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 Tag tag = new Tag( );
                 tag.setIdTag( daoUtil.getInt( 1 ) );
                 tag.setName( daoUtil.getString( 2 ) );
                 tag.setPriority( daoUtil.getInt( 3 ) );
-    
+
                 listTag.add( tag );
-    
+
             }
         }
 
@@ -308,16 +308,16 @@ public final class TagDAO implements ITagDAO
         {
             daoUtil.setString( 1, strName );
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 Tag tag = new Tag( );
-    
+
                 tag.setIdTag( daoUtil.getInt( 1 ) );
                 tag.setName( daoUtil.getString( 2 ) );
-    
+
                 daoUtil.free( );
-    
+
                 return tag;
             }
         }

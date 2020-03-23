@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 nKey = daoUtil.getInt( 1 ) + 1;
@@ -83,10 +83,10 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         {
             daoUtil.setInt( 2, indexerAction.getIdBlog( ) );
             daoUtil.setInt( 3, indexerAction.getIdTask( ) );
-    
+
             indexerAction.setIdAction( newPrimaryKey( plugin ) );
             daoUtil.setInt( 1, indexerAction.getIdAction( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -103,7 +103,7 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         {
             daoUtil.setInt( 1, nId );
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 indexerAction = new IndexerAction( );
@@ -155,27 +155,27 @@ public final class IndexerActionDAO implements IIndexerActionDAO
         {
 
             int nIndex = 1;
-    
+
             if ( filter.containsIdTask( ) )
             {
                 daoUtil.setInt( nIndex, filter.getIdTask( ) );
                 nIndex++;
             }
-    
+
             if ( filter.containsIdBlog( ) )
             {
                 daoUtil.setInt( nIndex, filter.getIdBlog( ) );
             }
-    
+
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 indexerAction = new IndexerAction( );
                 indexerAction.setIdAction( daoUtil.getInt( 1 ) );
                 indexerAction.setIdBlog( daoUtil.getInt( 2 ) );
                 indexerAction.setIdTask( daoUtil.getInt( 3 ) );
-    
+
                 indexerActionList.add( indexerAction );
             }
 

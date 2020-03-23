@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -739,32 +739,32 @@ public class BlogJspBean extends ManageBlogJspBean
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
 
-    @Action(ACTION_DUPLICATE_BLOG)
-    public String doDuplicateBlog(HttpServletRequest request) throws AccessDeniedException {
+    @Action( ACTION_DUPLICATE_BLOG )
+    public String doDuplicateBlog( HttpServletRequest request ) throws AccessDeniedException
+    {
 
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
 
-        int nIdBlog = Integer.parseInt(request.getParameter(PARAMETER_ID_BLOG));
-        _blog = BlogService.getInstance().loadBlog(nIdBlog);
+        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        _blog = BlogService.getInstance( ).loadBlog( nIdBlog );
 
-        Timestamp sqlDate = getSqlDate();
+        Timestamp sqlDate = getSqlDate( );
 
-        _blog.setContentLabel(CONSTANT_DUPLICATE_BLOG_NAME +_blog.getContentLabel());
-        _blog.setCreationDate(sqlDate);
-        _blog.setUpdateDate(sqlDate);
-        _blog.setUser(AdminUserService.getAdminUser(request).getFirstName());
-        _blog.setUserCreator(AdminUserService.getAdminUser(request).getFirstName());
-        _blog.setVersion(1);
-        _blog.setAttachedPortletId(0);
+        _blog.setContentLabel( CONSTANT_DUPLICATE_BLOG_NAME + _blog.getContentLabel( ) );
+        _blog.setCreationDate( sqlDate );
+        _blog.setUpdateDate( sqlDate );
+        _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _blog.setVersion( 1 );
+        _blog.setAttachedPortletId( 0 );
 
         BlogService.getInstance( ).createBlog( _blog, _blog.getDocContent( ) );
 
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
-
 
     /**
      * Returns the form to update info about a blog

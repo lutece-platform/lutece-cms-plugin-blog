@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -147,7 +147,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         Object [ ] messageNumberOfMaxLatestPortletsDisplay = {
-            String.valueOf( PortletFilter.PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY )
+                String.valueOf( PortletFilter.PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY )
         };
         String strErrorFilter = null;
         _blogPublication = ( _blogPublication != null ) ? _blogPublication : new BlogPublication( );
@@ -160,8 +160,8 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         PortletOrder pOrder = new PortletOrder( );
         String strOrderPortlet = request.getParameter( PARAMETER_ORDER_PORTLET );
-        boolean bIsDisplayPortlets = ( ( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) != null ) && !Boolean.valueOf( request
-                .getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ) ) ? false : true;
+        boolean bIsDisplayPortlets = ( ( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) != null )
+                && !Boolean.valueOf( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ) ) ? false : true;
 
         String strOrderPortletAsc = request.getParameter( PARAMETER_ORDER_PORTLET_ASC );
         int nOrderPortlet = -1;
@@ -196,8 +196,8 @@ public class BlogPublicationJspBean extends BlogJspBean
 
         Collection<ReferenceItem> listDocumentListPortlets = getListAuthorizedDocumentListPortlets( _blog.getId( ), pOrder,
                 ( strErrorFilter == null ) ? portletFilter : null );
-        Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( _blog.getId( ), pOrder, ( strErrorFilter == null ) ? portletFilter
-                : null );
+        Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( _blog.getId( ), pOrder,
+                ( strErrorFilter == null ) ? portletFilter : null );
 
         model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
         model.put( MARK_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
@@ -301,7 +301,7 @@ public class BlogPublicationJspBean extends BlogJspBean
             parsed = sdf.parse( dateEndPublishingStr );
             dateEndPublishing = new java.sql.Date( parsed.getTime( ) );
         }
-        int nBlogOrder = BlogListPortletHome.getMinDocBlogOrder();
+        int nBlogOrder = BlogListPortletHome.getMinDocBlogOrder( );
         nBlogOrder = nBlogOrder - 1;
 
         htmldocPublication.setIdBlog( nIdDoc );

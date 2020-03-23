@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,10 +61,10 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
         {
             int nPos = 0;
-    
+
             daoUtil.setInt( ++nPos, config.getIdRss( ) );
             daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -78,10 +78,10 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
         {
             int nPos = 0;
-    
+
             daoUtil.setInt( ++nPos, config.getIdRss( ) );
             daoUtil.setInt( ++nPos, config.getIdPortlet( ) );
-    
+
             daoUtil.setInt( ++nPos, config.getIdRss( ) );
             daoUtil.executeUpdate( );
         }
@@ -97,11 +97,11 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin ) )
         {
             daoUtil.setInt( 1, nIdRss );
-    
+
             daoUtil.executeQuery( );
-    
+
             int nPos = 0;
-    
+
             if ( daoUtil.next( ) )
             {
                 config = new BlogResourceRssConfig( );
@@ -135,14 +135,14 @@ public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             int nPos = 0;
             if ( daoUtil.next( ) )
             {
                 BlogResourceRssConfig config = new BlogResourceRssConfig( );
                 config.setIdRss( daoUtil.getInt( ++nPos ) );
                 config.setIdPortlet( daoUtil.getInt( ++nPos ) );
-    
+
                 configList.add( config );
             }
         }

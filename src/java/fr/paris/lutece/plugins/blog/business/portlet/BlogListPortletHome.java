@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -147,8 +147,8 @@ public class BlogListPortletHome extends PortletHome
      *
      * @return The minimum value of blog document order
      */
-    public static int getMinDocBlogOrder()
+    public static int getMinDocBlogOrder( )
     {
-        return _dao.selectMinDocumentBlogOrder();
+        return _dao.selectMinDocumentBlogOrder( );
     }
 }

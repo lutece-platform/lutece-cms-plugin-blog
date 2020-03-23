@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -219,7 +219,7 @@ public class BlogPortletJspBean extends PortletJspBean
         blog.setVersion( blog.getVersion( ) + 1 );
         BlogHome.addNewVersion( blog );
 
-        portlet.setBlogPublication(BlogPublicationHome.findDocPublicationByPimaryKey(nPortletId, portlet.getContentId( ) ));
+        portlet.setBlogPublication( BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, portlet.getContentId( ) ) );
         // updates the portlet
         portlet.update( );
 

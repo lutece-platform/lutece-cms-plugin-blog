@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,12 +85,12 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
         {
             blogPageTemplate.setId( newPrimaryKey( ) );
-    
+
             daoUtil.setInt( 1, blogPageTemplate.getId( ) );
             daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
             daoUtil.setString( 3, blogPageTemplate.getFile( ) );
             daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -108,9 +108,9 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
             daoUtil.setInt( 1, nPageTemplateId );
-    
+
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 blogPageTemplate = new BlogPageTemplate( );
@@ -154,7 +154,7 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
             daoUtil.setString( 3, blogPageTemplate.getFile( ) );
             daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
             daoUtil.setInt( 5, blogPageTemplate.getId( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -170,11 +170,11 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL ) )
         {
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 BlogPageTemplate blogPageTemplate = new BlogPageTemplate( );
-    
+
                 blogPageTemplate.setId( daoUtil.getInt( 1 ) );
                 blogPageTemplate.setDescription( daoUtil.getString( 2 ) );
                 blogPageTemplate.setFile( daoUtil.getString( 3 ) );

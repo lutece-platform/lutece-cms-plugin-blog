@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ public class BlogResourceRss extends ResourceRss
 
     // JSPs
     private static final String JSP_PAGE_BLOG = "/jsp/site/Portal.jsp?page=blog";
-    
+
     // Servlets
     private static final String DOCUMENT_RESOURCE_SERVLET_URL = "/servlet/plugins/blogs/file";
 
@@ -215,68 +215,68 @@ public class BlogResourceRss extends ResourceRss
     @Override
     public IFeedResource getFeed( )
     {
-		String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
-		Locale locale = new Locale( strRssFileLanguage );
-		Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
-		String strTypeImage =  AppPropertiesService.getProperty( PROPERTY_TYPE_IMAGE );
+        String strRssFileLanguage = AppPropertiesService.getProperty( PROPERTY_SITE_LANGUAGE );
+        Locale locale = new Locale( strRssFileLanguage );
+        Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
+        String strTypeImage = AppPropertiesService.getProperty( PROPERTY_TYPE_IMAGE );
 
-		BlogResourceRssConfig config = BlogResourceRssConfigHome.findByPrimaryKey( this.getId(), plugin );
+        BlogResourceRssConfig config = BlogResourceRssConfigHome.findByPrimaryKey( this.getId( ), plugin );
 
-		String strSiteUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
+        String strSiteUrl = AppPropertiesService.getProperty( PROPERTY_WEBAPP_PROD_URL );
 
-		IFeedResource resource = new FeedResource( );
-		resource.setTitle( I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, locale ) );
-		resource.setLink( strSiteUrl );
-		resource.setLanguage( strRssFileLanguage );
-		resource.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, locale ) );
-		
-		IFeedResourceImage image = new FeedResourceImage( );
-		image.setTitle( resource.getTitle( ) );
-		image.setLink( resource.getLink( ) );
-		image.setUrl( strSiteUrl + TEMPLATE_IMAGE_RSS );
-		
-		resource.setImage( image );
+        IFeedResource resource = new FeedResource( );
+        resource.setTitle( I18nService.getLocalizedString( PROPERTY_TITLE_WIRE, locale ) );
+        resource.setLink( strSiteUrl );
+        resource.setLanguage( strRssFileLanguage );
+        resource.setDescription( I18nService.getLocalizedString( PROPERTY_DESCRIPTION_WIRE, locale ) );
 
-		List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
+        IFeedResourceImage image = new FeedResourceImage( );
+        image.setTitle( resource.getTitle( ) );
+        image.setLink( resource.getLink( ) );
+        image.setUrl( strSiteUrl + TEMPLATE_IMAGE_RSS );
 
-		List<IFeedResourceItem> listItems = new ArrayList<>( );
-		for (BlogPublication dcPub : listDocPub)
-		{
-			Blog blog = BlogService.getInstance( ).loadBlog( dcPub.getIdBlog( ) );
+        resource.setImage( image );
 
-			IFeedResourceItem item = new FeedResourceItem( );
+        List<BlogPublication> listDocPub = BlogPublicationHome.getDocPublicationByPortlet( config.getIdPortlet( ) );
 
-			Map<String, Object> model = new HashMap<>( );
-			model.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
-			model.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) );
-			model.put( MARK_RSS_SITE_URL, strSiteUrl );
-			model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
+        List<IFeedResourceItem> listItems = new ArrayList<>( );
+        for ( BlogPublication dcPub : listDocPub )
+        {
+            Blog blog = BlogService.getInstance( ).loadBlog( dcPub.getIdBlog( ) );
 
-			HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_BLOG_ITEM_TITLE, locale, model );
-			String strTitle = template.getHtml( );
+            IFeedResourceItem item = new FeedResourceItem( );
 
-			item.setTitle( strTitle );
-			String url = strSiteUrl + JSP_PAGE_BLOG + "&id=" + blog.getId( );
-			if (StringUtils.isNotEmpty( blog.getUrl( ) ))
-			{
-				url = blog.getUrl( );
-			}
-			item.setLink( url );
-			item.setDescription( blog.getDescription( ) );
-			item.setDate( blog.getCreationDate( ) );
-			
-			for (DocContent dc : blog.getDocContent( ))
-			{
-				if (dc.getContentType( ).getIdContentType( ) == Integer.parseInt( strTypeImage ))
-				{
-					item.setGUID( strSiteUrl + DOCUMENT_RESOURCE_SERVLET_URL + "?id_file=" + dc.getId( ) );
-					break;
-				}
-			}
-			listItems.add( item );
-		}
-		resource.setItems( listItems );
-		return resource;
+            Map<String, Object> model = new HashMap<>( );
+            model.put( MARK_RSS_ITEM_TITLE, blog.getName( ) );
+            model.put( MARK_RSS_ITEM_DESCRIPTION, blog.getDescription( ) );
+            model.put( MARK_RSS_SITE_URL, strSiteUrl );
+            model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
+
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_BLOG_ITEM_TITLE, locale, model );
+            String strTitle = template.getHtml( );
+
+            item.setTitle( strTitle );
+            String url = strSiteUrl + JSP_PAGE_BLOG + "&id=" + blog.getId( );
+            if ( StringUtils.isNotEmpty( blog.getUrl( ) ) )
+            {
+                url = blog.getUrl( );
+            }
+            item.setLink( url );
+            item.setDescription( blog.getDescription( ) );
+            item.setDate( blog.getCreationDate( ) );
+
+            for ( DocContent dc : blog.getDocContent( ) )
+            {
+                if ( dc.getContentType( ).getIdContentType( ) == Integer.parseInt( strTypeImage ) )
+                {
+                    item.setGUID( strSiteUrl + DOCUMENT_RESOURCE_SERVLET_URL + "?id_file=" + dc.getId( ) );
+                    break;
+                }
+            }
+            listItems.add( item );
+        }
+        resource.setItems( listItems );
+        return resource;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,7 +85,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         {
             daoUtil.setInt( 1, p.getId( ) );
             daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
-    
+
             daoUtil.executeUpdate( );
         }
 
@@ -119,7 +119,6 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
             }
         }
     }
-    
 
     /**
      * Insert a list of blog publication for a specified portlet
@@ -150,7 +149,6 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
             }
         }
     }
-
 
     /**
      * {@inheritDoc }
@@ -193,7 +191,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         {
             daoUtil.setInt( 1, nPortletId );
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 portlet.setId( daoUtil.getInt( 1 ) );
@@ -216,7 +214,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         {
             daoUtil.setString( 1, strPortletType );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 page.put( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
@@ -238,7 +236,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         {
             daoUtil.setInt( 1, nPortletId );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 BlogPublication docPub = new BlogPublication( );
@@ -248,7 +246,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
                 docPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
                 docPub.setStatus( daoUtil.getInt( 5 ) );
                 listDocPublication.add( docPub );
-    
+
             }
 
         }
@@ -267,10 +265,10 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
             daoUtil.setInt( 1, p.getId( ) );
             daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
             daoUtil.setInt( 3, p.getId( ) );
-    
+
             daoUtil.executeUpdate( );
         }
-        
+
         deleteHtmlsDocsId( p.getId( ) );
         insertBlogsPublicationOnUpdate( p );
     }
@@ -286,7 +284,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         {
             daoUtil.setInt( 1, nPortletId );
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 bIsAlias = true;
@@ -305,7 +303,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 blogPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
@@ -339,7 +337,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         {
 
             daoUtil.setInt( 1, nDocumentId );
-    
+
             if ( strFilter != null )
             {
                 if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
@@ -363,9 +361,9 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
                             daoUtil.setInt( 2, pFilter.getIdPage( ) );
                         }
             }
-    
+
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
@@ -385,7 +383,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_MIN_DOC_ORDER ) )
         {
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 nKey = daoUtil.getInt( 1 );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -176,7 +176,8 @@ public class TagJspBean extends ManageBlogJspBean
         String strRequestAjax = request.getParameter( ACTION_CREATE_TAG_AJAX_REQUEST );
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, AdminUserService.getAdminUser( request ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
+                AdminUserService.getAdminUser( request ) ) )
         {
             // Check constraints
             if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )

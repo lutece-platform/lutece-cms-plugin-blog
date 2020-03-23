@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -114,12 +114,12 @@ public final class BlogPortletDAO implements IBlogPortletDAO
             daoUtil.setInt( 3, p.getContentId( ) );
             daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
             daoUtil.setInt( 5, p.getId( ) );
-    
+
             daoUtil.executeUpdate( );
         }
 
         BlogPublicationHome.removeByIdPortlet( p.getId( ) );
-        insertBlogPublicationOnUpdate ( p );
+        insertBlogPublicationOnUpdate( p );
 
     }
 
@@ -137,9 +137,9 @@ public final class BlogPortletDAO implements IBlogPortletDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
             daoUtil.setInt( 1, nIdPortlet );
-    
+
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
                 portlet.setId( daoUtil.getInt( 1 ) );
@@ -179,7 +179,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 blogPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
@@ -233,7 +233,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
                             daoUtil.setInt( 1, pFilter.getIdPage( ) );
                         }
             }
-    
+
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
@@ -244,24 +244,24 @@ public final class BlogPortletDAO implements IBlogPortletDAO
         return list;
     }
 
-	    /**
-	     * Insert a blog publication for a specified portlet
-	     * 
-	     * @param portlet
-	     *            the BlogPortlet to insert
-	     */
-	    private void insertBlogPublicationOnUpdate( BlogPortlet portlet )
-	    {
-	    	try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE ) )
-	    	{
-    	        daoUtil.setInt( 1, portlet.getId( ) );
-    	        daoUtil.setInt( 2, portlet.getContentId( ) );
-    	        daoUtil.setInt( 3, 1 );
-    	        daoUtil.setInt( 4, 0 );
-    	        daoUtil.setDate(5, portlet.getBlogPublication().getDateBeginPublishing());
-    	        daoUtil.setDate(6, portlet.getBlogPublication().getDateEndPublishing( ));
-    	        
-    	        daoUtil.executeUpdate( );
-	    	}
-	    }
+    /**
+     * Insert a blog publication for a specified portlet
+     * 
+     * @param portlet
+     *            the BlogPortlet to insert
+     */
+    private void insertBlogPublicationOnUpdate( BlogPortlet portlet )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE ) )
+        {
+            daoUtil.setInt( 1, portlet.getId( ) );
+            daoUtil.setInt( 2, portlet.getContentId( ) );
+            daoUtil.setInt( 3, 1 );
+            daoUtil.setInt( 4, 0 );
+            daoUtil.setDate( 5, portlet.getBlogPublication( ).getDateBeginPublishing( ) );
+            daoUtil.setDate( 6, portlet.getBlogPublication( ).getDateEndPublishing( ) );
+
+            daoUtil.executeUpdate( );
+        }
+    }
 }

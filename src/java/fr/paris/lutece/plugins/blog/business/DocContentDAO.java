@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,19 +99,19 @@ public final class DocContentDAO implements IDocContentDAO
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
-    
+
     @Override
     public void insertDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin )
     {
-     try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT_IN_BLOG, plugin ) )
-     {
-        
-        daoUtil.setInt( 1, nIdBlog );
-        daoUtil.setInt( 2, nIdDocument );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT_IN_BLOG, plugin ) )
+        {
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-     }     
+            daoUtil.setInt( 1, nIdBlog );
+            daoUtil.setInt( 2, nIdDocument );
+
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     /**
@@ -196,16 +196,16 @@ public final class DocContentDAO implements IDocContentDAO
         daoUtil.free( );
 
     }
-    
+
     @Override
     public void deleteInBlogById( int nDocumentId, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_IN_BLOG, plugin ) )
         {
-        daoUtil.setInt( 1, nDocumentId );
+            daoUtil.setInt( 1, nDocumentId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
         }
     }
 
@@ -271,7 +271,7 @@ public final class DocContentDAO implements IDocContentDAO
             contentType.setIdContentType( daoUtil.getInt( 1 ) );
             contentType.setLabel( daoUtil.getString( 2 ) );
             listcontentType.add( contentType );
-                                                                                                                                                                                                                                                                                                                                                                                                                            
+
         }
         daoUtil.free( );
 

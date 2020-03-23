@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -146,10 +146,10 @@ public class BlogService
                 for ( DocContent docCont : docContent )
                 {
 
-                    //docCont.setIdBlog( blog.getId( ) );
+                    // docCont.setIdBlog( blog.getId( ) );
                     DocContentHome.create( docCont );
                     DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ) );
-                    
+
                 }
 
             }
@@ -177,8 +177,8 @@ public class BlogService
 
         if ( docContent != null && docContent.getId( ) != 0 )
         {
-            //DocContentHome.update( docContent );
-              DocContentHome.update( docContent );
+            // DocContentHome.update( docContent );
+            DocContentHome.update( docContent );
 
         }
         else
@@ -215,9 +215,9 @@ public class BlogService
                     if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
 
-                        //docCont.setIdBlog( blog.getId( ) );
-                        //updateDocContent( docCont );
-                          updateDocContent( docCont );
+                        // docCont.setIdBlog( blog.getId( ) );
+                        // updateDocContent( docCont );
+                        updateDocContent( docCont );
                     }
 
                 }
@@ -225,8 +225,8 @@ public class BlogService
                 for ( DocContent docCont : listDocContent )
                 {
 
-                    //DocContentHome.removeById( docCont.getId( ) );
-                      DocContentHome.removeInBlogById( docCont.getId( ) );
+                    // DocContentHome.removeById( docCont.getId( ) );
+                    DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
 
             }
@@ -274,7 +274,7 @@ public class BlogService
                     if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
 
-                       // docCont.setIdBlog( blog.getId( ) );
+                        // docCont.setIdBlog( blog.getId( ) );
                         updateDocContent( docCont );
                     }
 
@@ -283,7 +283,7 @@ public class BlogService
                 for ( DocContent docCont : listDocContent )
                 {
 
-                    //DocContentHome.removeById( docCont.getId( ) );
+                    // DocContentHome.removeById( docCont.getId( ) );
                     DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
             }
@@ -352,7 +352,7 @@ public class BlogService
     public List<Blog> getListBlogWhithBinaries( )
 
     {
-        List<Blog> listBlogs = getListBlogWithoutBinaries();
+        List<Blog> listBlogs = getListBlogWithoutBinaries( );
 
         for ( Blog doc : listBlogs )
         {
@@ -374,12 +374,12 @@ public class BlogService
     public List<Blog> getListBlogWithoutBinaries( )
 
     {
-    	List<Blog> blogList = BlogHome.selectWithoutBinaries( );
-    	for ( Blog blog : blogList )
-    	{
-    		blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( blog.getId( ) ) );
-    		blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
-    	}
+        List<Blog> blogList = BlogHome.selectWithoutBinaries( );
+        for ( Blog blog : blogList )
+        {
+            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( blog.getId( ) ) );
+            blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
+        }
         return blogList;
 
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
             daoUtil.setDate( 4, blogPublication.getDateEndPublishing( ) );
             daoUtil.setInt( 5, blogPublication.getStatus( ) );
             daoUtil.setInt( 6, blogPublication.getBlogOrder( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -102,9 +102,9 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
             daoUtil.setDate( 4, blogPublication.getDateEndPublishing( ) );
             daoUtil.setInt( 5, blogPublication.getStatus( ) );
             daoUtil.setInt( 6, blogPublication.getBlogOrder( ) );
-    
+
             daoUtil.setInt( 7, blogPublication.getIdBlog( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -145,7 +145,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         {
             daoUtil.setInt( 1, nIdPortlet );
             daoUtil.setInt( 2, nDocId );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -161,7 +161,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         {
             daoUtil.setInt( 1, nDocId );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 BlogPublication blogPub = new BlogPublication( );
@@ -171,7 +171,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
                 blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
                 blogPub.setStatus( daoUtil.getInt( 5 ) );
                 blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
-    
+
                 nListIdCategory.add( blogPub );
             }
         }
@@ -189,7 +189,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         {
             daoUtil.setInt( 1, nIdPortlet );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 BlogPublication blogPub = new BlogPublication( );
@@ -199,7 +199,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
                 blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
                 blogPub.setStatus( daoUtil.getInt( 5 ) );
                 blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
-    
+
                 nListIdCategory.add( blogPub );
             }
         }
@@ -218,9 +218,9 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
             daoUtil.setInt( 1, nIdPortlet );
             daoUtil.setTimestamp( 2, new Timestamp( datePublishing.getTime( ) ) );
             daoUtil.setTimestamp( 3, new Timestamp( dateEndPublishing.getTime( ) ) );
-    
+
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 BlogPublication blogPub = new BlogPublication( );
@@ -230,7 +230,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
                 blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
                 blogPub.setStatus( daoUtil.getInt( 5 ) );
                 blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
-    
+
                 nListIdCategory.add( blogPub );
             }
         }
@@ -249,10 +249,10 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
             daoUtil.setInt( 1, nDocId );
             daoUtil.setInt( 2, nPortletId );
             daoUtil.executeQuery( );
-    
+
             if ( daoUtil.next( ) )
             {
-            	blogPub = new BlogPublication( );
+                blogPub = new BlogPublication( );
                 blogPub.setIdPortlet( daoUtil.getInt( 1 ) );
                 blogPub.setIdBlog( daoUtil.getInt( 2 ) );
                 blogPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
@@ -274,7 +274,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PUBLICATION_ALL, plugin ) )
         {
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 BlogPublication blogPub = new BlogPublication( );
@@ -284,7 +284,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
                 blogPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
                 blogPub.setStatus( daoUtil.getInt( 5 ) );
                 blogPub.setBlogOrder( daoUtil.getInt( 6 ) );
-    
+
                 nListIdCategory.add( blogPub );
             }
         }
@@ -302,10 +302,10 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
         {
             daoUtil.setTimestamp( 1, new Timestamp( datePublishing.getTime( ) ) );
             daoUtil.setTimestamp( 2, new Timestamp( dateEndPublication.getTime( ) ) );
-    
+
             daoUtil.setInt( 3, nStatus );
             daoUtil.executeQuery( );
-    
+
             while ( daoUtil.next( ) )
             {
                 BlogPublication blogPublication = new BlogPublication( );
@@ -350,7 +350,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
             daoUtil.setInt( nIndex++, 1 );
             daoUtil.setTimestamp( nIndex++, new Timestamp( datePublishing.getTime( ) ) );
             daoUtil.setTimestamp( nIndex++, new Timestamp( dateEndPublishing.getTime( ) ) );
-    
+
             for ( int nPortletId : nPortletsIds )
             {
                 daoUtil.setInt( nIndex++, nPortletId );
@@ -396,7 +396,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
             daoUtil.setTimestamp( nIndex++, new Timestamp( dateUpdated.getTime( ) ) );
             daoUtil.setTimestamp( nIndex++, new Timestamp( System.currentTimeMillis( ) ) );
             daoUtil.setTimestamp( nIndex++, new Timestamp( System.currentTimeMillis( ) ) );
-    
+
             for ( int nPortletId : nPortletsIds )
             {
                 daoUtil.setInt( nIndex++, nPortletId );

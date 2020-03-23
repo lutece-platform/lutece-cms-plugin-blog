@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ public class BlogListPortlet extends PortletHtmlContent
         Date date = new Date( calendar.getTimeInMillis( ) );
         BlogFilter documentFilter = new BlogFilter( );
         List<Integer> listIdDoc = PublishingService.getPublishedBlogsIdsListByPortletIds( new int [ ] {
-            this.getId( )
+                this.getId( )
         }, date, date, BlogUtils.getPlugin( ) );
         Integer [ ] docId = listIdDoc.toArray( new Integer [ listIdDoc.size( )] );
         // Default we published a blog that as id=0
