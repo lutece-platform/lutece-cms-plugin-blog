@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,16 +70,16 @@ public final class TagDAO implements ITagDAO
      */
     public int newPrimaryKey( Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-        daoUtil.executeQuery( );
         int nKey = 1;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
         {
-            nKey = daoUtil.getInt( 1 ) + 1;
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                nKey = daoUtil.getInt( 1 ) + 1;
+            }
+        }
         return nKey;
     }
 
@@ -89,14 +89,15 @@ public final class TagDAO implements ITagDAO
     @Override
     public void insert( Tag tag, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG, plugin );
-        tag.setIdTag( newPrimaryKey( plugin ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG, plugin ) )
+        {
+            tag.setIdTag( newPrimaryKey( plugin ) );
 
-        daoUtil.setInt( 1, tag.getIdTag( ) );
-        daoUtil.setString( 2, tag.getName( ) );
+            daoUtil.setInt( 1, tag.getIdTag( ) );
+            daoUtil.setString( 2, tag.getName( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -105,22 +106,23 @@ public final class TagDAO implements ITagDAO
     @Override
     public Tag load( int idTag, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG, plugin );
-        daoUtil.setInt( 1, idTag );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG, plugin ) )
         {
-            Tag tag = new Tag( );
+            daoUtil.setInt( 1, idTag );
+            daoUtil.executeQuery( );
 
-            tag.setIdTag( daoUtil.getInt( 1 ) );
-            tag.setName( daoUtil.getString( 2 ) );
+            if ( daoUtil.next( ) )
+            {
+                Tag tag = new Tag( );
 
-            daoUtil.free( );
+                tag.setIdTag( daoUtil.getInt( 1 ) );
+                tag.setName( daoUtil.getString( 2 ) );
 
-            return tag;
+                daoUtil.free( );
+
+                return tag;
+            }
         }
-
         return null;
     }
 
@@ -130,21 +132,22 @@ public final class TagDAO implements ITagDAO
     @Override
     public List<Tag> loadAllTag( Plugin plugin )
     {
-        List<Tag> listTag = new ArrayList<Tag>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_TAG, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Tag> listTag = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_TAG, plugin ) )
         {
-            Tag tag = new Tag( );
+            daoUtil.executeQuery( );
 
-            tag.setIdTag( daoUtil.getInt( 1 ) );
-            tag.setName( daoUtil.getString( 2 ) );
+            while ( daoUtil.next( ) )
+            {
+                Tag tag = new Tag( );
 
-            listTag.add( tag );
+                tag.setIdTag( daoUtil.getInt( 1 ) );
+                tag.setName( daoUtil.getString( 2 ) );
 
+                listTag.add( tag );
+
+            }
         }
-        daoUtil.free( );
 
         return listTag;
     }
@@ -155,12 +158,11 @@ public final class TagDAO implements ITagDAO
     @Override
     public void delete( int idTag, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, idTag );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, idTag );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -169,14 +171,15 @@ public final class TagDAO implements ITagDAO
     @Override
     public void store( Tag tag, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
 
-        daoUtil.setInt( 1, tag.getIdTag( ) );
-        daoUtil.setString( 2, tag.getName( ) );
-        daoUtil.setInt( 3, tag.getIdTag( ) );
+            daoUtil.setInt( 1, tag.getIdTag( ) );
+            daoUtil.setString( 2, tag.getName( ) );
+            daoUtil.setInt( 3, tag.getIdTag( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -185,14 +188,14 @@ public final class TagDAO implements ITagDAO
     @Override
     public void insert( int nIdTag, int nIdDoc, int nPriority, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG_DOC, plugin );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG_DOC, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdTag );
+            daoUtil.setInt( 2, nIdDoc );
+            daoUtil.setInt( 3, nPriority );
 
-        daoUtil.setInt( 1, nIdTag );
-        daoUtil.setInt( 2, nIdDoc );
-        daoUtil.setInt( 3, nPriority );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -201,12 +204,13 @@ public final class TagDAO implements ITagDAO
     @Override
     public void deleteByTAG( int idTag, int idDoc, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_TAG, plugin );
-        daoUtil.setInt( 1, idTag );
-        daoUtil.setInt( 2, idDoc );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_TAG, plugin ) )
+        {
+            daoUtil.setInt( 1, idTag );
+            daoUtil.setInt( 2, idDoc );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
 
     }
 
@@ -216,12 +220,11 @@ public final class TagDAO implements ITagDAO
     @Override
     public void deleteByDoc( int idDoc, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_DOC, plugin );
-        daoUtil.setInt( 1, idDoc );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_DOC, plugin ) )
+        {
+            daoUtil.setInt( 1, idDoc );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -230,21 +233,21 @@ public final class TagDAO implements ITagDAO
     @Override
     public List<Tag> loadByDoc( int idDoc, Plugin plugin )
     {
-        List<Tag> list = new ArrayList<Tag>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_DOC, plugin );
-        daoUtil.setInt( 1, idDoc );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Tag> list = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_DOC, plugin ) )
         {
-            Tag tag = new Tag( );
-            tag.setIdTag( daoUtil.getInt( 1 ) );
-            tag.setName( daoUtil.getString( 2 ) );
-            tag.setPriority( daoUtil.getInt( 3 ) );
-            list.add( tag );
+            daoUtil.setInt( 1, idDoc );
+            daoUtil.executeQuery( );
 
+            while ( daoUtil.next( ) )
+            {
+                Tag tag = new Tag( );
+                tag.setIdTag( daoUtil.getInt( 1 ) );
+                tag.setName( daoUtil.getString( 2 ) );
+                tag.setPriority( daoUtil.getInt( 3 ) );
+                list.add( tag );
+            }
         }
-        daoUtil.free( );
 
         return list;
     }
@@ -256,15 +259,15 @@ public final class TagDAO implements ITagDAO
     public ReferenceList selectTagsReferenceList( Plugin plugin )
     {
         ReferenceList blogList = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_TAG, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL_TAG, plugin ) )
         {
-            blogList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            while ( daoUtil.next( ) )
+            {
+                blogList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
+        }
         return blogList;
     }
 
@@ -274,22 +277,23 @@ public final class TagDAO implements ITagDAO
     @Override
     public List<Tag> loadListTagByIdDoc( int idDoc, Plugin plugin )
     {
-        List<Tag> listTag = new ArrayList<Tag>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_DOC, plugin );
-        daoUtil.setInt( 1, idDoc );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<Tag> listTag = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_DOC, plugin ) )
         {
-            Tag tag = new Tag( );
-            tag.setIdTag( daoUtil.getInt( 1 ) );
-            tag.setName( daoUtil.getString( 2 ) );
-            tag.setPriority( daoUtil.getInt( 3 ) );
+            daoUtil.setInt( 1, idDoc );
+            daoUtil.executeQuery( );
 
-            listTag.add( tag );
+            while ( daoUtil.next( ) )
+            {
+                Tag tag = new Tag( );
+                tag.setIdTag( daoUtil.getInt( 1 ) );
+                tag.setName( daoUtil.getString( 2 ) );
+                tag.setPriority( daoUtil.getInt( 3 ) );
 
+                listTag.add( tag );
+
+            }
         }
-        daoUtil.free( );
 
         return listTag;
     }
@@ -300,22 +304,23 @@ public final class TagDAO implements ITagDAO
     @Override
     public Tag loadByName( String strName, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_BY_NAME, plugin );
-        daoUtil.setString( 1, strName );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_BY_NAME, plugin ) )
         {
-            Tag tag = new Tag( );
+            daoUtil.setString( 1, strName );
+            daoUtil.executeQuery( );
 
-            tag.setIdTag( daoUtil.getInt( 1 ) );
-            tag.setName( daoUtil.getString( 2 ) );
+            if ( daoUtil.next( ) )
+            {
+                Tag tag = new Tag( );
 
-            daoUtil.free( );
+                tag.setIdTag( daoUtil.getInt( 1 ) );
+                tag.setName( daoUtil.getString( 2 ) );
 
-            return tag;
+                daoUtil.free( );
+
+                return tag;
+            }
         }
-
         return null;
     }
 }

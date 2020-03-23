@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ import fr.paris.lutece.util.ReferenceItem;
 public class BlogPortletHome extends PortletHome
 {
     // Static variable pointed at the DAO instance
-    private static IBlogPortletDAO _dao = (IBlogPortletDAO) SpringContextService.getBean( "blog.blogsPortletDAO" );
+    private static IBlogPortletDAO _dao = SpringContextService.getBean( "blog.blogsPortletDAO" );
 
     /* This class implements the Singleton design pattern. */
     private static BlogPortletHome _singleton;
@@ -71,9 +71,7 @@ public class BlogPortletHome extends PortletHome
     public String getPortletTypeId( )
     {
         String strCurrentClassName = this.getClass( ).getName( );
-        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
-
-        return strPortletTypeId;
+        return PortletTypeHome.getPortletTypeId( strCurrentClassName );
     }
 
     /**

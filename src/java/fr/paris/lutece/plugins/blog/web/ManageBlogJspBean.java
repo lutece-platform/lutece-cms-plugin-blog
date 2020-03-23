@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,18 +33,18 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
-import fr.paris.lutece.portal.web.util.LocalizedPaginator;
-import fr.paris.lutece.util.html.Paginator;
-import fr.paris.lutece.util.sort.AttributeComparator;
-import fr.paris.lutece.util.url.UrlItem;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
+import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.html.AbstractPaginator;
+import fr.paris.lutece.util.sort.AttributeComparator;
+import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * ManageBlog JSP Bean abstract class for JSP Bean
@@ -74,7 +74,6 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
     protected static final String MARK_PERMISSION_DELETE_TAG = "permission_manage_delete_tag";
 
     // Variables
-    private int _nDefaultItemsPerPage;
     private String _strCurrentPageIndex;
     private int _nItemsPerPage;
     private boolean _bIsSorted = false;
@@ -96,9 +95,9 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
      */
     protected Map<String, Object> getPaginatedListModel( HttpServletRequest request, String strBookmark, List list, String strManageJsp )
     {
-        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        int defaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, defaultItemsPerPage );
 
         UrlItem url = new UrlItem( strManageJsp );
         String strUrl = url.getUrl( );
@@ -107,7 +106,7 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
         String strAscSort = null;
 
-        if ( strSortedAttributeName != null || _bIsSorted == true )
+        if ( strSortedAttributeName != null || _bIsSorted )
         {
             if ( strSortedAttributeName == null )
             {

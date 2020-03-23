@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ public final class BlogUtils
      */
     public static String buildRequetteWithFilter( String strSelect, List<String> listStrFilter, String strOrder )
     {
-        StringBuffer strBuffer = new StringBuffer( );
+        StringBuilder strBuffer = new StringBuilder( );
         strBuffer.append( strSelect );
 
         int nCount = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,28 +33,17 @@
  */
 package fr.paris.lutece.plugins.blog.service.docsearch;
 
-import fr.paris.lutece.plugins.blog.business.Blog;
-import fr.paris.lutece.plugins.blog.business.BlogHome;
-import fr.paris.lutece.plugins.blog.business.IndexerAction;
-import fr.paris.lutece.plugins.blog.business.Tag;
-import fr.paris.lutece.plugins.blog.service.BlogService;
-import fr.paris.lutece.plugins.blog.service.BlogPlugin;
-import fr.paris.lutece.plugins.blog.utils.BlogUtils;
-import fr.paris.lutece.portal.service.message.SiteMessageException;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.util.AppException;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.lucene.document.DateTools;
-//import org.apache.lucene.demo.html.HTMLParser;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.NumericDocValuesField;
-import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
@@ -68,11 +57,19 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
+import fr.paris.lutece.plugins.blog.business.IndexerAction;
+import fr.paris.lutece.plugins.blog.business.Tag;
+import fr.paris.lutece.plugins.blog.service.BlogPlugin;
+import fr.paris.lutece.plugins.blog.service.BlogService;
+import fr.paris.lutece.plugins.blog.utils.BlogUtils;
+import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.search.SearchItem;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 /**
  * DefaultAnnounceIndexer
@@ -106,10 +103,8 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      *             If the index is corrupted
      * @throws IOException
      *             If an IO Exception occurred
-     * @throws InterruptedException
-     *             If the indexer is interrupted
      */
-    private void indexListBlog( IndexWriter indexWriter, List<Integer> listIdBlog ) throws CorruptIndexException, IOException, InterruptedException
+    private void indexListBlog( IndexWriter indexWriter, List<Integer> listIdBlog ) throws IOException
     {
         Iterator<Integer> it = listIdBlog.iterator( );
 
@@ -125,24 +120,24 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      * {@inheritDoc}
      */
     @Override
-    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLogs ) throws IOException, InterruptedException,
-            SiteMessageException
+    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLogs )
+            throws IOException, InterruptedException, SiteMessageException
     {
         Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
-        List<Integer> listIdBlog = new ArrayList<Integer>( );
+        List<Integer> listIdBlog = new ArrayList<>( );
 
         if ( !bCreate )
         {
             // incremental indexing
             // delete all record which must be deleted
-            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask(
-                    IndexerAction.TASK_DELETE, plugin ) )
+            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : BlogSearchService.getInstance( )
+                    .getAllIndexerActionByTask( IndexerAction.TASK_DELETE, plugin ) )
             {
                 sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_DELETE );
 
                 Term term = new Term( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdBlog( ) ) );
                 Term [ ] terms = {
-                    term
+                        term
                 };
 
                 indexWriter.deleteDocuments( terms );
@@ -156,17 +151,17 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
                 Term term = new Term( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdBlog( ) ) );
                 Term [ ] terms = {
-                    term
+                        term
                 };
 
                 indexWriter.deleteDocuments( terms );
-                listIdBlog = new ArrayList<Integer>( );
+                listIdBlog = new ArrayList<>( );
                 listIdBlog.add( action.getIdBlog( ) );
                 this.indexListBlog( indexWriter, listIdBlog );
                 BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
             }
 
-            listIdBlog = new ArrayList<Integer>( );
+            listIdBlog = new ArrayList<>( );
 
             // add all record which must be added
             for ( IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_CREATE, plugin ) )
@@ -210,35 +205,33 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      *            the plugin
      * @throws IOException
      *             If an IO Exception occurred
-     * @throws InterruptedException
-     *             If the indexer is interrupted
      * @return the document
      */
-    public static org.apache.lucene.document.Document getDocument( Blog blog ) throws IOException, InterruptedException
+    public static org.apache.lucene.document.Document getDocument( Blog blog ) throws IOException
     {
         // make a new, empty document
         org.apache.lucene.document.Document doc = new org.apache.lucene.document.Document( );
 
         doc.add( new StringField( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( blog.getId( ) ), Field.Store.YES ) );
         // Add the user firstName as a field, so that index can be incrementally maintained.
-        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUserCreator( ).toLowerCase(), Field.Store.YES ) );
+        doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUserCreator( ).toLowerCase( ), Field.Store.YES ) );
 
         doc.add( new TextField( BlogSearchItem.FIELD_TAGS, getTagToIndex( blog ), Field.Store.YES ) );
         FieldType ft = new FieldType( StringField.TYPE_STORED );
         ft.setOmitNorms( false );
-        doc.add( new Field( BlogSearchItem.FIELD_DATE, DateTools.timeToString( blog.getUpdateDate( ).getTime( ), DateTools.Resolution.MINUTE ), ft ) );
+        doc.add( new Field( SearchItem.FIELD_DATE, DateTools.timeToString( blog.getUpdateDate( ).getTime( ), DateTools.Resolution.MINUTE ), ft ) );
         doc.add( new NumericDocValuesField( BlogSearchItem.FIELD_DATE_UPDATE, blog.getUpdateDate( ).getTime( ) ) );
         // is document published TODAY
-        Date today = new Date();
-        boolean isPublished =  blog.getBlogPubilcation().stream()
-                .anyMatch( publication -> today.after(publication.getDateBeginPublishing()) && today.before(publication.getDateEndPublishing() ));
+        Date today = new Date( );
+        boolean isPublished = blog.getBlogPubilcation( ).stream( )
+                .anyMatch( publication -> today.after( publication.getDateBeginPublishing( ) ) && today.before( publication.getDateEndPublishing( ) ) );
         doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, ( isPublished ) ? "false" : "true", Field.Store.YES ) );
 
         // Add the uid as a field, so that index can be incrementally maintained.
         // This field is not stored with question/answer, it is indexed, but it is not
         // tokenized prior to indexing.
         String strIdAnnounce = String.valueOf( blog.getId( ) );
-        doc.add( new StringField( BlogSearchItem.FIELD_UID, strIdAnnounce, Field.Store.YES ) );
+        doc.add( new StringField( SearchItem.FIELD_UID, strIdAnnounce, Field.Store.YES ) );
 
         String strContentToIndex = getContentToIndex( blog );
         // NOUVEAU
@@ -249,11 +242,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         {
             new HtmlParser( ).parse( new ByteArrayInputStream( strContentToIndex.getBytes( ) ), handler, metadata, new ParseContext( ) );
         }
-        catch( SAXException e )
-        {
-            throw new AppException( "Error during blog parsing. blog Id: " + blog.getId( ), e );
-        }
-        catch( TikaException e )
+        catch( TikaException | SAXException e )
         {
             throw new AppException( "Error during blog parsing. blog Id: " + blog.getId( ), e );
         }
@@ -262,14 +251,14 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
         // Add the tag-stripped contents as a Reader-valued Text field so it will
         // get tokenized and indexed.
-        doc.add( new TextField( BlogSearchItem.FIELD_CONTENTS, strContent, Field.Store.NO ) );
+        doc.add( new TextField( SearchItem.FIELD_CONTENTS, strContent, Field.Store.NO ) );
 
-        doc.add( new TextField( BlogSearchItem.FIELD_SUMMARY, blog.getHtmlContent( ), Field.Store.YES ) );
+        doc.add( new TextField( SearchItem.FIELD_SUMMARY, blog.getHtmlContent( ), Field.Store.YES ) );
         // Add the subject name as a separate Text field, so that it can be searched
         // separately.
-        doc.add( new StringField( BlogSearchItem.FIELD_TITLE, blog.getName( ), Field.Store.YES ) );
+        doc.add( new StringField( SearchItem.FIELD_TITLE, blog.getName( ), Field.Store.YES ) );
 
-        doc.add( new StringField( BlogSearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME, Field.Store.YES ) );
+        doc.add( new StringField( SearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME, Field.Store.YES ) );
 
         // return the document
         return doc;
@@ -284,7 +273,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      */
     private static String getContentToIndex( Blog blog )
     {
-        StringBuffer sbContentToIndex = new StringBuffer( );
+        StringBuilder sbContentToIndex = new StringBuilder( );
         // Do not index question here
         sbContentToIndex.append( blog.getName( ) );
         sbContentToIndex.append( BLANK_SPACE );
@@ -306,7 +295,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      */
     private static String getTagToIndex( Blog blog )
     {
-        StringBuffer sbContentToIndex = new StringBuffer( );
+        StringBuilder sbContentToIndex = new StringBuilder( );
 
         for ( Tag tg : blog.getTag( ) )
         {

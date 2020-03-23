@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ public class BlogServiceSession
 {
 
     private static BlogServiceSession _singleton = new BlogServiceSession( );
-    private final static String SESSION_BLOG = "blog.serviceblog";
+    private static final String SESSION_BLOG = "blog.serviceblog";
 
     /**
      * Get the unique instance of the service

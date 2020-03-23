@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,8 @@ public class PortletFilter
     public static final String PAGE_NAME = AppPropertiesService.getProperty( "blog.filter.page_name", "page_name" );
     public static final String PORTLET_NAME = AppPropertiesService.getProperty( "blog.filter.portlet_name", "portlet_name" );
     public static final String PAGE_ID = AppPropertiesService.getProperty( "blog.filter.page_id", "page_id" );
-    public static final int PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY = AppPropertiesService.getPropertyInt(
-            "blog.filter.number_of_max_latest_portlets_display", 10 );
+    public static final int PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY = AppPropertiesService
+            .getPropertyInt( "blog.filter.number_of_max_latest_portlets_display", 10 );
     private static final String SQL_FILTER_PAGE_NAME = "  f.name like ? ";
     private static final String SQL_FILTER_BY_PAGE_ID = "  a.id_page=? ";
     private static final String SQL_FILTER_BY_PORTLET_NAME = " a.name like ? ";

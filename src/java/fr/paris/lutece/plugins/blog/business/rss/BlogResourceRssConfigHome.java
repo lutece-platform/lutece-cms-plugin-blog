@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -104,9 +104,7 @@ public final class BlogResourceRssConfigHome
      */
     public static BlogResourceRssConfig findByPrimaryKey( int nIdBlogResourceRssConfig, Plugin plugin )
     {
-        BlogResourceRssConfig taskNotifyBlogConfig = _dao.load( nIdBlogResourceRssConfig, plugin );
-
-        return taskNotifyBlogConfig;
+        return _dao.load( nIdBlogResourceRssConfig, plugin );
     }
 
     /**
@@ -119,8 +117,6 @@ public final class BlogResourceRssConfigHome
      */
     public static List<BlogResourceRssConfig> getAll( Plugin plugin )
     {
-        List<BlogResourceRssConfig> listTaskNotifyFormConfig = _dao.loadAll( plugin );
-
-        return listTaskNotifyFormConfig;
+        return _dao.loadAll( plugin );
     }
 }

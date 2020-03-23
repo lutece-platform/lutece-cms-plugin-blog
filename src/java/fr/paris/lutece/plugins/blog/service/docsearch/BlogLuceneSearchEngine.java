@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.index.Term;
 
-//import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.IndexSearcher;
@@ -81,29 +80,27 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
     @Override
     public int getSearchResults( BlogSearchFilter filter, Plugin plugin, List<SearchResult> listSearchResult )
     {
-        ArrayList<SearchItem> listResults = new ArrayList<SearchItem>( );
+        ArrayList<SearchItem> listResults = new ArrayList<>( );
         IndexSearcher searcher;
         boolean bDateAfter = false;
         boolean bDateBefore = false;
 
-        // Searcher searcher = null;
         int nNbResults = 0;
-
         try
         {
             searcher = BlogSearchService.getInstance( ).getSearcher( );
 
-            Collection<String> queries = new ArrayList<String>( );
-            Collection<String> sectors = new ArrayList<String>( );
-            Collection<BooleanClause.Occur> flags = new ArrayList<BooleanClause.Occur>( );
+            Collection<String> queries = new ArrayList<>( );
+            Collection<String> sectors = new ArrayList<>( );
+            Collection<BooleanClause.Occur> flags = new ArrayList<>( );
 
             if ( filter.getKeywords( ) != null && StringUtils.isNotBlank( filter.getKeywords( ) ) )
             {
 
-                Term term = new Term( BlogSearchItem.FIELD_CONTENTS, filter.getKeywords( ) );
+                Term term = new Term( SearchItem.FIELD_CONTENTS, filter.getKeywords( ) );
                 Query termQuery = new TermQuery( term );
                 queries.add( termQuery.toString( ) );
-                sectors.add( BlogSearchItem.FIELD_CONTENTS );
+                sectors.add( SearchItem.FIELD_CONTENTS );
                 flags.add( BooleanClause.Occur.MUST );
 
             }
@@ -150,7 +147,7 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
 
                 Query queryDate = new TermRangeQuery( SearchItem.FIELD_DATE, strAfter, strBefore, bDateAfter, bDateBefore );
                 queries.add( queryDate.toString( ) );
-                sectors.add( BlogSearchItem.FIELD_DATE );
+                sectors.add( SearchItem.FIELD_DATE );
                 flags.add( BooleanClause.Occur.MUST );
             }
 
@@ -164,10 +161,10 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
                 flags.add( BooleanClause.Occur.MUST );
 
             }
-            Term term = new Term( BlogSearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );
+            Term term = new Term( SearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );
             Query termQuery = new TermQuery( term );
             queries.add( termQuery.toString( ) );
-            sectors.add( BlogSearchItem.FIELD_TYPE );
+            sectors.add( SearchItem.FIELD_TYPE );
             flags.add( BooleanClause.Occur.MUST );
 
             Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String [ queries.size( )] ), sectors.toArray( new String [ sectors.size( )] ),

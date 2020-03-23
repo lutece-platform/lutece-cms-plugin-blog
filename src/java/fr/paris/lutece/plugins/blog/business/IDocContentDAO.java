@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -119,9 +119,10 @@ public interface IDocContentDAO
      * @return a list of a ContentType
      */
     List<ContentType> loadListContentType( Plugin plugin );
-    
+
     /**
      * Link a blog with a document
+     * 
      * @param nIdBlog
      * 
      * @param nIdDocument
@@ -129,16 +130,15 @@ public interface IDocContentDAO
      * @param plugin
      * 
      */
-    void insertDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin);
-    
+    void insertDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin );
 
     /**
-     * Remove the link between the document and the blog 
+     * Remove the link between the document and the blog
      * 
      * @param nDocumentId
-     *              the document Id
+     *            the document Id
      * @param plugin
-     *          the plugin
+     *            the plugin
      */
     void deleteInBlogById( int nDocumentId, Plugin plugin );
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -132,9 +132,9 @@ public class BlogPublicationHome
      *            The Blogs id
      * @return BlogPublication
      */
-    public static BlogPublication findDocPublicationByPimaryKey(int nPortletId,  int nDocId )
+    public static BlogPublication findDocPublicationByPimaryKey( int nPortletId, int nDocId )
     {
-        return _dao.loadBlogsPublication(  nPortletId, nDocId, _plugin );
+        return _dao.loadBlogsPublication( nPortletId, nDocId, _plugin );
 
     }
 
@@ -197,7 +197,6 @@ public class BlogPublicationHome
      * @param nPortletsIds
      *            The list of portlet ids.
      * @param datePublishing
-     *            TODO
      * @param dateEndPublishing
      *            The end publication date
      * @param plugin
