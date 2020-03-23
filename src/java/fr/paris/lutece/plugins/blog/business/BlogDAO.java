@@ -513,7 +513,8 @@ public final class BlogDAO implements IBlogDAO
     public List<Blog> selectByFilter( BlogFilter filter )
     {
         List<Blog> listDocuments = new ArrayList<>( );
-        DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter );
+      try (  DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter ) )
+      {
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )
@@ -546,7 +547,7 @@ public final class BlogDAO implements IBlogDAO
         }
 
         daoUtil.free( );
-
+      }
         return listDocuments;
     }
 
