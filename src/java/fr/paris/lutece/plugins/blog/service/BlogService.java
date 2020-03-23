@@ -146,8 +146,10 @@ public class BlogService
                 for ( DocContent docCont : docContent )
                 {
 
-                    docCont.setIdBlog( blog.getId( ) );
+                    //docCont.setIdBlog( blog.getId( ) );
                     DocContentHome.create( docCont );
+                    DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ) );
+                    
                 }
 
             }
@@ -175,7 +177,8 @@ public class BlogService
 
         if ( docContent != null && docContent.getId( ) != 0 )
         {
-            DocContentHome.update( docContent );
+            //DocContentHome.update( docContent );
+              DocContentHome.update( docContent );
 
         }
         else
@@ -212,8 +215,9 @@ public class BlogService
                     if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
 
-                        docCont.setIdBlog( blog.getId( ) );
-                        updateDocContent( docCont );
+                        //docCont.setIdBlog( blog.getId( ) );
+                        //updateDocContent( docCont );
+                          updateDocContent( docCont );
                     }
 
                 }
@@ -221,7 +225,8 @@ public class BlogService
                 for ( DocContent docCont : listDocContent )
                 {
 
-                    DocContentHome.removeById( docCont.getId( ) );
+                    //DocContentHome.removeById( docCont.getId( ) );
+                      DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
 
             }
@@ -269,7 +274,7 @@ public class BlogService
                     if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
 
-                        docCont.setIdBlog( blog.getId( ) );
+                       // docCont.setIdBlog( blog.getId( ) );
                         updateDocContent( docCont );
                     }
 
@@ -278,7 +283,8 @@ public class BlogService
                 for ( DocContent docCont : listDocContent )
                 {
 
-                    DocContentHome.removeById( docCont.getId( ) );
+                    //DocContentHome.removeById( docCont.getId( ) );
+                    DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
             }
 

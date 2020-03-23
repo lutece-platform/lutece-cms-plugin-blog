@@ -46,7 +46,7 @@ CREATE TABLE blog_content (
 	text_value long varchar,
 	mime_type varchar(255) default NULL,
 	binary_value long varbinary,
-	CONSTRAINT `fk_content_type` FOREIGN KEY(`id_type`) references blog_content_type (`id_type`),
+	CONSTRAINT fk_content_type FOREIGN KEY(id_type) references blog_content_type (id_type),
 	PRIMARY KEY (id_document)
 
 );
@@ -113,8 +113,8 @@ CREATE TABLE blog_tag_document (
 id_tag int NOT NULL,
 id_blog int NOT NULL,
 priority int NOT NULL,
-CONSTRAINT `fk_blog` FOREIGN KEY(`id_blog`) references blog_blog (`id_blog`),
-CONSTRAINT `fk_id_tag` FOREIGN KEY(`id_tag`) references blog_tag(`id_tag`),
+CONSTRAINT fk_blog FOREIGN KEY(id_blog) references blog_blog (id_blog),
+CONSTRAINT fk_id_tag FOREIGN KEY(id_tag) references blog_tag(id_tag),
 
 PRIMARY KEY (id_tag, id_blog)
 );
@@ -161,12 +161,12 @@ CREATE TABLE blog_list_portlet_htmldocs (
 	id_portlet int NOT NULL,
 	id_blog int NOT NULL,
     date_begin_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
-	date_end_publishing timestamp default  "2030-01-01 11:59:59" NOT NULL,
+	date_end_publishing timestamp default  '2030-01-01 11:59:59' NOT NULL,
 	status int default 0 NOT NULL,
 	document_order int default NULL,
 
 	
-    CONSTRAINT `fk_id_blog_portlet` FOREIGN KEY(`id_blog`) references blog_blog(`id_blog`),
+    CONSTRAINT fk_id_blog_portlet FOREIGN KEY(id_blog) references blog_blog(id_blog),
 	PRIMARY KEY (id_portlet, id_blog)
 );
 

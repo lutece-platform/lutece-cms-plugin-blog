@@ -60,11 +60,22 @@ public final class DocContentHome
      * 
      * @param docContent
      *            The Document Content
+     *
      */
     public static void create( DocContent docContent )
     {
         _dao.insertDocContent( docContent, _plugin );
-
+    }
+    
+    /**
+     * @param nIdBlog
+     *              the  blog id
+     * @param nIdDocument
+     *              the document id
+     */
+    public static void insertInBlog( int nIdBlog, int nIdDocument )
+    {
+        _dao.insertDocContentInBlog( nIdBlog, nIdDocument, _plugin );
     }
 
     /**
@@ -90,6 +101,18 @@ public final class DocContentHome
     public static void remove( int nBlog )
     {
         _dao.delete( nBlog, _plugin );
+    }
+    
+    /**
+     * Remove the correspondance beetween the document and the blog
+     * 
+     * @param nDocumentId
+     *                  the document id 
+     */
+    public static void removeInBlogById( int nDocumentId )
+    {
+        _dao.deleteInBlogById( nDocumentId, _plugin );
+        
     }
 
     /**
@@ -136,5 +159,4 @@ public final class DocContentHome
     {
         return _dao.loadListContentType( _plugin );
     }
-
 }
