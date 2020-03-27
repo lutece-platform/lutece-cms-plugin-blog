@@ -40,7 +40,6 @@ PRIMARY KEY (id_blog)
 -- Structure for table blog_content
 --
 CREATE TABLE blog_content (
-	id_blog int NOT NULL,
 	id_document int default 0 NOT NULL,
 	id_type int default 0 NOT NULL,
 	text_value long varchar,
@@ -51,8 +50,17 @@ CREATE TABLE blog_content (
 
 );
 
-
 --
+-- Structure for table blog_blog_content
+--
+
+DROP TABLE IF EXISTS blog_blog_content;
+CREATE TABLE blog_blog_content (
+id_blog int NOT NULL,
+id_document int NOT NULL,
+PRIMARY KEY (id_blog, id_document),
+INDEX fk_blog (id_blog)
+);
 
 --
 -- Structure for table blog_portlet
