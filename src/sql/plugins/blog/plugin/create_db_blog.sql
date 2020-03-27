@@ -56,11 +56,12 @@ CREATE TABLE blog_content (
 
 DROP TABLE IF EXISTS blog_blog_content;
 CREATE TABLE blog_blog_content (
-id_blog int NOT NULL,
 id_document int NOT NULL,
-PRIMARY KEY (id_blog, id_document),
-INDEX fk_blog (id_blog)
+id_blog int NOT NULL,
+CONSTRAINT fk_blog FOREIGN KEY(id_blog) references blog_blog(id_blog),
+PRIMARY KEY (id_document, id_blog)
 );
+	
 
 --
 -- Structure for table blog_portlet
