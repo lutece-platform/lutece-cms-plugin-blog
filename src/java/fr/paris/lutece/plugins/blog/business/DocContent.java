@@ -41,9 +41,7 @@ import java.util.List;
  */
 public class DocContent
 {
-
     private int _nIdDocContent;
-    private int _nIdBlog;
     private String _strTextValue;
     private byte [ ] _bytes;
     private String _strValueContentType;
@@ -69,27 +67,6 @@ public class DocContent
     public void setId( int nIdDocumentContent )
     {
         _nIdDocContent = nIdDocumentContent;
-    }
-
-    /**
-     * Returns the _nIdDocument
-     *
-     * @return The _nIdDocument
-     */
-    public int getIdBlog( )
-    {
-        return _nIdBlog;
-    }
-
-    /**
-     * Sets the _nIdDocContent
-     *
-     * @param nIdDocumentContent
-     *            The _nIdDocContent
-     */
-    public void setIdBlog( int nIdDocument )
-    {
-        _nIdBlog = nIdDocument;
     }
 
     /**
