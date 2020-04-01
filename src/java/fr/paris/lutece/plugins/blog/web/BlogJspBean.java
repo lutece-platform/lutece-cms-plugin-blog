@@ -1114,8 +1114,10 @@ public class BlogJspBean extends ManageBlogJspBean
         }
 
         _blog.addConetnt( docContent );
+        DocContentHome.create( docContent );
+        String[] results = { strFileName, String.valueOf( docContent.getId( ) ) };
 
-        return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
+        return JsonUtil.buildJsonResponse( new JsonResponse( results ) );
 
     }
 

@@ -145,9 +145,6 @@ public class BlogService
             {
                 for ( DocContent docCont : docContent )
                 {
-
-                    // docCont.setIdBlog( blog.getId( ) );
-                    DocContentHome.create( docCont );
                     DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ) );
 
                 }
