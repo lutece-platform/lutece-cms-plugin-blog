@@ -1071,37 +1071,53 @@ public class BlogJspBean extends ManageBlogJspBean
 
                 return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
             }
-
-        String base64ImageString = request.getParameter( "fileContent" );
+        
+        /* Gestion du mimeType */
+        String result = request.getParameter( "fileContent" );
+        String firstDelimiter = "[;]";
+        String secondDelimiter = "[:]";
+        String thirdDelimiter = "[,]";
+        String [ ] firstParts = result.split( firstDelimiter );
+        String partAfterFirstDelimiter = firstParts[0];
+        String [ ] secondParts = partAfterFirstDelimiter.split( secondDelimiter );
+        //Le mimeType
+        String mimeType = secondParts[1];
+        //Le fichier en base64
+        String base64FileString = StringUtils.EMPTY;
+        //Gestion des fichiers vides
+        if ( !result.endsWith( "," ) )
+        {
+            String thirdParts [ ] = result.split( thirdDelimiter ); 
+            base64FileString =  thirdParts[1];
+        }
+        
+        byte [ ] fileByteArray = Base64.getDecoder( ).decode( base64FileString );
+        
         String strFileName = request.getParameter( PARAMETER_FILE_NAME );
         String strFileType = request.getParameter( "fileType" );
         Date currentTime = new Date( );
         strFileName = strFileName + currentTime.getTime( );
-
-        String delims = "[,]";
-        String [ ] parts = base64ImageString.split( delims );
-        String imageString = parts [1];
-        byte [ ] imageByteArray = Base64.getDecoder( ).decode( imageString );
-
-        InputStream is = new ByteArrayInputStream( imageByteArray );
-
-        // Find out image type
-        String mimeType = null;
-        String fileExtension = null;
-        try
+        
+        if ( StringUtils.isEmpty( mimeType ) || mimeType == null )
         {
-            mimeType = URLConnection.guessContentTypeFromStream( is ); // mimeType is something like "image/jpeg"
-            String delimiter = "[/]";
-            String [ ] tokens = mimeType.split( delimiter );
-            fileExtension = tokens [1];
-        }
-        catch( IOException ioException )
-        {
-            AppLogService.error( ioException.getStackTrace( ), ioException );
-        }
+          
+            InputStream is = new ByteArrayInputStream( fileByteArray );
 
+            //Trouver le type du fichier
+            try
+            {
+                mimeType = URLConnection.guessContentTypeFromStream( is ); // mimeType is something like "image/jpeg"
+            }
+            catch( IOException ioException )
+            {
+                AppLogService.error( ioException.getStackTrace( ), ioException );
+            }
+            
+        }
+        
+        
         DocContent docContent = new DocContent( );
-        docContent.setBinaryValue( imageByteArray );
+        docContent.setBinaryValue( fileByteArray );
         docContent.setValueContentType( mimeType );
         docContent.setTextValue( strFileName );
 
