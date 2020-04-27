@@ -49,6 +49,8 @@ public final class DocContentDAO implements IDocContentDAO
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_document ) FROM blog_content";
     private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_document, id_type, text_value , binary_value, mime_type ) VALUES ( ?, ? , ? , ?, ? )";
     private static final String SQL_QUERY_INSERT_CONTENT_IN_BLOG = "INSERT INTO blog_blog_content ( id_blog, id_document ) VALUES ( ?, ? )";
+    private static final String SQL_QUERY_UPDATE_CONTENT_IN_BLOG = "INSERT INTO blog_blog_content(id_blog, id_document) select DISTINCT ?, ?  FROM blog_blog_content "
+            + "WHERE NOT EXISTS(Select DISTINCT id_blog, id_document FROM blog_blog_content WHERE id_blog = ? AND id_document = ?)";
     private static final String SQL_QUERY_SELECT_CONTENT = "SELECT a.id_document, id_type, text_value , binary_value, mime_type FROM blog_content a , blog_blog_content b WHERE b.id_blog = ?  AND a.id_document = b.id_document";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog_content WHERE id_blog = ?  ;";
     private static final String SQL_QUERY_DELETE_BY_ID_IN_BLOG = "DELETE FROM blog_blog_content WHERE id_document = ?  ;";
@@ -112,7 +114,7 @@ public final class DocContentDAO implements IDocContentDAO
 
             daoUtil.setInt( 1, nIdBlog );
             daoUtil.setInt( 2, nIdDocument );
-
+           
             daoUtil.executeUpdate( );
             daoUtil.free( );
         }
@@ -289,5 +291,20 @@ public final class DocContentDAO implements IDocContentDAO
         daoUtil.free( );
         }
         return listcontentType;
+    }
+
+    @Override
+    public void updateDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_CONTENT_IN_BLOG, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdBlog );
+            daoUtil.setInt( 2, nIdDocument );
+            daoUtil.setInt( 3, nIdBlog );
+            daoUtil.setInt( 4, nIdDocument );
+
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 }

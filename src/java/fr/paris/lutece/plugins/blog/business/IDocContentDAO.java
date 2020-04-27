@@ -141,5 +141,17 @@ public interface IDocContentDAO
      *            the plugin
      */
     void deleteInBlogById( int nDocumentId, Plugin plugin );
+   
+    /**
+     * update links between a blog and documents (add a link if it doesn't exist)
+     * 
+     * @param nIdBlog
+     *          the blog id
+     * @param nIdDocument
+     *          the document id
+     * @param plugin
+     *          the plugin
+     */
+    void updateDocContentInBlog ( int nIdBlog, int nIdDocument, Plugin plugin );
 
 }
