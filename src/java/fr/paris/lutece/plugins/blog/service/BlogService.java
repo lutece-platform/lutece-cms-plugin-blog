@@ -268,15 +268,21 @@ public class BlogService
             if ( docContent != null )
             {
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
-
+                int size = docContent.size( );
                 for ( DocContent docCont : docContent )
                 {
 
-                    if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
+                    if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-
-                        // docCont.setIdBlog( blog.getId( ) );
+                        if( size == 1 )
+                        {
+                            DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ) );   
+                        }
+                        else
+                        {
+                        DocContentHome.updateInBlog( blog.getId( ), docCont.getId( ) );
                         updateDocContent( docCont );
+                        }
                     }
 
                 }
