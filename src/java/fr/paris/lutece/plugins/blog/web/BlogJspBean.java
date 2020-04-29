@@ -1149,7 +1149,7 @@ public class BlogJspBean extends ManageBlogJspBean
     public String removeContent( HttpServletRequest request )
     {
 
-        String strFileName = request.getParameter( PARAMETER_FILE_NAME );
+        int nIdDoc = Integer.parseInt( request.getParameter( PARAMETER_CONTENT_ID ) );
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession = request.getSession( ).getId( );
         _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
@@ -1165,9 +1165,10 @@ public class BlogJspBean extends ManageBlogJspBean
 
                 return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
             }
-        _blog.deleteDocContent( strFileName );
+        _blog.deleteDocContent( nIdDoc );
+        DocContentHome.removeInBlogById( nIdDoc );
 
-        return JsonUtil.buildJsonResponse( new JsonResponse( strFileName ) );
+        return JsonUtil.buildJsonResponse( new JsonResponse( nIdDoc ) );
 
     }
 

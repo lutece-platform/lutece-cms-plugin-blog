@@ -25,10 +25,10 @@ function getCroppedCanva(fieldName){
 	
 };
 
-function  deleteImage(fName){ 
+function  deleteImage(idContent){ 
 		
 	   var idBlog = $('#id').val();
-		doDeleteContent(fName, idBlog);
+		doDeleteContent(idContent, idBlog);
 	   	$("#"+fName).html('');
 	  	
 };
@@ -49,7 +49,7 @@ function doAddContent( fileName, result, fileType, idBlog )
 				alert( "Billet Verrouillé" );
 			}else{
 				$('#imagesrc'+fileName).val(result);
-				$('#imageappend').append('<div id= "'+data.result[0]+'">'+'<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("'+data.result[0]+'") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>'+'<img id="preview_attachmen" src=servlet/plugins/blogs/file?id_file='+data.result[1]+' alt="Preview"> </div>');			//$('#deleteButton'+fileName).show();
+				$('#imageappend').append('<div id= "'+data.result[0]+'">'+'<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("'+data.result[1]+'") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>'+'<img id="preview_attachmen" src=servlet/plugins/blogs/file?id_file='+data.result[1]+' alt="Preview"> </div>');			//$('#deleteButton'+fileName).show();
 			}
     	}	else	{
 				alert( "Echec" );
@@ -61,10 +61,10 @@ function doAddContent( fileName, result, fileType, idBlog )
 	});
 }
 
-function doDeleteContent( fileName, idBlog )
+function doDeleteContent( idContent, idBlog )
 {
 	$.ajax({
-    url : baseUrl + "jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&fileName=" + fileName +"&id="+ idBlog ,
+    url : baseUrl + "jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&idContent=" + idContent +"&id="+ idBlog ,
   	type: 'GET',
     dataType: "json",
   	data: {},

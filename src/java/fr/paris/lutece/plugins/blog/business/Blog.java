@@ -379,9 +379,9 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      * @param docContent
      *            The docContent
      */
-    public void deleteDocContent( String strFileName )
+    public void deleteDocContent( int nIdDoc )
     {
-        _docContent.removeIf( dc -> dc.getTextValue( ).equals( strFileName ) );
+        _docContent.removeIf( dc -> dc.getId( ) == nIdDoc );
 
     }
 
