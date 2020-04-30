@@ -118,7 +118,7 @@
                     <#if blog.docContent?? && blog.docContent?size!=0>
 			
 			<#list blog.docContent as docContent >
-			<div id= "${docContent.textValue}">
+			<div id= "${docContent.id}">
 				<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("${docContent.id}") type="button" title="Supprimer" style="">
 					<span class="glyphicon glyphicon-remove-circle"></span> Supprimer
 				</button>

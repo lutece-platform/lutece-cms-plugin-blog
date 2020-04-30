@@ -29,7 +29,7 @@ function  deleteImage(idContent){
 		
 	   var idBlog = $('#id').val();
 		doDeleteContent(idContent, idBlog);
-	   	$("#"+fName).html('');
+	   	$("#"+idContent).html('');
 	  	
 };
 
@@ -49,7 +49,7 @@ function doAddContent( fileName, result, fileType, idBlog )
 				alert( "Billet Verrouillé" );
 			}else{
 				$('#imagesrc'+fileName).val(result);
-				$('#imageappend').append('<div id= "'+data.result[0]+'">'+'<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("'+data.result[1]+'") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>'+'<img id="preview_attachmen" src=servlet/plugins/blogs/file?id_file='+data.result[1]+' alt="Preview"> </div>');			//$('#deleteButton'+fileName).show();
+				$('#imageappend').append('<div id= "'+data.result[1]+'">'+'<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("'+data.result[1]+'") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>'+'<img id="preview_attachmen" src=servlet/plugins/blogs/file?id_file='+data.result[1]+' alt="Preview"> </div>');			//$('#deleteButton'+fileName).show();
 			}
     	}	else	{
 				alert( "Echec" );
