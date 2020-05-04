@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.plugins.blog.business.BlogFilter;
@@ -168,20 +169,21 @@ public class BlogService
      * @param docContent
      *            The Doc Content
      */
-    private void updateDocContent( DocContent docContent )
+    private void updateDocContent( DocContent docContent, int nIdBlog )
 
     {
 
         if ( docContent != null && docContent.getId( ) != 0 )
         {
-            // DocContentHome.update( docContent );
-            DocContentHome.update( docContent );
+            DocContentHome.insertInBlog( nIdBlog, docContent.getId( ) );
+            //DocContentHome.update( docContent );
 
         }
         else
             if ( docContent != null )
             {
                 DocContentHome.create( docContent );
+                DocContentHome.insertInBlog( nIdBlog, docContent.getId( ) );
             }
 
     }
@@ -205,22 +207,19 @@ public class BlogService
             if ( docContent != null )
             {
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
+                List<DocContent> listToCompare = new ArrayList<DocContent>( );
+                listToCompare.addAll( listDocContent );
                 int size = docContent.size( );
                 for ( DocContent docCont : docContent )
                 {
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if( size == 1 )
+                        if( size == 1 || listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
                         {
-                            DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ) );   
-                        }
-                        else
-                        {
-                        DocContentHome.updateInBlog( blog.getId( ), docCont.getId( ) );
-                        updateDocContent( docCont );
+                            
+                            updateDocContent( docCont, blog.getId( ) ); 
                         }
                     }
-
                 }
 
                 for ( DocContent docCont : listDocContent )
@@ -268,23 +267,20 @@ public class BlogService
             if ( docContent != null )
             {
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
+                List<DocContent> listToCompare = new ArrayList<DocContent>( );
+                listToCompare.addAll( listDocContent );
                 int size = docContent.size( );
                 for ( DocContent docCont : docContent )
                 {
 
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if( size == 1 )
+                        if( size == 1 || listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
                         {
-                            DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ) );   
-                        }
-                        else
-                        {
-                        DocContentHome.updateInBlog( blog.getId( ), docCont.getId( ) );
-                        updateDocContent( docCont );
+                            
+                            updateDocContent( docCont, blog.getId( ) );  
                         }
                     }
-
                 }
 
                 for ( DocContent docCont : listDocContent )
