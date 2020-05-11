@@ -159,15 +159,4 @@ public final class DocContentHome
     {
         return _dao.loadListContentType( _plugin );
     }
-
-    /**
-     * Makes the association between the blog and the blog content if it doesn't exist
-     * 
-     * @param nIdBlog
-     * @param nIdDocument
-     */
-    public static void updateInBlog( int nIdBlog, int nIdDocument )
-    {
-        _dao.updateDocContentInBlog( nIdBlog, nIdDocument, _plugin );
-    }
 }
