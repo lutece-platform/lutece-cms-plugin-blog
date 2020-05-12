@@ -141,5 +141,4 @@ public interface IDocContentDAO
      *            the plugin
      */
     void deleteInBlogById( int nDocumentId, Plugin plugin );
-
 }

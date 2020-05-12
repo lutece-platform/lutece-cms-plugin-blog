@@ -112,7 +112,7 @@ public final class DocContentDAO implements IDocContentDAO
 
             daoUtil.setInt( 1, nIdBlog );
             daoUtil.setInt( 2, nIdDocument );
-
+           
             daoUtil.executeUpdate( );
             daoUtil.free( );
         }
