@@ -1095,8 +1095,6 @@ public class BlogJspBean extends ManageBlogJspBean
         
         String strFileName = request.getParameter( PARAMETER_FILE_NAME );
         String strFileType = request.getParameter( "fileType" );
-        Date currentTime = new Date( );
-        strFileName = strFileName + currentTime.getTime( );
         
         if ( StringUtils.isEmpty( mimeType ) || mimeType == null )
         {
