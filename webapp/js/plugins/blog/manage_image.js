@@ -6,7 +6,7 @@ function getImage( ) {
    var reader = new FileReader();
    reader.readAsDataURL(file);
    reader.onload = function () {
-     doAddContent( "", reader.result, fileType, idBlog);
+     doAddContent( file.name, reader.result, fileType, idBlog);
      
    };
    reader.onerror = function (error) {
