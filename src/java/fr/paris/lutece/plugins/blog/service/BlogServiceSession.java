@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.blog.service;
 import javax.servlet.http.HttpSession;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 /**
  * This Service manages document actions (create, move, delete, validate ...) and notify listeners.
@@ -66,7 +67,15 @@ public class BlogServiceSession
      */
     public void saveBlogInSession( HttpSession session, Blog blog )
     {
-        session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
+	    try {	
+	    	
+	        session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
+	  
+	    }catch(IllegalStateException e){
+	    	
+            AppLogService.error( e.getMessage( ), e );
+	    	BlogSessionListner.remove(session.getId( ));
+	    }
     }
 
     /**
@@ -78,7 +87,16 @@ public class BlogServiceSession
      */
     public Blog getBlogFromSession( HttpSession session, Blog blog )
     {
-        return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+	    	
+	    try {
+	        return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+	        
+	    }catch(IllegalStateException e){
+	  	  
+            AppLogService.error( e.getMessage( ), e );
+	    	BlogSessionListner.remove(session.getId( ));
+	    	return null;
+	    }
     }
 
     /**
@@ -90,7 +108,16 @@ public class BlogServiceSession
      */
     public Blog getBlogFromSession( HttpSession session, int idBlog )
     {
-        return (Blog) session.getAttribute( SESSION_BLOG + idBlog );
+    	try {
+    		
+	        return (Blog) session.getAttribute( SESSION_BLOG + idBlog );
+	        
+		    }catch(IllegalStateException e){
+		  	  
+	            AppLogService.error( e.getMessage( ), e );
+		    	BlogSessionListner.remove(session.getId( ));
+		    	return null;
+	    }
     }
 
     /**
@@ -101,7 +128,15 @@ public class BlogServiceSession
      */
     public void removeBlogFromSession( HttpSession session, Blog blog )
     {
-        session.removeAttribute( SESSION_BLOG + blog.getId( ) );
+    	try {
+    		
+	        session.removeAttribute( SESSION_BLOG + blog.getId( ) );
+	        
+	    }catch(IllegalStateException e){
+	  	  
+            AppLogService.error( e.getMessage( ), e );
+	    	BlogSessionListner.remove(session.getId( ));
+	    }
     }
 
     /**
@@ -112,7 +147,15 @@ public class BlogServiceSession
      */
     public void removeBlogFromSession( HttpSession session, int idBlog )
     {
-        session.removeAttribute( SESSION_BLOG + idBlog );
+    	try {
+    	
+	      session.removeAttribute( SESSION_BLOG + idBlog );
+	   
+    	}catch(IllegalStateException e){
+	  	  
+            AppLogService.error( e.getMessage( ), e );
+	    	BlogSessionListner.remove(session.getId( ));
+	    }
     }
 
 }
