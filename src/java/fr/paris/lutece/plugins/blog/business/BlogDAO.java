@@ -513,41 +513,41 @@ public final class BlogDAO implements IBlogDAO
     public List<Blog> selectByFilter( BlogFilter filter )
     {
         List<Blog> listDocuments = new ArrayList<>( );
-      try (  DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter ) )
-      {
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = getDaoFromFilter( SQL_QUERY_SELECT_BY_FILTER, filter ) )
         {
-            Blog blog = new Blog( );
-            int nIndex = 1;
+            daoUtil.executeQuery( );
 
-            blog.setId( daoUtil.getInt( nIndex++ ) );
-            blog.setVersion( daoUtil.getInt( nIndex++ ) );
-            blog.setContentLabel( daoUtil.getString( nIndex++ ) );
-            blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
-            blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
-            blog.setUser( daoUtil.getString( nIndex++ ) );
-            blog.setUserCreator( daoUtil.getString( nIndex++ ) );
-            blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
-            blog.setEditComment( daoUtil.getString( nIndex++ ) );
-            blog.setDescription( daoUtil.getString( nIndex++ ) );
-            blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-            blog.setUrl( daoUtil.getString( nIndex ) );
-
-            if ( filter.getLoadBinaries( ) )
+            while ( daoUtil.next( ) )
             {
-                blog.setDocContent( DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) ) );
+                Blog blog = new Blog( );
+                int nIndex = 1;
+
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex ) );
+
+                if ( filter.getLoadBinaries( ) )
+                {
+                    blog.setDocContent( DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) ) );
+                }
+
+                blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
+
+                listDocuments.add( blog );
             }
 
-            blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
-
-            listDocuments.add( blog );
+            daoUtil.free( );
         }
-
-        daoUtil.free( );
-      }
         return listDocuments;
     }
 

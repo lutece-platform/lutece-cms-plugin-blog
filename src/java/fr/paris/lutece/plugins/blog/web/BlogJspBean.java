@@ -1071,37 +1071,37 @@ public class BlogJspBean extends ManageBlogJspBean
 
                 return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
             }
-        
+
         /* Gestion du mimeType */
         String result = request.getParameter( "fileContent" );
         String firstDelimiter = "[;]";
         String secondDelimiter = "[:]";
         String thirdDelimiter = "[,]";
         String [ ] firstParts = result.split( firstDelimiter );
-        String partAfterFirstDelimiter = firstParts[0];
+        String partAfterFirstDelimiter = firstParts [0];
         String [ ] secondParts = partAfterFirstDelimiter.split( secondDelimiter );
-        //Le mimeType
-        String mimeType = secondParts[1];
-        //Le fichier en base64
+        // Le mimeType
+        String mimeType = secondParts [1];
+        // Le fichier en base64
         String base64FileString = StringUtils.EMPTY;
-        //Gestion des fichiers vides
+        // Gestion des fichiers vides
         if ( !result.endsWith( "," ) )
         {
-            String thirdParts [ ] = result.split( thirdDelimiter ); 
-            base64FileString =  thirdParts[1];
+            String thirdParts[] = result.split( thirdDelimiter );
+            base64FileString = thirdParts [1];
         }
-        
+
         byte [ ] fileByteArray = Base64.getDecoder( ).decode( base64FileString );
-        
+
         String strFileName = request.getParameter( PARAMETER_FILE_NAME );
         String strFileType = request.getParameter( "fileType" );
-        
+
         if ( StringUtils.isEmpty( mimeType ) || mimeType == null )
         {
-          
+
             InputStream is = new ByteArrayInputStream( fileByteArray );
 
-            //Trouver le type du fichier
+            // Trouver le type du fichier
             try
             {
                 mimeType = URLConnection.guessContentTypeFromStream( is ); // mimeType is something like "image/jpeg"
@@ -1110,10 +1110,9 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 AppLogService.error( ioException.getStackTrace( ), ioException );
             }
-            
+
         }
-        
-        
+
         DocContent docContent = new DocContent( );
         docContent.setBinaryValue( fileByteArray );
         docContent.setValueContentType( mimeType );
@@ -1129,7 +1128,9 @@ public class BlogJspBean extends ManageBlogJspBean
 
         _blog.addConetnt( docContent );
         DocContentHome.create( docContent );
-        String[] results = { strFileName, String.valueOf( docContent.getId( ) ) };
+        String [ ] results = {
+                strFileName, String.valueOf( docContent.getId( ) )
+        };
 
         return JsonUtil.buildJsonResponse( new JsonResponse( results ) );
 

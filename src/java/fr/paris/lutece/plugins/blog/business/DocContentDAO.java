@@ -68,19 +68,19 @@ public final class DocContentDAO implements IDocContentDAO
      */
     public int newPrimaryKey( Plugin plugin )
     {
-       try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
-       {
-        daoUtil.executeQuery( );
-        int nKey = 1;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
         {
-            nKey = daoUtil.getInt( 1 ) + 1;
-        }
+            daoUtil.executeQuery( );
+            int nKey = 1;
 
-        daoUtil.free( );
-        return nKey;
-    }
+            if ( daoUtil.next( ) )
+            {
+                nKey = daoUtil.getInt( 1 ) + 1;
+            }
+
+            daoUtil.free( );
+            return nKey;
+        }
     }
 
     /**
@@ -89,19 +89,19 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public void insertDocContent( DocContent docContent, Plugin plugin )
     {
-       try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT, plugin ) )
-       {
-        docContent.setId( newPrimaryKey( plugin ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT, plugin ) )
+        {
+            docContent.setId( newPrimaryKey( plugin ) );
 
-        daoUtil.setInt( 1, docContent.getId( ) );
-        daoUtil.setInt( 2, docContent.getContentType( ).getIdContentType( ) );
-        daoUtil.setString( 3, docContent.getTextValue( ) );
-        daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
-        daoUtil.setString( 5, docContent.getValueContentType( ) );
+            daoUtil.setInt( 1, docContent.getId( ) );
+            daoUtil.setInt( 2, docContent.getContentType( ).getIdContentType( ) );
+            daoUtil.setString( 3, docContent.getTextValue( ) );
+            daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
+            daoUtil.setString( 5, docContent.getValueContentType( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
-     }
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
     }
 
     @Override
@@ -112,7 +112,7 @@ public final class DocContentDAO implements IDocContentDAO
 
             daoUtil.setInt( 1, nIdBlog );
             daoUtil.setInt( 2, nIdDocument );
-           
+
             daoUtil.executeUpdate( );
             daoUtil.free( );
         }
@@ -127,22 +127,22 @@ public final class DocContentDAO implements IDocContentDAO
         List<DocContent> listDoc = new ArrayList<DocContent>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT, plugin ) )
         {
-        daoUtil.setInt( 1, idBlog );
-        daoUtil.executeQuery( );
+            daoUtil.setInt( 1, idBlog );
+            daoUtil.executeQuery( );
 
-        while ( daoUtil.next( ) )
-        {
-            DocContent docContent = new DocContent( );
+            while ( daoUtil.next( ) )
+            {
+                DocContent docContent = new DocContent( );
 
-            docContent.setId( daoUtil.getInt( 1 ) );
-            docContent.setContentType( loadContentType( daoUtil.getInt( 2 ), plugin ) );
-            docContent.setTextValue( daoUtil.getString( 3 ) );
-            docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
-            docContent.setValueContentType( daoUtil.getString( 5 ) );
+                docContent.setId( daoUtil.getInt( 1 ) );
+                docContent.setContentType( loadContentType( daoUtil.getInt( 2 ), plugin ) );
+                docContent.setTextValue( daoUtil.getString( 3 ) );
+                docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
+                docContent.setValueContentType( daoUtil.getString( 5 ) );
 
-            listDoc.add( docContent );
-        }
-        daoUtil.free( );
+                listDoc.add( docContent );
+            }
+            daoUtil.free( );
         }
         return listDoc;
     }
@@ -156,21 +156,21 @@ public final class DocContentDAO implements IDocContentDAO
         DocContent docContent = null;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_BY_PRIMARY_KEY, plugin ) )
         {
-        daoUtil.setInt( 1, idDocument );
-        daoUtil.executeQuery( );
+            daoUtil.setInt( 1, idDocument );
+            daoUtil.executeQuery( );
 
-        if ( daoUtil.next( ) )
-        {
-            docContent = new DocContent( );
+            if ( daoUtil.next( ) )
+            {
+                docContent = new DocContent( );
 
-            docContent.setId( daoUtil.getInt( 1 ) );
-            docContent.setContentType( loadContentType( daoUtil.getInt( 2 ), plugin ) );
-            docContent.setTextValue( daoUtil.getString( 3 ) );
-            docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
-            docContent.setValueContentType( daoUtil.getString( 5 ) );
+                docContent.setId( daoUtil.getInt( 1 ) );
+                docContent.setContentType( loadContentType( daoUtil.getInt( 2 ), plugin ) );
+                docContent.setTextValue( daoUtil.getString( 3 ) );
+                docContent.setBinaryValue( daoUtil.getBytes( 4 ) );
+                docContent.setValueContentType( daoUtil.getString( 5 ) );
 
-        }
-        daoUtil.free( );
+            }
+            daoUtil.free( );
         }
         return docContent;
     }
@@ -183,10 +183,10 @@ public final class DocContentDAO implements IDocContentDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
-        daoUtil.setInt( 1, nBlogId );
+            daoUtil.setInt( 1, nBlogId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
         }
     }
 
@@ -198,10 +198,10 @@ public final class DocContentDAO implements IDocContentDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID, plugin ) )
         {
-        daoUtil.setInt( 1, nDocumentId );
+            daoUtil.setInt( 1, nDocumentId );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
         }
     }
 
@@ -226,16 +226,16 @@ public final class DocContentDAO implements IDocContentDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
         {
 
-        // daoUtil.setInt( 1, docContent.getId( ));
-        daoUtil.setInt( 1, docContent.getContentType( ).getIdContentType( ) );
+            // daoUtil.setInt( 1, docContent.getId( ));
+            daoUtil.setInt( 1, docContent.getContentType( ).getIdContentType( ) );
 
-        daoUtil.setString( 2, docContent.getTextValue( ) );
-        daoUtil.setBytes( 3, docContent.getBinaryValue( ) );
-        daoUtil.setString( 4, docContent.getValueContentType( ) );
-        daoUtil.setInt( 5, docContent.getId( ) );
+            daoUtil.setString( 2, docContent.getTextValue( ) );
+            daoUtil.setBytes( 3, docContent.getBinaryValue( ) );
+            daoUtil.setString( 4, docContent.getValueContentType( ) );
+            daoUtil.setInt( 5, docContent.getId( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
         }
     }
 
@@ -248,20 +248,20 @@ public final class DocContentDAO implements IDocContentDAO
         ContentType contentType = null;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY, plugin ) )
         {
-        daoUtil.setInt( 1, idType );
-        daoUtil.executeQuery( );
+            daoUtil.setInt( 1, idType );
+            daoUtil.executeQuery( );
 
-        if ( daoUtil.next( ) )
-        {
-            contentType = new ContentType( );
+            if ( daoUtil.next( ) )
+            {
+                contentType = new ContentType( );
 
-            contentType.setIdContentType( daoUtil.getInt( 1 ) );
-            contentType.setLabel( daoUtil.getString( 2 ) );
+                contentType.setIdContentType( daoUtil.getInt( 1 ) );
+                contentType.setLabel( daoUtil.getString( 2 ) );
 
-        }
-        daoUtil.free( );
+            }
+            daoUtil.free( );
 
-        return contentType;
+            return contentType;
         }
     }
 
@@ -275,18 +275,18 @@ public final class DocContentDAO implements IDocContentDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE, plugin ) )
         {
 
-        daoUtil.executeQuery( );
+            daoUtil.executeQuery( );
 
-        while ( daoUtil.next( ) )
-        {
-            ContentType contentType = new ContentType( );
+            while ( daoUtil.next( ) )
+            {
+                ContentType contentType = new ContentType( );
 
-            contentType.setIdContentType( daoUtil.getInt( 1 ) );
-            contentType.setLabel( daoUtil.getString( 2 ) );
-            listcontentType.add( contentType );
+                contentType.setIdContentType( daoUtil.getInt( 1 ) );
+                contentType.setLabel( daoUtil.getString( 2 ) );
+                listcontentType.add( contentType );
 
-        }
-        daoUtil.free( );
+            }
+            daoUtil.free( );
         }
         return listcontentType;
     }

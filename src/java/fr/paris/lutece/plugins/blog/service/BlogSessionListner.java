@@ -75,9 +75,10 @@ public class BlogSessionListner implements HttpSessionListener
 
         return _mapSession;
     }
-    
-    public static void remove( String nIdSession) {
-    	
+
+    public static void remove( String nIdSession )
+    {
+
         _mapSession.remove( nIdSession );
 
     }

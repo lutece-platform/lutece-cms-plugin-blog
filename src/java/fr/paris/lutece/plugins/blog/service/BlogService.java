@@ -206,15 +206,15 @@ public class BlogService
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
                 List<DocContent> listToCompare = new ArrayList<DocContent>( );
                 listToCompare.addAll( listDocContent );
-                
+
                 for ( DocContent docCont : docContent )
                 {
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
                         {
-                            
-                            updateDocContent( docCont, blog.getId( ) ); 
+
+                            updateDocContent( docCont, blog.getId( ) );
                         }
                     }
                 }
@@ -270,10 +270,10 @@ public class BlogService
 
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
                         {
-                            
-                            updateDocContent( docCont, blog.getId( ) );  
+
+                            updateDocContent( docCont, blog.getId( ) );
                         }
                     }
                 }
