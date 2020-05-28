@@ -170,13 +170,10 @@ public class BlogService
      *            The Doc Content
      */
     private void updateDocContent( DocContent docContent, int nIdBlog )
-
     {
-
         if ( docContent != null && docContent.getId( ) != 0 )
         {
             DocContentHome.insertInBlog( nIdBlog, docContent.getId( ) );
-            //DocContentHome.update( docContent );
 
         }
         else
@@ -224,8 +221,6 @@ public class BlogService
 
                 for ( DocContent docCont : listDocContent )
                 {
-
-                    // DocContentHome.removeById( docCont.getId( ) );
                     DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
 
@@ -285,8 +280,6 @@ public class BlogService
 
                 for ( DocContent docCont : listDocContent )
                 {
-
-                    // DocContentHome.removeById( docCont.getId( ) );
                     DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
             }
@@ -320,11 +313,13 @@ public class BlogService
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
-        List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
-        blog.setDocContent( docContent );
-        blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
-
+        if ( blog != null )
+        {
+            List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
+            blog.setDocContent( docContent );
+            blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        }
         return blog;
 
     }
@@ -340,9 +335,11 @@ public class BlogService
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
-        blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
-
+        if ( blog != null )
+        {
+            blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        }
         return blog;
 
     }
