@@ -170,13 +170,10 @@ public class BlogService
      *            The Doc Content
      */
     private void updateDocContent( DocContent docContent, int nIdBlog )
-
     {
-
         if ( docContent != null && docContent.getId( ) != 0 )
         {
             DocContentHome.insertInBlog( nIdBlog, docContent.getId( ) );
-            //DocContentHome.update( docContent );
 
         }
         else
@@ -209,23 +206,21 @@ public class BlogService
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
                 List<DocContent> listToCompare = new ArrayList<DocContent>( );
                 listToCompare.addAll( listDocContent );
-                
+
                 for ( DocContent docCont : docContent )
                 {
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
                         {
-                            
-                            updateDocContent( docCont, blog.getId( ) ); 
+
+                            updateDocContent( docCont, blog.getId( ) );
                         }
                     }
                 }
 
                 for ( DocContent docCont : listDocContent )
                 {
-
-                    // DocContentHome.removeById( docCont.getId( ) );
                     DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
 
@@ -275,18 +270,16 @@ public class BlogService
 
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
                         {
-                            
-                            updateDocContent( docCont, blog.getId( ) );  
+
+                            updateDocContent( docCont, blog.getId( ) );
                         }
                     }
                 }
 
                 for ( DocContent docCont : listDocContent )
                 {
-
-                    // DocContentHome.removeById( docCont.getId( ) );
                     DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
             }
@@ -320,11 +313,13 @@ public class BlogService
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
-        List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
-        blog.setDocContent( docContent );
-        blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
-
+        if ( blog != null )
+        {
+            List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
+            blog.setDocContent( docContent );
+            blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        }
         return blog;
 
     }
@@ -340,9 +335,11 @@ public class BlogService
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
-        blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
-
+        if ( blog != null )
+        {
+            blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        }
         return blog;
 
     }

@@ -67,15 +67,18 @@ public class BlogServiceSession
      */
     public void saveBlogInSession( HttpSession session, Blog blog )
     {
-	    try {	
-	    	
-	        session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
-	  
-	    }catch(IllegalStateException e){
-	    	
+        try
+        {
+
+            session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
+
+        }
+        catch( IllegalStateException e )
+        {
+
             AppLogService.error( e.getMessage( ), e );
-	    	BlogSessionListner.remove(session.getId( ));
-	    }
+            BlogSessionListner.remove( session.getId( ) );
+        }
     }
 
     /**
@@ -87,16 +90,19 @@ public class BlogServiceSession
      */
     public Blog getBlogFromSession( HttpSession session, Blog blog )
     {
-	    	
-	    try {
-	        return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
-	        
-	    }catch(IllegalStateException e){
-	  	  
+
+        try
+        {
+            return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+
+        }
+        catch( IllegalStateException e )
+        {
+
             AppLogService.error( e.getMessage( ), e );
-	    	BlogSessionListner.remove(session.getId( ));
-	    	return null;
-	    }
+            BlogSessionListner.remove( session.getId( ) );
+            return null;
+        }
     }
 
     /**
@@ -108,16 +114,19 @@ public class BlogServiceSession
      */
     public Blog getBlogFromSession( HttpSession session, int idBlog )
     {
-    	try {
-    		
-	        return (Blog) session.getAttribute( SESSION_BLOG + idBlog );
-	        
-		    }catch(IllegalStateException e){
-		  	  
-	            AppLogService.error( e.getMessage( ), e );
-		    	BlogSessionListner.remove(session.getId( ));
-		    	return null;
-	    }
+        try
+        {
+
+            return (Blog) session.getAttribute( SESSION_BLOG + idBlog );
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+            return null;
+        }
     }
 
     /**
@@ -128,15 +137,18 @@ public class BlogServiceSession
      */
     public void removeBlogFromSession( HttpSession session, Blog blog )
     {
-    	try {
-    		
-	        session.removeAttribute( SESSION_BLOG + blog.getId( ) );
-	        
-	    }catch(IllegalStateException e){
-	  	  
+        try
+        {
+
+            session.removeAttribute( SESSION_BLOG + blog.getId( ) );
+
+        }
+        catch( IllegalStateException e )
+        {
+
             AppLogService.error( e.getMessage( ), e );
-	    	BlogSessionListner.remove(session.getId( ));
-	    }
+            BlogSessionListner.remove( session.getId( ) );
+        }
     }
 
     /**
@@ -147,15 +159,18 @@ public class BlogServiceSession
      */
     public void removeBlogFromSession( HttpSession session, int idBlog )
     {
-    	try {
-    	
-	      session.removeAttribute( SESSION_BLOG + idBlog );
-	   
-    	}catch(IllegalStateException e){
-	  	  
+        try
+        {
+
+            session.removeAttribute( SESSION_BLOG + idBlog );
+
+        }
+        catch( IllegalStateException e )
+        {
+
             AppLogService.error( e.getMessage( ), e );
-	    	BlogSessionListner.remove(session.getId( ));
-	    }
+            BlogSessionListner.remove( session.getId( ) );
+        }
     }
 
 }
