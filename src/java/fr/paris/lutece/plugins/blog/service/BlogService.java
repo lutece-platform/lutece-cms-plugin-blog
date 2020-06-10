@@ -241,7 +241,6 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
         fireUpdateBlogEvent( blog.getId( ) );
     }
 
@@ -299,7 +298,6 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
         fireUpdateBlogEvent( blog.getId( ) );
     }
 
@@ -436,6 +434,7 @@ public class BlogService
         formResponseEvent.setIdResource( String.valueOf( blogId ) );
         formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
         ResourceEventManager.fireAddedResource( formResponseEvent );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_CREATE, BlogPlugin.getPlugin( ) );
     }
     
     public void fireUpdateBlogEvent( int blogId )
@@ -444,6 +443,7 @@ public class BlogService
         formResponseEvent.setIdResource( String.valueOf( blogId ) );
         formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
         ResourceEventManager.fireUpdatedResource( formResponseEvent );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
     }
     
     public void fireDeleteBlogEvent( int blogId )
@@ -452,5 +452,6 @@ public class BlogService
         formResponseEvent.setIdResource( String.valueOf( blogId ) );
         formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
         ResourceEventManager.fireDeletedResource( formResponseEvent );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
     }
 }
