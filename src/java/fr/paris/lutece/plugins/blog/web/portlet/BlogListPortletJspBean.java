@@ -374,7 +374,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         }
         // Portlet creation
         BlogListPortletHome.getInstance( ).create( _portlet );
-        
+
         for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
         {
             int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( doc.getIdBlog( ), new java.util.Date( ) );
@@ -434,7 +434,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         }
         // updates the portlet
         _portlet.update( );
-        
+
         for ( Integer removedBlog : _portlet.getRemovedBlogsId( ) )
         {
             int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( removedBlog, new java.util.Date( ) );
@@ -444,7 +444,7 @@ public class BlogListPortletJspBean extends PortletJspBean
                 BlogService.getInstance( ).fireDeleteBlogEvent( removedBlog );
             }
         }
-        
+
         for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
         {
             int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( doc.getIdBlog( ), new java.util.Date( ) );

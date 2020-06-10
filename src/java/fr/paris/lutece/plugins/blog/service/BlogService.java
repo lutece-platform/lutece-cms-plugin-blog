@@ -436,7 +436,7 @@ public class BlogService
         ResourceEventManager.fireAddedResource( formResponseEvent );
         BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_CREATE, BlogPlugin.getPlugin( ) );
     }
-    
+
     public void fireUpdateBlogEvent( int blogId )
     {
         ResourceEvent formResponseEvent = new ResourceEvent( );
@@ -445,7 +445,7 @@ public class BlogService
         ResourceEventManager.fireUpdatedResource( formResponseEvent );
         BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
     }
-    
+
     public void fireDeleteBlogEvent( int blogId )
     {
         ResourceEvent formResponseEvent = new ResourceEvent( );

@@ -190,7 +190,7 @@ public class BlogPortletJspBean extends PortletJspBean
         {
             BlogService.getInstance( ).fireCreateBlogEvent( blog.getId( ) );
         }
-        
+
         // Displays the page with the new Portlet
         return getPageUrl( nPageId );
     }
