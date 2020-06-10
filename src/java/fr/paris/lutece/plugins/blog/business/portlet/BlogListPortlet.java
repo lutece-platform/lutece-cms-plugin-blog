@@ -37,8 +37,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import fr.paris.lutece.plugins.blog.business.BlogPageTemplate;
 import fr.paris.lutece.plugins.blog.business.BlogPageTemplateHome;
@@ -71,6 +73,7 @@ public class BlogListPortlet extends PortletHtmlContent
     private int _nPageTemplateDocument;
     private int _nPortletId;
     private List<BlogPublication> _arrayBlogs = new ArrayList<>( );
+    private Set<Integer> _removedBlogsId = new HashSet<>( );
 
     /**
      * Sets the identifier of the portlet type to the value specified in the BlogsListPortletHome class
@@ -225,6 +228,7 @@ public class BlogListPortlet extends PortletHtmlContent
         {
             _arrayBlogs.add( doc );
         }
+        _removedBlogsId.remove( doc.getIdBlog( ) );
     }
 
     /**
@@ -258,6 +262,7 @@ public class BlogListPortlet extends PortletHtmlContent
 
         }
         _arrayBlogs.add( order, doc );
+        _removedBlogsId.remove( doc.getIdBlog( ) );
     }
 
     /**
@@ -279,7 +284,11 @@ public class BlogListPortlet extends PortletHtmlContent
             }
 
         }
-
+        _removedBlogsId.add( doc.getIdBlog( ) );
     }
 
+    public Set<Integer> getRemovedBlogsId( )
+    {
+        return new HashSet<>( _removedBlogsId );
+    }
 }

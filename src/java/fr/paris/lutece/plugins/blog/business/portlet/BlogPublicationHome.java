@@ -190,7 +190,7 @@ public class BlogPublicationHome
     {
         return _dao.selectSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, nStatus, _plugin );
     }
-
+    
     /**
      * Get the list of id of published Blogs associated with a given collection of portlets.
      * 
@@ -224,4 +224,15 @@ public class BlogPublicationHome
         return _dao.getLastPublishedBlogsIdsListByPortletIds( nPortletsIds, dateUpdated, plugin );
     }
 
+    /**
+     * Counts the number of valid publication of a blog at a given date.
+     * @param nIdBlog
+     * @param date
+     * @param plugin
+     * @return
+     */
+    public static int countPublicationByIdBlogAndDate( int nIdBlog, Date date )
+    {
+        return _dao.countPublicationByIdBlogAndDate( nIdBlog, date, _plugin );
+    }
 }

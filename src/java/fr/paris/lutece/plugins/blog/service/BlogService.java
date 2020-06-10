@@ -36,16 +36,19 @@ package fr.paris.lutece.plugins.blog.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogFilter;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
-import fr.paris.lutece.plugins.blog.business.Blog;
-import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.IndexerAction;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
+import fr.paris.lutece.plugins.blog.utils.BlogUtils;
+import fr.paris.lutece.portal.business.event.ResourceEvent;
+import fr.paris.lutece.portal.service.event.ResourceEventManager;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.util.sql.TransactionManager;
 
@@ -117,7 +120,6 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
         BlogSearchService.getInstance( ).addIndexerAction( nId, IndexerAction.TASK_DELETE, BlogPlugin.getPlugin( ) );
-
     }
 
     /**
@@ -160,7 +162,6 @@ public class BlogService
         }
 
         BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_CREATE, BlogPlugin.getPlugin( ) );
-
     }
 
     /**
@@ -241,7 +242,7 @@ public class BlogService
         }
 
         BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
-
+        fireUpdateBlogEvent( blog.getId( ) );
     }
 
     /**
@@ -299,7 +300,7 @@ public class BlogService
         }
 
         BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
-
+        fireUpdateBlogEvent( blog.getId( ) );
     }
 
     /**
@@ -429,4 +430,27 @@ public class BlogService
         return listBlog;
     }
 
+    public void fireCreateBlogEvent( int blogId )
+    {
+        ResourceEvent formResponseEvent = new ResourceEvent( );
+        formResponseEvent.setIdResource( String.valueOf( blogId ) );
+        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        ResourceEventManager.fireAddedResource( formResponseEvent );
+    }
+    
+    public void fireUpdateBlogEvent( int blogId )
+    {
+        ResourceEvent formResponseEvent = new ResourceEvent( );
+        formResponseEvent.setIdResource( String.valueOf( blogId ) );
+        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        ResourceEventManager.fireUpdatedResource( formResponseEvent );
+    }
+    
+    public void fireDeleteBlogEvent( int blogId )
+    {
+        ResourceEvent formResponseEvent = new ResourceEvent( );
+        formResponseEvent.setIdResource( String.valueOf( blogId ) );
+        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        ResourceEventManager.fireDeletedResource( formResponseEvent );
+    }
 }

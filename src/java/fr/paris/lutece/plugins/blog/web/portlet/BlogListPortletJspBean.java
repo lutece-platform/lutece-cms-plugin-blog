@@ -37,13 +37,11 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -54,6 +52,7 @@ import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
@@ -375,6 +374,16 @@ public class BlogListPortletJspBean extends PortletJspBean
         }
         // Portlet creation
         BlogListPortletHome.getInstance( ).create( _portlet );
+        
+        for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
+        {
+            int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( doc.getIdBlog( ), new java.util.Date( ) );
+            // First publication of this blog -> indexing needed
+            if ( nbPublication == 1 )
+            {
+                BlogService.getInstance( ).fireCreateBlogEvent( doc.getIdBlog( ) );
+            }
+        }
 
         // Displays the page with the new Portlet
         return getPageUrl( nIdPage );
@@ -425,6 +434,26 @@ public class BlogListPortletJspBean extends PortletJspBean
         }
         // updates the portlet
         _portlet.update( );
+        
+        for ( Integer removedBlog : _portlet.getRemovedBlogsId( ) )
+        {
+            int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( removedBlog, new java.util.Date( ) );
+            // Last publication of this blog removed -> removing from index
+            if ( nbPublication == 0 )
+            {
+                BlogService.getInstance( ).fireDeleteBlogEvent( removedBlog );
+            }
+        }
+        
+        for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
+        {
+            int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( doc.getIdBlog( ), new java.util.Date( ) );
+            // First publication of this blog -> indexing needed
+            if ( nbPublication == 1 )
+            {
+                BlogService.getInstance( ).fireCreateBlogEvent( doc.getIdBlog( ) );
+            }
+        }
 
         // displays the page withe the potlet updated
         return getPageUrl( _portlet.getPageId( ) );
