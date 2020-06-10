@@ -61,6 +61,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
     private static final String SQL_QUERY_SELECT_BY_PORTLET_ID_AND_STATUS = " SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub WHERE  pub.status = ? AND pub.date_begin_publishing <= ? AND  pub.date_end_publishing >= ? AND pub.id_portlet IN ";
     private static final String SQL_QUERY_SELECT_LAST_BY_PORTLET_ID_AND_STATUS = "SELECT DISTINCT pub.id_blog FROM blog_list_portlet_htmldocs pub, blog_blog doc WHERE doc.id_blog=pub.id_blog AND pub.status=? AND doc.update_date >=? AND pub.date_begin_publishing <= ? AND pub.date_end_publishing >= ? AND pub.id_portlet IN ";
 
+    private static final String SQL_QUERY_COUNT_DOC_PUBLICATION_BY_BLOG_AND_PUBLICATION_DATE = "SELECT count(id_blog) FROM blog_list_portlet_htmldocs WHERE id_blog = ? AND date_begin_publishing <= ? AND date_end_publishing >= ?";
     private static final String SQL_FILTER_BEGIN = " (";
     private static final String SQL_TAGS_END = ") ";
     private static final String CONSTANT_QUESTION_MARK = "?";
@@ -411,4 +412,23 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
 
     }
 
+    @Override
+    public int countPublicationByIdBlogAndDate( int nIdBlog, Date date, Plugin plugin )
+    {
+        int count = 0;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_COUNT_DOC_PUBLICATION_BY_BLOG_AND_PUBLICATION_DATE, plugin ) )
+        {
+            Timestamp timestamp = new Timestamp( date.getTime( ) );
+            int nIndex = 0;
+            daoUtil.setInt( ++nIndex, nIdBlog );
+            daoUtil.setTimestamp( ++nIndex, timestamp );
+            daoUtil.setTimestamp( ++nIndex, timestamp );
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                count = daoUtil.getInt( 1 );
+            }
+        }
+        return count;
+    }
 }

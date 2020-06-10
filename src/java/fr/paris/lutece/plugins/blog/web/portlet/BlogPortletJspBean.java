@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
+import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -50,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -182,6 +184,12 @@ public class BlogPortletJspBean extends PortletJspBean
         BlogPortletHome.getInstance( ).create( portlet );
         blog.setAttachedPortletId( portlet.getId( ) );
         BlogHome.update( blog );
+        int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( blog.getId( ), new Date( ) );
+        // First publication of this blog -> indexing needed
+        if ( nbPublication == 1 )
+        {
+            BlogService.getInstance( ).fireCreateBlogEvent( blog.getId( ) );
+        }
 
         // Displays the page with the new Portlet
         return getPageUrl( nPageId );
@@ -223,6 +231,8 @@ public class BlogPortletJspBean extends PortletJspBean
         // updates the portlet
         portlet.update( );
 
+        // update of this blog -> re-indexing needed
+        BlogService.getInstance( ).fireUpdateBlogEvent( blog.getId( ) );
         // displays the page with the updated portlet
         return getPageUrl( portlet.getPageId( ) );
     }

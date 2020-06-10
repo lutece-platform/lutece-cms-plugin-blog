@@ -169,4 +169,14 @@ public interface IBlogPublicationDAO
      * @return the list of blogs id
      */
     List<Integer> getLastPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdatedFrom, Plugin plugin );
+
+    /**
+     * Counts the number of valid publication of a blog at a given date.
+     * 
+     * @param nIdBlog
+     * @param date
+     * @param plugin
+     * @return
+     */
+    int countPublicationByIdBlogAndDate( int nIdBlog, Date date, Plugin plugin );
 }
