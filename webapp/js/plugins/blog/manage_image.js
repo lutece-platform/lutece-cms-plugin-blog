@@ -49,7 +49,22 @@ function doAddContent( fileName, result, fileType, idBlog )
 				alert( "Billet Verrouillé" );
 			}else{
 				$('#imagesrc'+fileName).val(result);
-				$('#imageappend').append('<div id= "'+data.result[1]+'">'+'<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("'+data.result[1]+'") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>'+'<img id="preview_attachmen" src=servlet/plugins/blogs/file?id_file='+data.result[1]+' alt="Preview"> </div>');			//$('#deleteButton'+fileName).show();
+				$('#content-list').append( '<li class="list-group-item clearfix"><div id= "' +
+			              data.result[1] +
+			              '">' +
+			              '<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("' +
+			              data.result[1] +
+			              '") type="button" title="Supprimer" style=""><span class="glyphicon glyphicon-remove-circle"></span> Supprimer</button>' +
+			              '<a href="servlet/plugins/blogs/file?id_file=' +
+			              data.result[1] +
+			              '" title="preview">'+data.result[0]+'<img id="preview_attachmen" src=servlet/plugins/blogs/file?id_file=' +
+			              data.result[1] +
+			              ' alt="Preview" class="img-responsive img-thumbnail"></a>' +
+			              '<span class="pull-right"><button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="Descendre" onclick="doUpdatePriorityContent( ' +
+			              data.result[1] +
+			              ', \'moveDown\' )"><i class="fa fa-arrow-down"></i></button><button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="Monter" onclick="doUpdatePriorityContent(' +
+			              data.result[1] +
+			              ', \'moveUp\')"><i class="fa fa-arrow-up"></i></button></span></div></li>');			//$('#deleteButton'+fileName).show();
 			}
     	}	else	{
 				alert( "Echec" );
@@ -115,4 +130,41 @@ function updateContentType( idContent, idTypeContent, idBlog)
 			alert( "Error" );
     }
 	});
+}
+
+function doUpdatePriorityContent( idContent, action )
+{
+	var idBlog = $('#id').val();
+	updatePriorityContent( idContent, action, idBlog );
+}
+
+function updatePriorityContent( idContent, action, idBlog )
+{
+	$.ajax({
+    url : baseUrl + "jsp/admin/plugins/blog/DoUpdatePriorityContent.jsp?contentAction="+action+"&idContent="+idContent+ "&id="+idBlog,
+    type: 'GET',
+    dataType: "json",
+    data: {},
+    async: false,
+    cache:false,
+    success:function(data) {
+  	if ( data.status == 'OK' )
+  		{
+  			if(data.result == "BLOG_LOCKED"){
+				alert( "Billet Verrouillé" );
+			}else if( action == "moveUp" ){
+				$('#' + data.result ).insertAfter( $('#' + idContent) );
+			} else if( action == "moveDown" ){
+				$('#' + idContent ).insertAfter( $('#' + data.result) );
+			}
+  	}
+  	else
+		{
+		alert("echec")
+		}
+	},
+  error: function(jqXHR, textStatus, errorThrown) {
+	alert("error")
+  }
+});
 }

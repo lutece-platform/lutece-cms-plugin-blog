@@ -23,3 +23,10 @@ SELECT a.id_blog, id_document from blog_content a, blog_blog b where b.id_blog =
 
 ALTER TABLE blog_content
 DROP COLUMN id_blog;
+
+--
+-- Add column priority to table blog_blog_content
+--
+
+ALTER TABLE blog_blog_content
+ADD COLUMN priority INT DEFAULT 0 NOT NULL;

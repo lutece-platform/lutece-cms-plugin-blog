@@ -195,7 +195,9 @@
 				<input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )" value="">
 			</#if>
 			<#if blog.docContent?? && blog.docContent?size!=0>
+			<ul id="content-list" class="list-group">
 			<#list blog.docContent as docContent >
+			<li class="list-group-item clearfix">
 			<div id= "${docContent.id}">
 				<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("${docContent.id}") type="button" title="Supprimer" style="">
 					<span class="glyphicon glyphicon-remove-circle"></span> Supprimer
@@ -203,6 +205,14 @@
                         <a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
                           ${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="Preview" class="img-responsive img-thumbnail">
                         </a>
+                 <span class="pull-right">
+                	<button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="Descendre" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveDown' );">
+                    	<i class="fa fa-arrow-down"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="Monter" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveUp');">
+                    	<i class="fa fa-arrow-up"></i>
+                    </button>
+                </span>
 			</div>
 			<div>
 
@@ -212,7 +222,9 @@
              </#list>
              </select>
              </div>
+             </li>
 			</#list>
+			</ul>
                       </#if>
                      <div id="imageappend"/>
                         </div>

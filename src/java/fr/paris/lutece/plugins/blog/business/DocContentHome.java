@@ -72,10 +72,13 @@ public final class DocContentHome
      *            the blog id
      * @param nIdDocument
      *            the document id
+     * @param nPriority
+     *            the priority
+     *            
      */
-    public static void insertInBlog( int nIdBlog, int nIdDocument )
+    public static void insertInBlog( int nIdBlog, int nIdDocument, int nPriority )
     {
-        _dao.insertDocContentInBlog( nIdBlog, nIdDocument, _plugin );
+        _dao.insertDocContentInBlog( nIdBlog, nIdDocument, nPriority,  _plugin );
     }
 
     /**

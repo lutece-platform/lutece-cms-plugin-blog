@@ -146,7 +146,7 @@ public class BlogService
             {
                 for ( DocContent docCont : docContent )
                 {
-                    DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ) );
+                    DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ), docCont.getPriority( ) );
 
                 }
 
@@ -173,14 +173,15 @@ public class BlogService
     {
         if ( docContent != null && docContent.getId( ) != 0 )
         {
-            DocContentHome.insertInBlog( nIdBlog, docContent.getId( ) );
+            DocContentHome.removeInBlogById( docContent.getId( ) );
+            DocContentHome.insertInBlog( nIdBlog, docContent.getId( ), docContent.getPriority( ) );
 
         }
         else
             if ( docContent != null )
             {
                 DocContentHome.create( docContent );
-                DocContentHome.insertInBlog( nIdBlog, docContent.getId( ) );
+                DocContentHome.insertInBlog( nIdBlog, docContent.getId( ), docContent.getPriority( ) );
             }
 
     }
@@ -211,7 +212,7 @@ public class BlogService
                 {
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if ( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c ->  ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
                         {
 
                             updateDocContent( docCont, blog.getId( ) );
@@ -270,7 +271,7 @@ public class BlogService
 
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if ( listToCompare.stream( ).noneMatch( c -> c.getId( ) == docCont.getId( ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c ->  ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
                         {
 
                             updateDocContent( docCont, blog.getId( ) );
