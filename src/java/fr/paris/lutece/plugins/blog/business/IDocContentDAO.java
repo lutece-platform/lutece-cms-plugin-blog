@@ -127,10 +127,12 @@ public interface IDocContentDAO
      * 
      * @param nIdDocument
      * 
+     * @param nPriority
+     * 
      * @param plugin
      * 
      */
-    void insertDocContentInBlog( int nIdBlog, int nIdDocument, Plugin plugin );
+    void insertDocContentInBlog( int nIdBlog, int nIdDocument, int nPriority, Plugin plugin );
 
     /**
      * Remove the link between the document and the blog

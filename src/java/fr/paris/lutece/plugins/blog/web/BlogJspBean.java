@@ -153,6 +153,8 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_APPLY = "apply";
     protected static final String PARAMETER_TYPE_ID = "idType";
     protected static final String PARAMETER_CONTENT_ID = "idContent";
+    protected static final String PARAMETER_CONTENT_ACTION= "contentAction";
+    
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
@@ -214,6 +216,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_UPDATE_PRIORITY_TAG = "updatePriorityTag";
     private static final String ACTION_ADD_FILE_CONTENT = "addContent";
     private static final String ACTION_REMOVE_FILE_CONTENT = "deleteContent";
+    private static final String ACTION_UPDATE_PRIORITY_FILE_CONTENT = "updatePriorityContent";
     private static final String ACTION_UPDATE_CONTENT_TYPE = "updateContentType";
     private static final String ACTION_DUPLICATE_BLOG = "duplicateBlog";
 
@@ -827,6 +830,7 @@ public class BlogJspBean extends ManageBlogJspBean
         lockBlog( nId, sessionId );
 
         _blog.getTag( ).sort( ( tg1, tg2 ) -> tg1.getPriority( ) - tg2.getPriority( ) );
+        _blog.getDocContent( ).sort( ( dc1, dc2 ) -> dc1.getPriority ( ) - dc2.getPriority ( ) );
         Map<String, Object> model = getModel( );
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
@@ -1125,7 +1129,7 @@ public class BlogJspBean extends ManageBlogJspBean
             contType.setIdContentType( Integer.parseInt( strFileType ) );
             docContent.setContentType( contType );
         }
-
+        docContent.setPriority( _blog.getDocContent( ).size( ) + 1 );
         _blog.addConetnt( docContent );
         DocContentHome.create( docContent );
         String [ ] results = {
@@ -1164,13 +1168,95 @@ public class BlogJspBean extends ManageBlogJspBean
 
                 return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
             }
+        
+        DocContent docCont  = _blog.getDocContent( ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
+        List<DocContent> listDocs = _blog.getDocContent( ).stream( ).map( dc -> {
+            if ( ( dc.getPriority( ) > docCont.getPriority( ) ) && ( docCont.getId( ) != dc.getId( ) ) ) 
+            {
+                
+                dc.setPriority( dc.getPriority( ) - 1 );
+            }
+            return dc;
+        } ).collect( Collectors.toList( ) );
+
+        _blog.setDocContent( listDocs );
         _blog.deleteDocContent( nIdDoc );
         DocContentHome.removeInBlogById( nIdDoc );
 
         return JsonUtil.buildJsonResponse( new JsonResponse( nIdDoc ) );
 
     }
+    
+    /**
+     * Return Json if the the content is updated
+     *
+     * @param request
+     * @return Json The Json success or echec
+     */
+    @Action( ACTION_UPDATE_PRIORITY_FILE_CONTENT )
+    public String doUpdatePriorityContent( HttpServletRequest request )
+    {
+        DocContent docCont = null;
+        DocContent docContMove = null;
+        int nPriorityToSet = 0;
+        int nPriority = 0;
 
+        String strIdDocContent = request.getParameter( PARAMETER_CONTENT_ID );
+        String strAction = request.getParameter( PARAMETER_CONTENT_ACTION );
+        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        String nIdSession = request.getSession( ).getId( );
+        _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
+        if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
+        {
+
+            lockBlog( nIdBlog, request.getSession( ).getId( ) );
+        }
+        else
+            if ( _blog.getId( ) != 0 )
+            {
+
+                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+            }
+              
+        for ( DocContent dc : _blog.getDocContent( ) )
+        {
+            if ( dc.getId( ) == Integer.parseInt( strIdDocContent ) )
+            {
+                docCont = dc;
+                nPriorityToSet = dc.getPriority( );
+                nPriority = dc.getPriority( );
+            }
+        }
+        for ( DocContent dc : _blog.getDocContent( ) )
+        {
+            if ( strAction.equals( "moveUp" ) && dc.getPriority( ) == nPriority - 1 )
+            {
+                docContMove = dc;
+                docContMove.setPriority( dc.getPriority( ) + 1 );
+                nPriorityToSet = nPriority - 1;
+
+            }
+            else
+                if ( strAction.equals( "moveDown" ) && dc.getPriority( ) == nPriority + 1 )
+                {
+                    docContMove = dc;
+                    docContMove.setPriority( docContMove.getPriority( ) - 1 );
+                    nPriorityToSet = nPriority + 1;
+
+                }
+        }
+        docCont.setPriority( nPriorityToSet );
+
+        if ( docContMove != null )
+        {
+
+            return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( docContMove.getId( ) ) ) );
+
+        }
+        return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( docCont.getId( ) ) ) );
+
+    }
+    
     /**
      * 
      * @param request
