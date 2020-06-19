@@ -120,7 +120,7 @@
                   </p>
             
                   <p>
-                    <small>Cr&eacute;&eacute; par <strong>${blog.userCreator!}</strong> le ${blog.creationDate?date}</strong></small>
+                    <small>Cr&eacute;&eacute; par <strong>${blog.userCreator!}</strong><strong><strong> ${blog.userCreatorLastName!}</strong> le ${blog.creationDate?date}</strong></small>
                   </p>
                   <p>
                     <#if blog.editComment?? && blog.editComment?trim !=''>
@@ -138,8 +138,8 @@
                     <i class="fa fa-eye fa-fw"></i>
                   </a>
                 </td>
-                <td>${blog.creationDate!} par <strong>${blog.userCreator!}</strong></td>
-                <td>${blog.updateDate!} par <strong>${blog.user!}</strong></td>
+                <td>${blog.creationDate!} par <strong>${blog.userCreator!}</strong><strong> ${blog.userCreatorLastName}</strong></td>
+                <td>${blog.updateDate!} par <strong>${blog.user!}</strong><strong> ${blog.userLastName}</strong></td>
                 <td>
                   <#list blog.tag as tg>
                     <#list list_tag as tgName>

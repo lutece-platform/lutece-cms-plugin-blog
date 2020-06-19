@@ -86,10 +86,18 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     @NotEmpty( message = "#i18n{blog.validation.blog.User.notEmpty}" )
     @Size( max = 255, message = "#i18n{blog.validation.blog.User.size}" )
     private String _strUser;
+    
+    @NotEmpty( message = "#i18n{blog.validation.blog.UserLastName.notEmpty}" )
+    @Size( max = 255, message = "#i18n{blog.validation.blog.UserLastName.size}" )
+    private String _strUserLastName;
 
     @NotEmpty( message = "#i18n{blog.validation.blog.UserCreator.notEmpty}" )
     @Size( max = 255, message = "#i18n{blog.validation.blog.UserCreator.size}" )
     private String _strUserCreator;
+    
+    @NotEmpty( message = "#i18n{blog.validation.blog.UserCreatorLastName.notEmpty}" )
+    @Size( max = 255, message = "#i18n{blog.validation.blog.UserCreatorLastName.size}" )
+    private String _strUserCreatorLastName;
 
     @Size( max = 255, message = "#i18n{blog.validation.blog.EditComment.size}" )
     private String _strEditComment;
@@ -250,6 +258,17 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     {
         return _strUser;
     }
+    
+    /**
+     * Returns the User last name
+     * 
+     * @return The User last name
+     */
+    public String getUserLastName( )
+    {
+        return _strUserLastName;
+    }
+
 
     /**
      * Sets the User
@@ -263,6 +282,17 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     }
 
     /**
+     * Sets the User last name
+     * 
+     * @param strUserLastName
+     *            The User last name
+     */
+    public void setUserLastName( String strUserLastName )
+    {
+        _strUserLastName = strUserLastName;
+    }
+    
+    /**
      * Returns the UserCreator
      * 
      * @return The UserCreator
@@ -270,6 +300,16 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public String getUserCreator( )
     {
         return _strUserCreator;
+    }
+    
+    /**
+     * Returns the UserCreator last name
+     * 
+     * @return The UserCreator last name
+     */
+    public String getUserCreatorLastName( )
+    {
+        return _strUserCreatorLastName;
     }
 
     /**
@@ -281,6 +321,17 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public void setUserCreator( String strUserCreator )
     {
         _strUserCreator = strUserCreator;
+    }
+    
+    /**
+     * Sets the UserCreator last name
+     * 
+     * @param strUserCreatorLastName
+     *            The UserCreator last name
+     */
+    public void setUserCreatorLastName( String strUserCreatorLastName )
+    {
+        _strUserCreatorLastName = strUserCreatorLastName;
     }
 
     public void setAttachedPortletId( int nAttachedPortletId )

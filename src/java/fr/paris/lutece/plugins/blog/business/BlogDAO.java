@@ -52,27 +52,27 @@ public final class BlogDAO implements IBlogDAO
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_blog ) FROM blog_blog";
     private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM blog_versions";
-    private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog WHERE id_blog = ?";
-    private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog ORDER BY update_date DESC LIMIT ?";
-    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog WHERE content_label = ?";
-    private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions WHERE id_blog = ? AND version = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog WHERE id_blog = ?";
+    private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog ORDER BY update_date DESC LIMIT ?";
+    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog WHERE content_label = ?";
+    private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions WHERE id_blog = ? AND version = ? ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM blog_versions WHERE id_blog = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_blog SET id_blog = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ?, url= ? WHERE id_blog = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog order by creation_date DESC";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_blog SET id_blog = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_editor_last_name = ?, user_creator = ?, user_creator_last_name=?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ?, url= ? WHERE id_blog = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog order by creation_date DESC";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_blog FROM blog_blog ORDER BY creation_date DESC";
-    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions where id_blog = ?";
-    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO blog_versions ( id_version, id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions where id_blog = ?";
+    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO blog_versions ( id_version, id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_editor_last_name, user_creator, user_creator_last_name, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_blog, a.version, a.content_label, "
-            + " a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id , "
+            + " a.creation_date, a.update_date, a.htmSQL_QUERY_INSERTl_content, a.user_editor, a.user_editor_last_name, a.user_creator , a.user_creator_last_name, a.attached_portlet_id , "
             + " a.edit_comment , a.description, a.shareable, a.url  FROM blog_blog a " + " LEFT OUTER JOIN blog_tag_document f ON a.id_blog = f.id_blog"
             + " LEFT OUTER JOIN blog_list_portlet_htmldocs p ON  a.id_blog = p.id_blog";
 
-    private static final String SQL_QUERY_SELECT_BLOG_BY_ID_TAG = " SELECT b.id_blog, b.version, b.content_label, b.creation_date, b.update_date, b.html_content, b.user_editor, b.user_creator, b.attached_portlet_id, b.edit_comment, b.description, b.shareable, b.url, a.id_tag FROM blog_tag_document a Inner join blog_blog b on (b.id_blog = a.id_blog) WHERE a.id_tag = ? ORDER BY priority";
+    private static final String SQL_QUERY_SELECT_BLOG_BY_ID_TAG = " SELECT b.id_blog, b.version, b.content_label, b.creation_date, b.update_date, b.html_content, b.user_editor, b.user_editor_last_name, b.user_creator, b.user_creator_last_name, b.attached_portlet_id, b.edit_comment, b.description, b.shareable, b.url, a.id_tag FROM blog_tag_document a Inner join blog_blog b on (b.id_blog = a.id_blog) WHERE a.id_tag = ? ORDER BY priority";
 
-    private static final String SQL_QUERY_SELECT_ALL_BLOG = " SELECT DISTINCT a.id_blog, a.version, a.content_label, a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id, a.edit_comment , a.description, a.shareable, a.url FROM blog_blog a";
+    private static final String SQL_QUERY_SELECT_ALL_BLOG = " SELECT DISTINCT a.id_blog, a.version, a.content_label, a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_editor_last_name, a.user_creator, a.user_creator_last_name, a.attached_portlet_id, a.edit_comment , a.description, a.shareable, a.url FROM blog_blog a";
 
     private static final String SQL_FILTER_WHERE_CLAUSE = " WHERE ";
     private static final String SQL_FILTER_AND = " AND ";
@@ -149,7 +149,9 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
             daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
             daoUtil.setString( nIndex++, blog.getUser( ) );
+            daoUtil.setString( nIndex++, blog.getUserLastName( ) );
             daoUtil.setString( nIndex++, blog.getUserCreator( ) );
+            daoUtil.setString( nIndex++, blog.getUserCreatorLastName( ) );
             daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
             daoUtil.setString( nIndex++, blog.getEditComment( ) );
             daoUtil.setString( nIndex++, blog.getDescription( ) );
@@ -175,7 +177,9 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
             daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
             daoUtil.setString( nIndex++, blog.getUser( ) );
+            daoUtil.setString( nIndex++, blog.getUserLastName( ) );
             daoUtil.setString( nIndex++, blog.getUserCreator( ) );
+            daoUtil.setString( nIndex++, blog.getUserCreatorLastName( ) );
             daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
             daoUtil.setString( nIndex++, blog.getEditComment( ) );
             daoUtil.setString( nIndex++, blog.getDescription( ) );
@@ -210,7 +214,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -247,7 +253,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -284,7 +292,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -339,7 +349,9 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setTimestamp( nIndex++, blog.getUpdateDate( ) );
             daoUtil.setString( nIndex++, blog.getHtmlContent( ) );
             daoUtil.setString( nIndex++, blog.getUser( ) );
+            daoUtil.setString(  nIndex++, blog.getUserLastName( ) );
             daoUtil.setString( nIndex++, blog.getUserCreator( ) );
+            daoUtil.setString( nIndex++, blog.getUserCreatorLastName( ) );
             daoUtil.setInt( nIndex++, blog.getAttachedPortletId( ) );
             daoUtil.setString( nIndex++, blog.getEditComment( ) );
             daoUtil.setString( nIndex++, blog.getDescription( ) );
@@ -375,7 +387,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex ++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -413,7 +427,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -451,7 +467,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -529,7 +547,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -717,7 +737,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
@@ -755,7 +777,9 @@ public final class BlogDAO implements IBlogDAO
                 blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
                 blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
                 blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserLastName( daoUtil.getString( nIndex++ ) );
                 blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreatorLastName( daoUtil.getString( nIndex++ ) );
                 blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );

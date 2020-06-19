@@ -480,7 +480,9 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setCreationDate( getSqlDate( ) );
             _blog.setUpdateDate( getSqlDate( ) );
             _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setUserLastName( AdminUserService.getAdminUser( request ).getLastName( ) );
             _blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setUserCreatorLastName( AdminUserService.getAdminUser( request ).getLastName( ) );
             _blog.setVersion( 1 );
             _blog.setAttachedPortletId( 0 );
             populate( _blog, request );
@@ -760,7 +762,9 @@ public class BlogJspBean extends ManageBlogJspBean
         _blog.setCreationDate( sqlDate );
         _blog.setUpdateDate( sqlDate );
         _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _blog.setUserLastName( AdminUserService.getAdminUser( request ).getLastName( ) );
         _blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _blog.setUserLastName( AdminUserService.getAdminUser( request ).getLastName( ) );
         _blog.setVersion( 1 );
         _blog.setAttachedPortletId( 0 );
 
@@ -887,6 +891,7 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setEditComment( strEditComment );
             _blog.setUpdateDate( getSqlDate( ) );
             _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setUserLastName( AdminUserService.getAdminUser( request ).getLastName( ) );
             _blog.setUrl( strUrl );
 
             // Check constraints

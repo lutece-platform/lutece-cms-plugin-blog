@@ -30,3 +30,22 @@ DROP COLUMN id_blog;
 
 ALTER TABLE blog_blog_content
 ADD COLUMN priority INT DEFAULT 0 NOT NULL;
+
+--
+-- Add column user_editor_last_name and column user_creator_lastname to table blog_blog
+--
+
+ALTER TABLE blog_blog
+ADD COLUMN user_editor_last_name varchar(100) default '' NOT NULL,
+ADD COLUMN user_creator_last_name varchar(100) default '' NOT NULL;
+
+--
+-- Add column user_editor_last_name and column user_creator_lastname to table blog_versions
+--
+
+ALTER TABLE blog_versions
+ADD COLUMN user_editor_last_name varchar(100) default '' NOT NULL,
+ADD COLUMN user_creator_last_name varchar(100) default '' NOT NULL;
+
+
+
