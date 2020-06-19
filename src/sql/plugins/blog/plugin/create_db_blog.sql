@@ -58,6 +58,7 @@ DROP TABLE IF EXISTS blog_blog_content;
 CREATE TABLE blog_blog_content (
 id_document int NOT NULL,
 id_blog int NOT NULL,
+priority int NOT NULL,
 CONSTRAINT fk_id_blog_blog FOREIGN KEY(id_blog) references blog_blog(id_blog),
 PRIMARY KEY (id_document, id_blog)
 );

@@ -33,20 +33,27 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author eahuma
  *
  */
-public class DocContent
+public class DocContent implements Serializable
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
     private int _nIdDocContent;
     private String _strTextValue;
     private byte [ ] _bytes;
     private String _strValueContentType;
     private ContentType _contentType;
     private List<Blog> _blogs;
+    private int _nPriority;
 
     /**
      * Returns the IdDocContent
@@ -174,4 +181,23 @@ public class DocContent
         this._blogs = blogs;
     }
 
+    /**
+     * Gets the priority
+     * 
+     * @return the priority
+     */
+    public int getPriority( )
+    {
+        return _nPriority;
+    }
+
+    /**
+     * Sets the priority
+     * 
+     * @param nPriority the priority to set
+     */
+    public void setPriority( int nPriority )
+    {
+        this._nPriority = nPriority;
+    }
 }
