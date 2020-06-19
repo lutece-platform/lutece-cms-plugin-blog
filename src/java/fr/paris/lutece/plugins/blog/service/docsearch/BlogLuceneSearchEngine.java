@@ -126,6 +126,16 @@ public class BlogLuceneSearchEngine implements IBlogSearchEngine
                 flags.add( BooleanClause.Occur.MUST );
 
             }
+            if ( filter.getUserEditedBlogVersion( ) != null )
+            {
+
+                Term term = new Term( BlogSearchItem.FIELD_USERS_EDITED_BLOG, filter.getUserEditedBlogVersion( ) );
+                Query termQuery = new TermQuery( term );
+                queries.add( termQuery.toString( ) );
+                sectors.add( BlogSearchItem.FIELD_USERS_EDITED_BLOG );
+                flags.add( BooleanClause.Occur.MUST );
+
+            }
 
             if ( filter.getUpdateDateAfter( ) != null || filter.getUpdateDateBefor( ) != null )
             {

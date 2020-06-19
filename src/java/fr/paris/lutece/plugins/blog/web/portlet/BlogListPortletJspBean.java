@@ -180,7 +180,7 @@ public class BlogListPortletJspBean extends PortletJspBean
             }
             if ( _bIsChecked )
             {
-                filter.setUser( user.getFirstName( ) );
+                filter.setUser( user.getAccessCode( ) );
             }
             if ( _bIsUnpulished )
             {

@@ -315,7 +315,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _strTag != null && ( _strTag.length > 0 ) )
                 filter.setTag( _strTag );
             if ( _bIsChecked )
-                filter.setUser( user.getFirstName( ) );
+                filter.setUser( user.getAccessCode( ) );
             if ( _bIsUnpulished )
                 filter.setIsUnpulished( _bIsUnpulished );
             if ( _dateUpdateBlogAfter != null )
@@ -479,8 +479,8 @@ public class BlogJspBean extends ManageBlogJspBean
             String strAction = request.getParameter( PARAMETER_ACTION_BUTTON );
             _blog.setCreationDate( getSqlDate( ) );
             _blog.setUpdateDate( getSqlDate( ) );
-            _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-            _blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setUser( AdminUserService.getAdminUser( request ).getAccessCode( ) );
+            _blog.setUserCreator( AdminUserService.getAdminUser( request ).getAccessCode( ) );
             _blog.setVersion( 1 );
             _blog.setAttachedPortletId( 0 );
             populate( _blog, request );
@@ -759,8 +759,8 @@ public class BlogJspBean extends ManageBlogJspBean
         _blog.setContentLabel( CONSTANT_DUPLICATE_BLOG_NAME + _blog.getContentLabel( ) );
         _blog.setCreationDate( sqlDate );
         _blog.setUpdateDate( sqlDate );
-        _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
-        _blog.setUserCreator( AdminUserService.getAdminUser( request ).getFirstName( ) );
+        _blog.setUser( AdminUserService.getAdminUser( request ).getAccessCode( ) );
+        _blog.setUserCreator( AdminUserService.getAdminUser( request ).getAccessCode( ) );
         _blog.setVersion( 1 );
         _blog.setAttachedPortletId( 0 );
 
@@ -886,7 +886,7 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setHtmlContent( strHtmlContent );
             _blog.setEditComment( strEditComment );
             _blog.setUpdateDate( getSqlDate( ) );
-            _blog.setUser( AdminUserService.getAdminUser( request ).getFirstName( ) );
+            _blog.setUser( AdminUserService.getAdminUser( request ).getAccessCode( ) );
             _blog.setUrl( strUrl );
 
             // Check constraints

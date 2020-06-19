@@ -63,6 +63,8 @@ public final class BlogDAO implements IBlogDAO
     private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog order by creation_date DESC";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_blog FROM blog_blog ORDER BY creation_date DESC";
     private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions where id_blog = ?";
+    private static final String SQL_QUERY_SELECTALL_USERS_EDITED_BLOG_VERSION = "SELECT distinct user_editor FROM blog_versions where id_blog = ?";
+
     private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO blog_versions ( id_version, id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_blog, a.version, a.content_label, "
@@ -462,6 +464,26 @@ public final class BlogDAO implements IBlogDAO
             }
         }
         return blogVersionsList;
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<String> selectAllUsersEditedBlog( int nId, Plugin plugin )
+    {
+        List<String> blogUsersVersionsList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_USERS_EDITED_BLOG_VERSION, plugin ) )
+        {
+            daoUtil.setInt( 1, nId );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+            	blogUsersVersionsList.add( daoUtil.getString( 1 ) );
+            }
+        }
+        return blogUsersVersionsList;
     }
 
     /**

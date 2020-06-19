@@ -157,8 +157,8 @@ public class BlogPortletJspBean extends PortletJspBean
             blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
             // TODO error validation on edit comment length
             blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
-            blog.setUser( user.getFirstName( ) );
-            blog.setUserCreator( user.getFirstName( ) );
+            blog.setUser( user.getAccessCode( ) );
+            blog.setUserCreator( user.getAccessCode( ) );
             BlogHome.addInitialVersion( blog );
         }
         else

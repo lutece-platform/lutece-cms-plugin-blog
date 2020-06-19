@@ -217,6 +217,8 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         doc.add( new StringField( BlogSearchItem.FIELD_USER, blog.getUserCreator( ).toLowerCase( ), Field.Store.YES ) );
 
         doc.add( new TextField( BlogSearchItem.FIELD_TAGS, getTagToIndex( blog ), Field.Store.YES ) );
+        doc.add( new TextField( BlogSearchItem.FIELD_USERS_EDITED_BLOG, getUsersEditedBlogVersions( blog ), Field.Store.YES ) );
+        
         FieldType ft = new FieldType( StringField.TYPE_STORED );
         ft.setOmitNorms( false );
         doc.add( new Field( SearchItem.FIELD_DATE, DateTools.timeToString( blog.getUpdateDate( ).getTime( ), DateTools.Resolution.MINUTE ), ft ) );
@@ -301,6 +303,24 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         {
             sbContentToIndex.append( BLANK_SPACE );
             sbContentToIndex.append( tg.getIdTag( ) );
+        }
+
+        return sbContentToIndex.toString( );
+    }
+    /**
+     * Set the user list edited the blog
+     * @param blog The blog to index
+     * @return The list of users
+     */
+    private static String getUsersEditedBlogVersions( Blog blog )
+    {
+        StringBuilder sbContentToIndex = new StringBuilder( );
+        List<String> usersList= BlogHome.getUsersEditedBlogVersions(blog.getId() );
+        
+        for ( String user : usersList )
+        {	
+        		sbContentToIndex.append( BLANK_SPACE );
+        		sbContentToIndex.append( user );	
         }
 
         return sbContentToIndex.toString( );

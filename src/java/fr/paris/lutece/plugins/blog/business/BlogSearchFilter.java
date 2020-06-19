@@ -47,6 +47,7 @@ public class BlogSearchFilter
     private boolean _bIsUnpulished;
     private Date _dateUpdateDateAfter;
     private Date _dateUpdateDateBefor;
+    private String _strUserEditedBlogVersion;
 
     /**
      * Get the id of the filter
@@ -130,6 +131,27 @@ public class BlogSearchFilter
     public String getUser( )
     {
         return _strUser;
+    }
+    
+    /**
+     * Sets the User Edited blog
+     * 
+     * @param strUser
+     *            The User edited Blog
+     */
+    public void setUserEditedBlogVersion( String userEditedBlogVersion )
+    {
+    	_strUserEditedBlogVersion = userEditedBlogVersion;
+    }
+
+    /**
+     * Returns the strUser
+     * 
+     * @return The strUser
+     */
+    public String getUserEditedBlogVersion( )
+    {
+        return _strUserEditedBlogVersion;
     }
 
     /**
