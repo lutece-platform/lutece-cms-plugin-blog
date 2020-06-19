@@ -52,9 +52,13 @@ public class BlogBusinessTest extends LuteceTestCase
     private final static String HTMLCONTENT1 = "HtmlContent1";
     private final static String HTMLCONTENT2 = "HtmlContent2";
     private final static String USER1 = "User1";
+    private final static String USER1_LAST_NAME = "User1";
     private final static String USER2 = "User2";
+    private final static String USER2_LAST_NAME = "User2";
     private final static String USER3 = "User3";
+    private final static String USER3_LAST_NAME = "User3";
     private final static String USER4 = "User4";
+    private final static String USER4_LAST_NAME = "User4";
     private final static String EDITCOMMENT1 = "EditComment1";
     private final static String EDITCOMMENT2 = "EditComment2";
 
@@ -69,7 +73,9 @@ public class BlogBusinessTest extends LuteceTestCase
         blog.setHtmlContent( HTMLCONTENT1 );
         blog.setEditComment( EDITCOMMENT1 );
         blog.setUser( USER1 );
+        blog.setUserLastName( USER1_LAST_NAME );
         blog.setUserCreator( USER3 );
+        blog.setUserCreatorLastName( USER3_LAST_NAME );
 
         // Create test
         BlogHome.create( blog );
@@ -82,7 +88,8 @@ public class BlogBusinessTest extends LuteceTestCase
         assertEquals( blogStored.getHtmlContent( ), blog.getHtmlContent( ) );
         assertEquals( blogStored.getEditComment( ), blog.getEditComment( ) );
         assertEquals( blogStored.getUser( ), blog.getUser( ) );
-        assertEquals( blogStored.getUserCreator( ), blog.getUserCreator( ) );
+        assertEquals( blogStored.getUserLastName( ), blog.getUserLastName( ) );
+        assertEquals( blogStored.getUserCreatorLastName( ), blog.getUserCreatorLastName( ) );
 
         // Update test
         blog.setVersion( VERSION2 );
@@ -92,7 +99,9 @@ public class BlogBusinessTest extends LuteceTestCase
         blog.setHtmlContent( HTMLCONTENT2 );
         blog.setEditComment( EDITCOMMENT2 );
         blog.setUser( USER2 );
+        blog.setUserLastName( USER2_LAST_NAME );
         blog.setUserCreator( USER4 );
+        blog.setUserCreatorLastName( USER4_LAST_NAME );
         BlogHome.update( blog );
         blogStored = BlogHome.findByPrimaryKey( blog.getId( ) );
         assertEquals( blogStored.getId( ), blog.getId( ) );
@@ -103,7 +112,8 @@ public class BlogBusinessTest extends LuteceTestCase
         assertEquals( blogStored.getHtmlContent( ), blog.getHtmlContent( ) );
         assertEquals( blogStored.getEditComment( ), blog.getEditComment( ) );
         assertEquals( blogStored.getUser( ), blog.getUser( ) );
-        assertEquals( blogStored.getUserCreator( ), blog.getUserCreator( ) );
+        assertEquals( blogStored.getUserLastName( ), blog.getUserLastName( ) );
+        assertEquals( blogStored.getUserCreatorLastName( ), blog.getUserCreatorLastName( ) );
 
         // List test
         BlogHome.getBlogsList( );
