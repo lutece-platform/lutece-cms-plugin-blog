@@ -112,7 +112,10 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         {
             Integer nBlogId = it.next( );
             Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( nBlogId );
-            indexWriter.addDocument( getDocument( blog ) );
+            if ( blog != null )
+            {
+                indexWriter.addDocument( getDocument( blog ) );
+            }
         }
     }
 
