@@ -40,6 +40,8 @@ import org.hibernate.validator.constraints.*;
 import java.io.Serializable;
 
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.util.ReferenceItem;
@@ -108,7 +110,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     private List<Tag> _tag = new ArrayList<>( );
 
     private List<BlogPublication> _blogPubilcation = new ArrayList<>( );
-
+    
     /**
      * Returns the Id
      * 
@@ -610,4 +612,27 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
         return PROPERTY_RESOURCE_TYPE;
     }
+    
+    
+    /**
+     * Return the user informations
+     * 
+     * @return AdminUser
+     */
+    public AdminUser getUserInfos( ) 
+    {
+        return AdminUserHome.findUserByLogin( _strUser );
+    }
+    
+    /**
+     * Return the user creator informations
+     * 
+     * @return AdminUser
+     */
+    public AdminUser getUserCreatorInfos( )
+    {
+        return AdminUserHome.findUserByLogin( _strUserCreator );
+    }
+    
 }
+    
