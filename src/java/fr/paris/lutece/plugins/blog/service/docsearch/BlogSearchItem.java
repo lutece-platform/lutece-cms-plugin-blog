@@ -79,10 +79,8 @@ public class BlogSearchItem extends SearchItem
 
     public static final String FIELD_DATE_UPDATE = "dateUpdate";
     /*
-     * Users  
+     * Users
      */
     public static final String FIELD_USERS_EDITED_BLOG = "usersEditedBlog";
-
-    
 
 }

@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.blog.web;
 
 import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -135,9 +136,18 @@ public class BlogFileServlet extends HttpServlet
      *             the io exception
      */
     @Override
-    protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+    protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws AppException
     {
-        processRequest( request, response );
+
+        try
+        {
+            processRequest( request, response );
+        }
+        catch( ServletException | IOException e )
+        {
+            throw new AppException( "Request error", e );
+        }
+
     }
 
     /**
@@ -153,9 +163,16 @@ public class BlogFileServlet extends HttpServlet
      *             the io exception
      */
     @Override
-    protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+    protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws AppException
     {
-        processRequest( request, response );
+        try
+        {
+            processRequest( request, response );
+        }
+        catch( ServletException | IOException e )
+        {
+            throw new AppException( "Request error", e );
+        }
     }
 
     /**

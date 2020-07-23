@@ -213,7 +213,7 @@ public class BlogService
                 {
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if ( listToCompare.stream( ).noneMatch( c ->  ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c -> ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
                         {
 
                             updateDocContent( docCont, blog.getId( ) );
@@ -271,7 +271,7 @@ public class BlogService
 
                     if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
-                        if ( listToCompare.stream( ).noneMatch( c ->  ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
+                        if ( listToCompare.stream( ).noneMatch( c -> ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
                         {
 
                             updateDocContent( docCont, blog.getId( ) );

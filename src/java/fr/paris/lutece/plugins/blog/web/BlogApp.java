@@ -129,7 +129,7 @@ public class BlogApp extends MVCApplication
         model.put( MARK_LIST_DOC, listBlogs );
         model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
 
-        return getXPage( TEMPLATE_VIEW_BLOG, request.getLocale( ), model );
+        return getXPage( TEMPLATE_VIEW_BLOG, getLocale( request ), model );
     }
 
 }

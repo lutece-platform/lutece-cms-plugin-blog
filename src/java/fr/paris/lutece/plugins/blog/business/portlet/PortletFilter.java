@@ -67,7 +67,7 @@ public class PortletFilter
      */
     public void setPageName( String [ ] strPageTitle )
     {
-        this._tabPageName = strPageTitle;
+        this._tabPageName = strPageTitle.clone( );
     }
 
     /**
@@ -77,7 +77,7 @@ public class PortletFilter
      */
     public String [ ] getPageName( )
     {
-        return _tabPageName;
+        return _tabPageName.clone( );
     }
 
     /**
@@ -88,7 +88,7 @@ public class PortletFilter
      */
     public void setPortletName( String [ ] strPortletTitle )
     {
-        this._tabPortletName = strPortletTitle;
+        this._tabPortletName = strPortletTitle.clone( );
     }
 
     /**
@@ -98,7 +98,7 @@ public class PortletFilter
      */
     public String [ ] getPortletName( )
     {
-        return _tabPortletName;
+        return _tabPortletName.clone( );
     }
 
     /**

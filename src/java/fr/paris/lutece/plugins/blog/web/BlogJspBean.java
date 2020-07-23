@@ -78,7 +78,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -115,6 +114,10 @@ import org.apache.commons.lang.StringUtils;
 @Controller( controllerJsp = "ManageBlogs.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
 public class BlogJspBean extends ManageBlogJspBean
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9149742923528515045L;
     // Templates
     private static final String TEMPLATE_MANAGE_BLOGS = "/admin/plugins/blog/manage_blogs.html";
     private static final String TEMPLATE_CREATE_BLOG = "/admin/plugins/blog/create_blog.html";
@@ -153,8 +156,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_APPLY = "apply";
     protected static final String PARAMETER_TYPE_ID = "idType";
     protected static final String PARAMETER_CONTENT_ID = "idContent";
-    protected static final String PARAMETER_CONTENT_ACTION= "contentAction";
-    
+    protected static final String PARAMETER_CONTENT_ACTION = "contentAction";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
@@ -797,7 +799,7 @@ public class BlogJspBean extends ManageBlogJspBean
             nVersion = Integer.parseInt( strResetVersion );
         }
 
-        if ( strResetVersion != null && strResetVersion != null )
+        if ( strResetVersion != null )
         {
 
             _blog = BlogHome.findVersion( nId, nVersion );
@@ -830,7 +832,7 @@ public class BlogJspBean extends ManageBlogJspBean
         lockBlog( nId, sessionId );
 
         _blog.getTag( ).sort( ( tg1, tg2 ) -> tg1.getPriority( ) - tg2.getPriority( ) );
-        _blog.getDocContent( ).sort( ( dc1, dc2 ) -> dc1.getPriority ( ) - dc2.getPriority ( ) );
+        _blog.getDocContent( ).sort( ( dc1, dc2 ) -> dc1.getPriority( ) - dc2.getPriority( ) );
         Map<String, Object> model = getModel( );
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
@@ -1168,12 +1170,12 @@ public class BlogJspBean extends ManageBlogJspBean
 
                 return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
             }
-        
-        DocContent docCont  = _blog.getDocContent( ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
+
+        DocContent docCont = _blog.getDocContent( ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
         List<DocContent> listDocs = _blog.getDocContent( ).stream( ).map( dc -> {
-            if ( ( dc.getPriority( ) > docCont.getPriority( ) ) && ( docCont.getId( ) != dc.getId( ) ) ) 
+            if ( ( dc.getPriority( ) > docCont.getPriority( ) ) && ( docCont.getId( ) != dc.getId( ) ) )
             {
-                
+
                 dc.setPriority( dc.getPriority( ) - 1 );
             }
             return dc;
@@ -1186,7 +1188,7 @@ public class BlogJspBean extends ManageBlogJspBean
         return JsonUtil.buildJsonResponse( new JsonResponse( nIdDoc ) );
 
     }
-    
+
     /**
      * Return Json if the the content is updated
      *
@@ -1217,7 +1219,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
                 return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
             }
-              
+
         for ( DocContent dc : _blog.getDocContent( ) )
         {
             if ( dc.getId( ) == Integer.parseInt( strIdDocContent ) )
@@ -1256,7 +1258,7 @@ public class BlogJspBean extends ManageBlogJspBean
         return JsonUtil.buildJsonResponse( new JsonResponse( String.valueOf( docCont.getId( ) ) ) );
 
     }
-    
+
     /**
      * 
      * @param request

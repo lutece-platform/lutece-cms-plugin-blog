@@ -125,7 +125,7 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public List<DocContent> loadDocContentByIdHtemldoc( int idBlog, Plugin plugin )
     {
-        List<DocContent> listDoc = new ArrayList<DocContent>( );
+        List<DocContent> listDoc = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT, plugin ) )
         {
             daoUtil.setInt( 1, idBlog );
@@ -273,7 +273,7 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public List<ContentType> loadListContentType( Plugin plugin )
     {
-        List<ContentType> listcontentType = new ArrayList<ContentType>( );
+        List<ContentType> listcontentType = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CONTENT_TYPE, plugin ) )
         {
 

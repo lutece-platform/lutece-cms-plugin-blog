@@ -192,7 +192,7 @@ public class BlogListPortlet extends PortletHtmlContent
      */
     public List<BlogPublication> getArrayBlogs( )
     {
-        return _arrayBlogs;
+        return (List<BlogPublication>) ( (ArrayList<BlogPublication>) _arrayBlogs ).clone( );
     }
 
     /**
@@ -201,7 +201,7 @@ public class BlogListPortlet extends PortletHtmlContent
      */
     public void setArrayBlogs( List<BlogPublication> arrayBlogs )
     {
-        _arrayBlogs = arrayBlogs;
+        _arrayBlogs = (List<BlogPublication>) ( (ArrayList<BlogPublication>) arrayBlogs ).clone( );
     }
 
     /**

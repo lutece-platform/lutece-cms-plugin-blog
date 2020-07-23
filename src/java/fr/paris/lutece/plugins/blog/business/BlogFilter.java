@@ -56,7 +56,7 @@ public class BlogFilter
      */
     public Integer [ ] getTagsId( )
     {
-        return _arrayTagsId;
+        return _arrayTagsId.clone( );
     }
 
     /**
@@ -65,7 +65,7 @@ public class BlogFilter
      */
     public void setTagsId( Integer [ ] arrayTagsId )
     {
-        _arrayTagsId = arrayTagsId;
+        _arrayTagsId = arrayTagsId.clone( );
     }
 
     /**
@@ -93,7 +93,7 @@ public class BlogFilter
      */
     public Integer [ ] getIds( )
     {
-        return _arrayId;
+        return _arrayId.clone( );
     }
 
     /**
@@ -102,7 +102,7 @@ public class BlogFilter
      */
     public void setIds( Integer [ ] arrayId )
     {
-        _arrayId = arrayId;
+        _arrayId = arrayId.clone( );
     }
 
     /**

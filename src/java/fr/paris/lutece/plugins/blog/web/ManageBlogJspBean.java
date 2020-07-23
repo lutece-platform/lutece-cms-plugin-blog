@@ -51,6 +51,10 @@ import fr.paris.lutece.util.url.UrlItem;
  */
 public abstract class ManageBlogJspBean extends MVCAdminJspBean
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6668218805735261134L;
     protected static final String UNAUTHORIZED = "Unauthorized";
     // Rights
     public static final String RIGHT_MANAGEHTMLDOCS = "BLOG_MANAGEMENT";

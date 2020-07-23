@@ -95,7 +95,7 @@ public class BlogPublication
      */
     public Date getDateBeginPublishing( )
     {
-        return _dateBeginPublishing;
+        return (Date) _dateBeginPublishing.clone( );
     }
 
     /**
@@ -104,7 +104,7 @@ public class BlogPublication
      */
     public void setDateBeginPublishing( Date datePublishing )
     {
-        _dateBeginPublishing = datePublishing;
+        _dateBeginPublishing = (Date) datePublishing.clone( );
     }
 
     /**
@@ -112,7 +112,7 @@ public class BlogPublication
      */
     public Date getDateEndPublishing( )
     {
-        return _dateEndPublishing;
+        return (Date) _dateEndPublishing.clone( );
     }
 
     /**
@@ -121,7 +121,7 @@ public class BlogPublication
      */
     public void setDateEndPublishing( Date datePublishing )
     {
-        _dateEndPublishing = datePublishing;
+        _dateEndPublishing = (Date) datePublishing.clone( );
     }
 
     /**

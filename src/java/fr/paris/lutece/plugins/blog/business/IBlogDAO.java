@@ -157,7 +157,7 @@ public interface IBlogDAO
      * @return The list which contains the data of all the blog objects
      */
     List<Blog> selectBlogsVersionsList( int nId, Plugin plugin );
-    
+
     /**
      * Load the data of all the users edited the blog and returns them as a list
      * 
@@ -166,7 +166,6 @@ public interface IBlogDAO
      * @return The list which contains the data of all the users edited blog objects
      */
     List<String> selectAllUsersEditedBlog( int nId, Plugin plugin );
-
 
     /**
      * Load the id of all the Blog objects and returns them as a list
