@@ -139,14 +139,14 @@ public class BlogFileServlet extends HttpServlet
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws AppException
     {
 
-        	try
-        	{
-				processRequest( request, response );
-			}
-        	catch (ServletException | IOException e)
-        	{
-				throw new AppException("Request error", e);
-			}
+        try
+        {
+            processRequest( request, response );
+        }
+        catch( ServletException | IOException e )
+        {
+            throw new AppException( "Request error", e );
+        }
 
     }
 
@@ -167,12 +167,12 @@ public class BlogFileServlet extends HttpServlet
     {
         try
         {
-			processRequest( request, response );
-		}
-        catch (ServletException | IOException e)
+            processRequest( request, response );
+        }
+        catch( ServletException | IOException e )
         {
-			throw new AppException("Request error", e);
-		}
+            throw new AppException( "Request error", e );
+        }
     }
 
     /**

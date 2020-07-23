@@ -110,7 +110,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     private List<Tag> _tag = new ArrayList<>( );
 
     private List<BlogPublication> _blogPubilcation = new ArrayList<>( );
-    
+
     /**
      * Returns the Id
      * 
@@ -187,7 +187,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public Timestamp getCreationDate( )
     {
-        return ( Timestamp ) _dateCreationDate.clone( );
+        return (Timestamp) _dateCreationDate.clone( );
     }
 
     /**
@@ -198,7 +198,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setCreationDate( Timestamp dateCreationDate )
     {
-        _dateCreationDate = ( Timestamp ) dateCreationDate.clone( );
+        _dateCreationDate = (Timestamp) dateCreationDate.clone( );
     }
 
     /**
@@ -344,7 +344,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public List<DocContent> getDocContent( )
     {
-        return ( List<DocContent> )( ( ArrayList<DocContent> )_docContent ).clone( );
+        return (List<DocContent>) ( (ArrayList<DocContent>) _docContent ).clone( );
     }
 
     /**
@@ -355,7 +355,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setDocContent( List<DocContent> docContent )
     {
-        _docContent = ( List<DocContent> )( ( ArrayList<DocContent> )docContent ).clone( );
+        _docContent = (List<DocContent>) ( (ArrayList<DocContent>) docContent ).clone( );
     }
 
     /**
@@ -451,7 +451,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public List<Tag> getTag( )
     {
-        return ( List<Tag> )( ( ArrayList<Tag> )_tag ).clone( );
+        return (List<Tag>) ( (ArrayList<Tag>) _tag ).clone( );
     }
 
     /**
@@ -462,7 +462,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setTag( List<Tag> tag )
     {
-        _tag = ( List<Tag> )( ( ArrayList<Tag> )tag ).clone( );
+        _tag = (List<Tag>) ( (ArrayList<Tag>) tag ).clone( );
     }
 
     /**
@@ -499,7 +499,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public List<BlogPublication> getBlogPubilcation( )
     {
-        return _blogPubilcation;
+        return (List<BlogPublication>) ( (ArrayList<BlogPublication>) _blogPubilcation ).clone( );
     }
 
     /**
@@ -510,7 +510,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setBlogPubilcation( List<BlogPublication> blogPublication )
     {
-        _blogPubilcation = blogPublication;
+        _blogPubilcation = (List<BlogPublication>) ( (ArrayList<BlogPublication>) blogPublication ).clone( );
     }
 
     /**
@@ -612,18 +612,17 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
         return PROPERTY_RESOURCE_TYPE;
     }
-    
-    
+
     /**
      * Return the user informations
      * 
      * @return AdminUser
      */
-    public AdminUser getUserInfos( ) 
+    public AdminUser getUserInfos( )
     {
         return AdminUserHome.findUserByLogin( _strUser );
     }
-    
+
     /**
      * Return the user creator informations
      * 
@@ -633,6 +632,5 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     {
         return AdminUserHome.findUserByLogin( _strUserCreator );
     }
-    
+
 }
-    

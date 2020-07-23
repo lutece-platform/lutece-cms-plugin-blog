@@ -98,7 +98,7 @@ public class BlogSearchFilter
      */
     public String [ ] getTag( )
     {
-        return _strTag;
+        return _strTag.clone( );
     }
 
     /**
@@ -109,7 +109,7 @@ public class BlogSearchFilter
      */
     public void setTag( String [ ] strTag )
     {
-        this._strTag = strTag;
+        this._strTag = strTag.clone( );
     }
 
     /**
@@ -132,7 +132,7 @@ public class BlogSearchFilter
     {
         return _strUser;
     }
-    
+
     /**
      * Sets the User Edited blog
      * 
@@ -141,7 +141,7 @@ public class BlogSearchFilter
      */
     public void setUserEditedBlogVersion( String userEditedBlogVersion )
     {
-    	_strUserEditedBlogVersion = userEditedBlogVersion;
+        _strUserEditedBlogVersion = userEditedBlogVersion;
     }
 
     /**
@@ -179,7 +179,7 @@ public class BlogSearchFilter
      */
     public Date getUpdateDateAfter( )
     {
-        return _dateUpdateDateAfter;
+        return (Date) _dateUpdateDateAfter.clone( );
     }
 
     /**
@@ -190,7 +190,7 @@ public class BlogSearchFilter
      */
     public void setUpdateDateAfter( Date dateUpdateDateAfter )
     {
-        _dateUpdateDateAfter = dateUpdateDateAfter;
+        _dateUpdateDateAfter = (Date) dateUpdateDateAfter.clone( );
     }
 
     /**
@@ -200,7 +200,7 @@ public class BlogSearchFilter
      */
     public Date getUpdateDateBefor( )
     {
-        return _dateUpdateDateBefor;
+        return (Date) _dateUpdateDateBefor.clone( );
     }
 
     /**
@@ -211,7 +211,7 @@ public class BlogSearchFilter
      */
     public void setUpdateDateBefor( Date dateUpdateDateBefor )
     {
-        _dateUpdateDateBefor = dateUpdateDateBefor;
+        _dateUpdateDateBefor = (Date) dateUpdateDateBefor.clone( );
     }
 
 }

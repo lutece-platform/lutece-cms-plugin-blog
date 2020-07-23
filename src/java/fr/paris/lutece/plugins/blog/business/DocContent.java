@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.blog.business;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class DocContent implements Serializable
      * 
      */
     private static final long serialVersionUID = 1L;
-    
+
     private int _nIdDocContent;
     private String _strTextValue;
     private byte [ ] _bytes;
@@ -105,7 +106,7 @@ public class DocContent implements Serializable
      */
     public void setBinaryValue( byte [ ] bytes )
     {
-        _bytes = bytes;
+        _bytes = bytes.clone( );
     }
 
     /**
@@ -115,7 +116,7 @@ public class DocContent implements Serializable
      */
     public byte [ ] getBinaryValue( )
     {
-        return _bytes;
+        return _bytes.clone( );
     }
 
     /**
@@ -167,7 +168,7 @@ public class DocContent implements Serializable
      */
     public List<Blog> getBlogs( )
     {
-        return _blogs;
+        return (List<Blog>) ( (ArrayList<Blog>) _blogs ).clone( );
     }
 
     /**
@@ -178,7 +179,7 @@ public class DocContent implements Serializable
      */
     public void setBlogs( List<Blog> blogs )
     {
-        this._blogs = blogs;
+        this._blogs = (List<Blog>) ( (ArrayList<Blog>) blogs ).clone( );
     }
 
     /**
@@ -194,7 +195,8 @@ public class DocContent implements Serializable
     /**
      * Sets the priority
      * 
-     * @param nPriority the priority to set
+     * @param nPriority
+     *            the priority to set
      */
     public void setPriority( int nPriority )
     {

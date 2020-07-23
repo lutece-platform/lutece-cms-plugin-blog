@@ -465,7 +465,7 @@ public final class BlogDAO implements IBlogDAO
         }
         return blogVersionsList;
     }
-    
+
     /**
      * {@inheritDoc }
      */
@@ -480,7 +480,7 @@ public final class BlogDAO implements IBlogDAO
 
             while ( daoUtil.next( ) )
             {
-            	blogUsersVersionsList.add( daoUtil.getString( 1 ) );
+                blogUsersVersionsList.add( daoUtil.getString( 1 ) );
             }
         }
         return blogUsersVersionsList;

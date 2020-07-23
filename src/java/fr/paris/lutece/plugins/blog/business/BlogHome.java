@@ -187,7 +187,7 @@ public final class BlogHome
     {
         return _dao.selectBlogsVersionsList( nId, _plugin );
     }
-    
+
     /**
      * Load the data of all users edited the Blog objects and returns them as a list
      * 
