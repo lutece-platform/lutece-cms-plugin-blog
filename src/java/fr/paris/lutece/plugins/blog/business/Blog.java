@@ -187,7 +187,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public Timestamp getCreationDate( )
     {
-        return _dateCreationDate;
+        return ( Timestamp ) _dateCreationDate.clone( );
     }
 
     /**
@@ -198,7 +198,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setCreationDate( Timestamp dateCreationDate )
     {
-        _dateCreationDate = dateCreationDate;
+        _dateCreationDate = ( Timestamp ) dateCreationDate.clone( );
     }
 
     /**
@@ -208,7 +208,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public Timestamp getUpdateDate( )
     {
-        return _dateUpdateDate;
+        return (Timestamp) _dateUpdateDate.clone( );
     }
 
     /**
@@ -219,7 +219,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setUpdateDate( Timestamp dateUpdateDate )
     {
-        _dateUpdateDate = dateUpdateDate;
+        _dateUpdateDate = (Timestamp) dateUpdateDate.clone( );
     }
 
     /**
@@ -344,7 +344,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public List<DocContent> getDocContent( )
     {
-        return _docContent;
+        return ( List<DocContent> )( ( ArrayList<DocContent> )_docContent ).clone( );
     }
 
     /**
@@ -355,7 +355,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setDocContent( List<DocContent> docContent )
     {
-        _docContent = docContent;
+        _docContent = ( List<DocContent> )( ( ArrayList<DocContent> )docContent ).clone( );
     }
 
     /**
@@ -451,7 +451,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public List<Tag> getTag( )
     {
-        return _tag;
+        return ( List<Tag> )( ( ArrayList<Tag> )_tag ).clone( );
     }
 
     /**
@@ -462,7 +462,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void setTag( List<Tag> tag )
     {
-        _tag = tag;
+        _tag = ( List<Tag> )( ( ArrayList<Tag> )tag ).clone( );
     }
 
     /**

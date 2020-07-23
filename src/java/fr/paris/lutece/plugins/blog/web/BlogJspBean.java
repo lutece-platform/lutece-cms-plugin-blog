@@ -78,7 +78,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -115,7 +114,11 @@ import org.apache.commons.lang.StringUtils;
 @Controller( controllerJsp = "ManageBlogs.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
 public class BlogJspBean extends ManageBlogJspBean
 {
-    // Templates
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9149742923528515045L;
+	// Templates
     private static final String TEMPLATE_MANAGE_BLOGS = "/admin/plugins/blog/manage_blogs.html";
     private static final String TEMPLATE_CREATE_BLOG = "/admin/plugins/blog/create_blog.html";
     private static final String TEMPLATE_MODIFY_BLOG = "/admin/plugins/blog/modify_blog.html";
@@ -797,7 +800,7 @@ public class BlogJspBean extends ManageBlogJspBean
             nVersion = Integer.parseInt( strResetVersion );
         }
 
-        if ( strResetVersion != null && strResetVersion != null )
+        if ( strResetVersion != null )
         {
 
             _blog = BlogHome.findVersion( nId, nVersion );
