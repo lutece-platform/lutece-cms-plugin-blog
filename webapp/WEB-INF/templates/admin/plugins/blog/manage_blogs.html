@@ -3,7 +3,7 @@
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-blogs" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
+        <span class="sr-only">#i18n{blog.modify_blog.labelToggleDropdown}</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -14,7 +14,7 @@
     <div class="collapse navbar-collapse" id="bs-navbar-blogs">
         <form class="navbar-form navbar-left" id="form-manage" name="form-manage" type="POST" action="jsp/admin/plugins/blog/ManageBlogs.jsp">
             <div class="form-group">
-                <label for="search_text" class="sr-only" >Rechercher</label>
+                <label for="search_text" class="sr-only">#i18n{blog.manage_blogs.search}</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="search_text" name="search_text" value="${search_text!''}">
                     <div class="input-group-addon">
@@ -24,200 +24,191 @@
                     </div>
                 </div>
             </div>
-             <div class="form-group">
-                 <br>
-             </div>
             <div class="form-group">
                 <label for="search_text">#i18n{blog.manage_blogs.labelTag}</label>
                 <select id="tag_doc" multiple name="tag_doc" class="form-control">
-                 <#list list_tag?sort as tgName>
-						        <option <#if tags?? && tags?seq_contains(tgName.code)> selected</#if> value="${tgName.code!}">${tgName.name!?capitalize}</option>
-						      </#list>
-				         </select>
+                <#list list_tag?sort as tgName>
+                  <option <#if tags?? && tags?seq_contains(tgName.code)> selected</#if> value="${tgName.code!}">${tgName.name!?capitalize}</option>
+                </#list>
+                </select>
             </div>
-            
             <div class="form-group">
-            <div class="input-daterange row">
-              
-              <div class="col-xs-12 col-sm-6">
-                <label for="dateUpdateBlogAfter">après</label>
-                <div class="input-group">
-                  <input type="text" name="dateUpdateBlogAfter" id="dateUpdateBlogAfter" class="form-control" value="${dateUpdateBlogAfter!}">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+              <div class="input-daterange row">
+                <div class="col-xs-12 col-sm-6">
+                  <label for="dateUpdateBlogAfter">#i18n{blog.manage_blogs.labelAfter}</label>
+                  <div class="input-group">
+                    <input type="text" name="dateUpdateBlogAfter" id="dateUpdateBlogAfter" class="form-control" value="${dateUpdateBlogAfter!}">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                  </div>
                 </div>
-              </div>
               <div class="col-xs-12 col-sm-6">
-                <label class="" for="dateUpdateBlogBefor">Avant</label>
+                <label class="" for="dateUpdateBlogBefor">#i18n{blog.manage_blogs.labelBefore}</label>
                 <div class="input-group">
                   <input type="text" name="dateUpdateBlogBefor" id="dateUpdateBlogBefor" class="form-control" value="${dateUpdateBlogBefor!}">
                   <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 </div>
               </div>
-           </div>
-         </div>
-	 <div class="form-group">
-                 <br>
           </div>
-	  <div class="form-group">
-		<div col-xs-12 col-sm-6>
-                  <label for="unpublished">Non Publié</label>
-                  <input type="checkbox" name="unpublished" id="unpublished" value="false" <#if unpublished>checked</#if> title="Non publié" />
-                </div>
-             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-default" name="button_search" id="button_search">#i18n{blog.manage_blogs.search}</button>
+        </div>
+        <div class="form-group">
+		      <div col-xs-12 col-sm-6>
+            <label for="unpublished">#i18n{blog.manage_blogs.labelNotPublished}</label>
+              <input type="checkbox" name="unpublished" id="unpublished" value="false" <#if unpublished>checked</#if> title="#i18n{blog.manage_blogs.labelNotPublished}" />
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-default" name="button_reset" id="button_reset">#i18n{blog.manage_blogs.reset}</button>
-            </div>
-        </form>
-        <#if permission_manage_create_blog>
+          </div>
+          <div class="form-group">
+              <button type="submit" class="btn btn-default" name="button_search" id="button_search">#i18n{blog.manage_blogs.search}</button>
+          </div>
+          <div class="form-group">
+              <button type="submit" class="btn btn-default" name="button_reset" id="button_reset">#i18n{blog.manage_blogs.reset}</button>
+          </div>
+      </form>
+      <#if permission_manage_create_blog>
         <form class="navbar-form navbar-right" action="jsp/admin/plugins/blog/ManageBlogs.jsp">
-             <button class="btn btn-primary btn-flat" type="submit" name="view_createBlog">
-                    <i class="fa fa-plus"></i>
-                    <span class="hidden-xs">#i18n{blog.manage_blogs.buttonAdd}</span>
-                </button>
-         </form>
-         </#if>
-            <ul class="nav navbar-nav navbar-right hidden">
-            <li>
-                <a href="jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs" title="#i18n{blog.manage_tags.title}">
-                    <i class="fa fa-tags" aria-hidden="true"></i> <span class="hidden-xs">G&eacute;rer les tags</span>
-                </a>
-            </li>
-        </ul>
-    </div><!-- /.navbar-collapse -->
+          <button class="btn btn-primary btn-flat" type="submit" name="view_createBlog">
+            <i class="fa fa-plus"></i>
+            <span class="hidden-xs">#i18n{blog.manage_blogs.buttonAdd}</span>
+          </button>
+        </form>
+      </#if>
+      <ul class="nav navbar-nav navbar-right hidden">
+        <li>
+          <a href="jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs" title="#i18n{blog.manage_tags.title}">
+            <i class="fa fa-tags" aria-hidden="true"></i> <span class="hidden-xs">#i18n{blog.manage_blogs.labelManageTags}</span>
+          </a>
+        </li>
+    </ul>
+    </div>
+    <!-- /.navbar-collapse -->
 </nav>
 
 <#assign idx=0 />
 <div class="box-body table-responsive no-padding">
-    <@table>
-        <thead>
-            <tr>
-                <th>
-                    #i18n{blog.manage_blogs.columnContentLabel}
-                    <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" />
-                </th>
-                <th></th>
-                <th>
-                    #i18n{blog.manage_blogs.columnCreationDate}
-                    <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" />
-                </th>
-                <th>#i18n{blog.manage_blogs.columnUpdateDate} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="updateDate" /></th>
-                <th>Tags</th>
-                <th>Publication</th>
-                <th>#i18n{portal.util.labelActions}</th>
-            </tr>
-        </thead>
-        <tbody>
-          <#list blog_list as blog>
-            <tr>
-                <td>
-                  <p class="lead" style="margin-bottom:0">
-                    <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}" s title="#i18n{portal.util.labelModify}">
-                      ${blog.contentLabel!} <#if blog.locked><i class="glyphicon glyphicon-lock"></i></#if>
-                    </a>
-                  </p>
-            
-                  <p>
-                    <small>Cr&eacute;&eacute; par <strong>${blog.userCreatorInfos.lastName!}</strong><strong> ${blog.userCreatorInfos.firstName!}</strong> le ${blog.creationDate?date}</strong></small>
-                  </p>
-                  <p>
-                    <#if blog.editComment?? && blog.editComment?trim !=''>
-                       <span class="label label-default">&nbsp;<i class="fa fa-comment"></i> <strong>#i18n{blog.manage_blogs.columnEditComment}:</strong> ${blog.editComment} </span>&nbsp;
-                    </#if>
-                  </p>
-                </td>
-                <td>
-                  <!-- modal Front preview --->
-                  <a href="jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}" class="btn btn-link btn-preview " title="#i18n{blog.history_blog.labelPreview}">
-                    <i class="fa fa-eye fa-fw"></i>
-                  </a>
-                  <!-- Admin preview --->
-                  <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&amp;id=${blog.id}" class="btn btn-link btn-default hidden" title="Admin #i18n{blog.history_blog.labelPreview}">
-                    <i class="fa fa-eye fa-fw"></i>
-                  </a>
-                </td>
-                <td>${blog.creationDate!} par <strong>${blog.userCreatorInfos.lastName!}</strong><strong> ${blog.userCreatorInfos.firstName!}</strong></td>
-                <td>${blog.updateDate!} par <strong>${blog.userInfos.lastName!}</strong><strong> ${blog.userInfos.firstName!}</strong></td>
-                <td>
-                  <#list blog.tag as tg>
-                    <#list list_tag as tgName>
-                      <#if tgName.code==tg.idTag?string>
-                        <span class="label label-primary">${tgName.name!}</span>
-                        <#break>
-                      </#if>
-                    </#list>
-                  </#list>
-                </td>
-                <td>
-                  <div class="btn-group">
-		    <#if permission_manage_publish_blog>
-                    <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}"
-                      class="btn-publish btn btn-sm <#if blog.blogPubilcation?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPubilcation?size==0>Publier<#else>#i18n{blog.manage_blogs.managePublication}</#if>">
-                      <i class="fa fa-globe"></i>
-                     <#if blog.blogPubilcation?size &gt; 0>
-                        <span class="notification left bg-purple-active">${blog.blogPubilcation?size}</span>
-                      </#if>
-                    </a>
-                    <#if blog.blogPubilcation?size &gt; 0>
-                      <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                      </button>
-                      <ul class="dropdown-menu">
-                        <#list blog.blogPubilcation?sort_by("idPortlet") as publication>
-                          <li>
-                            <div class="btn-group" role="group" aria-label="...">
-                              <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}"
-                                  class="btn btn-danger btn-xs hidden" title="Depublier"><i class="fa fa-remove"></i></a>
-                               <a href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link"  title="Publie du ${publication.dateBeginPublishing} au ${publication.dateEndPublishing}">
-                                 ${publication.portlet.name} - Page ${publication.portlet.pageId} <i class="fa fa-external-link" aria-hidden="true"></i>
-                               </a>
-                            </div>
-                           </li>
-                          </#list>
-                         </ul>
-                        </#if>
-                      </div>
-		    </#if>
-                    </td>
-                    <td>
-			<#if permission_manage_modify_blog>
-                        <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm " title="#i18n{portal.util.labelModify}">
-                            <i class="fa fa-pencil fa-fw"></i>
-                        </a>
-			</#if>
-
-            <#if permission_manage_create_blog>
-                        <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?action=duplicateBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm " title="#i18n{blog.manage_blogs.labelDuplicateBolg}">
-                            <i class="fa fa-clone fa-fw"></i>
-                        </a>
+  <@table>
+    <thead>
+      <tr>
+        <th>
+            #i18n{blog.manage_blogs.columnContentLabel}
+            <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" />
+        </th>
+        <th></th>
+        <th>
+            #i18n{blog.manage_blogs.columnCreationDate}
+            <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" />
+        </th>
+        <th>#i18n{blog.manage_blogs.columnUpdateDate} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="updateDate" /></th>
+        <th>#i18n{blog.create_blog.TagsTitle}</th>
+        <th>#i18n{blog.publication_blog.labelPublication}</th>
+        <th>#i18n{portal.util.labelActions}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <#list blog_list as blog>
+      <tr>
+        <td>
+          <p class="lead" style="margin-bottom:0">
+            <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}" title="#i18n{portal.util.labelModify}">
+              ${blog.contentLabel!} <#if blog.locked><i class="fa fa-lock"></i></#if>
+            </a>
+          </p>
+    
+          <p>
+            <small>Cr&eacute;&eacute; par <strong>${blog.userCreatorInfos.lastName!}</strong><strong> ${blog.userCreatorInfos.firstName!}</strong> le ${blog.creationDate?date}</strong></small>
+          </p>
+          <p>
+            <#if blog.editComment?? && blog.editComment?trim !=''>
+                <span class="label label-default"><i class="fa fa-comment"></i> <strong>#i18n{blog.manage_blogs.columnEditComment}:</strong> ${blog.editComment} </span>
             </#if>
-
-                        <div class="btn-group">
-                            <#if blog.version !=1>
-                                <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}" class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelDiffPrevious}">
-                                    <i class="fa fa-code-fork fa-fw"></i>
-                                </a>
-                            </#if>
-                            <#if blog.version &gt; 1>
-                                <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm notif" title="#i18n{blog.manage_blogs.labelHistory}  ${blog.version} versions ">
-                                    <i class="fa fa-history fa-fw"></i> <span class="notification bg-green-active">${blog.version}</span>
-                                </a>
-                            </#if>
-                        </div>
-			<#if permission_manage_delete_blog>
-                        <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}" class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}">
-                            <i class="fa fa-trash fa-fw"></i>
-                        </a>
-			</#if>
-                    </td>
-                </tr>
-                <#assign idx=idx + 1/>
+          </p>
+        </td>
+        <td>
+          <!-- modal Front preview --->
+          <a href="jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}" class="btn btn-link btn-preview " title="#i18n{blog.history_blog.labelPreview}">
+            <i class="fa fa-eye fa-fw"></i>
+          </a>
+          <!-- Admin preview --->
+          <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&amp;id=${blog.id}" class="btn btn-link btn-default hidden" title="#i18n{blog.manage_blogs.labelAdmin} #i18n{blog.history_blog.labelPreview}">
+            <i class="fa fa-eye fa-fw"></i>
+          </a>
+        </td>
+        <td>${blog.creationDate!} #i18n{blog.manage_blogs.labelBy} <strong>${blog.userCreatorInfos.lastName!}</strong><strong> ${blog.userCreatorInfos.firstName!}</strong></td>
+        <td>${blog.updateDate!} #i18n{blog.manage_blogs.labelBy} <strong>${blog.userInfos.lastName!}</strong><strong> ${blog.userInfos.firstName!}</strong></td>
+        <td>
+          <#list blog.tag as tg>
+            <#list list_tag as tgName>
+              <#if tgName.code==tg.idTag?string>
+                <span class="label label-primary">${tgName.name!}</span>
+                <#break>
+              </#if>
             </#list>
-        </tbody>
-    </@table>
+          </#list>
+        </td>
+        <td>
+          <div class="btn-group">
+          <#if permission_manage_publish_blog>
+            <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}" class="btn-publish btn btn-sm <#if blog.blogPubilcation?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPubilcation?size==0>Publier<#else>#i18n{blog.manage_blogs.managePublication}</#if>">
+              <i class="fa fa-globe"></i>
+              <#if blog.blogPubilcation?size &gt; 0>
+                <span class="notification left bg-purple-active">${blog.blogPubilcation?size}</span>
+              </#if>
+            </a>
+            <#if blog.blogPubilcation?size &gt; 0>
+              <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">#i18n{blog.modify_blog.labelToggleDropdown}</span>
+              </button>
+              <ul class="dropdown-menu">
+                <#list blog.blogPubilcation?sort_by("idPortlet") as publication>
+                  <li>
+                    <div class="btn-group" role="group" aria-label="...">
+                      <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}" class="btn btn-danger btn-xs hidden" title="Depublier">
+                        <i class="fa fa-remove"></i>
+                      </a>
+                      <a href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link"  title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
+                        ${publication.portlet.name} - #i18n{blog.modify_blogs.labelPage} ${publication.portlet.pageId} <i class="fa fa-external-link" aria-hidden="true"></i>
+                      </a>
+                    </div>
+                  </li>
+                </#list>
+              </ul>
+            </#if>
+          </#if>
+          </div>
+        </td>
+        <td>
+          <#if permission_manage_modify_blog>
+            <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm " title="#i18n{portal.util.labelModify}">
+              <i class="fa fa-pencil fa-fw"></i>
+            </a>
+          </#if>
+          <#if permission_manage_create_blog>
+            <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?action=duplicateBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm " title="#i18n{blog.manage_blogs.labelDuplicateBlog}">
+                <i class="fa fa-clone fa-fw"></i>
+            </a>
+          </#if>
+            <div class="btn-group">
+              <#if blog.version !=1>
+                <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}" class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelDiffPrevious}">
+                    <i class="fa fa-code-fork fa-fw"></i>
+                </a>
+              </#if>
+              <#if blog.version &gt; 1>
+                <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}" class="btn btn-primary btn-sm notif" title="#i18n{blog.manage_blogs.labelHistory}  ${blog.version} #i18n{blog.manage_blogs.labelVersions=Versions}">
+                    <i class="fa fa-history fa-fw"></i> <span class="notification bg-green-active">${blog.version}</span>
+                </a>
+              </#if>
+          </div>
+          <#if permission_manage_delete_blog>
+            <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}" class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}">
+              <i class="fa fa-trash fa-fw"></i>
+            </a>
+          </#if>
+          </td>
+      </tr>
+      <#assign idx=idx + 1/>
+      </#list>
+    </tbody>
+  </@table>
 </div>
 <@paginationAdmin paginator=paginator combo=1 />
 <@getDatePickerRangeBootstrap language="fr" />
@@ -236,11 +227,7 @@ $(function () {
     $('#loader').hide();
     });
   });
-/*
-  $('#previewModal').on('hide.bs.modal', function () {
-     window.location.reload();
-  });
-*/
+
   $(".btn-preview").click( function(e){
     e.preventDefault();
     urlPublished= $(this).attr("href");
@@ -301,19 +288,23 @@ $(function () {
     <div class="modal-dialog modal-lg" role="document" >
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove" aria-hidden="true"></i></button>
-                <button type="button" id="btn-expand" class="btn btn-link pull-right" arai-label="Expand"><i class="fa fa-expand" aria-hidden="true"></i></button>
-                <h4 class="modal-title" id="previewModalLabel">Preview</h4>
+                <button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="#i18n{blog.create_blog.labelCollapse}">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                <button type="button" id="btn-expand" class="btn btn-link pull-right" aria-label="#i18n{blog.manage_blog.labelExpand}">
+                  <i class="fa fa-expand" aria-hidden="true"></i>
+                </button>
+                <h4 class="modal-title" id="previewModalLabel">#i18n{blog.create_blog.labelPreview}</h4>
             </div>
             <div class="modal-body">
                 <p id="loader" class="text-center">
                     <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
-                    <span class="sr-only">Chargement...</span>
+                    <span class="sr-only">#i18n{blog.modify_blog.labelLoading}</span>
                 </p>
                 <iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">#i18n{blog.create_blog.labelCollapse}</button>
             </div>
         </div>
     </div>

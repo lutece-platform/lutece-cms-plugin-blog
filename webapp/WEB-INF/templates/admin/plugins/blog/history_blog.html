@@ -15,7 +15,7 @@
           <th>#i18n{blog.manage_blogs.columnEditComment}</th>
           <th>#i18n{portal.util.labelActions}</th>
           <th>
-          <button type="submit" class="btn btn-info btn-xs" value="1"> <i class="fa fa-files-o"></i>  Comparer</button>
+          <button type="submit" class="btn btn-info btn-xs" value="1"> <i class="fa fa-files-o"></i>  #i18n{blog.diff_blog.Compare}</button>
             
           </th>
         </tr>
@@ -26,7 +26,7 @@
         <#list blog_list?reverse as blog >
         <tr>
           <td>
-           Version <strong>${blog.version}</strong> modifi&eacute;e le <em>${blog.updateDate}</em> par <strong>${blog.user}</strong>
+           #i18n{blog.diff_blog.Version} <strong>${blog.version}</strong> #i18n{blog.history_blog.updatedBy}<em>${blog.updateDate}</em> #i18n{blog.manage_blogs.labelBy} <strong>${blog.user}</strong>
           </td>
           <td>
             ${blog.editComment}
@@ -57,7 +57,7 @@
       </tbody>
       <tfoot>
         <td colspan="3"></td>
-        <td><button type="submit" class="btn btn-info btn-xs" value="1"> <i class="fa fa-files-o"></i>  Comparer</button></td>
+        <td><button type="submit" class="btn btn-info btn-xs" value="1"> <i class="fa fa-files-o"></i> #i18n{blog.history_blog.columnDiffSelect}</button></td>
       </tfoot>
       </@table>
     </div>

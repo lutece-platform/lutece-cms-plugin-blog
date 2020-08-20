@@ -8,7 +8,7 @@
         <article class="col-xs-12 col-sm-10">
             <div class="form-group">
                 <label for="content_label" class="sr-only">#i18n{blog.create_blog.labelContentLabel} </label>
-                <input class="form-control" name="content_label" id="content_label" type="text" placeholder="Le titre de mon contenu" value="" required>
+                <input class="form-control" name="content_label" id="content_label" type="text" placeholder="#i18n{blog.create_blog.labelContentLabel.help}" value="" required>
             </div>
           <div class="form-group">
               <label for="html_content" class="sr-only">#i18n{blog.create_blog.labelEditContent} </label>
@@ -18,12 +18,12 @@
         </article>
         <aside class="col-xs-12 col-sm-2 aside">
           <div class="form-group">
-              <button class="btn btn-primary btn-block" type="submit" title="OK" name="action_createBlog">
+              <button class="btn btn-primary btn-block" type="submit" title="#i18n{portal.util.labelCreate}" name="action_createBlog">
                 <i class="fa fa-check" aria-hidden="true"></i> #i18n{portal.util.labelCreate}
               </button>
           </div>
           <div class="form-group">
-              <button class="btn btn-primary btn-block" type="submit" title="OK" value="apply" name="button">
+              <button class="btn btn-primary btn-block" type="submit" title="#i18n{blog.create_blog.labelApply}" value="apply" name="button">
                 <i class="fa fa-check" aria-hidden="true"></i> #i18n{blog.create_blog.labelApply}
               </button>
           </div>
@@ -31,7 +31,9 @@
       			<div class="box-header with-border">
       				<h3 class="box-title">#i18n{blog.create_blog.labelDescription}</h3>
       				<div class="box-tools">
-      					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+      					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
+                  <i class="fa fa-minus"></i>
+                </button>
       				</div>
       			</div>
       			<div class="box-body">
@@ -43,14 +45,16 @@
             <div class="box-header with-border">
               <h3 class="box-title">#i18n{blog.create_blog.TagsTitle}</h3>
               <div class="box-tools">
-                <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
+                  <i class="fa fa-minus"></i>
+                </button>
               </div>
             </div>
             <div class="box-body">
               <div class="form-group">
                 <label for="addTag" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
                   <div class="input-group">
-                    <@comboSortedWithParams name="tag_doc" default_value="" additionalParameters="class=\"form-control\"" items=list_tag />
+                    <@comboSortedWithParams name="tag_doc" default_value="" additionalParameters=" class=\"form-control\" " items=list_tag />
                     <span class="input-group-btn">                    
                       <button type="button" value="addTag" id="addTag" name="addTag" class="btn btn-primary">
                         <i class="fa fa-tag"></i>
@@ -63,14 +67,14 @@
                     <li id="tag_${tg.idTag}" class="list-group-item clearfix" title="${tg.name}">
                       <span class="pull-left">${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
                       <span class="pull-right">
-                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="Descendre" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveDown' );">
+                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="#i18n{blog.create_blog.labelDown}" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveDown' );">
                           <i class="fa fa-arrow-down"></i>
                         </button>
-                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="Monter" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveUp');">
+                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="#i18n{blog.create_blog.labelUp}" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveUp');">
                           <i class="fa fa-arrow-up"></i>
                         </button>
                         <button type="button" value="removeTag" name="removeTag" class="btn btn-danger btn-xs btn-flat" onclick="doDeleteTag( ${tg.idTag}, '${tg.name!}');">
-                          <i class="fa fa-trash"></i>&nbsp;
+                          <i class="fa fa-trash"></i>
                         </button>
                       </span>
                     </li>
@@ -89,91 +93,88 @@
                   </#if>
                 </div>
               </div>
-
               <div class="box box-default" data-widget="box-widget">
                 <div class="box-header with-border">
                   <h3 class="box-title">#i18n{blog.create_blog.labelImage}</h3>
                   <div class="box-tools">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}"><i class="fa fa-minus"></i></button>
                   </div>
                 </div>
                 <div class="box-body">
                   <div class="form-group">
-
-                   <label for="attachment" class="sr-only">#i18n{blog.create_blog.labelAttachment}</label>
-
+                    <label for="attachment" class="sr-only">#i18n{blog.create_blog.labelAttachment}</label>
                     <div class="text-center">
-             <select name="fileType" id="fileType">
-             <#list image_type as type>
-				  <option value= "${type.idContentType}">${type.label}</option>             
-             </#list>
-             </select>
-		    <#if is_crop_image><!--To the use of the image crop plugin -->
-			<#include "/skin/plugins/uploadimage/uploadimage.html" />
-			<@addRequiredJsUploadImages/>
-			<@cropimage  fieldName= "attachment"  file="images/admin/skin/plugins/uploadimage/picture.jpg"  cssClass="text-center"  synchronous= "false"/>
-		    <#else>
-				<input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )" value="">
-		    </#if>
-		    <ul id="content-list" class="list-group">
-                    <#if blog.docContent?? && blog.docContent?size!=0>
-			<#list blog.docContent as docContent >
-			<li id ="doc_${docContent.id}" class="list-group-item clearfix">
-			<div id= "${docContent.id}">
-				<button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("${docContent.id}") type="button" title="Supprimer" style="">
-					<span class="glyphicon glyphicon-remove-circle"></span> Supprimer
-				</button>
+                    <select name="fileType" id="fileType">
+                    <#list image_type as type>
+				              <option value= "${type.idContentType}">${type.label}</option>             
+                    </#list>
+                  </select>
+                  <#if is_crop_image><!--To the use of the image crop plugin -->
+                    <#include "/skin/plugins/uploadimage/uploadimage.html" />
+                    <@addRequiredJsUploadImages/>
+                    <@cropimage  fieldName= "attachment"  file="images/admin/skin/plugins/uploadimage/picture.jpg"  cssClass="text-center"  synchronous= "false"/>
+                  <#else>
+                    <input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )" value="">
+                  </#if>
+                  <ul id="content-list" class="list-group">
+                  <#if blog.docContent?? && blog.docContent?size!=0>
+                    <#list blog.docContent as docContent >
+                    <li id ="doc_${docContent.id}" class="list-group-item clearfix">
+                      <div id= "${docContent.id}">
+                        <button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("${docContent.id}") type="button" title="#i18n{blog.create_blog.labelRemove}" style="">
+                          <span class="glyphicon glyphicon-remove-circle"></span> #i18n{blog.create_blog.labelRemove}
+                        </button>
                         <a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
-                          ${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="Preview" class="img-responsive img-thumbnail">
+                          ${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
                         </a>
-                <span class="pull-right">
-                	<button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="Descendre" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveDown' );">
-                    	<i class="fa fa-arrow-down"></i>
-                    </button>
-                    <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="Monter" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveUp');">
-                    	<i class="fa fa-arrow-up"></i>
-                    </button>
-                </span>
-                 
-			</div>
-			</li>
-			</#list>
-			
-                      </#if>
-                      </ul>
-                  </div>                 
-                </div>
+                        <span class="pull-right">
+                          <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="#i18n{blog.create_blog.labelDown}" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveDown' );">
+                            <i class="fa fa-arrow-down"></i>
+                          </button>
+                          <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="#i18n{blog.create_blog.labelUp}" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveUp');">
+                            <i class="fa fa-arrow-up"></i>
+                          </button>
+                        </span>
+                      </div>
+                    </li>
+                    </#list>
+                  </#if>
+                  </ul>
+                </div>                 
               </div>
-				</div>
-			  <div class="box box-default" data-widget="box-widget">
-                <div class="box-header with-border">
-                  <h3 class="box-title">#i18n{blog.create_blog.labelUrl}</h3>
-                  <div class="box-tools">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
-                  </div>
-                </div>
-                <div class="box-body">
-                  <label for="edit_comment" class="sr-only">#i18n{blog.create_blog.labelUrl</label>
-                  <input class="form-control" name="url" id="url" type="text" value="">
-                </div>
+            </div>
+          </div>
+          <div class="box box-default" data-widget="box-widget">
+            <div class="box-header with-border">
+              <h3 class="box-title">#i18n{blog.create_blog.labelUrl}</h3>
+              <div class="box-tools">
+                <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
+                  <i class="fa fa-minus"></i>
+                </button>
               </div>
-				
-              <div class="box box-default" data-widget="box-widget">
-                <div class="box-header with-border">
-                  <h3 class="box-title">#i18n{blog.create_blog.labelEditComment}</h3>
-                  <div class="box-tools">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
-                  </div>
-                </div>
-                <div class="box-body">
-                  <label for="edit_comment" class="sr-only">#i18n{blog.create_blog.labelEditComment}</label>
-                  <input class="form-control" name="edit_comment" id="edit_comment" type="text" value="">
-                </div>
-              </div>
-              
-        </aside>
+          </div>
+          <div class="box-body">
+            <label for="edit_comment" class="sr-only">#i18n{blog.create_blog.labelUrl</label>
+            <input class="form-control" name="url" id="url" type="text" value="">
+          </div>
+        </div>
+        <div class="box box-default" data-widget="box-widget">
+          <div class="box-header with-border">
+            <h3 class="box-title">#i18n{blog.create_blog.labelEditComment}</h3>
+            <div class="box-tools">
+              <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="box-body">
+            <label for="edit_comment" class="sr-only">#i18n{blog.create_blog.labelEditComment}</label>
+            <input class="form-control" name="edit_comment" id="edit_comment" type="text" value="">
+          </div>
+        </div>
+      </aside>
     </div>
-  </form>
+</form>
 <script src="js/plugins/blog/manage_tag.js"></script>
 <script src="js/plugins/blog/manage_image.js"></script>
 <script>
@@ -207,5 +208,4 @@ $( function(){
    readURL(this);
   });
 });
-
 </script>
