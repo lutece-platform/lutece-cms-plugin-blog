@@ -4,3 +4,4 @@
 *.prefs
 .classpath
 .project
+/nbproject/

@@ -343,7 +343,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
                 sbSql.append( CONSTANT_COMMA );
             }
         }
-        sbSql.append( SQL_TAGS_END + "order by document_order" );
+        sbSql.append( SQL_TAGS_END );
 
         try ( DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin ) )
         {
@@ -388,7 +388,7 @@ public class BlogPublicationDAO implements IBlogPublicationDAO
                 sbSql.append( CONSTANT_COMMA );
             }
         }
-        sbSql.append( SQL_TAGS_END + "order by document_order" );
+        sbSql.append( SQL_TAGS_END );
 
         try ( DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin ) )
         {
