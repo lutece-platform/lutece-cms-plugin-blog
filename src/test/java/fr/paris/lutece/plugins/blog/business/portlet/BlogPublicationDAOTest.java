@@ -85,7 +85,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         }
         else if( _strDatabase.contains("HSQL"))
         {
-            execute( "SET REFERENTIAL_INTEGRITY FALSE;" , strMessage );
+            execute( "SET DATABASE REFERENTIAL INTEGRITY FALSE" , strMessage );
         }
     }
 
@@ -288,7 +288,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         }
         else if( _strDatabase.contains("HSQL") )
         {
-            execute( "SET REFERENTIAL_INTEGRITY TRUE;" , strMessage );
+            execute( "SET DATABASE REFERENTIAL INTEGRITY TRUE" , strMessage );
         }
 
         super.tearDown( );
