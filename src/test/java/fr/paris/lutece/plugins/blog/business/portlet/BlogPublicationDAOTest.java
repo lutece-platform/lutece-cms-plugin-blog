@@ -331,7 +331,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     {
         try( DAOUtil dao = new DAOUtil( strCommand ))
         {
-            dao.executeQuery();
+            dao.executeUpdate();
             System.out.println( strMessage );
         }
         
