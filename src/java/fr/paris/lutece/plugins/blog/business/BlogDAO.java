@@ -69,7 +69,7 @@ public final class BlogDAO implements IBlogDAO
 
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_blog, a.version, a.content_label, "
             + " a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id , "
-            + " a.edit_comment , a.description, a.shareable, a.url  FROM blog_blog a " + " LEFT OUTER JOIN blog_tag_document f ON a.id_blog = f.id_blog"
+            + " a.edit_comment , a.description, a.shareable, a.url FROM blog_blog a " + " LEFT OUTER JOIN blog_tag_document f ON a.id_blog = f.id_blog"
             + " LEFT OUTER JOIN blog_list_portlet_htmldocs p ON  a.id_blog = p.id_blog";
 
     private static final String SQL_QUERY_SELECT_BLOG_BY_ID_TAG = " SELECT b.id_blog, b.version, b.content_label, b.creation_date, b.update_date, b.html_content, b.user_editor, b.user_creator, b.attached_portlet_id, b.edit_comment, b.description, b.shareable, b.url, a.id_tag FROM blog_tag_document a Inner join blog_blog b on (b.id_blog = a.id_blog) WHERE a.id_tag = ? ORDER BY priority";
@@ -671,17 +671,8 @@ public final class BlogDAO implements IBlogDAO
             strSQL += ( SQL_FILTER_WHERE_CLAUSE + strWhere );
         }
 
-        if ( filter.getOrderInPortlet( ) )
-        {
+        strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
 
-            strSQL += SQL_ORDER_BY_ORDER_DOCUMENT;
-
-        }
-        else
-        {
-
-            strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
-        }
         AppLogService.debug( "Sql query filter : " + strSQL );
 
         DAOUtil daoUtil = new DAOUtil( strSQL );
