@@ -132,7 +132,7 @@ public class BlogSearchFilter
     {
         return _strUser;
     }
-    
+
     /**
      * Sets the User Edited blog
      * 
@@ -141,7 +141,7 @@ public class BlogSearchFilter
      */
     public void setUserEditedBlogVersion( String userEditedBlogVersion )
     {
-    	_strUserEditedBlogVersion = userEditedBlogVersion;
+        _strUserEditedBlogVersion = userEditedBlogVersion;
     }
 
     /**

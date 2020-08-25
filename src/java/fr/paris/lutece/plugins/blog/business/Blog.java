@@ -110,7 +110,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     private List<Tag> _tag = new ArrayList<>( );
 
     private List<BlogPublication> _blogPubilcation = new ArrayList<>( );
-    
+
     /**
      * Returns the Id
      * 
@@ -612,18 +612,17 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
         return PROPERTY_RESOURCE_TYPE;
     }
-    
-    
+
     /**
      * Return the user informations
      * 
      * @return AdminUser
      */
-    public AdminUser getUserInfos( ) 
+    public AdminUser getUserInfos( )
     {
         return AdminUserHome.findUserByLogin( _strUser );
     }
-    
+
     /**
      * Return the user creator informations
      * 
@@ -633,6 +632,5 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     {
         return AdminUserHome.findUserByLogin( _strUserCreator );
     }
-    
+
 }
-    

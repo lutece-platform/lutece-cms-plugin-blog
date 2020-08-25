@@ -46,7 +46,7 @@ public class DocContent implements Serializable
      * 
      */
     private static final long serialVersionUID = 1L;
-    
+
     private int _nIdDocContent;
     private String _strTextValue;
     private byte [ ] _bytes;
@@ -194,7 +194,8 @@ public class DocContent implements Serializable
     /**
      * Sets the priority
      * 
-     * @param nPriority the priority to set
+     * @param nPriority
+     *            the priority to set
      */
     public void setPriority( int nPriority )
     {
