@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.blog.business.portlet;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.test.LuteceTestCase;
+import fr.paris.lutece.util.sql.DAOUtil;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +57,17 @@ public class BlogPublicationDAOTest extends LuteceTestCase
 
     Plugin _plugin = PluginService.getPlugin( PLUGIN_NAME );
     BlogPublicationDAO _dao = new BlogPublicationDAO( );
+    
+    
+
+    @Override
+    protected void setUp() throws Exception
+    {
+        super.setUp(); 
+        
+        DAOUtil dao = new DAOUtil( "SET FOREIGN_KEY_CHECKS=0;" );
+        dao.executeQuery();
+    }
 
     /**
      * Test of insertBlogsId method, of class BlogPublicationDAO.
@@ -248,6 +260,10 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     protected void tearDown( ) throws Exception
     {
         clean( );
+        
+        DAOUtil dao = new DAOUtil( "SET FOREIGN_KEY_CHECKS=1;" );
+        dao.executeQuery();
+
         super.tearDown( );
     }
 
