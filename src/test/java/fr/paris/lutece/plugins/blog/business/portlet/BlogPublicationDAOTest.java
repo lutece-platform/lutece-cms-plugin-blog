@@ -83,7 +83,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         {
             execute( "SET FOREIGN_KEY_CHECKS=0;" , strMessage );
         }
-        else if( _strDatabase.equalsIgnoreCase( "HSQLDB"))
+        else if( _strDatabase.contains("HSQL"))
         {
             execute( "SET REFERENTIAL_INTEGRITY FALSE;" , strMessage );
         }
@@ -286,7 +286,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         {
             execute( "SET FOREIGN_KEY_CHECKS=1;" , strMessage );
         }
-        else if( _strDatabase.equalsIgnoreCase( "HSQLDB"))
+        else if( _strDatabase.contains("HSQL") )
         {
             execute( "SET REFERENTIAL_INTEGRITY TRUE;" , strMessage );
         }
