@@ -33,13 +33,18 @@
  */
 package fr.paris.lutece.plugins.blog.business.portlet;
 
+import fr.paris.lutece.portal.service.database.AppConnectionService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.test.LuteceTestCase;
+import fr.paris.lutece.util.pool.service.ConnectionPool;
 import fr.paris.lutece.util.sql.DAOUtil;
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+import javax.sql.DataSource;
 import org.junit.Test;
 
 /**
@@ -57,6 +62,9 @@ public class BlogPublicationDAOTest extends LuteceTestCase
 
     Plugin _plugin = PluginService.getPlugin( PLUGIN_NAME );
     BlogPublicationDAO _dao = new BlogPublicationDAO( );
+    String _strDatabase;
+    
+    
     
     
 
@@ -64,9 +72,21 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     protected void setUp() throws Exception
     {
         super.setUp(); 
+
+        _plugin = PluginService.getPlugin( PLUGIN_NAME );
+        _strDatabase = _plugin.getConnectionService().getConnection().getMetaData().getDatabaseProductName();
         
-        DAOUtil dao = new DAOUtil( "SET FOREIGN_KEY_CHECKS=0;" );
-        dao.executeQuery();
+        System.out.println( "Database server : " +  _strDatabase );
+        
+        String strMessage = "Disable referential integrity for the server : " + _strDatabase;
+        if( _strDatabase.equalsIgnoreCase( "MySQL"))
+        {
+            execute( "SET FOREIGN_KEY_CHECKS=0;" , strMessage );
+        }
+        else if( _strDatabase.equalsIgnoreCase( "HSQLDB"))
+        {
+            execute( "SET REFERENTIAL_INTEGRITY FALSE;" , strMessage );
+        }
     }
 
     /**
@@ -261,8 +281,15 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     {
         clean( );
         
-        DAOUtil dao = new DAOUtil( "SET FOREIGN_KEY_CHECKS=1;" );
-        dao.executeQuery();
+        String strMessage = "Enable referential integrity for the server : " + _strDatabase;
+        if( _strDatabase.equalsIgnoreCase( "MySQL"))
+        {
+            execute( "SET FOREIGN_KEY_CHECKS=1;" , strMessage );
+        }
+        else if( _strDatabase.equalsIgnoreCase( "HSQLDB"))
+        {
+            execute( "SET REFERENTIAL_INTEGRITY TRUE;" , strMessage );
+        }
 
         super.tearDown( );
     }
@@ -300,4 +327,13 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         return new Date( ).getTime( ) + ( lDeltaHour * 36000000L );
     }
 
+    private void execute( String strCommand , String strMessage )
+    {
+        try( DAOUtil dao = new DAOUtil( strCommand ))
+        {
+            dao.executeQuery();
+            System.out.println( strMessage );
+        }
+        
+    }
 }
