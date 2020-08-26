@@ -62,7 +62,7 @@ public class BlogServiceSession
      *
      * @param session
      *            The session
-     * @param Blog
+     * @param blog
      *            The blog to save
      */
     public void saveBlogInSession( HttpSession session, Blog blog )
@@ -86,6 +86,7 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session of the user
+     * @param blog
      * @return The blog form
      */
     public Blog getBlogFromSession( HttpSession session, Blog blog )
@@ -110,14 +111,15 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session of the user
-     * @return The idBlog
+     * @param nIdBlog
+     * @return The blog post
      */
-    public Blog getBlogFromSession( HttpSession session, int idBlog )
+    public Blog getBlogFromSession( HttpSession session, int nIdBlog )
     {
         try
         {
 
-            return (Blog) session.getAttribute( SESSION_BLOG + idBlog );
+            return (Blog) session.getAttribute( SESSION_BLOG + nIdBlog );
 
         }
         catch( IllegalStateException e )
@@ -134,6 +136,7 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session
+     * @param blog
      */
     public void removeBlogFromSession( HttpSession session, Blog blog )
     {
@@ -156,6 +159,7 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session
+     * @param idBlog
      */
     public void removeBlogFromSession( HttpSession session, int idBlog )
     {

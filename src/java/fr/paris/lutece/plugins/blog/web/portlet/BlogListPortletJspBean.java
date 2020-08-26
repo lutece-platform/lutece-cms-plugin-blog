@@ -70,6 +70,7 @@ import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
+import java.util.Map;
 
 /**
  * This class provides the user interface to manage BlogList Portlet
@@ -118,6 +119,8 @@ public class BlogListPortletJspBean extends PortletJspBean
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
 
     private static final String VIEW_MODIFY_PORTLET = "getModify";
+    
+    private static final String RESPONSE_SUCCESS = "SUCCESS";
 
     // //////////////////////////////////////////////////////////////////////////
     // Constants
@@ -159,8 +162,10 @@ public class BlogListPortletJspBean extends PortletJspBean
      * 
      * @param request
      *            The HTTP request
+     * @return 
+     *         The map
      */
-    protected HashMap<String, Object> getPaginatedListModel( HttpServletRequest request )
+    protected Map<String, Object> getPaginatedListModel( HttpServletRequest request )
     {
 
         List<Integer> listBlogsId = new ArrayList<>( );
@@ -290,12 +295,13 @@ public class BlogListPortletJspBean extends PortletJspBean
      *            The http request
      * @return The HTML form
      */
+    @Override
     public String getCreate( HttpServletRequest request )
     {
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         String strIdPortletType = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
         _portlet = ( _portlet != null && request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet : new BlogListPortlet( );
-        HashMap<String, Object> model = getPaginatedListModel( request );
+        Map<String, Object> model = getPaginatedListModel( request );
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType, model );
 
         return template.getHtml( );
@@ -309,13 +315,14 @@ public class BlogListPortletJspBean extends PortletJspBean
      * @return The HTML form
      */
     @View( VIEW_MODIFY_PORTLET )
+    @Override
     public String getModify( HttpServletRequest request )
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );
         _portlet = ( _portlet != null && request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet
                 : (BlogListPortlet) PortletHome.findByPrimaryKey( nPortletId );
-        HashMap<String, Object> model = getPaginatedListModel( request );
+        Map<String, Object> model = getPaginatedListModel( request );
 
         HtmlTemplate template = getModifyTemplate( _portlet, model );
 
@@ -329,6 +336,7 @@ public class BlogListPortletJspBean extends PortletJspBean
      *            The Http request
      * @return The Jsp management URL of the process result
      */
+    @Override
     public String doCreate( HttpServletRequest request )
     {
 
@@ -396,6 +404,7 @@ public class BlogListPortletJspBean extends PortletJspBean
      *            The http request
      * @return Management's Url
      */
+    @Override
     public String doModify( HttpServletRequest request )
     {
 
@@ -466,7 +475,7 @@ public class BlogListPortletJspBean extends PortletJspBean
      * @return Json The Json succes or echec
      * @throws ParseException
      */
-    public String UpdatePortletDocument( HttpServletRequest request ) throws ParseException
+    public String updatePortletDocument( HttpServletRequest request ) throws ParseException
     {
         // recovers portlet attributes
 
@@ -498,7 +507,7 @@ public class BlogListPortletJspBean extends PortletJspBean
 
             }
 
-        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+        return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_SUCCESS ) );
     }
 
     /**
@@ -508,13 +517,13 @@ public class BlogListPortletJspBean extends PortletJspBean
      */
     public static String getCurrentUrlFromRequest( HttpServletRequest request )
     {
-        StringBuffer requestURL = request.getRequestURL( );
+        StringBuffer sbRequestURL = request.getRequestURL( );
         String queryString = request.getQueryString( );
 
         if ( queryString == null )
         {
 
-            return requestURL.toString( );
+            return sbRequestURL.toString( );
 
         }
         else
@@ -525,7 +534,7 @@ public class BlogListPortletJspBean extends PortletJspBean
                 queryString = query [0];
             }
 
-        return requestURL.append( '?' ).append( queryString ).toString( );
+        return sbRequestURL.append( '?' ).append( queryString ).toString( );
     }
 
 }

@@ -141,12 +141,8 @@ public final class BlogSearchService
      * 
      * @param filter
      *            The search filter
-     * @param nPageNumber
-     *            The current page
-     * @param nItemsPerPage
-     *            The number of items per page to get
-     * @param listIdAnnounces
-     *            Results as a collection of id of announces
+     * @param listIdBlog
+     *            Results as a collection of id of blog posts
      * @return The total number of items found
      */
     public int getSearchResults( BlogSearchFilter filter, List<Integer> listIdBlog )
@@ -208,7 +204,7 @@ public final class BlogSearchService
      */
     public String processIndexing( boolean bCreate )
     {
-        StringBuffer sbLogs = new StringBuffer( );
+        StringBuilder sbLogs = new StringBuilder( );
         IndexWriter writer = null;
         boolean bCreateIndex = bCreate;
 
@@ -223,8 +219,6 @@ public final class BlogSearchService
             { // init index
                 bCreateIndex = true;
             }
-
-            Date start = new Date( );
 
             IndexWriterConfig conf = new IndexWriterConfig( _analyzer );
             LogMergePolicy mergePolicy = new LogDocMergePolicy( );
@@ -241,7 +235,7 @@ public final class BlogSearchService
             }
             writer = new IndexWriter( dir, conf );
 
-            start = new Date( );
+            Date start = new Date( );
 
             sbLogs.append( "\r\n<strong>Indexer : " );
             sbLogs.append( _indexer.getName( ) );
@@ -291,10 +285,8 @@ public final class BlogSearchService
      *            Blog id
      * @param nIdTask
      *            the key of the action to do
-     * @param plugin
-     *            the plugin
      */
-    public void addIndexerAction( int nIdBlog, int nIdTask, Plugin plugin )
+    public void addIndexerAction( int nIdBlog, int nIdTask )
     {
         IndexerAction indexerAction = new IndexerAction( );
         indexerAction.setIdBlog( nIdBlog );
@@ -307,10 +299,8 @@ public final class BlogSearchService
      * 
      * @param nIdAction
      *            the key of the action to remove
-     * @param plugin
-     *            the plugin
      */
-    public void removeIndexerAction( int nIdAction, Plugin plugin )
+    public void removeIndexerAction( int nIdAction )
     {
         IndexerActionHome.remove( nIdAction );
     }
@@ -320,11 +310,9 @@ public final class BlogSearchService
      * 
      * @param nIdTask
      *            the task key
-     * @param plugin
-     *            the plugin
      * @return a list of IndexerAction
      */
-    public List<IndexerAction> getAllIndexerActionByTask( int nIdTask, Plugin plugin )
+    public List<IndexerAction> getAllIndexerActionByTask( int nIdTask )
     {
         IndexerActionFilter filter = new IndexerActionFilter( );
         filter.setIdTask( nIdTask );

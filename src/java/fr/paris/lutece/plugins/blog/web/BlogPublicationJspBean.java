@@ -70,6 +70,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.api.user.User;
 
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
@@ -160,8 +161,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         PortletOrder pOrder = new PortletOrder( );
         String strOrderPortlet = request.getParameter( PARAMETER_ORDER_PORTLET );
-        boolean bIsDisplayPortlets = ( ( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) != null )
-                && !Boolean.valueOf( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ) ) ? false : true;
+        boolean bIsDisplayPortlets = ((request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) == null) || Boolean.valueOf( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ));
 
         String strOrderPortletAsc = request.getParameter( PARAMETER_ORDER_PORTLET_ASC );
         int nOrderPortlet = -1;
@@ -289,7 +289,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         java.sql.Date dateEndPublishing = null;
 
         SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy" );
-        java.util.Date parsed = null;
+        java.util.Date parsed;
 
         if ( dateBeginPublishingStr != null && !dateBeginPublishingStr.isEmpty( ) )
         {
@@ -322,7 +322,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     public String setFillFilter( PortletFilter portletFilter )
     {
         String strErrorMessage = null;
-        String strValue = null;
+        String strValue;
 
         if ( ( portletFilter.getSearchValue( ) != null ) && !portletFilter.getSearchValue( ).trim( ).equals( "" )
                 && ( portletFilter.getPortletFilterType( ) != null ) )
@@ -388,7 +388,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         Collection<ReferenceItem> listPortlets = new ArrayList<>( );
 
         // Check role PERMISSION_MANAGE for DocumentListPortlet
-        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogListPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, getUser( ) ) )
+        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogListPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE,  getUser( ) ) )
         {
             listPortlets.addAll( BlogListPortletHome.findByFilter( nDocumentId, pOrder, pFilter ) );
         }

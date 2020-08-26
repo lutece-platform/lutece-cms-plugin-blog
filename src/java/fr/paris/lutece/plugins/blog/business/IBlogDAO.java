@@ -46,7 +46,7 @@ public interface IBlogDAO
     /**
      * Insert a new record in the table.
      * 
-     * @param Blog
+     * @param blog
      *            instance of the Blog object to insert
      * @param plugin
      *            the Plugin
@@ -110,8 +110,8 @@ public interface IBlogDAO
     /**
      * Load the data from the table
      * 
-     * @param nKey
-     *            The identifier of the blog
+     * @param strName
+     *            The name of the blog
      * @param plugin
      *            the Plugin
      * @return The instance of the blog
@@ -121,8 +121,10 @@ public interface IBlogDAO
     /**
      * Load the data from the table
      * 
-     * @param nKey
+     * @param nId
      *            The identifier of the blog
+     * @param nVersion
+     *             The version
      * @param plugin
      *            the Plugin
      * @return The instance of the blog

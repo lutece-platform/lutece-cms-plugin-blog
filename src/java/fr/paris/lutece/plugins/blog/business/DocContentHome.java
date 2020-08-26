@@ -154,8 +154,6 @@ public final class DocContentHome
     /**
      * Returns a list of a ContentType
      * 
-     * @param plugin
-     *            the plugin
      * @return a list of a ContentType
      */
     public static List<ContentType> getListContentType( )

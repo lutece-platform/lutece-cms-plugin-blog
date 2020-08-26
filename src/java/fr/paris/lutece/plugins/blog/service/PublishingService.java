@@ -112,7 +112,7 @@ public class PublishingService
 
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( nBlogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( nBlogId, IndexerAction.TASK_MODIFY );
 
     }
 
@@ -317,6 +317,9 @@ public class PublishingService
      * @param nPortletsIds
      *            The list of portlet ids.
      * @param datePublishing
+     *            The publishing date
+     * @param dateEndPublishing
+     *            The publishing end date
      * @param plugin
      *            The blog plugin
      * @return The list of blogs id.

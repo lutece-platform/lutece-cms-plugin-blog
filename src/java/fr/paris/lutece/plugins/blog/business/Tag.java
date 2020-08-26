@@ -89,7 +89,7 @@ public class Tag implements RBACResource, Serializable
     /**
      * Sets the Name
      * 
-     * @param Name
+     * @param strName
      *            The value
      */
     public void setName( String strName )
@@ -120,8 +120,8 @@ public class Tag implements RBACResource, Serializable
     /**
      * Sets the nPriority
      *
-     * @param nIdTag
-     *            The nPriority
+     * @param nPriority
+     *            The priority
      */
     public void setPriority( int nPriority )
     {

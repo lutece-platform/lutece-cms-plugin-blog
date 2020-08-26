@@ -123,7 +123,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      * {@inheritDoc}
      */
     @Override
-    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLogs )
+    public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuilder sbLogs )
             throws IOException, InterruptedException, SiteMessageException
     {
         Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
@@ -134,7 +134,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
             // incremental indexing
             // delete all record which must be deleted
             for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : BlogSearchService.getInstance( )
-                    .getAllIndexerActionByTask( IndexerAction.TASK_DELETE, plugin ) )
+                    .getAllIndexerActionByTask( IndexerAction.TASK_DELETE ) )
             {
                 sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_DELETE );
 
@@ -144,11 +144,11 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
                 };
 
                 indexWriter.deleteDocuments( terms );
-                BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
+                BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ) );
             }
 
             // Update all record which must be updated
-            for ( IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_MODIFY, plugin ) )
+            for ( IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_MODIFY ) )
             {
                 sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_MODIFY );
 
@@ -161,18 +161,18 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
                 listIdBlog = new ArrayList<>( );
                 listIdBlog.add( action.getIdBlog( ) );
                 this.indexListBlog( indexWriter, listIdBlog );
-                BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
+                BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ) );
             }
 
             listIdBlog = new ArrayList<>( );
 
             // add all record which must be added
-            for ( IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_CREATE, plugin ) )
+            for ( IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_CREATE ) )
             {
                 sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_CREATE );
                 listIdBlog.add( action.getIdBlog( ) );
 
-                BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ), plugin );
+                BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ) );
             }
 
             this.indexListBlog( indexWriter, listIdBlog );
@@ -200,12 +200,8 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
     /**
      * Builds a document which will be used by Lucene during the indexing of the announces list
      * 
-     * @param announce
-     *            the announce
-     * @param strUrl
-     *            the url
-     * @param plugin
-     *            the plugin
+     * @param blog
+     *         The blog post
      * @throws IOException
      *             If an IO Exception occurred
      * @return the document
@@ -378,7 +374,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      * @param nAction
      *            the indexer action key performed
      */
-    private void sbLogBlog( StringBuffer sbLogs, int nIdBlog, int nAction )
+    private void sbLogBlog( StringBuilder sbLogs, int nIdBlog, int nAction )
     {
         sbLogs.append( "Indexing Blogs:" );
 

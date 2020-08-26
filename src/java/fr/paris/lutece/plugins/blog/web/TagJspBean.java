@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
+import fr.paris.lutece.api.user.User;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -125,9 +126,9 @@ public class TagJspBean extends ManageBlogJspBean
         Collections.sort( listTag, ( tag1, tag2 ) -> tag1.getName( ).compareToIgnoreCase( tag2.getName( ) ) );
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_TAG_LIST, listTag, JSP_MANAGE_TAGS );
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
-        boolean bPermissionModify = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_MODIFY, getUser( ) );
-        boolean bPermissionDelete = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_DELETE, getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,  getUser( ) );
+        boolean bPermissionModify = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_MODIFY,  getUser( ) );
+        boolean bPermissionDelete = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_DELETE,  getUser( ) );
 
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_TAG, bPermissionModify );
@@ -149,7 +150,7 @@ public class TagJspBean extends ManageBlogJspBean
     @View( VIEW_CREATE_TAG )
     public String getCreateTag( HttpServletRequest request ) throws AccessDeniedException
     {
-        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,  getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -177,7 +178,7 @@ public class TagJspBean extends ManageBlogJspBean
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
-                AdminUserService.getAdminUser( request ) ) )
+                 AdminUserService.getAdminUser( request ) ) )
         {
             // Check constraints
             if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -223,7 +224,7 @@ public class TagJspBean extends ManageBlogJspBean
 
         String strId = request.getParameter( PARAMETER_ID_TAG );
         int nId = Integer.parseInt( strId );
-        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_DELETE, AdminUserService.getAdminUser( request ) ) )
+        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_DELETE,  AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -254,7 +255,7 @@ public class TagJspBean extends ManageBlogJspBean
             String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_TAG_IS_AFFECTED, AdminMessage.TYPE_STOP );
             return redirect( request, strMessageUrl );
         }
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_DELETE, AdminUserService.getAdminUser( request ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_DELETE,  AdminUserService.getAdminUser( request ) ) )
         {
             TagHome.remove( nId );
 
@@ -278,7 +279,7 @@ public class TagJspBean extends ManageBlogJspBean
         String strId = request.getParameter( PARAMETER_ID_TAG );
         int nId = Integer.parseInt( strId );
 
-        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_MODIFY, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_MODIFY,  getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -309,7 +310,7 @@ public class TagJspBean extends ManageBlogJspBean
 
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, String.valueOf( _tag.getIdTag( ) ), Tag.PERMISSION_MODIFY,
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, String.valueOf( _tag.getIdTag( ) ), Tag.PERMISSION_MODIFY, 
                 AdminUserService.getAdminUser( request ) ) )
         {
             // Check constraints

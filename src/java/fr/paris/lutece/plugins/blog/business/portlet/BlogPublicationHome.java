@@ -58,7 +58,7 @@ public class BlogPublicationHome
     /**
      * Create an instance of the BlogPublication class
      * 
-     * @param BlogPub
+     * @param blogPub
      *            The instance of the BlogPublication which contains the informations to store
      * @return The instance of BlogPub which has been created.
      */
@@ -227,10 +227,9 @@ public class BlogPublicationHome
     /**
      * Counts the number of valid publication of a blog at a given date.
      * 
-     * @param nIdBlog
-     * @param date
-     * @param plugin
-     * @return
+     * @param nIdBlog The blog id
+     * @param date The date
+     * @return The count
      */
     public static int countPublicationByIdBlogAndDate( int nIdBlog, Date date )
     {

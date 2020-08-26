@@ -92,8 +92,8 @@ public class IndexerAction
     /**
      * set the IdBlog
      * 
-     * @param nIdBlogrecord
-     *            if
+     * @param nIdBlog
+     *            
      */
     public void setIdBlog( int nIdBlog )
     {

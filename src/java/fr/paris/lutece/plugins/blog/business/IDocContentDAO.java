@@ -57,7 +57,7 @@ public interface IDocContentDAO
      *            the plugin
      * @return an instance of DocContent
      */
-    DocContent loadDocContent( int idDocument, Plugin plugin );
+    DocContent loadDocContent( int nIdDocument, Plugin plugin );
 
     /**
      * Returns an list of a DocContent whose htmldoc identifier is specified in parameter
@@ -72,7 +72,7 @@ public interface IDocContentDAO
     /**
      * Remove the DocContent identifier Blog is specified in parameter
      * 
-     * @param nKey
+     * @param nBlogId
      *            the Id Blog
      * @param plugin
      *            the plugin
@@ -82,7 +82,7 @@ public interface IDocContentDAO
     /**
      * Remove the DocContent whose identifier is specified in parameter
      * 
-     * @param nKey
+     * @param nDocumentId
      *            the Id DocContent
      * @param plugin
      *            the plugin
@@ -96,7 +96,6 @@ public interface IDocContentDAO
      *            the Document Content
      * @param plugin
      *            the plugin
-     * @return the instance of DocContent updated
      */
     void store( DocContent docContent, Plugin plugin );
 

@@ -62,7 +62,7 @@ public interface IBlogSearchIndexer
      * @throws SiteMessageException
      *             occurs when a site message need to be displayed
      */
-    void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuffer sbLog ) throws IOException, InterruptedException, SiteMessageException;
+    void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuilder sbLog ) throws IOException, InterruptedException, SiteMessageException;
 
     /**
      * Returns the indexer service name

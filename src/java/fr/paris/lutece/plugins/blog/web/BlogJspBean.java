@@ -78,9 +78,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -238,9 +236,13 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_UNPUBLISHED = "unpublished";
 
     public static final String CONSTANT_DUPLICATE_BLOG_NAME = "Copie de ";
+    
+    private static final String RESPONSE_BLOG_LOCKED = "BLOG_LOCKED";
+    private static final String RESPONSE_SUCCESS = "SUCCESS";
+    private static final String RESPONSE_FAILURE = "FAILURE";
 
     // Session variable to store working values
-    private static Map<Integer, BlogLock> _mapLockBlog = new Hashtable<Integer, BlogLock>( );
+    private static Map<Integer, BlogLock> _mapLockBlog = new HashMap<Integer, BlogLock>( );
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
@@ -275,10 +277,10 @@ public class BlogJspBean extends ManageBlogJspBean
 
         // SORT
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
-        String strAscSort = null;
+        String strAscSort;
 
         AdminUser user = AdminUserService.getAdminUser( request );
-        List<Integer> listBlogsId = new ArrayList<Integer>( );
+        List<Integer> listBlogsId = new ArrayList<>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
 
@@ -332,10 +334,10 @@ public class BlogJspBean extends ManageBlogJspBean
             listBlogsId = BlogHome.getIdBlogsList( );
         }
 
-        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( (List<Integer>) listBlogsId, _nItemsPerPage, getHomeUrl( request ),
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( (List<Integer>) listBlogsId, _nItemsPerPage, getHomeUrl( request ),
                 Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
 
-        List<Blog> listDocuments = new ArrayList<Blog>( );
+        List<Blog> listDocuments = new ArrayList<>( );
 
         for ( Integer documentId : paginator.getPageItems( ) )
         {
@@ -353,7 +355,7 @@ public class BlogJspBean extends ManageBlogJspBean
             }
         }
 
-        if ( strSortedAttributeName != null || _bIsSorted == true )
+        if ( strSortedAttributeName != null || _bIsSorted )
         {
             if ( strSortedAttributeName == null )
             {
@@ -379,7 +381,7 @@ public class BlogJspBean extends ManageBlogJspBean
         boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, getUser( ) );
         boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH, getUser( ) );
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         model.put( MARK_BLOG_LIST, listDocuments );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_BLOG_FILTER_LIST, getBlogFilterList( ) );
@@ -527,7 +529,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _blog.getId( ) != 0 )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_CREATE, getUser( ) ) )
@@ -540,9 +542,9 @@ public class BlogJspBean extends ManageBlogJspBean
 
             _blog.addTag( tag );
 
-            return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+            return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_SUCCESS ) );
         }
-        return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) );
+        return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_FAILURE ) );
 
     }
 
@@ -568,7 +570,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _blog.getId( ) != 0 )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, getUser( ) ) )
@@ -585,9 +587,9 @@ public class BlogJspBean extends ManageBlogJspBean
             } ).collect( Collectors.toList( ) );
 
             _blog.setTag( listTag );
-            return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+            return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_SUCCESS ) );
         }
-        return JsonUtil.buildJsonResponse( new JsonResponse( "ECHEC" ) );
+        return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_FAILURE ) );
 
     }
 
@@ -619,7 +621,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _blog.getId( ) != 0 )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
         for ( Tag tag : _blog.getTag( ) )
@@ -796,7 +798,7 @@ public class BlogJspBean extends ManageBlogJspBean
             nVersion = Integer.parseInt( strResetVersion );
         }
 
-        if ( strResetVersion != null && strResetVersion != null )
+        if ( strResetVersion != null )
         {
 
             _blog = BlogHome.findVersion( nId, nVersion );
@@ -896,7 +898,6 @@ public class BlogJspBean extends ManageBlogJspBean
 
             if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
             {
-
                 BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
                 _blogServiceSession.removeBlogFromSession( request.getSession( ), nId );
                 unLockBlog( nId );
@@ -906,7 +907,6 @@ public class BlogJspBean extends ManageBlogJspBean
             }
             else
             {
-
                 _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
                 BlogService.getInstance( ).updateBlog( _blog, _blog.getDocContent( ) );
                 _blogServiceSession.removeBlogFromSession( request.getSession( ), nId );
@@ -1052,8 +1052,7 @@ public class BlogJspBean extends ManageBlogJspBean
      * 
      * @param request
      *            The Http request
-     * @param htmldoc
-     *            The HtmlDoc
+     * @return 
      */
     @Action( ACTION_ADD_FILE_CONTENT )
     public String addContent( HttpServletRequest request )
@@ -1072,7 +1071,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _blog.getId( ) != 0 )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
         /* Gestion du mimeType */
@@ -1107,7 +1106,7 @@ public class BlogJspBean extends ManageBlogJspBean
             // Trouver le type du fichier
             try
             {
-                mimeType = URLConnection.guessContentTypeFromStream( is ); // mimeType is something like "image/jpeg"
+                mimeType = URLConnection.guessContentTypeFromStream( is ); 
             }
             catch( IOException ioException )
             {
@@ -1144,8 +1143,7 @@ public class BlogJspBean extends ManageBlogJspBean
      * 
      * @param request
      *            The Http request
-     * @param htmldoc
-     *            The HtmlDoc
+     * @return 
      */
     @Action( ACTION_REMOVE_FILE_CONTENT )
     public String removeContent( HttpServletRequest request )
@@ -1165,7 +1163,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _blog.getId( ) != 0 )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
         DocContent docCont = _blog.getDocContent( ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
@@ -1214,7 +1212,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _blog.getId( ) != 0 )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
         for ( DocContent dc : _blog.getDocContent( ) )
@@ -1280,7 +1278,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if ( _blog.getId( ) != 0 )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( "BLOG_LOCKED" ) );
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
         for ( DocContent content : _blog.getDocContent( ) )
@@ -1312,7 +1310,6 @@ public class BlogJspBean extends ManageBlogJspBean
     {
 
         FileItem fileParameterBinaryValue = mRequest.getFile( "attachment" );
-        // boolean bToResize = ( ( strToResize == null ) || strToResize.equals( "" ) ) ? false : true;
 
         if ( fileParameterBinaryValue != null ) // If the field is a file
         {

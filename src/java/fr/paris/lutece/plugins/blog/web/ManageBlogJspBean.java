@@ -104,7 +104,6 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
 
         // SORT
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
-        String strAscSort = null;
 
         if ( strSortedAttributeName != null || _bIsSorted )
         {
@@ -112,7 +111,7 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
             {
                 strSortedAttributeName = _strSortedAttributeName;
             }
-            strAscSort = request.getParameter( MARK_ASC_SORT );
+            String strAscSort = request.getParameter( MARK_ASC_SORT );
 
             boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
             if ( strAscSort == null )

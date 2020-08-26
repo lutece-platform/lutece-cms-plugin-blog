@@ -119,7 +119,7 @@ public class BlogService
             TransactionManager.rollBack( BlogPlugin.getPlugin( ) );
             throw new AppException( e.getMessage( ), e );
         }
-        BlogSearchService.getInstance( ).addIndexerAction( nId, IndexerAction.TASK_DELETE, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( nId, IndexerAction.TASK_DELETE );
     }
 
     /**
@@ -161,7 +161,7 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_CREATE, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_CREATE );
     }
 
     /**
@@ -435,7 +435,7 @@ public class BlogService
         formResponseEvent.setIdResource( String.valueOf( blogId ) );
         formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
         ResourceEventManager.fireAddedResource( formResponseEvent );
-        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_CREATE, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_CREATE );
     }
 
     public void fireUpdateBlogEvent( int blogId )
@@ -444,7 +444,7 @@ public class BlogService
         formResponseEvent.setIdResource( String.valueOf( blogId ) );
         formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
         ResourceEventManager.fireUpdatedResource( formResponseEvent );
-        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY );
     }
 
     public void fireDeleteBlogEvent( int blogId )
@@ -453,6 +453,6 @@ public class BlogService
         formResponseEvent.setIdResource( String.valueOf( blogId ) );
         formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
         ResourceEventManager.fireDeletedResource( formResponseEvent );
-        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY );
     }
 }

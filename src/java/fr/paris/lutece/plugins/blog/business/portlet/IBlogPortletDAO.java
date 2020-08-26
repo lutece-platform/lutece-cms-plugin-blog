@@ -52,6 +52,7 @@ public interface IBlogPortletDAO extends IPortletInterfaceDAO
      * @param nPortletId
      *            The indentifier of the Portlet
      */
+    @Override
     void delete( int nPortletId );
 
     /**
@@ -60,6 +61,7 @@ public interface IBlogPortletDAO extends IPortletInterfaceDAO
      * @param portlet
      *            The Instance of the Portlet
      */
+    @Override
     void insert( Portlet portlet );
 
     /**
@@ -77,6 +79,7 @@ public interface IBlogPortletDAO extends IPortletInterfaceDAO
      * @param portlet
      *            The reference of the portlet
      */
+    @Override
     void store( Portlet portlet );
 
     /**
@@ -93,6 +96,8 @@ public interface IBlogPortletDAO extends IPortletInterfaceDAO
      *            the document ID
      * @param pOrder
      *            order of the portlets
+     * @param pFilter
+     *            the filter
      * @return The Collection of the ReferenceItem
      */
 

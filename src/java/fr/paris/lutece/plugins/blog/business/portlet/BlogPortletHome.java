@@ -68,6 +68,7 @@ public class BlogPortletHome extends PortletHome
      *
      * @return the portlet type identifier
      */
+    @Override
     public String getPortletTypeId( )
     {
         String strCurrentClassName = this.getClass( ).getName( );
@@ -94,6 +95,7 @@ public class BlogPortletHome extends PortletHome
      *
      * @return the instance of the DAO singleton
      */
+    @Override
     public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
@@ -112,7 +114,6 @@ public class BlogPortletHome extends PortletHome
      */
     public static Collection<ReferenceItem> findByFilter( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
-        // FIXME : method should access to different home business methods
         return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
     }
 

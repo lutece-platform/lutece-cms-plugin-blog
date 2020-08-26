@@ -48,20 +48,19 @@ public interface ITagDAO
      *            The instance of the tag which contains the informations to store
      * @param plugin
      *            the plugin
-     * @return The instance of tag which has been created with its primary key.
      */
     void insert( Tag tag, Plugin plugin );
 
     /**
      * Returns an instance of a tag whose identifier is specified in parameter
      * 
-     * @param nKey
+     * @param nIdTag
      *            The tag primary key
      * @param plugin
      *            the plugin
      * @return an instance of Tag
      */
-    Tag load( int idTag, Plugin plugin );
+    Tag load( int nIdTag, Plugin plugin );
 
     /**
      * Returns an instance of a tag whose name is specified in parameter
@@ -86,12 +85,12 @@ public interface ITagDAO
     /**
      * Remove the tag whose identifier is specified in parameter
      * 
-     * @param nKey
+     * @param nIdTag
      *            The tag Id
      * @param plugin
      *            the plugin
      */
-    void delete( int idTag, Plugin plugin );
+    void delete( int nIdTag, Plugin plugin );
 
     /**
      * Update of the tag which is specified in parameter
@@ -100,7 +99,6 @@ public interface ITagDAO
      *            The instance of the tag which contains the data to store
      * @param plugin
      *            the plugin
-     * @return The instance of the tag which has been updated
      */
     void store( Tag tag, Plugin plugin );
 
@@ -109,58 +107,58 @@ public interface ITagDAO
      * 
      * @param nIdTag
      *            the Tag id
-     * @param nIdocument
+     * @param nIdDocument
      *            The document identifiant
      * @param plugin
      *            the plugin
      * @param nPriority
      *            The priority of the document
      */
-    void insert( int idTag, int idDoc, int nPriority, Plugin plugin );
+    void insert( int nIdTag, int nIdDocument, int nPriority, Plugin plugin );
 
     /**
      * Delete Association a tag with a document whose identifier is specified in parameter
      * 
-     * @param idTag
+     * @param nIdTag
      *            Id Tag
-     * @param idDoc
+     * @param nIdDocument
      *            Id Document
      * @param plugin
      *            the plugin
      */
-    void deleteByTAG( int idTag, int idDoc, Plugin plugin );
+    void deleteByTAG( int nIdTag, int nIdDocument, Plugin plugin );
 
     /**
      * Delete Association a tag with a document whose identifier is specified in parameter
      * 
-     * @param nIdDoc
+     * @param nIdDocument
      *            The Id Document
      * @param plugin
      *            the plugin
      */
-    void deleteByDoc( int idDoc, Plugin plugin );
+    void deleteByDoc( int nIdDocument, Plugin plugin );
 
     /**
      * Load the data of the tag objects whose identifier is specified in parameter and returns them as a list
      * 
-     * @param nIdDco
+     * @param nIdDocument
      *            The document identifiant
      * @param plugin
      *            the plugin
      * @return returns them as a list of the tag objects
      */
-    List<Tag> loadByDoc( int idDoc, Plugin plugin );
+    List<Tag> loadByDoc( int nIdDocument, Plugin plugin );
 
     /**
      * Load the Tags associated with the document whose identifier is specified in parameter
      * 
-     * @param idDoc
+     * @param nIdDocument
      *            Id Document
      * @param plugin
      *            the plugin
      * @return list of Tag
      */
-    List<Tag> loadListTagByIdDoc( int idDoc, Plugin plugin );
+    List<Tag> loadListTagByIdDoc( int nIdDocument, Plugin plugin );
 
     /**
      * Load the data of all the tag objects and returns them as a list

@@ -140,6 +140,7 @@ public class BlogListPortlet extends PortletHtmlContent
     /**
      * Removes the current instance of the Blogs List Portlet object
      */
+    @Override
     public void remove( )
     {
         BlogListPortletHome.getInstance( ).remove( this );

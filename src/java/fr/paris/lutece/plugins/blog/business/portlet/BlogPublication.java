@@ -82,8 +82,8 @@ public class BlogPublication
     /**
      * Sets the IdBlog
      * 
-     * @param nIdBlog
-     *            The IdBlog
+     * @param nIdPortlet
+     *            The portlet Id
      */
     public void setIdPortlet( int nIdPortlet )
     {
@@ -117,11 +117,11 @@ public class BlogPublication
 
     /**
      * @param dateEndPublishing
-     *            the _dateEndPublishing to set
+     *            the End Publishing date 
      */
-    public void setDateEndPublishing( Date datePublishing )
+    public void setDateEndPublishing( Date dateEndPublishing )
     {
-        _dateEndPublishing = datePublishing;
+        _dateEndPublishing = dateEndPublishing;
     }
 
     /**
@@ -165,7 +165,6 @@ public class BlogPublication
      */
     public Portlet getPortlet( )
     {
-
         return PortletHome.findByPrimaryKey( _nIdPortlet );
     }
 
