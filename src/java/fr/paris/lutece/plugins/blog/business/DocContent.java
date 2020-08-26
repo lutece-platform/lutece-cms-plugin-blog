@@ -142,7 +142,7 @@ public class DocContent implements Serializable
     /**
      * Sets the ContentType
      * 
-     * @param ContentType
+     * @param type
      *            The ContentType
      */
     public void setContentType( ContentType type )

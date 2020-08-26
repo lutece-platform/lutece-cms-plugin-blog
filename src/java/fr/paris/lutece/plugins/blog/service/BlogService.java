@@ -206,7 +206,7 @@ public class BlogService
             if ( docContent != null )
             {
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
-                List<DocContent> listToCompare = new ArrayList<DocContent>( );
+                List<DocContent> listToCompare = new ArrayList<>( );
                 listToCompare.addAll( listDocContent );
 
                 for ( DocContent docCont : docContent )
@@ -263,7 +263,7 @@ public class BlogService
             if ( docContent != null )
             {
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
-                List<DocContent> listToCompare = new ArrayList<DocContent>( );
+                List<DocContent> listToCompare = new ArrayList<>( );
                 listToCompare.addAll( listDocContent );
 
                 for ( DocContent docCont : docContent )

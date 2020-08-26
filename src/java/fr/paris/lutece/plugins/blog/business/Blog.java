@@ -420,10 +420,11 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     /**
      * shareable
+     * @param bShareable
      */
-    public void setShareable( boolean shareable )
+    public void setShareable( boolean bShareable )
     {
-        _bShareable = shareable;
+        _bShareable = bShareable;
     }
 
     /**
@@ -438,10 +439,11 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     /**
      * Locked
+     * @param bLocked
      */
-    public void setLocked( boolean locked )
+    public void setLocked( boolean bLocked )
     {
-        _bLocked = locked;
+        _bLocked = bLocked;
     }
 
     /**
@@ -516,32 +518,32 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     /**
      * Sets the BlogPubilcation list
      *
-     * @param BlogPubilcation
+     * @param blogPublication
      *            list The BlogPubilcation list
      */
-    public void addBlogPublication( BlogPublication blogPubilcation )
+    public void addBlogPublication( BlogPublication blogPublication )
     {
 
         boolean isContain = _blogPubilcation.stream( )
-                .anyMatch( blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) ) );
+                .anyMatch( blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication.getIdPortlet( ) ) );
 
         if ( !isContain )
         {
-            _blogPubilcation.add( blogPubilcation );
+            _blogPubilcation.add( blogPublication );
         }
     }
 
     /**
      * delet the BlogPubilcation
      *
-     * @param BlogPubilcation
+     * @param blogPublication
      *            The BlogPubilcation
      */
-    public void deleteBlogPublication( BlogPublication blogPubilcation )
+    public void deleteBlogPublication( BlogPublication blogPublication )
     {
 
         _blogPubilcation
-                .removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) ) );
+                .removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication.getIdPortlet( ) ) );
     }
 
     /**

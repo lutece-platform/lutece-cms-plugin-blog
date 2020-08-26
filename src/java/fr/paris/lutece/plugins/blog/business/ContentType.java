@@ -52,8 +52,8 @@ public class ContentType
     /**
      * Sets the IdContentType
      *
-     * @param nIdDocumentContent
-     *            The _nIdContentType
+     * @param nIdContentType
+     *            The IdContentType
      */
     public void setIdContentType( int nIdContentType )
     {

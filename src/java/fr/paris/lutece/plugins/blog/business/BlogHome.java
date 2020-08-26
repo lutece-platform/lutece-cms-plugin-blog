@@ -147,8 +147,9 @@ public final class BlogHome
     /**
      * Returns an instance of a blog whose identifier is specified in parameter
      * 
-     * @param nKey
-     *            The blog primary key
+     * @param nId The blog primary key
+     * @param nVersion
+     *            
      * @return an instance of blog
      */
     public static Blog findVersion( int nId, int nVersion )
@@ -191,6 +192,7 @@ public final class BlogHome
     /**
      * Load the data of all users edited the Blog objects and returns them as a list
      * 
+     * @param nId The Id
      * @return the list which contains the data of all users edited the Blog objects
      */
     public static List<String> getUsersEditedBlogVersions( int nId )
@@ -221,13 +223,12 @@ public final class BlogHome
     /**
      * Create an initial version of an Blog
      *
-     * @param Blog
+     * @param blog
      *            The instance of the Blog which contains the informations to store
      * @return The instance of Blog which has been created with its primary key.
      */
     public static Blog addInitialVersion( Blog blog )
     {
-        // TODO handle errors
         BlogHome.create( blog );
         BlogHome.createVersion( blog );
 
@@ -243,7 +244,6 @@ public final class BlogHome
      */
     public static Blog addNewVersion( Blog blog )
     {
-        // TODO handle errors
         BlogHome.update( blog );
         BlogHome.createVersion( blog );
 
@@ -256,9 +256,7 @@ public final class BlogHome
      * @return A collection of Blogs
      * @param filter
      *            The filter
-     * @param locale
-     *            The locale
-     */
+      */
     public static List<Blog> findByFilter( BlogFilter filter )
     {
         return _dao.selectByFilter( filter );
@@ -279,6 +277,7 @@ public final class BlogHome
     /**
      * Returns a collection of blog objects
      * 
+     * @return 
      */
     public static List<Blog> selectWithoutBinaries( )
     {

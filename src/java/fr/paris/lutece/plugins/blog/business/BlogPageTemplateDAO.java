@@ -77,9 +77,10 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
     /**
      * Insert a new record in the table.
      * 
-     * @param BlogPageTemplate
+     * @param blogPageTemplate
      *            The Instance of the object BlogPageTemplate
      */
+    @Override
     public synchronized void insert( BlogPageTemplate blogPageTemplate )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
@@ -102,6 +103,7 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      *            The indentifier of the object BlogPageTemplate
      * @return The Instance of the object PageTemplate
      */
+    @Override
     public BlogPageTemplate load( int nPageTemplateId )
     {
         BlogPageTemplate blogPageTemplate = null;
@@ -130,6 +132,7 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      * @param nPageTemplateId
      *            The indentifier of the object PageTemplate
      */
+    @Override
     public void delete( int nPageTemplateId )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
@@ -145,6 +148,7 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      * @param blogPageTemplate
      *            The instance of the PageTemplate to update
      */
+    @Override
     public void store( BlogPageTemplate blogPageTemplate )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
@@ -164,6 +168,7 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      * 
      * @return A list of PageTemplates objects
      */
+    @Override
     public List<BlogPageTemplate> selectPageTemplatesList( )
     {
         List<BlogPageTemplate> listBlogPageTemplates = new ArrayList<>( );

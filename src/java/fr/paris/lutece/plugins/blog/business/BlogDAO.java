@@ -162,6 +162,10 @@ public final class BlogDAO implements IBlogDAO
         }
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public void insertVersion( Blog blog, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_VERSION, plugin ) )
@@ -647,21 +651,21 @@ public final class BlogDAO implements IBlogDAO
 
         if ( StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) ) )
         {
-            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date < " )
-                    .append( "'" + filter.getDateMax( ) + "'" ).append( SQL_FILTER_AND ).append( "a.update_date > " )
-                    .append( "'" + filter.getDateMin( ) + "'" );
+            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date < " ).append("'").append(filter.getDateMax( ))
+                    .append("'").append( SQL_FILTER_AND ).append( "a.update_date > " ).append("'").append(filter.getDateMin( ))
+                    .append("'");
         }
         else
             if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
             {
-                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " )
-                        .append( "'" + filter.getDateMin( ) + "'" );
+                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " ).append("'").append(filter.getDateMin( ))
+                        .append("'");
             }
             else
                 if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
                 {
-                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " )
-                            .append( "'" + filter.getDateMax( ) + "'" );
+                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " ).append("'").append(filter.getDateMax( ))
+                            .append("'");
                 }
 
         String strWhere = sbWhere.toString( );
@@ -716,7 +720,7 @@ public final class BlogDAO implements IBlogDAO
         {
             daoUtil.setInt( 1, nIdTag );
             daoUtil.executeQuery( );
-            Blog blog = null;
+            Blog blog;
 
             while ( daoUtil.next( ) )
             {
