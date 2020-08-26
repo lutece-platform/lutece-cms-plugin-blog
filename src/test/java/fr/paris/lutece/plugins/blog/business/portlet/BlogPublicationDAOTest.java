@@ -44,8 +44,7 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- *
- * @author pierre
+ * BlogPublicationDAO Test
  */
 public class BlogPublicationDAOTest extends LuteceTestCase
 {
@@ -55,62 +54,47 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     private static final int PORTLET_ID = 20000;
     private static final int STATUS_ENABLED = 1;
     private static final int ORDER = 1;
+    private static final int TESTCOUNT = 14;
 
     private static Plugin _plugin = PluginService.getPlugin( PLUGIN_NAME );
     private static BlogPublicationDAO _dao = new BlogPublicationDAO( );
-    private static String _strDatabase;
-    private static boolean _bInit = false;
+    private static String _strDatabaseEngine;
+    private static int nTestCount = 0;
     
     
-    
-    public static void init()
+    /**
+     * {@inheritDoc }
+     * @throws Exception 
+     */
+    @Override
+    protected void setUp() throws Exception
     {
-        if( ! _bInit )
+        super.setUp(); 
+        
+        // Equivalent to @BeforeClass that is not compatible with LuteceTestCase
+        if( nTestCount == 0 )
         {
             setUpDatabase() ;
-            _bInit = true;
         }
+        nTestCount++;
     }
-    
-    public static void setUpDatabase() 
+
+    /**
+     * {@inheritDoc }
+     * @throws Exception 
+     */
+    @Override
+    protected void tearDown() throws Exception
     {
-        try
-        {
-            _plugin = PluginService.getPlugin( PLUGIN_NAME );
-            _strDatabase = _plugin.getConnectionService().getConnection().getMetaData().getDatabaseProductName();
-            
-            System.out.println( "Database server : " +  _strDatabase );
-            
-            String strMessage = "Disable referential integrity for the server : " + _strDatabase;
-            if( _strDatabase.equalsIgnoreCase( "MySQL"))
-            {
-                execute( "SET FOREIGN_KEY_CHECKS=0;" , strMessage );
-            }
-            else if( _strDatabase.contains("HSQL"))
-            {
-                execute( "SET DATABASE REFERENTIAL INTEGRITY FALSE" , strMessage );
-            }
-        } 
-        catch ( SQLException ex )
-        {
-            System.out.println( ex );
-        }
-    }
-    
-    public static void tearDownDatabase( ) throws Exception
-    {
-        clean( );
+        super.tearDown(); 
         
-        String strMessage = "Enable referential integrity for the server : " + _strDatabase;
-        if( _strDatabase.equalsIgnoreCase( "MySQL"))
+        // Equivalent to @AfterClass  that is not compatible with LuteceTestCase
+        if( nTestCount == TESTCOUNT )
         {
-            execute( "SET FOREIGN_KEY_CHECKS=1;" , strMessage );
-        }
-        else if( _strDatabase.contains("HSQL") )
-        {
-            execute( "SET DATABASE REFERENTIAL INTEGRITY TRUE" , strMessage );
+            tearDownDatabase();
         }
     }
+    
 
     /**
      * Test of insertBlogsId method, of class BlogPublicationDAO.
@@ -118,7 +102,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testInsertBlogsId( )
     {
-        init();
         System.out.println( "insertBlogsId" );
         insert( );
     }
@@ -129,7 +112,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testStore( )
     {
-        init();
         System.out.println( "store" );
         BlogPublication blogPublication = getBlogPublication( );
         _dao.store( blogPublication, _plugin );
@@ -141,7 +123,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testDeleteBlogsId( )
     {
-        init();
         System.out.println( "deleteBlogsId" );
         insert( );
         int nDocId = BLOG_ID;
@@ -154,7 +135,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testDeleteBlogByIdPortlet( )
     {
-        init();
         System.out.println( "deleteBlogByIdPortlet" );
         insert( );
         int nIdPortlet = PORTLET_ID;
@@ -167,7 +147,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testRemove( )
     {
-        init();
         System.out.println( "remove" );
         insert( );
         int nDocId = BLOG_ID;
@@ -181,7 +160,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testLoadBlogsId( )
     {
-        init();
         System.out.println( "loadBlogsId" );
         insert( );
         int nDocId = BLOG_ID;
@@ -195,7 +173,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testLoadBlogsByPortlet( )
     {
-        init();
         System.out.println( "loadBlogsByPortlet" );
         insert( );
         int nIdPortlet = PORTLET_ID;
@@ -209,7 +186,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testLoadBlogsByPortletAndPublicationDate( )
     {
-        init();
         System.out.println( "loadBlogsByPortletAndPublicationDate" );
         insert( );
         int nIdPortlet = PORTLET_ID;
@@ -225,7 +201,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testLoadBlogsPublication( )
     {
-        init();
         System.out.println( "loadBlogsPublication" );
         insert( );
         int nPortletId = PORTLET_ID;
@@ -240,7 +215,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testLoadAllBlogsPublication( )
     {
-        init();
         System.out.println( "loadAllBlogsPublication" );
         insert( );
         List<BlogPublication> result = _dao.loadAllBlogsPublication( _plugin );
@@ -253,7 +227,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testSelectSinceDatePublishingAndStatus( )
     {
-        init();
         System.out.println( "selectSinceDatePublishingAndStatus" );
         insert( );
         Date datePublishing = new Date( getTime( -2 ) );
@@ -269,7 +242,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testGetPublishedBlogsIdsListByPortletIds( )
     {
-        init();
         System.out.println( "getPublishedBlogsIdsListByPortletIds" );
         insert( );
         int [ ] nPortletsIds = {
@@ -287,7 +259,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testGetLastPublishedBlogsIdsListByPortletIds( )
     {
-        init();
         System.out.println( "getLastPublishedBlogsIdsListByPortletIds" );
         insert( );
         int [ ] nPortletsIds = {
@@ -304,7 +275,6 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     @Test
     public void testCountPublicationByIdBlogAndDate( )
     {
-        init();
         System.out.println( "countPublicationByIdBlogAndDate" );
         insert( );
         int nIdBlog = BLOG_ID;
@@ -315,12 +285,66 @@ public class BlogPublicationDAOTest extends LuteceTestCase
 
 
     // private utils
+    
+    /**
+     * SetUp Database : disable referential integrity
+     */
+    private void setUpDatabase() 
+    {
+        try
+        {
+            _plugin = PluginService.getPlugin( PLUGIN_NAME );
+            _strDatabaseEngine = _plugin.getConnectionService().getConnection().getMetaData().getDatabaseProductName();
+            
+            System.out.println( "Database server : " +  _strDatabaseEngine );
+            
+            String strMessage = "Disable referential integrity for the server : " + _strDatabaseEngine;
+            if( _strDatabaseEngine.equalsIgnoreCase( "MySQL"))
+            {
+                execute( "SET FOREIGN_KEY_CHECKS=0;" , strMessage );
+            }
+            else if( _strDatabaseEngine.contains("HSQL"))
+            {
+                execute( "SET DATABASE REFERENTIAL INTEGRITY FALSE" , strMessage );
+            }
+        } 
+        catch ( SQLException ex )
+        {
+            System.out.println( ex );
+        }
+    }
 
-    private static void clean( )
+    
+    /**
+     * Tear Down Database : enable referential integrity
+     */
+    private void tearDownDatabase( ) throws Exception
+    {
+        clean( );
+        
+        String strMessage = "Enable referential integrity for the server : " + _strDatabaseEngine;
+        if( _strDatabaseEngine.equalsIgnoreCase( "MySQL"))
+        {
+            execute( "SET FOREIGN_KEY_CHECKS=1;" , strMessage );
+        }
+        else if( _strDatabaseEngine.contains("HSQL") )
+        {
+            execute( "SET DATABASE REFERENTIAL INTEGRITY TRUE" , strMessage );
+        }
+    }
+
+    
+    /**
+     * Clean test data
+     */
+    private void clean( )
     {
         _dao.deleteBlogsId( BLOG_ID, _plugin );
     }
 
+    /**
+     * Insert test data
+     */
     private void insert( )
     {
         clean( );
@@ -329,6 +353,10 @@ public class BlogPublicationDAOTest extends LuteceTestCase
 
     }
 
+    /**
+     * Create a publication
+     * @return The publication
+     */
     private BlogPublication getBlogPublication( )
     {
         BlogPublication blogPublication = new BlogPublication( );
@@ -342,14 +370,24 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         return blogPublication;
     }
 
+    /**
+     * Give a time corresponding to a date of today with a delta in hour 
+     * @param lDeltaHour The delta
+     * @return The time
+     */
     private long getTime( long lDeltaHour )
     {
         return new Date( ).getTime( ) + ( lDeltaHour * 36000000L );
     }
 
-    private static void execute( String strCommand , String strMessage )
+    /**
+     * Execute a statement
+     * @param strStatement The statement
+     * @param strMessage The message for the output
+     */
+    private void execute( String strStatement , String strMessage )
     {
-        try( DAOUtil dao = new DAOUtil( strCommand ))
+        try( DAOUtil dao = new DAOUtil( strStatement ))
         {
             dao.executeUpdate();
             System.out.println( strMessage );
