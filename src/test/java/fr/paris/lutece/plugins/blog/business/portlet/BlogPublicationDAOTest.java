@@ -229,7 +229,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     {
         System.out.println( "selectSinceDatePublishingAndStatus" );
         insert( );
-        Date datePublishing = new Date( getTime( -2 ) );
+        Date datePublishing = new Date( getTime( -4 ) );
         Date dateEndPublishing = new Date( getTime( 2 ) );
         int nStatus = STATUS_ENABLED;
         Collection<BlogPublication> result = _dao.selectSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, nStatus, _plugin );
@@ -381,7 +381,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     }
 
     /**
-     * Execute a statement
+     * Execute a SQL statement
      * @param strStatement The statement
      * @param strMessage The message for the output
      */
