@@ -135,7 +135,7 @@ public class BlogPortlet extends PortletHtmlContent
     /**
      * Sets the id of the content
      *
-     * @param nContentId 
+     * @param nContentId
      *            id of the content
      */
     public void setContentId( int nContentId )
@@ -156,8 +156,8 @@ public class BlogPortlet extends PortletHtmlContent
     /**
      * Sets the BlogPublication of the html document
      *
-     * @param blogPublication 
-     *       the publication of the document
+     * @param blogPublication
+     *            the publication of the document
      */
     public void setBlogPublication( BlogPublication blogPublication )
     {
@@ -177,8 +177,8 @@ public class BlogPortlet extends PortletHtmlContent
     /**
      * Sets the name of the html document
      *
-     * @param strName 
-     *          the name of the document
+     * @param strName
+     *            the name of the document
      */
     public void setPortletName( String strName )
     {

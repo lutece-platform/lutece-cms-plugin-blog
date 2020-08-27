@@ -236,13 +236,13 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_UNPUBLISHED = "unpublished";
 
     public static final String CONSTANT_DUPLICATE_BLOG_NAME = "Copie de ";
-    
+
     private static final String RESPONSE_BLOG_LOCKED = "BLOG_LOCKED";
     private static final String RESPONSE_SUCCESS = "SUCCESS";
     private static final String RESPONSE_FAILURE = "FAILURE";
 
     // Session variable to store working values
-    private static Map<Integer, BlogLock> _mapLockBlog = new HashMap<Integer, BlogLock>( );
+    private static Map<Integer, BlogLock> _mapLockBlog = new HashMap<>( );
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
@@ -327,10 +327,8 @@ public class BlogJspBean extends ManageBlogJspBean
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
 
         }
-
         else
         {
-
             listBlogsId = BlogHome.getIdBlogsList( );
         }
 
@@ -944,7 +942,7 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             blog = BlogService.getInstance( ).loadBlog( nId );
         }
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nId ) );
+        blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nId ) );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
@@ -1052,7 +1050,7 @@ public class BlogJspBean extends ManageBlogJspBean
      * 
      * @param request
      *            The Http request
-     * @return 
+     * @return
      */
     @Action( ACTION_ADD_FILE_CONTENT )
     public String addContent( HttpServletRequest request )
@@ -1106,7 +1104,7 @@ public class BlogJspBean extends ManageBlogJspBean
             // Trouver le type du fichier
             try
             {
-                mimeType = URLConnection.guessContentTypeFromStream( is ); 
+                mimeType = URLConnection.guessContentTypeFromStream( is );
             }
             catch( IOException ioException )
             {
@@ -1128,7 +1126,7 @@ public class BlogJspBean extends ManageBlogJspBean
             docContent.setContentType( contType );
         }
         docContent.setPriority( _blog.getDocContent( ).size( ) + 1 );
-        _blog.addConetnt( docContent );
+        _blog.addContent( docContent );
         DocContentHome.create( docContent );
         String [ ] results = {
                 strFileName, String.valueOf( docContent.getId( ) )
@@ -1143,7 +1141,7 @@ public class BlogJspBean extends ManageBlogJspBean
      * 
      * @param request
      *            The Http request
-     * @return 
+     * @return
      */
     @Action( ACTION_REMOVE_FILE_CONTENT )
     public String removeContent( HttpServletRequest request )

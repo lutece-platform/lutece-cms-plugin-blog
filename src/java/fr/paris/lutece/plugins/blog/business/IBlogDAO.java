@@ -124,7 +124,7 @@ public interface IBlogDAO
      * @param nId
      *            The identifier of the blog
      * @param nVersion
-     *             The version
+     *            The version
      * @param plugin
      *            the Plugin
      * @return The instance of the blog

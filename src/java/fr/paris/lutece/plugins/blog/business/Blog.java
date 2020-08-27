@@ -109,7 +109,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     private List<Tag> _tag = new ArrayList<>( );
 
-    private List<BlogPublication> _blogPubilcation = new ArrayList<>( );
+    private List<BlogPublication> _blogPublication = new ArrayList<>( );
 
     /**
      * Returns the Id
@@ -121,10 +121,13 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
         return _nId;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public String getName( )
     {
-        return _strContentLabel;
+        return getContentLabel( );
     }
 
     /**
@@ -350,8 +353,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     /**
      * Sets the list DocContent
      *
-     * @param DocContent
-     *            The DocContent
+     * @param docContent
+     *            the list DocContent
      */
     public void setDocContent( List<DocContent> docContent )
     {
@@ -364,7 +367,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      * @param docContent
      *            list The docContent list
      */
-    public void addConetnt( DocContent docContent )
+    public void addContent( DocContent docContent )
     {
 
         boolean isContain = _docContent.stream( ).anyMatch( dc -> dc.getTextValue( ).equals( docContent.getTextValue( ) ) );
@@ -378,8 +381,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     /**
      * delet the docContent
      *
-     * @param docContent
-     *            The docContent
+     * @param nIdDoc
+     *            The docContent Id
      */
     public void deleteDocContent( int nIdDoc )
     {
@@ -420,6 +423,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     /**
      * shareable
+     * 
      * @param bShareable
      */
     public void setShareable( boolean bShareable )
@@ -439,6 +443,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     /**
      * Locked
+     * 
      * @param bLocked
      */
     public void setLocked( boolean bLocked )
@@ -475,8 +480,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void addTag( Tag tag )
     {
-        boolean isContain = _tag.stream( ).anyMatch( tg -> tg.getIdTag( ) == tag.getIdTag( ) );
-        if ( !isContain )
+        boolean bContain = _tag.stream( ).anyMatch( tg -> tg.getIdTag( ) == tag.getIdTag( ) );
+        if ( !bContain )
         {
             _tag.add( tag );
         }
@@ -499,9 +504,9 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      *
      * @return The BlogPubilcation list
      */
-    public List<BlogPublication> getBlogPubilcation( )
+    public List<BlogPublication> getBlogPublication( )
     {
-        return _blogPubilcation;
+        return _blogPublication;
     }
 
     /**
@@ -510,9 +515,9 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      * @param blogPublication
      *            list The blogPublication list
      */
-    public void setBlogPubilcation( List<BlogPublication> blogPublication )
+    public void setBlogPublication( List<BlogPublication> blogPublication )
     {
-        _blogPubilcation = blogPublication;
+        _blogPublication = blogPublication;
     }
 
     /**
@@ -524,12 +529,12 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public void addBlogPublication( BlogPublication blogPublication )
     {
 
-        boolean isContain = _blogPubilcation.stream( )
+        boolean bContain = _blogPublication.stream( )
                 .anyMatch( blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication.getIdPortlet( ) ) );
 
-        if ( !isContain )
+        if ( !bContain )
         {
-            _blogPubilcation.add( blogPublication );
+            _blogPublication.add( blogPublication );
         }
     }
 
@@ -542,7 +547,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public void deleteBlogPublication( BlogPublication blogPublication )
     {
 
-        _blogPubilcation
+        _blogPublication
                 .removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication.getIdPortlet( ) ) );
     }
 
@@ -553,7 +558,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public String getExtendableResourceDescription( )
     {
 
-        return _strDescription;
+        return getDescription( );
     }
 
     /**
@@ -573,7 +578,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public String getExtendableResourceName( )
     {
 
-        return _strContentLabel;
+        return getContentLabel( );
     }
 
     /**

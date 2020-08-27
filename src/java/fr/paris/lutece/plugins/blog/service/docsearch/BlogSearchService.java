@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.blog.business.IndexerAction;
 import fr.paris.lutece.plugins.blog.business.IndexerActionFilter;
 import fr.paris.lutece.plugins.blog.business.IndexerActionHome;
 import fr.paris.lutece.plugins.blog.service.BlogPlugin;
-import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.search.SearchResult;
 import fr.paris.lutece.portal.service.spring.SpringContextService;

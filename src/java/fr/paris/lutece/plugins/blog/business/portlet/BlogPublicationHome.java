@@ -227,8 +227,10 @@ public class BlogPublicationHome
     /**
      * Counts the number of valid publication of a blog at a given date.
      * 
-     * @param nIdBlog The blog id
-     * @param date The date
+     * @param nIdBlog
+     *            The blog id
+     * @param date
+     *            The date
      * @return The count
      */
     public static int countPublicationByIdBlogAndDate( int nIdBlog, Date date )

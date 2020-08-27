@@ -119,7 +119,7 @@ public class BlogListPortletJspBean extends PortletJspBean
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
 
     private static final String VIEW_MODIFY_PORTLET = "getModify";
-    
+
     private static final String RESPONSE_SUCCESS = "SUCCESS";
 
     // //////////////////////////////////////////////////////////////////////////
@@ -162,8 +162,7 @@ public class BlogListPortletJspBean extends PortletJspBean
      * 
      * @param request
      *            The HTTP request
-     * @return 
-     *         The map
+     * @return The map
      */
     protected Map<String, Object> getPaginatedListModel( HttpServletRequest request )
     {

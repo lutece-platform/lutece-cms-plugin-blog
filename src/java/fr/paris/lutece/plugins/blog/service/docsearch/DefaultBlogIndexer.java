@@ -65,7 +65,6 @@ import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.util.AppException;
@@ -126,7 +125,6 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
     public synchronized void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuilder sbLogs )
             throws IOException, InterruptedException, SiteMessageException
     {
-        Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
         List<Integer> listIdBlog = new ArrayList<>( );
 
         if ( !bCreate )
@@ -201,7 +199,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      * Builds a document which will be used by Lucene during the indexing of the announces list
      * 
      * @param blog
-     *         The blog post
+     *            The blog post
      * @throws IOException
      *             If an IO Exception occurred
      * @return the document
@@ -224,7 +222,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         doc.add( new NumericDocValuesField( BlogSearchItem.FIELD_DATE_UPDATE, blog.getUpdateDate( ).getTime( ) ) );
         // is document published TODAY
         Date today = new Date( );
-        boolean isPublished = blog.getBlogPubilcation( ).stream( )
+        boolean isPublished = blog.getBlogPublication( ).stream( )
                 .anyMatch( publication -> today.after( publication.getDateBeginPublishing( ) ) && today.before( publication.getDateEndPublishing( ) ) );
         doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, ( isPublished ) ? "false" : "true", Field.Store.YES ) );
 

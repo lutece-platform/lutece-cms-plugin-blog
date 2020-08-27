@@ -117,7 +117,7 @@ public class BlogPublication
 
     /**
      * @param dateEndPublishing
-     *            the End Publishing date 
+     *            the End Publishing date
      */
     public void setDateEndPublishing( Date dateEndPublishing )
     {

@@ -651,21 +651,21 @@ public final class BlogDAO implements IBlogDAO
 
         if ( StringUtils.isNotBlank( filter.getDateMin( ) ) && StringUtils.isNotBlank( filter.getDateMax( ) ) )
         {
-            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date < " ).append("'").append(filter.getDateMax( ))
-                    .append("'").append( SQL_FILTER_AND ).append( "a.update_date > " ).append("'").append(filter.getDateMin( ))
-                    .append("'");
+            sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date < " ).append( '\'' )
+                    .append( filter.getDateMax( ) ).append( '\'' ).append( SQL_FILTER_AND ).append( "a.update_date > " ).append( '\'' )
+                    .append( filter.getDateMin( ) ).append( '\'' );
         }
         else
             if ( StringUtils.isNotBlank( filter.getDateMin( ) ) )
             {
-                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " ).append("'").append(filter.getDateMin( ))
-                        .append("'");
+                sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date > " ).append( '\'' )
+                        .append( filter.getDateMin( ) ).append( '\'' );
             }
             else
                 if ( StringUtils.isNotBlank( filter.getDateMax( ) ) )
                 {
-                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " ).append("'").append(filter.getDateMax( ))
-                            .append("'");
+                    sbWhere.append( ( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ) ).append( "a.update_date <= " ).append( '\'' )
+                            .append( filter.getDateMax( ) ).append( '\'' );
                 }
 
         String strWhere = sbWhere.toString( );

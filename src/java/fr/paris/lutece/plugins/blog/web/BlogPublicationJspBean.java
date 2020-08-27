@@ -161,7 +161,8 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         PortletOrder pOrder = new PortletOrder( );
         String strOrderPortlet = request.getParameter( PARAMETER_ORDER_PORTLET );
-        boolean bIsDisplayPortlets = ((request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) == null) || Boolean.valueOf( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ));
+        boolean bIsDisplayPortlets = ( ( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) == null )
+                || Boolean.valueOf( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) ) );
 
         String strOrderPortletAsc = request.getParameter( PARAMETER_ORDER_PORTLET_ASC );
         int nOrderPortlet = -1;
@@ -388,7 +389,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         Collection<ReferenceItem> listPortlets = new ArrayList<>( );
 
         // Check role PERMISSION_MANAGE for DocumentListPortlet
-        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogListPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE,  getUser( ) ) )
+        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogListPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, getUser( ) ) )
         {
             listPortlets.addAll( BlogListPortletHome.findByFilter( nDocumentId, pOrder, pFilter ) );
         }

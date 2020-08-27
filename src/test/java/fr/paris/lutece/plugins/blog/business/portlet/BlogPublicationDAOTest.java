@@ -60,41 +60,41 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     private static BlogPublicationDAO _dao = new BlogPublicationDAO( );
     private static String _strDatabaseEngine;
     private static int nTestCount = 0;
-    
-    
+
     /**
      * {@inheritDoc }
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
     @Override
-    protected void setUp() throws Exception
+    protected void setUp( ) throws Exception
     {
-        super.setUp(); 
-        
+        super.setUp( );
+
         // Equivalent to @BeforeClass that is not compatible with LuteceTestCase
-        if( nTestCount == 0 )
+        if ( nTestCount == 0 )
         {
-            setUpDatabase() ;
+            setUpDatabase( );
         }
         nTestCount++;
     }
 
     /**
      * {@inheritDoc }
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
     @Override
-    protected void tearDown() throws Exception
+    protected void tearDown( ) throws Exception
     {
-        super.tearDown(); 
-        
-        // Equivalent to @AfterClass  that is not compatible with LuteceTestCase
-        if( nTestCount == TESTCOUNT )
+        super.tearDown( );
+
+        // Equivalent to @AfterClass that is not compatible with LuteceTestCase
+        if ( nTestCount == TESTCOUNT )
         {
-            tearDownDatabase();
+            tearDownDatabase( );
         }
     }
-    
 
     /**
      * Test of insertBlogsId method, of class BlogPublicationDAO.
@@ -283,57 +283,56 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         assertTrue( result > 0 );
     }
 
-
     // private utils
-    
+
     /**
      * SetUp Database : disable referential integrity
      */
-    private void setUpDatabase() 
+    private void setUpDatabase( )
     {
         try
         {
             _plugin = PluginService.getPlugin( PLUGIN_NAME );
-            _strDatabaseEngine = _plugin.getConnectionService().getConnection().getMetaData().getDatabaseProductName();
-            
-            System.out.println( "Database server : " +  _strDatabaseEngine );
-            
+            _strDatabaseEngine = _plugin.getConnectionService( ).getConnection( ).getMetaData( ).getDatabaseProductName( );
+
+            System.out.println( "Database server : " + _strDatabaseEngine );
+
             String strMessage = "Disable referential integrity for the server : " + _strDatabaseEngine;
-            if( _strDatabaseEngine.equalsIgnoreCase( "MySQL"))
+            if ( _strDatabaseEngine.equalsIgnoreCase( "MySQL" ) )
             {
-                execute( "SET FOREIGN_KEY_CHECKS=0;" , strMessage );
+                execute( "SET FOREIGN_KEY_CHECKS=0;", strMessage );
             }
-            else if( _strDatabaseEngine.contains("HSQL"))
-            {
-                execute( "SET DATABASE REFERENTIAL INTEGRITY FALSE" , strMessage );
-            }
-        } 
-        catch ( SQLException ex )
+            else
+                if ( _strDatabaseEngine.contains( "HSQL" ) )
+                {
+                    execute( "SET DATABASE REFERENTIAL INTEGRITY FALSE", strMessage );
+                }
+        }
+        catch( SQLException ex )
         {
             System.out.println( ex );
         }
     }
 
-    
     /**
      * Tear Down Database : enable referential integrity
      */
     private void tearDownDatabase( ) throws Exception
     {
         clean( );
-        
+
         String strMessage = "Enable referential integrity for the server : " + _strDatabaseEngine;
-        if( _strDatabaseEngine.equalsIgnoreCase( "MySQL"))
+        if ( _strDatabaseEngine.equalsIgnoreCase( "MySQL" ) )
         {
-            execute( "SET FOREIGN_KEY_CHECKS=1;" , strMessage );
+            execute( "SET FOREIGN_KEY_CHECKS=1;", strMessage );
         }
-        else if( _strDatabaseEngine.contains("HSQL") )
-        {
-            execute( "SET DATABASE REFERENTIAL INTEGRITY TRUE" , strMessage );
-        }
+        else
+            if ( _strDatabaseEngine.contains( "HSQL" ) )
+            {
+                execute( "SET DATABASE REFERENTIAL INTEGRITY TRUE", strMessage );
+            }
     }
 
-    
     /**
      * Clean test data
      */
@@ -355,6 +354,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
 
     /**
      * Create a publication
+     * 
      * @return The publication
      */
     private BlogPublication getBlogPublication( )
@@ -371,8 +371,10 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     }
 
     /**
-     * Give a time corresponding to a date of today with a delta in hour 
-     * @param lDeltaHour The delta
+     * Give a time corresponding to a date of today with a delta in hour
+     * 
+     * @param lDeltaHour
+     *            The delta
      * @return The time
      */
     private long getTime( long lDeltaHour )
@@ -382,16 +384,19 @@ public class BlogPublicationDAOTest extends LuteceTestCase
 
     /**
      * Execute a SQL statement
-     * @param strStatement The statement
-     * @param strMessage The message for the output
+     * 
+     * @param strStatement
+     *            The statement
+     * @param strMessage
+     *            The message for the output
      */
-    private void execute( String strStatement , String strMessage )
+    private void execute( String strStatement, String strMessage )
     {
-        try( DAOUtil dao = new DAOUtil( strStatement ))
+        try ( DAOUtil dao = new DAOUtil( strStatement ) )
         {
-            dao.executeUpdate();
+            dao.executeUpdate( );
             System.out.println( strMessage );
         }
-        
+
     }
 }

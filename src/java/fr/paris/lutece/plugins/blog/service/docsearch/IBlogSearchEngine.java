@@ -53,10 +53,6 @@ public interface IBlogSearchEngine
      *            the plugin
      * @param listSearchResult
      *            The list of search results
-     * @param nPage
-     *            The number of the current page
-     * @param nItemsPerPage
-     *            The number of items per page. 0 to ignore the pagination
      * @return The total number of results found
      */
     int getSearchResults( BlogSearchFilter filter, Plugin plugin, List<SearchResult> listSearchResult );

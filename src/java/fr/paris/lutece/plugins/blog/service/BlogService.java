@@ -318,7 +318,7 @@ public class BlogService
             List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
             blog.setDocContent( docContent );
             blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+            blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
         }
         return blog;
 
@@ -338,7 +338,7 @@ public class BlogService
         if ( blog != null )
         {
             blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+            blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
         }
         return blog;
 
@@ -377,7 +377,7 @@ public class BlogService
         List<Blog> blogList = BlogHome.selectWithoutBinaries( );
         for ( Blog blog : blogList )
         {
-            blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( blog.getId( ) ) );
+            blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( blog.getId( ) ) );
             blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
         }
         return blogList;
@@ -387,7 +387,7 @@ public class BlogService
     /**
      * Load the data of all the blog objects whose tag is specified in parameter
      * 
-     * @param nIdtag
+     * @param nIdTag
      *            idTag param
      * @return the list which contains the data of all the blog objects
      */
@@ -403,6 +403,7 @@ public class BlogService
      * 
      * @param filter
      *            The filter
+     * @return The list of blog post
      */
     public List<Blog> findByFilter( BlogFilter filter )
     {

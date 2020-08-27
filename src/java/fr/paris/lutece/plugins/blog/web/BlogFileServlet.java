@@ -101,7 +101,7 @@ public class BlogFileServlet extends HttpServlet
             httpResponse.addHeader( "Content-Encoding", "UTF-8" );
             httpResponse.addHeader( "Cache-Control", "public,max-age=" + MAX_AGE );
 
-            try (OutputStream os = httpResponse.getOutputStream( ))
+            try ( OutputStream os = httpResponse.getOutputStream( ) )
             {
                 os.write( docContent.getBinaryValue( ) );
                 // We do not close the output stream in finaly clause because it is

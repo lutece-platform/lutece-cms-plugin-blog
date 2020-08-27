@@ -49,12 +49,12 @@ public class PortletFilter
     public static final String PAGE_ID = AppPropertiesService.getProperty( "blog.filter.page_id", "page_id" );
     public static final int PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY = AppPropertiesService
             .getPropertyInt( "blog.filter.number_of_max_latest_portlets_display", 10 );
-    private static final String SQL_FILTER_PAGE_NAME = "  f.name like ? ";
+    private static final String SQL_FILTER_PAGE_NAME = "  f.name LIKE ? ";
     private static final String SQL_FILTER_BY_PAGE_ID = "  a.id_page=? ";
-    private static final String SQL_FILTER_BY_PORTLET_NAME = " a.name like ? ";
+    private static final String SQL_FILTER_BY_PORTLET_NAME = " a.name LIKE ? ";
     private boolean _bIsDisplayLatestPortlets;
-    private String [ ] _tabPageName;
-    private String [ ] _tabPortletName;
+    private String [ ] _aPageName;
+    private String [ ] _aPortletName;
     private Integer _nIdPage;
     private String _portletFilterType;
     private String _strSearchValue;
@@ -62,12 +62,12 @@ public class PortletFilter
     /**
      * Set the page name list
      * 
-     * @param strPageTitle
+     * @param aPageTitle
      *            The list of titles of pages
      */
-    public void setPageName( String [ ] strPageTitle )
+    public void setPageName( String [ ] aPageTitle )
     {
-        this._tabPageName = strPageTitle;
+        _aPageName = aPageTitle;
     }
 
     /**
@@ -77,18 +77,18 @@ public class PortletFilter
      */
     public String [ ] getPageName( )
     {
-        return _tabPageName;
+        return _aPageName;
     }
 
     /**
      * Set the portlet title filter
      * 
-     * @param strPortletTitle
+     * @param aPortletTitle
      *            The portlet title filter
      */
-    public void setPortletName( String [ ] strPortletTitle )
+    public void setPortletName( String [ ] aPortletTitle )
     {
-        this._tabPortletName = strPortletTitle;
+        _aPortletName = aPortletTitle;
     }
 
     /**
@@ -98,7 +98,7 @@ public class PortletFilter
      */
     public String [ ] getPortletName( )
     {
-        return _tabPortletName;
+        return _aPortletName;
     }
 
     /**
@@ -109,7 +109,7 @@ public class PortletFilter
      */
     public void setIdPage( Integer nIdPage )
     {
-        this._nIdPage = nIdPage;
+        _nIdPage = nIdPage;
     }
 
     /**
@@ -130,7 +130,7 @@ public class PortletFilter
      */
     public void setDisplayLatestPortlets( boolean bIsDisplayLatestPortlets )
     {
-        this._bIsDisplayLatestPortlets = bIsDisplayLatestPortlets;
+        _bIsDisplayLatestPortlets = bIsDisplayLatestPortlets;
     }
 
     /**
@@ -151,7 +151,7 @@ public class PortletFilter
      */
     public void setPortletFilterType( String portletFilterType )
     {
-        this._portletFilterType = portletFilterType;
+        _portletFilterType = portletFilterType;
     }
 
     /**
@@ -175,15 +175,15 @@ public class PortletFilter
         {
             StringBuilder sbSQL = new StringBuilder( );
 
-            if ( _portletFilterType.equals( PAGE_NAME ) && ( _tabPageName != null ) )
+            if ( _portletFilterType.equals( PAGE_NAME ) && ( _aPageName != null ) )
             {
                 sbSQL.append( " ( " );
 
-                for ( int i = 0; i < _tabPageName.length; i++ )
+                for ( int i = 0; i < _aPageName.length; i++ )
                 {
                     sbSQL.append( SQL_FILTER_PAGE_NAME );
 
-                    if ( i != ( _tabPageName.length - 1 ) )
+                    if ( i != ( _aPageName.length - 1 ) )
                     {
                         sbSQL.append( " OR " );
                     }
@@ -192,15 +192,15 @@ public class PortletFilter
                 sbSQL.append( " ) " );
             }
             else
-                if ( _portletFilterType.equals( PORTLET_NAME ) && ( _tabPortletName != null ) )
+                if ( _portletFilterType.equals( PORTLET_NAME ) && ( _aPortletName != null ) )
                 {
                     sbSQL.append( " ( " );
 
-                    for ( int i = 0; i < _tabPortletName.length; i++ )
+                    for ( int i = 0; i < _aPortletName.length; i++ )
                     {
                         sbSQL.append( SQL_FILTER_BY_PORTLET_NAME );
 
-                        if ( i != ( _tabPortletName.length - 1 ) )
+                        if ( i != ( _aPortletName.length - 1 ) )
                         {
                             sbSQL.append( " OR " );
                         }
@@ -228,7 +228,7 @@ public class PortletFilter
      */
     public void setSearchValue( String strSearchValue )
     {
-        this._strSearchValue = strSearchValue;
+        _strSearchValue = strSearchValue;
     }
 
     /**
