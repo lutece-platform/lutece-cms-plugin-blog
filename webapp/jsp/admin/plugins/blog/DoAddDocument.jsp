@@ -3,4 +3,4 @@
 <%
 	LocalVariables.setLocal( config, request, response );
 %>
-<%= HtmldocsPortletList.UpdatePortletDocument(request) %>
+<%= HtmldocsPortletList.updatePortletDocument(request) %>
