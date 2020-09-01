@@ -35,8 +35,8 @@
                   <div class="box-header with-border">
                     <h4 class="box-title">
                       Publication
-                      <#if blog.blogPubilcation?size &gt; 0>
-                         <span class="notification left bg-purple-active">${blog.blogPubilcation?size}</span>
+                      <#if blog.blogPublication?size &gt; 0>
+                         <span class="notification left bg-purple-active">${blog.blogPublication?size}</span>
                       </#if>
                     </h4>
                   </div>
@@ -45,16 +45,16 @@
                   <div class="panel-body">
                     <div class="box-body">
                       <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}"
-                        class="btn-publish btn btn-sm <#if blog.blogPubilcation?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPubilcation?size==0>Publier<#else>#i18n{blog.modify_blogs.managePublication}</#if>">
+                        class="btn-publish btn btn-sm <#if blog.blogPublication?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPublication?size==0>Publier<#else>#i18n{blog.modify_blogs.managePublication}</#if>">
                         <i class="fa fa-globe"></i>
                       </a>
-                      <#if blog.blogPubilcation?size &gt; 0>
+                      <#if blog.blogPublication?size &gt; 0>
                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <span class="caret"></span>
                           <span class="sr-only">#i18n{blog.modify_blog.labelToggleDropdown}</span>
                         </button>
                         <ul class="dropdown-menu">
-                          <#list blog.blogPubilcation as publication>
+                          <#list blog.blogPublication as publication>
                             <li>
                               <div class="btn-group" role="group" aria-label="...">
                                 <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}" class="btn btn-danger btn-xs hidden" title="#i18n{blog.publication_blog.buttonUnPublish}">

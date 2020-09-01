@@ -500,9 +500,9 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     }
 
     /**
-     * Returns the blogPubilcation list
+     * Returns the blogc list
      *
-     * @return The BlogPubilcation list
+     * @return The BlogPublication list
      */
     public List<BlogPublication> getBlogPublication( )
     {
@@ -521,10 +521,10 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     }
 
     /**
-     * Sets the BlogPubilcation list
+     * Sets the BlogPublication list
      *
      * @param blogPublication
-     *            list The BlogPubilcation list
+     *            list The BlogPublication list
      */
     public void addBlogPublication( BlogPublication blogPublication )
     {
@@ -539,10 +539,10 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     }
 
     /**
-     * delet the BlogPubilcation
+     * delet the BlogPublication
      *
      * @param blogPublication
-     *            The BlogPubilcation
+     *            The BlogPublication
      */
     public void deleteBlogPublication( BlogPublication blogPublication )
     {
