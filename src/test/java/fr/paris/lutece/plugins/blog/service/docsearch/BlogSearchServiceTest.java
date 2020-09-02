@@ -33,27 +33,57 @@
  */
 package fr.paris.lutece.plugins.blog.service.docsearch;
 
+import fr.paris.lutece.plugins.blog.TestUtils;
+import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.search.SearchResult;
-
+import fr.paris.lutece.test.LuteceTestCase;
+import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * SearchEngine
+ * BlogSearchService Test
  */
-public interface IBlogSearchEngine
+public class BlogSearchServiceTest extends LuteceTestCase
 {
+    private int _nIdBlog;
+
+    @Override
+    protected void setUp( ) throws Exception
+    {
+        super.setUp( );
+        Blog blog = TestUtils.createTestArticle( );
+        _nIdBlog = blog.getId( );
+    }
+
+    @Override
+    protected void tearDown( ) throws Exception
+    {
+        super.tearDown( );
+        BlogHome.remove( _nIdBlog );
+    }
+
     /**
-     * Get list of record key return by the search. Only results of the current page are returned by this function
-     * 
-     * @param filter
-     *            The search filter
-     * @param plugin
-     *            the plugin
-     * @param listSearchResult
-     *            The list of search results
-     * @return The total number of results found
+     * Test of processIndexing method, of class BlogSearchService.
      */
-    int getSearchResults( BlogSearchFilter filter, Plugin plugin, List<SearchResult> listSearchResult );
+    @Test
+    public void testProcessIndexing( )
+    {
+        System.out.println( "processIndexing" );
+        boolean bCreate = true;
+        BlogSearchService instance = BlogSearchService.getInstance( );
+        String result = instance.processIndexing( bCreate );
+        System.out.println( result );
+
+        System.out.println( "searchResults" );
+        BlogSearchFilter filter = new BlogSearchFilter( );
+        List<Integer> listIdBlog = new ArrayList<>( );
+        int nSearchResultCount = instance.getSearchResults( filter, listIdBlog );
+        assertTrue( nSearchResultCount >= 1 );
+        assertTrue( listIdBlog.contains( _nIdBlog ) );
+
+    }
+
 }

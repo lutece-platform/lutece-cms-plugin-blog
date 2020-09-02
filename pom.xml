@@ -58,7 +58,7 @@
 
     <properties>
         <componentName>blog</componentName>
-        <jiraProjectName>HTMLDOCS</jiraProjectName>
+        <jiraProjectName>BLOG</jiraProjectName>
         <jiraComponentId>13660</jiraComponentId>
     </properties>
 

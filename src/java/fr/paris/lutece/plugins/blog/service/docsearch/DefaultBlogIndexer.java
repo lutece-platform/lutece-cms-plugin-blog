@@ -37,7 +37,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.document.DateTools;
@@ -69,6 +68,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import org.apache.lucene.document.Document;
 
 /**
  * DefaultAnnounceIndexer
@@ -105,15 +105,13 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
      */
     private void indexListBlog( IndexWriter indexWriter, List<Integer> listIdBlog ) throws IOException
     {
-        Iterator<Integer> it = listIdBlog.iterator( );
-
-        while ( it.hasNext( ) )
+        for ( Integer nBlogId : listIdBlog )
         {
-            Integer nBlogId = it.next( );
             Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( nBlogId );
             if ( blog != null )
             {
-                indexWriter.addDocument( getDocument( blog ) );
+                Document doc = getDocument( blog );
+                indexWriter.addDocument( doc );
             }
         }
     }
@@ -173,7 +171,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
                 BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ) );
             }
 
-            this.indexListBlog( indexWriter, listIdBlog );
+            indexListBlog( indexWriter, listIdBlog );
         }
         else
         {
@@ -189,7 +187,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
             }
 
-            this.indexListBlog( indexWriter, listIdBlog );
+            indexListBlog( indexWriter, listIdBlog );
         }
 
         indexWriter.commit( );

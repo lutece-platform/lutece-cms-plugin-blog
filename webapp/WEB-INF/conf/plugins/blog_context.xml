@@ -8,30 +8,20 @@
     <bean id="blog.docContentDAO" class="fr.paris.lutece.plugins.blog.business.DocContentDAO" />    
     <bean id="blog.tagDAO" class="fr.paris.lutece.plugins.blog.business.TagDAO" />
     <bean id="blog.blogIndexerActionDAO" class="fr.paris.lutece.plugins.blog.business.IndexerActionDAO" />    
-    
-
-
     <bean id="blog.blogsPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogPortletDAO" />
     <bean id="blog.blogPageTemplateDAO" class="fr.paris.lutece.plugins.blog.business.BlogPageTemplateDAO" />
-    
-     
-    
-    
     <bean id="blog.blogIndexer" class="fr.paris.lutece.plugins.blog.service.docsearch.DefaultBlogIndexer" />    
-	<bean id="blog.blogSearchEngine" class="fr.paris.lutece.plugins.blog.service.docsearch.BlogLuceneSearchEngine" />
-	<bean id="blog.blogsListPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletDAO" />
+    <bean id="blog.blogsListPortletDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletDAO" />
     <bean id="blog.blogPublicationDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationDAO" />
-    
     <bean id="blog.blogExtendableResourceService" class="fr.paris.lutece.plugins.blog.service.resource.BlogExtendableResourceService" />
-	
-	<bean id="blog.blogResourceRssConfigDAO"  class="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRssConfigDAO" />
+    <bean id="blog.blogResourceRssConfigDAO"  class="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRssConfigDAO" />
 	 
-	<!-- RSS -->
+    <!-- RSS -->
     <bean id="blog.resourceRssTypeForm" class="fr.paris.lutece.portal.business.rss.ResourceRssType" >
-    	<property name="key" value="ResourceRssTypeBlog" />
-		<property name="titleI18nKey" value="blog.resource_rss_type.label" />
-		<property name="className" value="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRss"/>
-	</bean>
+        <property name="key" value="ResourceRssTypeBlog" />
+        <property name="titleI18nKey" value="blog.resource_rss_type.label" />
+        <property name="className" value="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRss"/>
+    </bean>
 	
        
     
