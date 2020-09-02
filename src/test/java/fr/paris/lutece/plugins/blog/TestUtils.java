@@ -31,37 +31,34 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.blog.service;
 
-import java.util.List;
+package fr.paris.lutece.plugins.blog;
 
-import fr.paris.lutece.plugins.blog.business.Tag;
-import fr.paris.lutece.plugins.blog.business.TagHome;
+import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
+import java.sql.Timestamp;
+import java.util.Date;
 
-public class TagService
+/**
+ * TestUtils
+ */
+public class TestUtils
 {
+    private static final int BLOG_ID = 10000;
 
-    private static TagService _singleton = new TagService( );
-
-    /**
-     * Get the unique instance of the service
-     *
-     * @return The unique instance
-     */
-    public static TagService getInstance( )
+    public static Blog createTestArticle( )
     {
-        return _singleton;
-    }
-
-    /**
-     * Get The all of Tag
-     * 
-     * @return list of TAG
-     */
-    public List<Tag> getAllTagDisplay( )
-    {
-
-        return TagHome.getTagList( );
+        Blog blog = new Blog( );
+        blog.setId( BLOG_ID );
+        blog.setContentLabel( "Content label" );
+        blog.setDescription( "Description" );
+        blog.setHtmlContent( "HTML content" );
+        blog.setCreationDate( new Timestamp( new Date( ).getTime( ) ) );
+        blog.setUpdateDate( new Timestamp( new Date( ).getTime( ) ) );
+        blog.setUser( "Last author" );
+        blog.setUserCreator( "First author" );
+        blog.setEditComment( "Comment" );
+        return BlogHome.create( blog );
 
     }
 

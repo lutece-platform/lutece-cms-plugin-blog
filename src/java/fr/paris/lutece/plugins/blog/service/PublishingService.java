@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+
 /**
  * Publishing service
  */
@@ -110,7 +112,7 @@ public class PublishingService
 
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( nBlogId, IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
+        BlogSearchService.getInstance( ).addIndexerAction( nBlogId, IndexerAction.TASK_MODIFY );
 
     }
 
@@ -140,7 +142,7 @@ public class PublishingService
     {
         BlogPublication blogPublication = BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, nBlogId );
 
-        return blogPublication != null ? true : false;
+        return blogPublication != null;
     }
 
     /**
@@ -153,8 +155,7 @@ public class PublishingService
     public boolean isAssigned( int nBlogId )
     {
         Collection<BlogPublication> listBlogPublication = BlogPublicationHome.getDocPublicationByIdDoc( nBlogId );
-
-        return ( listBlogPublication.size( ) > 0 );
+        return CollectionUtils.isNotEmpty( listBlogPublication );
     }
 
     /**
@@ -195,7 +196,7 @@ public class PublishingService
     public Collection<Portlet> getBlogsPortlets( )
     {
         Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
-        Collection<Portlet> listPortletsAll = new ArrayList<Portlet>( );
+        Collection<Portlet> listPortletsAll = new ArrayList<>( );
 
         for ( PortletType portletType : plugin.getPortletTypes( ) )
         {
@@ -213,7 +214,7 @@ public class PublishingService
     public Collection<Portlet> getBlogsPortletstoPublish( )
     {
         Plugin plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
-        Collection<Portlet> listPortletsAll = new ArrayList<Portlet>( );
+        Collection<Portlet> listPortletsAll = new ArrayList<>( );
 
         for ( PortletType portletType : plugin.getPortletTypes( ) )
         {
@@ -225,7 +226,7 @@ public class PublishingService
             {
                 for ( Portlet pt : listPortlet )
                 {
-                    if ( BlogPublicationHome.getDocPublicationByPortlet( pt.getId( ) ).size( ) == 0 )
+                    if ( CollectionUtils.isEmpty( BlogPublicationHome.getDocPublicationByPortlet( pt.getId( ) ) ) )
                     {
 
                         listPortletsAll.addAll( listPortlet );
@@ -254,7 +255,7 @@ public class PublishingService
     public Collection<Portlet> getPortletsByBlogId( String strBlogId )
     {
         Collection<BlogPublication> listBlogPublication = BlogPublicationHome.getDocPublicationByIdDoc( Integer.parseInt( strBlogId ) );
-        Collection<Portlet> listPortlets = new ArrayList<Portlet>( );
+        Collection<Portlet> listPortlets = new ArrayList<>( );
 
         for ( BlogPublication blogPublication : listBlogPublication )
         {
@@ -287,12 +288,12 @@ public class PublishingService
 
         Collection<BlogPublication> listBlogPublication = BlogPublicationHome.findSinceDatePublishingAndStatus( datePublishing, dateEndPublishing, 1 );
 
-        if ( ( listBlogPublication == null ) || ( listBlogPublication.size( ) == 0 ) )
+        if ( CollectionUtils.isEmpty( listBlogPublication ) )
         {
-            return new ArrayList<Blog>( );
+            return new ArrayList<>( );
         }
 
-        Set<Integer> sIds = new HashSet( );
+        Set<Integer> sIds = new HashSet<>( );
         BlogFilter publishedBlogFilter = blogFilter;
 
         if ( publishedBlogFilter == null )
@@ -307,9 +308,7 @@ public class PublishingService
 
         publishedBlogFilter.setIds( sIds.toArray( new Integer [ sIds.size( )] ) );
 
-        Collection<Blog> listBlogs = BlogHome.findByFilter( publishedBlogFilter );
-
-        return listBlogs;
+        return BlogHome.findByFilter( publishedBlogFilter );
     }
 
     /**
@@ -318,7 +317,9 @@ public class PublishingService
      * @param nPortletsIds
      *            The list of portlet ids.
      * @param datePublishing
-     *            TODO
+     *            The publishing date
+     * @param dateEndPublishing
+     *            The publishing end date
      * @param plugin
      *            The blog plugin
      * @return The list of blogs id.

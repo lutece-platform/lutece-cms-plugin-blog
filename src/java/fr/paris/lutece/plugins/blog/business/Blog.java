@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,8 @@ import org.hibernate.validator.constraints.*;
 import java.io.Serializable;
 
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.util.ReferenceItem;
@@ -97,7 +99,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     @Size( message = "#i18n{blog.validation.description.size}" )
     private String _strDescription;
 
-    private List<DocContent> _docContent = new ArrayList<DocContent>( );
+    private List<DocContent> _docContent = new ArrayList<>( );
 
     private String _strUrl;
 
@@ -105,9 +107,9 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     private boolean _bLocked;
 
-    private List<Tag> _tag = new ArrayList<Tag>( );
+    private List<Tag> _tag = new ArrayList<>( );
 
-    private List<BlogPublication> _blogPubilcation = new ArrayList<BlogPublication>( );
+    private List<BlogPublication> _blogPublication = new ArrayList<>( );
 
     /**
      * Returns the Id
@@ -119,9 +121,13 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
         return _nId;
     }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
     public String getName( )
     {
-        return _strContentLabel;
+        return getContentLabel( );
     }
 
     /**
@@ -347,8 +353,8 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     /**
      * Sets the list DocContent
      *
-     * @param DocContent
-     *            The DocContent
+     * @param docContent
+     *            the list DocContent
      */
     public void setDocContent( List<DocContent> docContent )
     {
@@ -361,24 +367,26 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      * @param docContent
      *            list The docContent list
      */
-    public void addConetnt( DocContent docContent )
+    public void addContent( DocContent docContent )
     {
 
         boolean isContain = _docContent.stream( ).anyMatch( dc -> dc.getTextValue( ).equals( docContent.getTextValue( ) ) );
 
         if ( !isContain )
+        {
             _docContent.add( docContent );
+        }
     }
 
     /**
      * delet the docContent
      *
-     * @param docContent
-     *            The docContent
+     * @param nIdDoc
+     *            The docContent Id
      */
-    public void deleteDocContent( String strFileName )
+    public void deleteDocContent( int nIdDoc )
     {
-        _docContent.removeIf( dc -> dc.getTextValue( ).equals( strFileName ) );
+        _docContent.removeIf( dc -> dc.getId( ) == nIdDoc );
 
     }
 
@@ -415,10 +423,12 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     /**
      * shareable
+     * 
+     * @param bShareable
      */
-    public void setShareable( boolean shareable )
+    public void setShareable( boolean bShareable )
     {
-        _bShareable = shareable;
+        _bShareable = bShareable;
     }
 
     /**
@@ -433,10 +443,12 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     /**
      * Locked
+     * 
+     * @param bLocked
      */
-    public void setLocked( boolean locked )
+    public void setLocked( boolean bLocked )
     {
-        _bLocked = locked;
+        _bLocked = bLocked;
     }
 
     /**
@@ -468,9 +480,11 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void addTag( Tag tag )
     {
-        boolean isContain = _tag.stream( ).anyMatch( tg -> tg.getIdTag( ) == tag.getIdTag( ) );
-        if ( !isContain )
+        boolean bContain = _tag.stream( ).anyMatch( tg -> tg.getIdTag( ) == tag.getIdTag( ) );
+        if ( !bContain )
+        {
             _tag.add( tag );
+        }
     }
 
     /**
@@ -486,13 +500,13 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     }
 
     /**
-     * Returns the blogPubilcation list
+     * Returns the blogc list
      *
-     * @return The BlogPubilcation list
+     * @return The BlogPublication list
      */
-    public List<BlogPublication> getBlogPubilcation( )
+    public List<BlogPublication> getBlogPublication( )
     {
-        return _blogPubilcation;
+        return _blogPublication;
     }
 
     /**
@@ -501,38 +515,40 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      * @param blogPublication
      *            list The blogPublication list
      */
-    public void setBlogPubilcation( List<BlogPublication> blogPublication )
+    public void setBlogPublication( List<BlogPublication> blogPublication )
     {
-        _blogPubilcation = blogPublication;
+        _blogPublication = blogPublication;
     }
 
     /**
-     * Sets the BlogPubilcation list
+     * Sets the BlogPublication list
      *
-     * @param BlogPubilcation
-     *            list The BlogPubilcation list
+     * @param blogPublication
+     *            list The BlogPublication list
      */
-    public void addBlogPublication( BlogPublication blogPubilcation )
+    public void addBlogPublication( BlogPublication blogPublication )
     {
 
-        boolean isContain = _blogPubilcation.stream( ).anyMatch(
-                blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation.getIdPortlet( ) ) );
+        boolean bContain = _blogPublication.stream( )
+                .anyMatch( blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication.getIdPortlet( ) ) );
 
-        if ( !isContain )
-            _blogPubilcation.add( blogPubilcation );
+        if ( !bContain )
+        {
+            _blogPublication.add( blogPublication );
+        }
     }
 
     /**
-     * delet the BlogPubilcation
+     * delet the BlogPublication
      *
-     * @param BlogPubilcation
-     *            The BlogPubilcation
+     * @param blogPublication
+     *            The BlogPublication
      */
-    public void deleteBlogPublication( BlogPublication blogPubilcation )
+    public void deleteBlogPublication( BlogPublication blogPublication )
     {
 
-        _blogPubilcation.removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPubilcation.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPubilcation
-                .getIdPortlet( ) ) );
+        _blogPublication
+                .removeIf( blogPub -> ( blogPub.getIdBlog( ) == blogPublication.getIdBlog( ) && blogPub.getIdPortlet( ) == blogPublication.getIdPortlet( ) ) );
     }
 
     /**
@@ -542,7 +558,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public String getExtendableResourceDescription( )
     {
 
-        return _strDescription;
+        return getDescription( );
     }
 
     /**
@@ -562,7 +578,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public String getExtendableResourceName( )
     {
 
-        return _strContentLabel;
+        return getContentLabel( );
     }
 
     /**
@@ -603,4 +619,25 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
         return PROPERTY_RESOURCE_TYPE;
     }
+
+    /**
+     * Return the user informations
+     * 
+     * @return AdminUser
+     */
+    public AdminUser getUserInfos( )
+    {
+        return AdminUserHome.findUserByLogin( _strUser );
+    }
+
+    /**
+     * Return the user creator informations
+     * 
+     * @return AdminUser
+     */
+    public AdminUser getUserCreatorInfos( )
+    {
+        return AdminUserHome.findUserByLogin( _strUserCreator );
+    }
+
 }

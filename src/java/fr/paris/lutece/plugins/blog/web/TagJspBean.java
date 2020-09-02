@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,15 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
+import fr.paris.lutece.api.user.User;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
@@ -41,20 +50,14 @@ import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.url.UrlItem;
-import fr.paris.lutece.portal.service.rbac.RBACService;
-import fr.paris.lutece.portal.service.util.AppPathService;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class provides the user interface to manage Blog features ( manage, create, modify, remove )
@@ -62,6 +65,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
 public class TagJspBean extends ManageBlogJspBean
 {
+    private static final long serialVersionUID = 3209382166137329118L;
     // Templates
     private static final String TEMPLATE_MANAGE_TAGS = "/admin/plugins/blog/tag/manage_tags.html";
     private static final String TEMPLATE_CREATE_TAG = "/admin/plugins/blog/tag/create_tag.html";
@@ -173,7 +177,8 @@ public class TagJspBean extends ManageBlogJspBean
         String strRequestAjax = request.getParameter( ACTION_CREATE_TAG_AJAX_REQUEST );
         _tag = ( _tag != null ) ? _tag : new Tag( );
         populate( _tag, request );
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, AdminUserService.getAdminUser( request ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
+                AdminUserService.getAdminUser( request ) ) )
         {
             // Check constraints
             if ( !validateBean( _tag, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -244,7 +249,7 @@ public class TagJspBean extends ManageBlogJspBean
         String strId = request.getParameter( PARAMETER_ID_TAG );
         int nId = Integer.parseInt( strId );
 
-        if ( BlogHome.getBlogByTag( nId ).size( ) != 0 )
+        if ( CollectionUtils.isNotEmpty( BlogHome.getBlogByTag( nId ) ) )
         {
 
             String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_TAG_IS_AFFECTED, AdminMessage.TYPE_STOP );

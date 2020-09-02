@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,8 +37,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import fr.paris.lutece.plugins.blog.business.BlogPageTemplate;
 import fr.paris.lutece.plugins.blog.business.BlogPageTemplateHome;
@@ -70,7 +72,8 @@ public class BlogListPortlet extends PortletHtmlContent
     // Constants
     private int _nPageTemplateDocument;
     private int _nPortletId;
-    private List<BlogPublication> _arrayBlogs = new ArrayList<BlogPublication>( );
+    private List<BlogPublication> _arrayBlogs = new ArrayList<>( );
+    private Set<Integer> _removedBlogsId = new HashSet<>( );
 
     /**
      * Sets the identifier of the portlet type to the value specified in the BlogsListPortletHome class
@@ -87,7 +90,7 @@ public class BlogListPortlet extends PortletHtmlContent
         Date date = new Date( calendar.getTimeInMillis( ) );
         BlogFilter documentFilter = new BlogFilter( );
         List<Integer> listIdDoc = PublishingService.getPublishedBlogsIdsListByPortletIds( new int [ ] {
-            this.getId( )
+                this.getId( )
         }, date, date, BlogUtils.getPlugin( ) );
         Integer [ ] docId = listIdDoc.toArray( new Integer [ listIdDoc.size( )] );
         // Default we published a blog that as id=0
@@ -102,10 +105,10 @@ public class BlogListPortlet extends PortletHtmlContent
         documentFilter.setOrderInPortlet( true );
         documentFilter.setPortletId( this.getId( ) );
 
-        List<Blog> listBlogsPublished = (List<Blog>) BlogHome.findByFilter( documentFilter );
+        List<Blog> listBlogsPublished = BlogHome.findByFilter( documentFilter );
         BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_BLOG_PUBLISHED, listBlogsPublished );
         model.put( MARK_PAGE_TEMPLATE, pageTemplate );
         model.put( MARK_PORTLET_ID, this.getId( ) );
@@ -137,6 +140,7 @@ public class BlogListPortlet extends PortletHtmlContent
     /**
      * Removes the current instance of the Blogs List Portlet object
      */
+    @Override
     public void remove( )
     {
         BlogListPortletHome.getInstance( ).remove( this );
@@ -222,7 +226,10 @@ public class BlogListPortlet extends PortletHtmlContent
 
         }
         if ( !bool )
+        {
             _arrayBlogs.add( doc );
+        }
+        _removedBlogsId.remove( doc.getIdBlog( ) );
     }
 
     /**
@@ -256,6 +263,7 @@ public class BlogListPortlet extends PortletHtmlContent
 
         }
         _arrayBlogs.add( order, doc );
+        _removedBlogsId.remove( doc.getIdBlog( ) );
     }
 
     /**
@@ -277,7 +285,11 @@ public class BlogListPortlet extends PortletHtmlContent
             }
 
         }
-
+        _removedBlogsId.add( doc.getIdBlog( ) );
     }
 
+    public Set<Integer> getRemovedBlogsId( )
+    {
+        return new HashSet<>( _removedBlogsId );
+    }
 }

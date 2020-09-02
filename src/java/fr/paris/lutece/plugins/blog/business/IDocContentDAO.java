@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ public interface IDocContentDAO
      *            the plugin
      * @return an instance of DocContent
      */
-    DocContent loadDocContent( int idDocument, Plugin plugin );
+    DocContent loadDocContent( int nIdDocument, Plugin plugin );
 
     /**
      * Returns an list of a DocContent whose htmldoc identifier is specified in parameter
@@ -72,7 +72,7 @@ public interface IDocContentDAO
     /**
      * Remove the DocContent identifier Blog is specified in parameter
      * 
-     * @param nKey
+     * @param nBlogId
      *            the Id Blog
      * @param plugin
      *            the plugin
@@ -82,7 +82,7 @@ public interface IDocContentDAO
     /**
      * Remove the DocContent whose identifier is specified in parameter
      * 
-     * @param nKey
+     * @param nDocumentId
      *            the Id DocContent
      * @param plugin
      *            the plugin
@@ -96,7 +96,6 @@ public interface IDocContentDAO
      *            the Document Content
      * @param plugin
      *            the plugin
-     * @return the instance of DocContent updated
      */
     void store( DocContent docContent, Plugin plugin );
 
@@ -120,4 +119,27 @@ public interface IDocContentDAO
      */
     List<ContentType> loadListContentType( Plugin plugin );
 
+    /**
+     * Link a blog with a document
+     * 
+     * @param nIdBlog
+     * 
+     * @param nIdDocument
+     * 
+     * @param nPriority
+     * 
+     * @param plugin
+     * 
+     */
+    void insertDocContentInBlog( int nIdBlog, int nIdDocument, int nPriority, Plugin plugin );
+
+    /**
+     * Remove the link between the document and the blog
+     * 
+     * @param nDocumentId
+     *            the document Id
+     * @param plugin
+     *            the plugin
+     */
+    void deleteInBlogById( int nDocumentId, Plugin plugin );
 }

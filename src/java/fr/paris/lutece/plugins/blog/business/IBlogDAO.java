@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ public interface IBlogDAO
     /**
      * Insert a new record in the table.
      * 
-     * @param Blog
+     * @param blog
      *            instance of the Blog object to insert
      * @param plugin
      *            the Plugin
@@ -110,8 +110,8 @@ public interface IBlogDAO
     /**
      * Load the data from the table
      * 
-     * @param nKey
-     *            The identifier of the blog
+     * @param strName
+     *            The name of the blog
      * @param plugin
      *            the Plugin
      * @return The instance of the blog
@@ -121,8 +121,10 @@ public interface IBlogDAO
     /**
      * Load the data from the table
      * 
-     * @param nKey
+     * @param nId
      *            The identifier of the blog
+     * @param nVersion
+     *            The version
      * @param plugin
      *            the Plugin
      * @return The instance of the blog
@@ -157,6 +159,15 @@ public interface IBlogDAO
      * @return The list which contains the data of all the blog objects
      */
     List<Blog> selectBlogsVersionsList( int nId, Plugin plugin );
+
+    /**
+     * Load the data of all the users edited the blog and returns them as a list
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return The list which contains the data of all the users edited blog objects
+     */
+    List<String> selectAllUsersEditedBlog( int nId, Plugin plugin );
 
     /**
      * Load the id of all the Blog objects and returns them as a list

@@ -28,7 +28,7 @@
 			<div class="box-header with-border">
 				<h3 class="box-title">
 					${blog.contentLabel} #i18n{blog.manage_blogs.columnVersion}	<span class="badge">${blog.version}</span>
-					- <small>#i18n{blog.preview_blog.createdBy} ${blog.userCreator} ${blog.creationDate} / #i18n{blog.preview_blog.lastUpdate} ${blog.updateDate} par ${blog.user}</small>
+					- <small>#i18n{blog.preview_blog.createdBy} ${blog.userCreator} ${blog.creationDate} / #i18n{blog.preview_blog.lastUpdate} ${blog.updateDate} #i18n{blog.manage_blogs.labelBy} ${blog.user}</small>
 				</h3>
 				<div class="box-tools">
 					<a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}" class="btn btn-box-tool" title="#i18n{blog.modify_blog.title}"><i class="fa fa-pencil"></i></a>
@@ -37,43 +37,43 @@
 				</div>
 			</div>
 			<div class="box-body">
-						<div class="panel panel-default panel-horizontal">
-  					  <div class="panel-heading">
+				<div class="panel panel-default panel-horizontal">
+					<div class="panel-heading">
         				<h3 class="panel-title">#i18n{blog.manage_blogs.columnDescription} </h3>
-    					</div>
-    					<div class="panel-body">${blog.description}</div>
-  					</div>
-  					<div class="panel panel-default panel-horizontal">
-  					  <div class="panel-heading">
-        				<h3 class="panel-title">#i18n{blog.manage_blogs.columnUrl}</h3>
-    					</div>
-    					<div class="panel-body">	${blog.url}</div>
-  					</div>
-						<div class="panel panel-default panel-horizontal">
-  					  <div class="panel-heading">
+					</div>
+					<div class="panel-body">${blog.description}</div>
+				</div>
+				<div class="panel panel-default panel-horizontal">
+					<div class="panel-heading">
+						<h3 class="panel-title">#i18n{blog.manage_blogs.columnUrl}</h3>
+					</div>
+					<div class="panel-body">${blog.url}</div>
+				</div>
+				<div class="panel panel-default panel-horizontal">
+					<div class="panel-heading">
         				<h3 class="panel-title">#i18n{blog.manage_blogs.columnEditComment}</h3>
-    					</div>
-    					<div class="panel-body">	${blog.editComment}</div>
-  					</div>
-						<div class="panel panel-default panel-horizontal">
-  					  <div class="panel-heading">
-        				<h3 class="panel-title">Image	</h3>
+					</div>
+					<div class="panel-body">${blog.editComment}</div>
+				</div>
+				<div class="panel panel-default panel-horizontal">
+					<div class="panel-heading">
+        				<h3 class="panel-title">#i18n{blogcreate_blog.labelImage}</h3>
     				</div>
     				<div class="panel-body"><img src="servlet/plugins/blogs/file?id_file=${blog.id}" alt="" title=""></div>
-  			</div>
+  				</div>
 				<div class="panel panel-default panel-horizontal">
-				  <div class="panel-heading">
-    				<h3 class="panel-title">#i18n{blog.manage_tags.title}</h3>
+				  	<div class="panel-heading">
+    					<h3 class="panel-title">#i18n{blog.manage_tags.title}</h3>
 					</div>
 					<div class="panel-body">
 						<#list blog.tag as tg>
-								<#list list_tag as tgName>
-									<#if tgName.code == tg.idTag?string >
-										<span class="label label-default">${tgName.name!}</span>&nbsp;
-									  <#break>
-									</#if>
-								</#list>
+							<#list list_tag as tgName>
+								<#if tgName.code == tg.idTag?string >
+									<span class="label label-default">${tgName.name!}</span>&nbsp;
+									<#break>
+								</#if>
 							</#list>
+						</#list>
 					</div>
 				</div>
 			</div>
@@ -82,9 +82,6 @@
 </div>
 <div class="row">
 	<div class="col-xs-12 col-sm-12">
-			<iframe frameborder="0" style="width:100%;height:100vh" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}"></iframe>
+		<iframe frameborder="0" style="width:100%;height:100vh" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}"></iframe>
 	</div>
 </div>
-<script>
-
-</script>

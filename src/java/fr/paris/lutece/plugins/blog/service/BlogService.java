@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,18 +33,22 @@
  */
 package fr.paris.lutece.plugins.blog.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogFilter;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
-import fr.paris.lutece.plugins.blog.business.Blog;
-import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.IndexerAction;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
+import fr.paris.lutece.plugins.blog.utils.BlogUtils;
+import fr.paris.lutece.portal.business.event.ResourceEvent;
+import fr.paris.lutece.portal.service.event.ResourceEventManager;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.util.sql.TransactionManager;
 
@@ -115,8 +119,7 @@ public class BlogService
             TransactionManager.rollBack( BlogPlugin.getPlugin( ) );
             throw new AppException( e.getMessage( ), e );
         }
-        BlogSearchService.getInstance( ).addIndexerAction( nId, IndexerAction.TASK_DELETE, BlogPlugin.getPlugin( ) );
-
+        BlogSearchService.getInstance( ).addIndexerAction( nId, IndexerAction.TASK_DELETE );
     }
 
     /**
@@ -145,9 +148,8 @@ public class BlogService
             {
                 for ( DocContent docCont : docContent )
                 {
+                    DocContentHome.insertInBlog( blog.getId( ), docCont.getId( ), docCont.getPriority( ) );
 
-                    docCont.setIdBlog( blog.getId( ) );
-                    DocContentHome.create( docCont );
                 }
 
             }
@@ -159,8 +161,7 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_CREATE, BlogPlugin.getPlugin( ) );
-
+        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_CREATE );
     }
 
     /**
@@ -169,19 +170,19 @@ public class BlogService
      * @param docContent
      *            The Doc Content
      */
-    private void updateDocContent( DocContent docContent )
-
+    private void updateDocContent( DocContent docContent, int nIdBlog )
     {
-
         if ( docContent != null && docContent.getId( ) != 0 )
         {
-            DocContentHome.update( docContent );
+            DocContentHome.removeInBlogById( docContent.getId( ) );
+            DocContentHome.insertInBlog( nIdBlog, docContent.getId( ), docContent.getPriority( ) );
 
         }
         else
             if ( docContent != null )
             {
                 DocContentHome.create( docContent );
+                DocContentHome.insertInBlog( nIdBlog, docContent.getId( ), docContent.getPriority( ) );
             }
 
     }
@@ -205,23 +206,24 @@ public class BlogService
             if ( docContent != null )
             {
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
+                List<DocContent> listToCompare = new ArrayList<>( );
+                listToCompare.addAll( listDocContent );
 
                 for ( DocContent docCont : docContent )
                 {
-
-                    if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
+                    if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
+                        if ( listToCompare.stream( ).noneMatch( c -> ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
+                        {
 
-                        docCont.setIdBlog( blog.getId( ) );
-                        updateDocContent( docCont );
+                            updateDocContent( docCont, blog.getId( ) );
+                        }
                     }
-
                 }
 
                 for ( DocContent docCont : listDocContent )
                 {
-
-                    DocContentHome.removeById( docCont.getId( ) );
+                    DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
 
             }
@@ -240,8 +242,7 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
-
+        fireUpdateBlogEvent( blog.getId( ) );
     }
 
     /**
@@ -262,23 +263,25 @@ public class BlogService
             if ( docContent != null )
             {
                 List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
+                List<DocContent> listToCompare = new ArrayList<>( );
+                listToCompare.addAll( listDocContent );
 
                 for ( DocContent docCont : docContent )
                 {
 
-                    if ( listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
+                    if ( listDocContent.isEmpty( ) || listDocContent.removeIf( t -> t.getId( ) == docCont.getId( ) ) || docCont.getId( ) == 0 )
                     {
+                        if ( listToCompare.stream( ).noneMatch( c -> ( c.getId( ) == docCont.getId( ) ) && ( c.getPriority( ) == docCont.getPriority( ) ) ) )
+                        {
 
-                        docCont.setIdBlog( blog.getId( ) );
-                        updateDocContent( docCont );
+                            updateDocContent( docCont, blog.getId( ) );
+                        }
                     }
-
                 }
 
                 for ( DocContent docCont : listDocContent )
                 {
-
-                    DocContentHome.removeById( docCont.getId( ) );
+                    DocContentHome.removeInBlogById( docCont.getId( ) );
                 }
             }
 
@@ -296,8 +299,7 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
 
-        BlogSearchService.getInstance( ).addIndexerAction( blog.getId( ), IndexerAction.TASK_MODIFY, BlogPlugin.getPlugin( ) );
-
+        fireUpdateBlogEvent( blog.getId( ) );
     }
 
     /**
@@ -311,11 +313,13 @@ public class BlogService
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
-        List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
-        blog.setDocContent( docContent );
-        blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
-
+        if ( blog != null )
+        {
+            List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
+            blog.setDocContent( docContent );
+            blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+            blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        }
         return blog;
 
     }
@@ -331,9 +335,11 @@ public class BlogService
 
     {
         Blog blog = BlogHome.findByPrimaryKey( nIdDocument );
-        blog.setTag( TagHome.loadByDoc( nIdDocument ) );
-        blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
-
+        if ( blog != null )
+        {
+            blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+            blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        }
         return blog;
 
     }
@@ -346,7 +352,7 @@ public class BlogService
     public List<Blog> getListBlogWhithBinaries( )
 
     {
-        List<Blog> listBlogs = getListBlogWithoutBinaries();
+        List<Blog> listBlogs = getListBlogWithoutBinaries( );
 
         for ( Blog doc : listBlogs )
         {
@@ -368,12 +374,12 @@ public class BlogService
     public List<Blog> getListBlogWithoutBinaries( )
 
     {
-    	List<Blog> blogList = BlogHome.selectWithoutBinaries( );
-    	for ( Blog blog : blogList )
-    	{
-    		blog.setBlogPubilcation( BlogPublicationHome.getDocPublicationByIdDoc( blog.getId( ) ) );
-    		blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
-    	}
+        List<Blog> blogList = BlogHome.selectWithoutBinaries( );
+        for ( Blog blog : blogList )
+        {
+            blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( blog.getId( ) ) );
+            blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
+        }
         return blogList;
 
     }
@@ -381,7 +387,7 @@ public class BlogService
     /**
      * Load the data of all the blog objects whose tag is specified in parameter
      * 
-     * @param nIdtag
+     * @param nIdTag
      *            idTag param
      * @return the list which contains the data of all the blog objects
      */
@@ -397,6 +403,7 @@ public class BlogService
      * 
      * @param filter
      *            The filter
+     * @return The list of blog post
      */
     public List<Blog> findByFilter( BlogFilter filter )
     {
@@ -423,4 +430,30 @@ public class BlogService
         return listBlog;
     }
 
+    public void fireCreateBlogEvent( int blogId )
+    {
+        ResourceEvent formResponseEvent = new ResourceEvent( );
+        formResponseEvent.setIdResource( String.valueOf( blogId ) );
+        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        ResourceEventManager.fireAddedResource( formResponseEvent );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_CREATE );
+    }
+
+    public void fireUpdateBlogEvent( int blogId )
+    {
+        ResourceEvent formResponseEvent = new ResourceEvent( );
+        formResponseEvent.setIdResource( String.valueOf( blogId ) );
+        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        ResourceEventManager.fireUpdatedResource( formResponseEvent );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY );
+    }
+
+    public void fireDeleteBlogEvent( int blogId )
+    {
+        ResourceEvent formResponseEvent = new ResourceEvent( );
+        formResponseEvent.setIdResource( String.valueOf( blogId ) );
+        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        ResourceEventManager.fireDeletedResource( formResponseEvent );
+        BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY );
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
+import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -50,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,6 +61,7 @@ import java.util.List;
 public class BlogPortletJspBean extends PortletJspBean
 {
 
+    private static final long serialVersionUID = 5744334133144418317L;
     public static final String MARK_HTML_CONTENT = "htmlcontent";
     public static final String MARK_EDIT_COMMENT = "editcomment";
     public static final String MARK_WEBAPP_URL = "webapp_url";
@@ -88,7 +91,7 @@ public class BlogPortletJspBean extends PortletJspBean
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
         List<Blog> listBlog = BlogHome.getBlogsList( );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listBlog );
@@ -113,7 +116,7 @@ public class BlogPortletJspBean extends PortletJspBean
         int nPortletId = Integer.parseInt( strPortletId );
         BlogPortlet portlet = (BlogPortlet) PortletHome.findByPrimaryKey( nPortletId );
         Blog blog = BlogHome.findByPrimaryKey( portlet.getContentId( ) );
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_HTML_CONTENT, blog.getHtmlContent( ) );
         model.put( MARK_EDIT_COMMENT, blog.getEditComment( ) );
@@ -154,8 +157,8 @@ public class BlogPortletJspBean extends PortletJspBean
             blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
             // TODO error validation on edit comment length
             blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
-            blog.setUser( user.getFirstName( ) );
-            blog.setUserCreator( user.getFirstName( ) );
+            blog.setUser( user.getAccessCode( ) );
+            blog.setUserCreator( user.getAccessCode( ) );
             BlogHome.addInitialVersion( blog );
         }
         else
@@ -181,6 +184,12 @@ public class BlogPortletJspBean extends PortletJspBean
         BlogPortletHome.getInstance( ).create( portlet );
         blog.setAttachedPortletId( portlet.getId( ) );
         BlogHome.update( blog );
+        int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( blog.getId( ), new Date( ) );
+        // First publication of this blog -> indexing needed
+        if ( nbPublication == 1 )
+        {
+            BlogService.getInstance( ).fireCreateBlogEvent( blog.getId( ) );
+        }
 
         // Displays the page with the new Portlet
         return getPageUrl( nPageId );
@@ -218,10 +227,12 @@ public class BlogPortletJspBean extends PortletJspBean
         blog.setVersion( blog.getVersion( ) + 1 );
         BlogHome.addNewVersion( blog );
 
-        portlet.setBlogPublication(BlogPublicationHome.findDocPublicationByPimaryKey(nPortletId, portlet.getContentId( ) ));
+        portlet.setBlogPublication( BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, portlet.getContentId( ) ) );
         // updates the portlet
         portlet.update( );
 
+        // update of this blog -> re-indexing needed
+        BlogService.getInstance( ).fireUpdateBlogEvent( blog.getId( ) );
         // displays the page with the updated portlet
         return getPageUrl( portlet.getPageId( ) );
     }

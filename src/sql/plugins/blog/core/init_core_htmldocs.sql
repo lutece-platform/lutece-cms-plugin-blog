@@ -1,8 +1,8 @@
 --
 -- Dumping data for table core_portlet_type
 --
-DELETE FROM core_portlet_type where id_portlet_type ="BLOG_PORTLET";
-DELETE FROM core_portlet_type where id_portlet_type ="BLOG_LIST_PORTLET";
+DELETE FROM core_portlet_type where id_portlet_type = 'BLOG_PORTLET';
+DELETE FROM core_portlet_type where id_portlet_type = 'BLOG_LIST_PORTLET';
 INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES ('BLOG_PORTLET','blog.portlet.blogsBlogsPortlet.name','plugins/blog/CreatePortletBlog.jsp','plugins/blog/ModifyPortletBlog.jsp','fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome','blog','plugins/blog/DoCreatePortletBlog.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/blog/portlet/create_portletblogs.html','','plugins/blog/DoModifyPortletBlog.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/blog/portlet/modify_portletblogs.html','');
 INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home_class,plugin_name,url_docreate,create_script,create_specific,create_specific_form,url_domodify,modify_script,modify_specific,modify_specific_form) VALUES ('BLOG_LIST_PORTLET','blog.portlet.blogsListBlogsPortlet.name','plugins/blog/CreatePortletBlogList.jsp','plugins/blog/ModifyPortletBlogList.jsp','fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome','blog','plugins/blog/DoCreatePortletBlogList.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/blog/portlet/create_portletbloglist.html','','plugins/blog/DoModifyPortletBlogList.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/blog/portlet/modify_portletbloglist.html','');
 

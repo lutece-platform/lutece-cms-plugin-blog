@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,14 +47,18 @@ public interface IBlogPublicationDAO
      * 
      * @param blogPublication
      *            the blogPublication to insert
+     * @param plugin
+     *            the plugin
      */
     void insertBlogsId( BlogPublication blogPublication, Plugin plugin );
 
     /**
      * Delete docs for the specified portlet
      * 
-     * @param nPortletId
+     * @param nDocId
      *            The doc identifier
+     * @param plugin
+     *            the plugin
      */
     void deleteBlogsId( int nDocId, Plugin plugin );
 
@@ -62,6 +66,8 @@ public interface IBlogPublicationDAO
      * Load a list of BLOGPublication
      * 
      * @param nDocId
+     * @param plugin
+     *            the plugin
      * @return List of IdDoc
      */
     List<BlogPublication> loadBlogsId( int nDocId, Plugin plugin );
@@ -71,6 +77,8 @@ public interface IBlogPublicationDAO
      * 
      * @param nIdPortlet
      *            The protlet id
+     * @param plugin
+     *            the plugin
      * @return list of BLOGPublication
      */
     List<BlogPublication> loadBlogsByPortlet( int nIdPortlet, Plugin plugin );
@@ -85,6 +93,7 @@ public interface IBlogPublicationDAO
      * @param dateEndPublishing
      *            The publication date
      * @param plugin
+     *            the plugin
      * @return list of BLOGPublication
      */
     List<BlogPublication> loadBlogsByPortletAndPublicationDate( int nIdPortlet, Date datePublishing, Date dateEndPublishing, Plugin plugin );
@@ -94,15 +103,20 @@ public interface IBlogPublicationDAO
      * 
      * @param nIdPortlet
      *            The portlet id
+     * @param plugin
+     *            the plugin
      */
     void deleteBlogByIdPortlet( int nIdPortlet, Plugin plugin );
 
     /**
      * load a BLOGPublication by BLOG id and portlet id
+     * 
      * @param nPortletId
      *            The portlet id
      * @param nDocId
      *            The blogs id
+     * @param plugin
+     *            the plugin
      * @return blogPublication
      */
     BlogPublication loadBlogsPublication( int nPortletId, int nDocId, Plugin plugin );
@@ -110,7 +124,10 @@ public interface IBlogPublicationDAO
     /**
      * Update an instance of the BLOGPublication
      * 
-     * @param blogPub
+     * @param blogPublication
+     *            the publication data
+     * @param plugin
+     *            the plugin
      */
     void store( BlogPublication blogPublication, Plugin plugin );
 
@@ -120,6 +137,7 @@ public interface IBlogPublicationDAO
      * @param nDocId
      * @param nIdPortlet
      * @param plugin
+     *            the plugin
      */
     void remove( int nDocId, int nIdPortlet, Plugin plugin );
 
@@ -140,6 +158,8 @@ public interface IBlogPublicationDAO
      *            The publication date
      * @param nStatus
      *            The status
+     * @param plugin
+     *            the plugin
      * @return The {@link BlogPublication} objects {@link Collection} ordered by BlogOrder ascending. The list is empty if no objects found.
      */
     Collection<BlogPublication> selectSinceDatePublishingAndStatus( Date datePublishing, Date dateEndPublishing, int nStatus, Plugin plugin );
@@ -150,8 +170,8 @@ public interface IBlogPublicationDAO
      * @param nPortletsIds
      *            The list of portlet ids.
      * @param datePublishing
-     *            TODO
-     * @param datePublishing
+     *            The publication date
+     * @param dateEndPublishing
      *            The publication end date
      * @param plugin
      *            The blog plugin
@@ -167,7 +187,18 @@ public interface IBlogPublicationDAO
      * @param dateUpdatedFrom
      *            The date from the blogs had been updated
      * @param plugin
+     *            the plugin
      * @return the list of blogs id
      */
     List<Integer> getLastPublishedBlogsIdsListByPortletIds( int [ ] nPortletsIds, Date dateUpdatedFrom, Plugin plugin );
+
+    /**
+     * Counts the number of valid publication of a blog at a given date.
+     * 
+     * @param nIdBlog
+     * @param date
+     * @param plugin
+     * @return
+     */
+    int countPublicationByIdBlogAndDate( int nIdBlog, Date date, Plugin plugin );
 }

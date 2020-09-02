@@ -31,7 +31,7 @@
       <#if !portlet_filter?? || portlet_filter.displayLatestPortlets >
         <input type="hidden" name="is_display_latest_portlets" value="false" >
       <#else>
-        <button type="submit" class="btn btn-danger btn-xs" title="Supprimer le filtre" name="view_manageBlogsPublication"> <i class="glyphicon glyphicon-remove"></i> </button>
+        <button type="submit" class="btn btn-danger btn-xs" title="#i18n{blog.publication_blog.labelRemoveFilter}" name="view_manageBlogsPublication"> <i class="fa fa-times"></i> </button>
         <input type="hidden" name="is_display_latest_portlets" value="true" >
       </#if>
     </div>
@@ -118,7 +118,7 @@
             </tr>
           </thead>
           <tbody>
-          <#list blog.blogPubilcation as pub>
+          <#list blog.blogPublication as pub>
             <tr>
               <td>
                 <#list portlet_list as portlet>

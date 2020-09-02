@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,7 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
      * @param nPortletId
      *            the portlet identifier
      */
+    @Override
     void delete( int nPortletId );
 
     /**
@@ -71,6 +72,7 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
      * @param portlet
      *            the instance of the Portlet object to insert
      */
+    @Override
     void insert( Portlet portlet );
 
     /**
@@ -81,6 +83,7 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
      *            The Portlet identifier
      * @return theDocumentListPortlet object
      */
+    @Override
     Portlet load( int nPortletId );
 
     /**
@@ -92,28 +95,13 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
     Map<Integer, String> loadPages( String strPortletType );
 
     /**
-     * Load the list of documentTypes
-     * 
-     * @param nDocumentId
-     *            the document ID
-     * @param strCodeDocumentType
-     *            The code
-     * @param pOrder
-     *            order of the portlets
-     * @param pFilter
-     *            The portlet filter
-     * @return The Collection of the ReferenceItem
-     */
-    /*
-     * Collection<ReferenceItem> selectByDocumentIdAndDocumentType( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder, PortletFilter pFilter );
-     */
-    /**
      * Update the record in the table
      *
      *
      * @param portlet
      *            A portlet
      */
+    @Override
     void store( Portlet portlet );
 
     /**
@@ -139,6 +127,7 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
      *            the document ID
      * @param pOrder
      *            order of the portlets
+     * @param pFilter
      * @return The Collection of the ReferenceItem
      */
 

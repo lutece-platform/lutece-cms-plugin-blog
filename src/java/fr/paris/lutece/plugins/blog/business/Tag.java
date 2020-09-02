@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,10 +33,14 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import java.io.Serializable;
+
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 
-public class Tag implements RBACResource
+public class Tag implements RBACResource, Serializable
 {
+    private static final long serialVersionUID = -3761496963604023715L;
+
     public static final String PROPERTY_RESOURCE_TYPE = "TAG";
 
     private int _nIdTag;
@@ -85,7 +89,7 @@ public class Tag implements RBACResource
     /**
      * Sets the Name
      * 
-     * @param Name
+     * @param strName
      *            The value
      */
     public void setName( String strName )
@@ -116,8 +120,8 @@ public class Tag implements RBACResource
     /**
      * Sets the nPriority
      *
-     * @param nIdTag
-     *            The nPriority
+     * @param nPriority
+     *            The priority
      */
     public void setPriority( int nPriority )
     {

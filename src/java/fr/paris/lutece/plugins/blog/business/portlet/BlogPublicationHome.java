@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ public class BlogPublicationHome
     /**
      * Create an instance of the BlogPublication class
      * 
-     * @param BlogPub
+     * @param blogPub
      *            The instance of the BlogPublication which contains the informations to store
      * @return The instance of BlogPub which has been created.
      */
@@ -132,9 +132,9 @@ public class BlogPublicationHome
      *            The Blogs id
      * @return BlogPublication
      */
-    public static BlogPublication findDocPublicationByPimaryKey(int nPortletId,  int nDocId )
+    public static BlogPublication findDocPublicationByPimaryKey( int nPortletId, int nDocId )
     {
-        return _dao.loadBlogsPublication(  nPortletId, nDocId, _plugin );
+        return _dao.loadBlogsPublication( nPortletId, nDocId, _plugin );
 
     }
 
@@ -197,7 +197,6 @@ public class BlogPublicationHome
      * @param nPortletsIds
      *            The list of portlet ids.
      * @param datePublishing
-     *            TODO
      * @param dateEndPublishing
      *            The end publication date
      * @param plugin
@@ -225,4 +224,17 @@ public class BlogPublicationHome
         return _dao.getLastPublishedBlogsIdsListByPortletIds( nPortletsIds, dateUpdated, plugin );
     }
 
+    /**
+     * Counts the number of valid publication of a blog at a given date.
+     * 
+     * @param nIdBlog
+     *            The blog id
+     * @param date
+     *            The date
+     * @return The count
+     */
+    public static int countPublicationByIdBlogAndDate( int nIdBlog, Date date )
+    {
+        return _dao.countPublicationByIdBlogAndDate( nIdBlog, date, _plugin );
+    }
 }

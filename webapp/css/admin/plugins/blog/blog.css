@@ -21,6 +21,8 @@ aside{ position: fixed; right:15px}
 /* Move buttons */
 #tag-list li:first-child .btn-up{ display: none }
 #tag-list li:last-child .btn-down{ display: none }
+#content-list li:first-child .btn-up{ display: none }
+#content-list li:last-child .btn-down{ display: none }
 
 /* Multi select*/
 .ms-parent .ms-choice {	border: 0 !important}

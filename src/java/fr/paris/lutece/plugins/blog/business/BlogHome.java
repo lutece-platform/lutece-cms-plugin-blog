@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,12 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * This class provides instances management methods (create, find, ...) for Blog objects
@@ -148,8 +147,10 @@ public final class BlogHome
     /**
      * Returns an instance of a blog whose identifier is specified in parameter
      * 
-     * @param nKey
+     * @param nId
      *            The blog primary key
+     * @param nVersion
+     * 
      * @return an instance of blog
      */
     public static Blog findVersion( int nId, int nVersion )
@@ -190,6 +191,18 @@ public final class BlogHome
     }
 
     /**
+     * Load the data of all users edited the Blog objects and returns them as a list
+     * 
+     * @param nId
+     *            The Id
+     * @return the list which contains the data of all users edited the Blog objects
+     */
+    public static List<String> getUsersEditedBlogVersions( int nId )
+    {
+        return _dao.selectAllUsersEditedBlog( nId, _plugin );
+    }
+
+    /**
      * Load the id of all the Blog objects and returns them as a list
      * 
      * @return the list which contains the id of all the Blog objects
@@ -212,13 +225,12 @@ public final class BlogHome
     /**
      * Create an initial version of an Blog
      *
-     * @param Blog
+     * @param blog
      *            The instance of the Blog which contains the informations to store
      * @return The instance of Blog which has been created with its primary key.
      */
     public static Blog addInitialVersion( Blog blog )
     {
-        // TODO handle errors
         BlogHome.create( blog );
         BlogHome.createVersion( blog );
 
@@ -234,7 +246,6 @@ public final class BlogHome
      */
     public static Blog addNewVersion( Blog blog )
     {
-        // TODO handle errors
         BlogHome.update( blog );
         BlogHome.createVersion( blog );
 
@@ -247,14 +258,10 @@ public final class BlogHome
      * @return A collection of Blogs
      * @param filter
      *            The filter
-     * @param locale
-     *            The locale
      */
     public static List<Blog> findByFilter( BlogFilter filter )
     {
-        List<Blog> listDocuments = _dao.selectByFilter( filter );
-
-        return listDocuments;
+        return _dao.selectByFilter( filter );
     }
 
     /**
@@ -272,12 +279,11 @@ public final class BlogHome
     /**
      * Returns a collection of blog objects
      * 
+     * @return
      */
     public static List<Blog> selectWithoutBinaries( )
     {
-        List<Blog> listBlogs = _dao.selectWithoutBinaries( _plugin );
-
-        return listBlogs;
+        return _dao.selectWithoutBinaries( _plugin );
     }
 
 }

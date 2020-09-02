@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,26 @@
  */
 package fr.paris.lutece.plugins.blog.web.portlet;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
 import fr.paris.lutece.plugins.blog.business.TagHome;
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
@@ -53,21 +66,11 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.date.DateUtil;
+import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
-
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.Map;
 
 /**
  * This class provides the user interface to manage BlogList Portlet
@@ -117,6 +120,7 @@ public class BlogListPortletJspBean extends PortletJspBean
 
     private static final String VIEW_MODIFY_PORTLET = "getModify";
 
+    private static final String RESPONSE_SUCCESS = "SUCCESS";
 
     // //////////////////////////////////////////////////////////////////////////
     // Constants
@@ -158,46 +162,57 @@ public class BlogListPortletJspBean extends PortletJspBean
      * 
      * @param request
      *            The HTTP request
+     * @return The map
      */
-    protected HashMap<String, Object> getPaginatedListModel( HttpServletRequest request )
+    protected Map<String, Object> getPaginatedListModel( HttpServletRequest request )
     {
 
-        List<Integer> listBlogsId = new ArrayList<Integer>( );
+        List<Integer> listBlogsId = new ArrayList<>( );
         AdminUser user = AdminUserService.getAdminUser( request );
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _bIsUnpulished
-                || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
+        if ( StringUtils.isNotBlank( _strSearchText ) || ArrayUtils.isNotEmpty( _strTag ) || _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null
+                || _dateUpdateBlogBefor != null )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
+            {
                 filter.setKeywords( _strSearchText );
-            if ( _strTag != null && ( _strTag.length > 0 ) )
+            }
+            if ( ArrayUtils.isNotEmpty( _strTag ) )
+            {
                 filter.setTag( _strTag );
+            }
             if ( _bIsChecked )
-                filter.setUser( user.getFirstName( ) );
+            {
+                filter.setUser( user.getAccessCode( ) );
+            }
             if ( _bIsUnpulished )
+            {
                 filter.setIsUnpulished( _bIsUnpulished );
+            }
             if ( _dateUpdateBlogAfter != null )
+            {
                 filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+            }
             if ( _dateUpdateBlogBefor != null )
+            {
                 filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
+            }
 
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
 
         }
-
         else
         {
 
             listBlogsId = BlogHome.getIdBlogsList( );
         }
 
-        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nDefaultItemsPerPage, _nItemsPerPage );
-        List<Blog> listBlogPublished = new ArrayList<Blog>( );
-        List<Blog> listBlogNotPublished = new ArrayList<Blog>( );
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nDefaultItemsPerPage, _nItemsPerPage );
+        List<Blog> listBlogPublished = new ArrayList<>( );
+        List<Blog> listBlogNotPublished = new ArrayList<>( );
 
-        // List<Blog> listBlog = BlogHome.getBlogsList( );
         for ( BlogPublication i : _portlet.getArrayBlogs( ) )
         {
             Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( i.getIdBlog( ) );
@@ -205,9 +220,9 @@ public class BlogListPortletJspBean extends PortletJspBean
             listBlogsId.removeIf( blg -> blg.equals( blog.getId( ) ) );
         }
 
-        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( listBlogsId, _nItemsPerPage, getCurrentUrlFromRequest( request ),
-                Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
-        List<Blog> listBlog = new ArrayList<Blog>( );
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( listBlogsId, _nItemsPerPage, getCurrentUrlFromRequest( request ),
+                AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
+        List<Blog> listBlog = new ArrayList<>( );
 
         for ( Integer documentId : paginator.getPageItems( ) )
         {
@@ -221,7 +236,7 @@ public class BlogListPortletJspBean extends PortletJspBean
 
         listBlogNotPublished.addAll( listBlog );
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>( );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_NB_ITEMS_PER_PAGE, "" + _nItemsPerPage );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
@@ -279,12 +294,13 @@ public class BlogListPortletJspBean extends PortletJspBean
      *            The http request
      * @return The HTML form
      */
+    @Override
     public String getCreate( HttpServletRequest request )
     {
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         String strIdPortletType = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-        _portlet = ( _portlet != null && request.getParameter( Paginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet : new BlogListPortlet( );
-        HashMap<String, Object> model = getPaginatedListModel( request );
+        _portlet = ( _portlet != null && request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet : new BlogListPortlet( );
+        Map<String, Object> model = getPaginatedListModel( request );
         HtmlTemplate template = getCreateTemplate( strIdPage, strIdPortletType, model );
 
         return template.getHtml( );
@@ -298,13 +314,14 @@ public class BlogListPortletJspBean extends PortletJspBean
      * @return The HTML form
      */
     @View( VIEW_MODIFY_PORTLET )
+    @Override
     public String getModify( HttpServletRequest request )
     {
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
         int nPortletId = Integer.parseInt( strPortletId );
-        _portlet = ( _portlet != null && request.getParameter( Paginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet : (BlogListPortlet) PortletHome
-                .findByPrimaryKey( nPortletId );
-        HashMap<String, Object> model = getPaginatedListModel( request );
+        _portlet = ( _portlet != null && request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) != null ) ? _portlet
+                : (BlogListPortlet) PortletHome.findByPrimaryKey( nPortletId );
+        Map<String, Object> model = getPaginatedListModel( request );
 
         HtmlTemplate template = getModifyTemplate( _portlet, model );
 
@@ -318,11 +335,12 @@ public class BlogListPortletJspBean extends PortletJspBean
      *            The Http request
      * @return The Jsp management URL of the process result
      */
+    @Override
     public String doCreate( HttpServletRequest request )
     {
 
         String button = request.getParameter( PARAMETER_REFRESH_BUTTON );
-        _nDefaultItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _nDefaultItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
         String strIdPage = request.getParameter( PARAMETER_PAGE_ID );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
@@ -332,8 +350,8 @@ public class BlogListPortletJspBean extends PortletJspBean
         {
 
             setSearchBlog( request, strButtonSearch, strButtonReset );
-            return "../../DoCreatePortlet.jsp?portlet_type_id=" + BlogListPortlet.RESOURCE_ID + "&page_id=" + strIdPage + "&" + Paginator.PARAMETER_PAGE_INDEX
-                    + "=1";
+            return "../../DoCreatePortlet.jsp?portlet_type_id=" + BlogListPortlet.RESOURCE_ID + "&page_id=" + strIdPage + "&"
+                    + AbstractPaginator.PARAMETER_PAGE_INDEX + "=1";
         }
 
         int order = 1;
@@ -364,6 +382,16 @@ public class BlogListPortletJspBean extends PortletJspBean
         // Portlet creation
         BlogListPortletHome.getInstance( ).create( _portlet );
 
+        for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
+        {
+            int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( doc.getIdBlog( ), new java.util.Date( ) );
+            // First publication of this blog -> indexing needed
+            if ( nbPublication == 1 )
+            {
+                BlogService.getInstance( ).fireCreateBlogEvent( doc.getIdBlog( ) );
+            }
+        }
+
         // Displays the page with the new Portlet
         return getPageUrl( nIdPage );
     }
@@ -375,10 +403,11 @@ public class BlogListPortletJspBean extends PortletJspBean
      *            The http request
      * @return Management's Url
      */
+    @Override
     public String doModify( HttpServletRequest request )
     {
 
-        _nDefaultItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _nDefaultItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
         String button = request.getParameter( PARAMETER_REFRESH_BUTTON );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
@@ -387,7 +416,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         {
 
             setSearchBlog( request, strButtonSearch, strButtonReset );
-            return "../../DoModifyPortlet.jsp?portlet_id=" + _portlet.getId( ) + "&" + Paginator.PARAMETER_PAGE_INDEX + "=1";
+            return "../../DoModifyPortlet.jsp?portlet_id=" + _portlet.getId( ) + "&" + AbstractPaginator.PARAMETER_PAGE_INDEX + "=1";
         }
 
         int order = 1;
@@ -414,6 +443,26 @@ public class BlogListPortletJspBean extends PortletJspBean
         // updates the portlet
         _portlet.update( );
 
+        for ( Integer removedBlog : _portlet.getRemovedBlogsId( ) )
+        {
+            int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( removedBlog, new java.util.Date( ) );
+            // Last publication of this blog removed -> removing from index
+            if ( nbPublication == 0 )
+            {
+                BlogService.getInstance( ).fireDeleteBlogEvent( removedBlog );
+            }
+        }
+
+        for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
+        {
+            int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( doc.getIdBlog( ), new java.util.Date( ) );
+            // First publication of this blog -> indexing needed
+            if ( nbPublication == 1 )
+            {
+                BlogService.getInstance( ).fireCreateBlogEvent( doc.getIdBlog( ) );
+            }
+        }
+
         // displays the page withe the potlet updated
         return getPageUrl( _portlet.getPageId( ) );
     }
@@ -423,9 +472,9 @@ public class BlogListPortletJspBean extends PortletJspBean
      * 
      * @param request
      * @return Json The Json succes or echec
-     * @throws ParseException 
+     * @throws ParseException
      */
-    public String UpdatePortletDocument( HttpServletRequest request ) throws ParseException
+    public String updatePortletDocument( HttpServletRequest request ) throws ParseException
     {
         // recovers portlet attributes
 
@@ -434,13 +483,13 @@ public class BlogListPortletJspBean extends PortletJspBean
         String strOrderDocument = request.getParameter( PARAMETER_DOCUMENT_ORDER );
 
         int nIdDocument = Integer.parseInt( strIdDocument );
-        BlogPublication doc= PublishingService.getInstance().getBlogPublication( _portlet.getId( ), nIdDocument  );
-        if( doc == null ){
-        	
-        	doc= new BlogPublication( );
-	        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-	        doc.setDateEndPublishing( new Date( sdf.parse( BlogPublicationJspBean.DATE_END_PUBLICATION ).getTime( ) ) );
-	        doc.setIdBlog( nIdDocument );
+        BlogPublication doc = PublishingService.getInstance( ).getBlogPublication( _portlet.getId( ), nIdDocument );
+        if ( doc == null )
+        {
+            doc = new BlogPublication( );
+            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+            doc.setDateEndPublishing( new Date( sdf.parse( BlogPublicationJspBean.DATE_END_PUBLICATION ).getTime( ) ) );
+            doc.setIdBlog( nIdDocument );
         }
         if ( strAction != null && !strAction.isEmpty( ) && strAction.equals( PARAMETER_ACTION_PORTLET_ADD ) )
         {
@@ -457,7 +506,7 @@ public class BlogListPortletJspBean extends PortletJspBean
 
             }
 
-        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCESS" ) );
+        return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_SUCCESS ) );
     }
 
     /**
@@ -467,24 +516,24 @@ public class BlogListPortletJspBean extends PortletJspBean
      */
     public static String getCurrentUrlFromRequest( HttpServletRequest request )
     {
-        StringBuffer requestURL = request.getRequestURL( );
+        StringBuffer sbRequestURL = request.getRequestURL( );
         String queryString = request.getQueryString( );
 
         if ( queryString == null )
         {
 
-            return requestURL.toString( );
+            return sbRequestURL.toString( );
 
         }
         else
-            if ( request.getParameter( Paginator.PARAMETER_PAGE_INDEX ) != null )
+            if ( request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) != null )
             {
 
-                String [ ] query = queryString.split( "&" + Paginator.PARAMETER_PAGE_INDEX );
+                String [ ] query = queryString.split( "&" + AbstractPaginator.PARAMETER_PAGE_INDEX );
                 queryString = query [0];
             }
 
-        return requestURL.append( '?' ).append( queryString ).toString( );
+        return sbRequestURL.append( '?' ).append( queryString ).toString( );
     }
 
 }

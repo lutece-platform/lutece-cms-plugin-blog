@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -86,12 +86,11 @@ public class BlogListPortletHome extends PortletHome
      *
      * @return the portlet type identifier
      */
+    @Override
     public String getPortletTypeId( )
     {
         String strCurrentClassName = this.getClass( ).getName( );
-        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
-
-        return strPortletTypeId;
+        return PortletTypeHome.getPortletTypeId( strCurrentClassName );
     }
 
     /**
@@ -99,29 +98,11 @@ public class BlogListPortletHome extends PortletHome
      *
      * @return the instance of the DAO singleton
      */
+    @Override
     public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
     }
-
-    /**
-     * Load the list of documentTypes
-     * 
-     * @param nDocumentId
-     *            the document ID
-     * @param strCodeDocumentType
-     *            The code
-     * @param pOrder
-     *            order of the portlets
-     * @param pFilter
-     *            The portlet filter
-     * @return The Collection of the ReferenceItem
-     */
-    /*
-     * public static Collection<ReferenceItem> findByCodeDocumentTypeAndCategory( int nDocumentId, String strCodeDocumentType, PortletOrder pOrder,
-     * PortletFilter pFilter ) { //FIXME : method should access to different home business methods return _dao.selectByDocumentIdAndDocumentType( nDocumentId,
-     * strCodeDocumentType, pOrder, pFilter ); }
-     */
 
     /**
      * Check whether a portlet is an alias portlet
@@ -148,7 +129,6 @@ public class BlogListPortletHome extends PortletHome
      */
     public static Collection<ReferenceItem> findByFilter( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
-        // FIXME : method should access to different home business methods
         return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
     }
 
@@ -168,5 +148,8 @@ public class BlogListPortletHome extends PortletHome
      *
      * @return The minimum value of blog document order
      */
-    public static int getMinDocBlogOrder() { return _dao.selectMinDocumentBlogOrder(); }
+    public static int getMinDocBlogOrder( )
+    {
+        return _dao.selectMinDocumentBlogOrder( );
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,15 +33,27 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-public class DocContent
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * @author eahuma
+ *
+ */
+public class DocContent implements Serializable
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     private int _nIdDocContent;
-    private int _nIdBlog;
     private String _strTextValue;
     private byte [ ] _bytes;
     private String _strValueContentType;
     private ContentType _contentType;
+    private List<Blog> _blogs;
+    private int _nPriority;
 
     /**
      * Returns the IdDocContent
@@ -62,27 +74,6 @@ public class DocContent
     public void setId( int nIdDocumentContent )
     {
         _nIdDocContent = nIdDocumentContent;
-    }
-
-    /**
-     * Returns the _nIdDocument
-     *
-     * @return The _nIdDocument
-     */
-    public int getIdBlog( )
-    {
-        return _nIdBlog;
-    }
-
-    /**
-     * Sets the _nIdDocContent
-     *
-     * @param nIdDocumentContent
-     *            The _nIdDocContent
-     */
-    public void setIdBlog( int nIdDocument )
-    {
-        _nIdBlog = nIdDocument;
     }
 
     /**
@@ -151,7 +142,7 @@ public class DocContent
     /**
      * Sets the ContentType
      * 
-     * @param ContentType
+     * @param type
      *            The ContentType
      */
     public void setContentType( ContentType type )
@@ -169,4 +160,45 @@ public class DocContent
         return _contentType;
     }
 
+    /**
+     * Gets the blogs
+     * 
+     * @return the blogs
+     */
+    public List<Blog> getBlogs( )
+    {
+        return _blogs;
+    }
+
+    /**
+     * Sets the blogs
+     * 
+     * @param blogs
+     *            the blogs
+     */
+    public void setBlogs( List<Blog> blogs )
+    {
+        this._blogs = blogs;
+    }
+
+    /**
+     * Gets the priority
+     * 
+     * @return the priority
+     */
+    public int getPriority( )
+    {
+        return _nPriority;
+    }
+
+    /**
+     * Sets the priority
+     * 
+     * @param nPriority
+     *            the priority to set
+     */
+    public void setPriority( int nPriority )
+    {
+        this._nPriority = nPriority;
+    }
 }

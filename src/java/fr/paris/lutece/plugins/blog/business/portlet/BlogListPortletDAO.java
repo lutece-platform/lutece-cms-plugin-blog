@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,12 +81,13 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     {
         BlogListPortlet p = (BlogListPortlet) portlet;
 
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
 
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
 
         insertBlogsId( portlet );
     }
@@ -103,21 +104,21 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
 
         if ( !p.getArrayBlogs( ).isEmpty( ) )
         {
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET );
-
-            for ( BlogPublication docPub : p.getArrayBlogs( ) )
+            try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET ) )
             {
-                daoUtil.setInt( 1, p.getId( ) );
-                daoUtil.setInt( 2, docPub.getIdBlog( ) );
-                daoUtil.setInt( 3, 1 );
-                daoUtil.setInt( 4, docPub.getBlogOrder( ) );
-                daoUtil.executeUpdate( );
-            }
 
-            daoUtil.free( );
+                for ( BlogPublication docPub : p.getArrayBlogs( ) )
+                {
+                    daoUtil.setInt( 1, p.getId( ) );
+                    daoUtil.setInt( 2, docPub.getIdBlog( ) );
+                    daoUtil.setInt( 3, 1 );
+                    daoUtil.setInt( 4, docPub.getBlogOrder( ) );
+                    daoUtil.executeUpdate( );
+                }
+
+            }
         }
     }
-    
 
     /**
      * Insert a list of blog publication for a specified portlet
@@ -131,23 +132,23 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
 
         if ( !p.getArrayBlogs( ).isEmpty( ) )
         {
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE );
-
-            for ( BlogPublication docPub : p.getArrayBlogs( ) )
+            try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE ) )
             {
-                daoUtil.setInt( 1, p.getId( ) );
-                daoUtil.setInt( 2, docPub.getIdBlog( ) );
-                daoUtil.setInt( 3, 1 );
-                daoUtil.setInt( 4, docPub.getBlogOrder( ) );
-                daoUtil.setDate( 5, docPub.getDateBeginPublishing( ) );
-                daoUtil.setDate( 6, docPub.getDateEndPublishing( ) );
-                daoUtil.executeUpdate( );
-            }
 
-            daoUtil.free( );
+                for ( BlogPublication docPub : p.getArrayBlogs( ) )
+                {
+                    daoUtil.setInt( 1, p.getId( ) );
+                    daoUtil.setInt( 2, docPub.getIdBlog( ) );
+                    daoUtil.setInt( 3, 1 );
+                    daoUtil.setInt( 4, docPub.getBlogOrder( ) );
+                    daoUtil.setDate( 5, docPub.getDateBeginPublishing( ) );
+                    daoUtil.setDate( 6, docPub.getDateEndPublishing( ) );
+                    daoUtil.executeUpdate( );
+                }
+
+            }
         }
     }
-
 
     /**
      * {@inheritDoc }
@@ -156,10 +157,11 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     public void delete( int nPortletId )
     {
         deleteHtmlsDocsId( nPortletId );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+        }
 
     }
 
@@ -171,10 +173,11 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
      */
     private void deleteHtmlsDocsId( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BLOGS_PORTLET );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BLOGS_PORTLET ) )
+        {
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -183,22 +186,20 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     @Override
     public Portlet load( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
         BlogListPortlet portlet = new BlogListPortlet( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            portlet.setId( daoUtil.getInt( 1 ) );
-            portlet.setPageTemplateDocument( daoUtil.getInt( 2 ) );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                portlet.setId( daoUtil.getInt( 1 ) );
+                portlet.setPageTemplateDocument( daoUtil.getInt( 2 ) );
+            }
         }
 
-        daoUtil.free( );
-
         portlet.setArrayBlogs( loadBlogsId( nPortletId ) );
-
         return portlet;
     }
 
@@ -208,19 +209,17 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     @Override
     public Map<Integer, String> loadPages( String strPortletType )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_PORTLET );
-        daoUtil.setString( 1, strPortletType );
-        daoUtil.executeQuery( );
-
-        Map<Integer, String> page = new HashMap<Integer, String>( );
-
-        while ( daoUtil.next( ) )
+        Map<Integer, String> page = new HashMap<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_PORTLET ) )
         {
-            page.put( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            daoUtil.setString( 1, strPortletType );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                page.put( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
         }
-
-        daoUtil.free( );
-
         return page;
     }
 
@@ -232,26 +231,25 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
      */
     private List<BlogPublication> loadBlogsId( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
-        List<BlogPublication> listDocPublication = new ArrayList<BlogPublication>( );
-
-        while ( daoUtil.next( ) )
+        List<BlogPublication> listDocPublication = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_CATEGORY_PORTLET ) )
         {
-            BlogPublication docPub = new BlogPublication( );
-            docPub.setIdBlog( daoUtil.getInt( 1 ) );
-            docPub.setBlogOrder( daoUtil.getInt( 2 ) );
-            docPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
-            docPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
-            docPub.setStatus( daoUtil.getInt( 5 ) );
-            listDocPublication.add( docPub );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                BlogPublication docPub = new BlogPublication( );
+                docPub.setIdBlog( daoUtil.getInt( 1 ) );
+                docPub.setBlogOrder( daoUtil.getInt( 2 ) );
+                docPub.setDateBeginPublishing( daoUtil.getDate( 3 ) );
+                docPub.setDateEndPublishing( daoUtil.getDate( 4 ) );
+                docPub.setStatus( daoUtil.getInt( 5 ) );
+                listDocPublication.add( docPub );
+
+            }
 
         }
-
-        daoUtil.free( );
-
         return listDocPublication;
     }
 
@@ -262,15 +260,15 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     public void store( Portlet portlet )
     {
         BlogListPortlet p = (BlogListPortlet) portlet;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getId( ) );
-        daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
-        daoUtil.setInt( 3, p.getId( ) );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
+            daoUtil.setInt( 1, p.getId( ) );
+            daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
+            daoUtil.setInt( 3, p.getId( ) );
 
-        daoUtil.executeUpdate( );
+            daoUtil.executeUpdate( );
+        }
 
-        daoUtil.free( );
-        
         deleteHtmlsDocsId( p.getId( ) );
         insertBlogsPublicationOnUpdate( p );
     }
@@ -282,18 +280,16 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     public boolean checkIsAliasPortlet( int nPortletId )
     {
         boolean bIsAlias = false;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_IS_ALIAS );
-
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_IS_ALIAS ) )
         {
-            bIsAlias = true;
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                bIsAlias = true;
+            }
         }
-
-        daoUtil.free( );
-
         return bIsAlias;
     }
 
@@ -303,17 +299,18 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     @Override
     public ReferenceList selectBlogListPortletReferenceList( Plugin plugin )
     {
-        ReferenceList BlogPortletList = new ReferenceList( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        ReferenceList blogPortletList = new ReferenceList( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
-            BlogPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
-        return BlogPortletList;
+            while ( daoUtil.next( ) )
+            {
+                blogPortletList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
+
+        }
+        return blogPortletList;
     }
 
     /**
@@ -335,44 +332,43 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
 
         strSQl.append( pOrder.getSQLOrderBy( ) );
 
-        DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) );
-
-        daoUtil.setInt( 1, nDocumentId );
-
-        if ( strFilter != null )
+        ReferenceList list = new ReferenceList( );
+        try ( DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) ) )
         {
-            if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
+
+            daoUtil.setInt( 1, nDocumentId );
+
+            if ( strFilter != null )
             {
-                for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
+                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
                 {
-                    daoUtil.setString( i + 2, "%" + pFilter.getPageName( ) [i] + "%" );
-                }
-            }
-            else
-                if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
-                {
-                    for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                    for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
                     {
-                        daoUtil.setString( i + 2, "%" + pFilter.getPortletName( ) [i] + "%" );
+                        daoUtil.setString( i + 2, "%" + pFilter.getPageName( ) [i] + "%" );
                     }
                 }
                 else
-                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                    if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
                     {
-                        daoUtil.setInt( 2, pFilter.getIdPage( ) );
+                        for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                        {
+                            daoUtil.setString( i + 2, "%" + pFilter.getPortletName( ) [i] + "%" );
+                        }
                     }
+                    else
+                        if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
+                        {
+                            daoUtil.setInt( 2, pFilter.getIdPage( ) );
+                        }
+            }
+
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
         }
-
-        daoUtil.executeQuery( );
-
-        ReferenceList list = new ReferenceList( );
-
-        while ( daoUtil.next( ) )
-        {
-            list.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
-        }
-
-        daoUtil.free( );
 
         return list;
     }
@@ -383,16 +379,16 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     @Override
     public int selectMinDocumentBlogOrder( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_MIN_DOC_ORDER );
-        daoUtil.executeQuery( );
         int nKey = 1;
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_MIN_DOC_ORDER ) )
         {
-            nKey = daoUtil.getInt( 1 );
-        }
+            daoUtil.executeQuery( );
 
-        daoUtil.free( );
+            if ( daoUtil.next( ) )
+            {
+                nKey = daoUtil.getInt( 1 );
+            }
+        }
         return nKey;
     }
 

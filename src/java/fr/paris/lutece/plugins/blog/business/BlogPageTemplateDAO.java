@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,43 +62,38 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      */
     int newPrimaryKey( )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK );
-        daoUtil.executeQuery( );
-
-        int nKey;
-
-        if ( !daoUtil.next( ) )
+        int nKey = 1;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
         {
-            // if the table is empty
-            nKey = 1;
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                nKey = daoUtil.getInt( 1 ) + 1;
+            }
         }
-
-        nKey = daoUtil.getInt( 1 ) + 1;
-
-        daoUtil.free( );
-
         return nKey;
     }
 
     /**
      * Insert a new record in the table.
      * 
-     * @param BlogPageTemplate
+     * @param blogPageTemplate
      *            The Instance of the object BlogPageTemplate
      */
+    @Override
     public synchronized void insert( BlogPageTemplate blogPageTemplate )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        {
+            blogPageTemplate.setId( newPrimaryKey( ) );
 
-        blogPageTemplate.setId( newPrimaryKey( ) );
+            daoUtil.setInt( 1, blogPageTemplate.getId( ) );
+            daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
+            daoUtil.setString( 3, blogPageTemplate.getFile( ) );
+            daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
 
-        daoUtil.setInt( 1, blogPageTemplate.getId( ) );
-        daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
-        daoUtil.setString( 3, blogPageTemplate.getFile( ) );
-        daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -108,24 +103,25 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      *            The indentifier of the object BlogPageTemplate
      * @return The Instance of the object PageTemplate
      */
+    @Override
     public BlogPageTemplate load( int nPageTemplateId )
     {
         BlogPageTemplate blogPageTemplate = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nPageTemplateId );
-
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT ) )
         {
-            blogPageTemplate = new BlogPageTemplate( );
-            blogPageTemplate.setId( daoUtil.getInt( 1 ) );
-            blogPageTemplate.setDescription( daoUtil.getString( 2 ) );
-            blogPageTemplate.setFile( daoUtil.getString( 3 ) );
-            blogPageTemplate.setPicture( daoUtil.getString( 4 ) );
-        }
+            daoUtil.setInt( 1, nPageTemplateId );
 
-        daoUtil.free( );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                blogPageTemplate = new BlogPageTemplate( );
+                blogPageTemplate.setId( daoUtil.getInt( 1 ) );
+                blogPageTemplate.setDescription( daoUtil.getString( 2 ) );
+                blogPageTemplate.setFile( daoUtil.getString( 3 ) );
+                blogPageTemplate.setPicture( daoUtil.getString( 4 ) );
+            }
+        }
 
         return blogPageTemplate;
     }
@@ -136,12 +132,14 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      * @param nPageTemplateId
      *            The indentifier of the object PageTemplate
      */
+    @Override
     public void delete( int nPageTemplateId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPageTemplateId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE ) )
+        {
+            daoUtil.setInt( 1, nPageTemplateId );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -150,18 +148,19 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      * @param blogPageTemplate
      *            The instance of the PageTemplate to update
      */
+    @Override
     public void store( BlogPageTemplate blogPageTemplate )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
+        {
+            daoUtil.setInt( 1, blogPageTemplate.getId( ) );
+            daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
+            daoUtil.setString( 3, blogPageTemplate.getFile( ) );
+            daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
+            daoUtil.setInt( 5, blogPageTemplate.getId( ) );
 
-        daoUtil.setInt( 1, blogPageTemplate.getId( ) );
-        daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
-        daoUtil.setString( 3, blogPageTemplate.getFile( ) );
-        daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
-        daoUtil.setInt( 5, blogPageTemplate.getId( ) );
-
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+            daoUtil.executeUpdate( );
+        }
     }
 
     /**
@@ -169,25 +168,26 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
      * 
      * @return A list of PageTemplates objects
      */
+    @Override
     public List<BlogPageTemplate> selectPageTemplatesList( )
     {
-        List<BlogPageTemplate> listBlogPageTemplates = new ArrayList<BlogPageTemplate>( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL );
-        daoUtil.executeQuery( );
-
-        while ( daoUtil.next( ) )
+        List<BlogPageTemplate> listBlogPageTemplates = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL ) )
         {
-            BlogPageTemplate blogPageTemplate = new BlogPageTemplate( );
+            daoUtil.executeQuery( );
 
-            blogPageTemplate.setId( daoUtil.getInt( 1 ) );
-            blogPageTemplate.setDescription( daoUtil.getString( 2 ) );
-            blogPageTemplate.setFile( daoUtil.getString( 3 ) );
-            blogPageTemplate.setPicture( daoUtil.getString( 4 ) );
-            listBlogPageTemplates.add( blogPageTemplate );
+            while ( daoUtil.next( ) )
+            {
+                BlogPageTemplate blogPageTemplate = new BlogPageTemplate( );
+
+                blogPageTemplate.setId( daoUtil.getInt( 1 ) );
+                blogPageTemplate.setDescription( daoUtil.getString( 2 ) );
+                blogPageTemplate.setFile( daoUtil.getString( 3 ) );
+                blogPageTemplate.setPicture( daoUtil.getString( 4 ) );
+                listBlogPageTemplates.add( blogPageTemplate );
+            }
+
         }
-
-        daoUtil.free( );
-
         return listBlogPageTemplates;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,5 +78,9 @@ public class BlogSearchItem extends SearchItem
      */
 
     public static final String FIELD_DATE_UPDATE = "dateUpdate";
+    /*
+     * Users
+     */
+    public static final String FIELD_USERS_EDITED_BLOG = "usersEditedBlog";
 
 }

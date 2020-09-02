@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ import fr.paris.lutece.plugins.blog.web.BlogJspBean;
 public class BlogSessionListner implements HttpSessionListener
 {
 
-    private static Map<String, HttpSession> _mapSession = new ConcurrentHashMap<String, HttpSession>( );
+    private static Map<String, HttpSession> _mapSession = new ConcurrentHashMap<>( );
 
     /**
      * {@inheritDoc}
@@ -74,6 +74,13 @@ public class BlogSessionListner implements HttpSessionListener
     {
 
         return _mapSession;
+    }
+
+    public static void remove( String nIdSession )
+    {
+
+        _mapSession.remove( nIdSession );
+
     }
 
 }

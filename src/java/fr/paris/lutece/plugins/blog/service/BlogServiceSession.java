@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.blog.service;
 import javax.servlet.http.HttpSession;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 /**
  * This Service manages document actions (create, move, delete, validate ...) and notify listeners.
@@ -44,7 +45,7 @@ public class BlogServiceSession
 {
 
     private static BlogServiceSession _singleton = new BlogServiceSession( );
-    private final static String SESSION_BLOG = "blog.serviceblog";
+    private static final String SESSION_BLOG = "blog.serviceblog";
 
     /**
      * Get the unique instance of the service
@@ -61,12 +62,23 @@ public class BlogServiceSession
      *
      * @param session
      *            The session
-     * @param Blog
+     * @param blog
      *            The blog to save
      */
     public void saveBlogInSession( HttpSession session, Blog blog )
     {
-        session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
+        try
+        {
+
+            session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+        }
     }
 
     /**
@@ -74,11 +86,24 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session of the user
+     * @param blog
      * @return The blog form
      */
     public Blog getBlogFromSession( HttpSession session, Blog blog )
     {
-        return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+
+        try
+        {
+            return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+            return null;
+        }
     }
 
     /**
@@ -86,11 +111,24 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session of the user
-     * @return The idBlog
+     * @param nIdBlog
+     * @return The blog post
      */
-    public Blog getBlogFromSession( HttpSession session, int idBlog )
+    public Blog getBlogFromSession( HttpSession session, int nIdBlog )
     {
-        return (Blog) session.getAttribute( SESSION_BLOG + idBlog );
+        try
+        {
+
+            return (Blog) session.getAttribute( SESSION_BLOG + nIdBlog );
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+            return null;
+        }
     }
 
     /**
@@ -98,10 +136,22 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session
+     * @param blog
      */
     public void removeBlogFromSession( HttpSession session, Blog blog )
     {
-        session.removeAttribute( SESSION_BLOG + blog.getId( ) );
+        try
+        {
+
+            session.removeAttribute( SESSION_BLOG + blog.getId( ) );
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+        }
     }
 
     /**
@@ -109,10 +159,22 @@ public class BlogServiceSession
      * 
      * @param session
      *            The session
+     * @param idBlog
      */
     public void removeBlogFromSession( HttpSession session, int idBlog )
     {
-        session.removeAttribute( SESSION_BLOG + idBlog );
+        try
+        {
+
+            session.removeAttribute( SESSION_BLOG + idBlog );
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+        }
     }
 
 }

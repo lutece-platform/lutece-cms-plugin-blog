@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2019, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,11 +60,25 @@ public final class DocContentHome
      * 
      * @param docContent
      *            The Document Content
+     *
      */
     public static void create( DocContent docContent )
     {
         _dao.insertDocContent( docContent, _plugin );
+    }
 
+    /**
+     * @param nIdBlog
+     *            the blog id
+     * @param nIdDocument
+     *            the document id
+     * @param nPriority
+     *            the priority
+     * 
+     */
+    public static void insertInBlog( int nIdBlog, int nIdDocument, int nPriority )
+    {
+        _dao.insertDocContentInBlog( nIdBlog, nIdDocument, nPriority, _plugin );
     }
 
     /**
@@ -84,12 +98,24 @@ public final class DocContentHome
     /**
      * Remove the DocContent whose identifier Blog is specified in parameter
      * 
-     * @param nKey
+     * @param nBlogId
      *            the Id DocContent
      */
-    public static void remove( int nBlog )
+    public static void remove( int nBlogId )
     {
-        _dao.delete( nBlog, _plugin );
+        _dao.delete( nBlogId, _plugin );
+    }
+
+    /**
+     * Remove the correspondance beetween the document and the blog
+     * 
+     * @param nDocumentId
+     *            the document id
+     */
+    public static void removeInBlogById( int nDocumentId )
+    {
+        _dao.deleteInBlogById( nDocumentId, _plugin );
+
     }
 
     /**
@@ -128,13 +154,10 @@ public final class DocContentHome
     /**
      * Returns a list of a ContentType
      * 
-     * @param plugin
-     *            the plugin
      * @return a list of a ContentType
      */
     public static List<ContentType> getListContentType( )
     {
         return _dao.loadListContentType( _plugin );
     }
-
 }
