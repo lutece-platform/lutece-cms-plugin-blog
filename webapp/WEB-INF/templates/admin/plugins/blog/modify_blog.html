@@ -1,77 +1,64 @@
 <#include "/admin/util/editor/editor_keditor.html" />
-<form class="form" method="post" name="modify_blog" id="form-editor" enctype="multipart/form-data" action="jsp/admin/plugins/blog/ManageBlogs.jsp">
-    <@messages errors=errors />
-    <input type="hidden" id="id" name="id" value="${blog.id}">
-    <input type="hidden" id="action" name="action" value="modifyBlog">
-    <div class="row">
-        <article class="col-xs-12 col-sm-10">
-            <div class="form-group">
-                <label for="content_label" class="sr-only">#i18n{blog.modify_blog.labelContentLabel} </label>
-                <input class="form-control" name="content_label" id="content_label" type="text" placeholder="#i18n{blog.modify_blog.labelContentLabel.help}" value="${blog.contentLabel}" required>
-            </div>
-            <div class="form-group">
-                <label for="html_content" class="sr-only">#i18n{blog.modify_blog.labelEditContent} </label>
-                <textarea id="html_content" class="richtext" name="html_content" rows="12"> ${blog.htmlContent!}</textarea>
-                <@initEditor  />
-            </div>
-        </article>
-        <aside class="col-xs-12 col-sm-2 aside">
-            <div class="form-group">
-                <button class="btn btn-primary btn-block" type="submit" title=#i18n{portal.util.labelModify}" name="action_modifyBlog">
-                  <i class="fa fa-check" aria-hidden="true"></i> #i18n{portal.util.labelModify}
-                </button>
-                 <div class="form-group">
-	              <button class="btn btn-primary btn-block" type="submit" title="#i18n{blog.create_blog.labelApply}" value="apply" name="button">
-	                <i class="fa fa-check" aria-hidden="true"></i> #i18n{blog.create_blog.labelApply}
-	              </button>
-                 </div>
-                <button class="btn btn-default btn-flat hidden" type="submit" title="#i18n{portal.util.labelCancel}" name="view_manageBlogs">
-                  <i class="fa fa-close" aria-hidden="true"></i> #i18n{portal.util.labelCancel}
-                </button>
-            </div>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='' />
+			<@boxBody>
+				<@tform method='post' name='modify_blog' id='form-editor' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+						<@messages errors=errors />
+						<input type='hidden' id='id' name='id' value='${blog.id}' />
+						<input type='hidden' id='action' name='action' value='modifyBlog' />
+						<@columns <!-- LUTECE VII ONLY tag='article' ---> sm=10>
+							<@formGroup labelFor='content_label' labelKey='#i18n{blog.modify_blog.labelContentLabel}' mandatory=true rows=2>
+									<@input type='text' name='content_label' id='content_label' placeHolder='#i18n{blog.modify_blog.labelContentLabel.help}' value='${blog.contentLabel}' />
+							</@formGroup>
+							<@formGroup labelFor='html_content' labelKey='#i18n{blog.modify_blog.labelEditContent}' rows=2>
+									<@input type='textarea' id='html_content' richtext=true name='html_content' rows=12>${blog.htmlContent!}</@input>
+									<@initEditor  />
+							</@formGroup>
+						</@columns>
+						<@columns <!-- LUTECE VII ONLY tag='aside' --> sm=2 class='aside'>
+							<@formGroup rows=2>
+									<@button type='submit' class='btn-block' title='#i18n{portal.util.labelModify}' name='action_modifyBlog' buttonIcon='check' />
+									<@button type='submit' class='btn-block' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button' buttonIcon='check' />
+									<@button type='submit' class='btn-block' title='#i18n{portal.util.labelCancel}' name='view_manageBlogs' buttonIcon='times' color='btn-default' />
+							</@formGroup>
             <div class="box-group hidden" id="publication-group">
-              <div class="panel box box-warning">
-                <a data-toggle="collapse" data-parent="#publication-group" href="#collapsePublication" class="collapsed" aria-expanded="false">
-                  <div class="box-header with-border">
-                    <h4 class="box-title">
-                      Publication
-                      <#if blog.blogPublication?size &gt; 0>
-                         <span class="notification left bg-purple-active">${blog.blogPublication?size}</span>
-                      </#if>
-                    </h4>
-                  </div>
-                </a>
-                <div id="collapsePublication" class="panel-collapse collapse" aria-expanded="false">
-                  <div class="panel-body">
-                    <div class="box-body">
-                      <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}"
-                        class="btn-publish btn btn-sm <#if blog.blogPublication?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPublication?size==0>Publier<#else>#i18n{blog.modify_blogs.managePublication}</#if>">
-                        <i class="fa fa-globe"></i>
-                      </a>
-                      <#if blog.blogPublication?size &gt; 0>
-                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <span class="caret"></span>
-                          <span class="sr-only">#i18n{blog.modify_blog.labelToggleDropdown}</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <#list blog.blogPublication as publication>
-                            <li>
-                              <div class="btn-group" role="group" aria-label="...">
-                                <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}" class="btn btn-danger btn-xs hidden" title="#i18n{blog.publication_blog.buttonUnPublish}">
-                                    <i class="fa fa-remove"></i>
-                                </a>
-                                 <a href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link" title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
-                                   ${publication.portlet.name} - #i18n{blog.publication_blog.labelPage} ${publication.portlet.pageId} <i class="fa fa-external-link" aria-hidden="true"></i>
-                                 </a>
-                              </div>
-                             </li>
-                          </#list>
-                       </ul>
-                      </#if>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <@box>
+								<#assign title>
+									Publication
+									<#if blog.blogPublication?size &gt; 0>
+											 <span class="notification left bg-purple-active">${blog.blogPublication?size}</span>
+									</#if>
+								</#assign>
+								<@boxHeader title=title />
+								<@boxBody>
+										<a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}"
+											class="btn-publish btn btn-sm <#if blog.blogPublication?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPublication?size==0>Publier<#else>#i18n{blog.modify_blogs.managePublication}</#if>">
+											<i class="fa fa-globe"></i>
+										</a>
+										<#if blog.blogPublication?size &gt; 0>
+											<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<span class="caret"></span>
+												<span class="sr-only">#i18n{blog.modify_blog.labelToggleDropdown}</span>
+											</button>
+											<ul class="dropdown-menu">
+												<#list blog.blogPublication as publication>
+													<li>
+														<div class="btn-group" role="group" aria-label="...">
+															<a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}" class="btn btn-danger btn-xs hidden" title="#i18n{blog.publication_blog.buttonUnPublish}">
+																	<i class="fa fa-remove"></i>
+															</a>
+															 <a href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link" title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
+																 ${publication.portlet.name} - #i18n{blog.publication_blog.labelPage} ${publication.portlet.pageId} <i class="fa fa-external-link" aria-hidden="true"></i>
+															 </a>
+														</div>
+													 </li>
+												</#list>
+										 </ul>
+										</#if>
+                </@boxBody>
+              </@box>
             </div>
             <div class="box-group" id="extend-group">
               <div class="panel box box-success">
@@ -128,7 +115,7 @@
                     <div class="form-group">
                       <label for="addTag" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
                       <div class="input-group">
-                        <@comboSortedWithParams name="tag_doc" default_value="" additionalParameters="class=\"form-control\"" items=list_tag />
+                        <@select name='tag_doc' default_value='' items=list_tag />
                         <span class="input-group-btn">
                           <button type="button" value="addTag" id="addTag" name="addTag" class="btn btn-primary">
                             <i class="fa fa-tag"></i>
@@ -260,9 +247,13 @@
                 </div>
             </div>
           </div>
-        </aside>
+        </@columns>
     </div>
-</form>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 <script src="js/plugins/blog/manage_tag.js"></script>
 <script src="js/plugins/blog/manage_image.js"></script>
 
