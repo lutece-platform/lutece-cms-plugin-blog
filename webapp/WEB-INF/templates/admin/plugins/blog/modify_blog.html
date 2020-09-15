@@ -8,7 +8,7 @@
 						<@messages errors=errors />
 						<input type='hidden' id='id' name='id' value='${blog.id}' />
 						<input type='hidden' id='action' name='action' value='modifyBlog' />
-						<@columns <!-- LUTECE VII ONLY tag='article' ---> sm=10>
+						<@columns <!-- LUTECE VII ONLY tag='article' ---> sm=9>
 							<@formGroup labelFor='content_label' labelKey='#i18n{blog.modify_blog.labelContentLabel}' mandatory=true rows=2>
 									<@input type='text' name='content_label' id='content_label' placeHolder='#i18n{blog.modify_blog.labelContentLabel.help}' value='${blog.contentLabel}' />
 							</@formGroup>
@@ -17,12 +17,14 @@
 									<@initEditor  />
 							</@formGroup>
 						</@columns>
-						<@columns <!-- LUTECE VII ONLY tag='aside' --> sm=2 class='aside'>
+						<@columns <!-- LUTECE VII ONLY tag='aside' --> sm=3 class='aside'>
 							<@formGroup rows=2>
 									<@button type='submit' class='btn-block' title='#i18n{portal.util.labelModify}' name='action_modifyBlog' buttonIcon='check' />
 									<@button type='submit' class='btn-block' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button' buttonIcon='check' />
 									<@button type='submit' class='btn-block' title='#i18n{portal.util.labelCancel}' name='view_manageBlogs' buttonIcon='times' color='btn-default' />
 							</@formGroup>
+							
+						
             <div class="box-group hidden" id="publication-group">
               <@box>
 								<#assign title>
@@ -33,222 +35,178 @@
 								</#assign>
 								<@boxHeader title=title />
 								<@boxBody>
-										<a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}"
-											class="btn-publish btn btn-sm <#if blog.blogPublication?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPublication?size==0>Publier<#else>#i18n{blog.modify_blogs.managePublication}</#if>">
-											<i class="fa fa-globe"></i>
-										</a>
+										<#assign publicationButtonClass>
+											<#if blog.blogPublication?size == 0>
+												btn-default
+											<#else>
+												btn-primary notif
+											</#if>
+										</#assign>
+										<#assign publicationButtonTitle>
+											<#if blog.blogPublication?size==0>
+												Publier
+											<#else>
+												#i18n{blog.modify_blogs.managePublication}
+											</#if>
+										</#assign>
+										<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' color='${publicationButtonClass}' title='${publicationButtonTitle}' buttonIcon='globe' />
 										<#if blog.blogPublication?size &gt; 0>
-											<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												<span class="caret"></span>
-												<span class="sr-only">#i18n{blog.modify_blog.labelToggleDropdown}</span>
-											</button>
-											<ul class="dropdown-menu">
-												<#list blog.blogPublication as publication>
-													<li>
-														<div class="btn-group" role="group" aria-label="...">
-															<a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}" class="btn btn-danger btn-xs hidden" title="#i18n{blog.publication_blog.buttonUnPublish}">
-																	<i class="fa fa-remove"></i>
-															</a>
-															 <a href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link" title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
-																 ${publication.portlet.name} - #i18n{blog.publication_blog.labelPage} ${publication.portlet.pageId} <i class="fa fa-external-link" aria-hidden="true"></i>
-															 </a>
-														</div>
-													 </li>
-												</#list>
-										 </ul>
+										
+										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}'>
+											<#list blog.blogPublication as publication>
+												<li>
+													<@btnGroup>
+														<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' color='btn-danger' class='hidden' title='#i18n{blog.publication_blog.buttonUnPublish}' buttonIcon='times' />
+														<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class='btn-link' title='#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}'>
+															 ${publication.portlet.name} - #i18n{blog.publication_blog.labelPage} ${publication.portlet.pageId} <@icon style='external-link' />
+														</@aButton>
+													</@btnGroup>
+												</li>
+											</#list>
+										</@button>
 										</#if>
                 </@boxBody>
               </@box>
             </div>
-            <div class="box-group" id="extend-group">
-              <div class="panel box box-success">
-                <a data-toggle="collapse" data-parent="#extend-group" href="#collapseExtend" class="collapsed" aria-expanded="false">
-                  <div class="box-header with-border">
-                    <h4 class="box-title">#i18n{blog.dashboard.columnActions} </h4>
-                  </div>
-                </a>
-                <div id="collapseExtend" class="panel-collapse collapse" aria-expanded="false">
-                  <div class="panel-body">
-                    <@btnGroup>
-                      <#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
-                         ${extendableResourceActionsHtml!}
-                      </#if>
-                      <a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}"
-                        class="btn-publish btn btn-flat btn-primary" title="#i18n{blog.modify_blogs.managePublication}">
-                        <i class="fa fa-globe"></i>
-                      </a>
-                      <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;d=${blog.id}" class="btn btn-primary btn-flat" title="#i18n{blog.manage_blogs.labelHistory}  ${blog.version} versions ">
-                        <i class="fa fa-history"></i>
-                      </a>
-                      <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}" class="btn btn-danger btn-flat" title="#i18n{portal.util.labelDelete}">
-                        <i class="fa fa-trash"></i>
-                      </a>
-                    </@btnGroup>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="box-group" id="desc-group">
-              <div class="panel box box-primary">
-                <a data-toggle="collapse" data-parent="#desc-group" href="#collapseDesc" class="collapsed" aria-expanded="false">
-                  <div class="box-header with-border">
-                    <h4 class="box-title">#i18n{blog.modify_blog.labelDescription}</h4>
-                  </div>
-                </a>
-                <div id="collapseDesc" class="panel-collapse collapse" aria-expanded="false">
-                  <div class="panel-body">
-                    <label for="description" class="sr-only">#i18n{blog.modify_blog.labelEditComment}</label>
-                    <textarea id="description" class="form-control" name="description" rows="2">${blog.description!}</textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="box-group" id="tags-group">
-              <div class="panel box box-primary">
-                <a data-toggle="collapse" data-parent="#tags-group" href="#collapseTags" class="collapsed" aria-expanded="false">
-                  <div class="box-header with-border">
-                    <h4 class="box-title">#i18n{blog.modify_blog.TagsTitle}</h4>
-                  </div>
-                </a>
-                <div id="collapseTags" class="panel-collapse collapse" aria-expanded="false">
-                  <div class="panel-body">
-                    <div class="form-group">
-                      <label for="addTag" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
-                      <div class="input-group">
-                        <@select name='tag_doc' default_value='' items=list_tag />
-                        <span class="input-group-btn">
-                          <button type="button" value="addTag" id="addTag" name="addTag" class="btn btn-primary">
-                            <i class="fa fa-tag"></i>
-                         </button>
-                        </span>
-                      </div>
-                    </div>
-                    <ul id="tag-list" class="list-group">
-                      <#list blog.tag as tg>
-                   			<li id="tag_${tg.idTag}" class="list-group-item clearfix" title="${tg.name}">
-                          <span class="pull-left">${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
-                          <span class="pull-right">
-                    			  <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="#i18n{blog.create_blog.labelDown}" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveDown' );">
-             				  				<i class="fa fa-arrow-down"></i>
-                     			  </button>
-                     				<button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="#i18n{blog.create_blog.labelUp}" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveUp');">
-               								<i class="fa fa-arrow-up"></i>
-                     				</button>
-                     				<button type="button" value="removeTag" name="removeTag" class="btn btn-danger btn-xs btn-flat" onclick="doDeleteTag( ${tg.idTag}, '${tg.name!}');">
-                     					<i class="fa fa-trash"></i>
-                     	   		</button>
-                          </span>
-                 				</li>
-                 		 </#list>
-                    </ul>
-                    <#if permission_manage_create_tag>
-                    <label for="tag_name" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
-                      <div class="input-group">
-                        <input type="text" id="tag_name" class="form-control" name="tag_name" value="" placeholder="#i18n{blog.manage_tags.buttonAdd}">
-                        <span class="input-group-btn">
-                          <button type="button" value="createTag" id="createTag" name="createTag" class="btn btn-primary" title="#i18n{blog.create_tag.pageTitle}">
-                            <i class="fa fa-plus"></i>
-                          </button>
-                        </span>
-                    </div>
-                    </#if>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="box-group" id="attachment-group">
-              <div class="panel box box-primary">
-                <a data-toggle="collapse" data-parent="#attachment-group" href="#collapseAttachment" class="collapsed" aria-expanded="false">
-                  <div class="box-header with-border">
-                    <h4 class="box-title">#i18n{blog.modify_blog.labelImage}</h4>
-                  </div>
-                </a>
-                <div id="collapseAttachment" class="panel-collapse collapse" aria-expanded="false">
-                  <div class="panel-body">
-                      <div class="form-group">
-                        <label for="attachment" class="sr-only">#i18n{blog.modify_blog.labelAttachment}</label>
-                        <div class="text-center">
-                          <select name="fileType" id="fileType">
-                          <#list image_type as type>
-                            <option value= "${type.idContentType}">${type.label}</option>             
-                          </#list>
-                          </select>
-                          <#if is_crop_image> <!--To the use of the image crop plugin -->
-                            <#include "/skin/plugins/uploadimage/uploadimage.html" />
-                            <@addRequiredJsUploadImages/>
-                            <@cropimage fieldName= "attachment" file="images/admin/skin/plugins/uploadimage/picture.jpg" cssClass="text-center" synchronous="false" />
-                          <#else>
-                            <input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )" value="">
-                          </#if>
-                          <#if blog.docContent?? && blog.docContent?size!=0>
-                          <ul id="content-list" class="list-group">
-                          <#list blog.docContent as docContent >
-                            <li id ="doc_${docContent.id}" class="list-group-item clearfix">
-                            <div id= "${docContent.id}">
-                              <button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("${docContent.id}") type="button" title="#i18n{blog.create_blog.labelRemove}" style="">
-                                <span class="glyphicon glyphicon-remove-circle"></span> Supprimer
-                              </button>
-                              <a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
-                                ${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
-                              </a>
-                              <span class="pull-right">
-                                <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="#i18n{blog.create_blog.labelDown}" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveDown' );">
-                                  <i class="fa fa-arrow-down"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="#i18n{blog.create_blog.labelUp}" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveUp');">
-                                  <i class="fa fa-arrow-up"></i>
-                                </button>
-                              </span>
-                            </div>
-                          <div>
-                          <select name="fileType" id="fileType" onchange="doUpdateContentType(${docContent.id},this.value)" >
-                          <#list image_type as type>
-                            <option value= "${type.idContentType}" <#if type.idContentType= docContent.contentType.idContentType>selected</#if>>${type.label}</option>             
-                          </#list>
-                          </select>
-                        </div>
-                      </li>
-			              </#list>
-			              </ul>
-                    </#if>
-                    <div id="imageappend"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="box-group" id="comments-group">
-            <div class="panel box box-primary">
-                <a data-toggle="collapse" data-parent="#comments-group" href="#collapseUrl" class="collapsed" aria-expanded="false">
-                  <div class="box-header with-border">
-                    <h4 class="box-title">#i18n{blog.create_blog.labelUrl}</h4>
-                  </div>
-                </a>
-                <div id="collapseUrl" class="panel-collapse collapse" aria-expanded="false">
-                  <div class="panel-body">
-                    <label for="url" class="sr-only">#i18n{blog.create_blog.labelUrl</label>
-                    <input class="form-control" name="url" id="url" type="text" value="${blog.url!}">
-                  </div>
-                </div>
-            </div>
-          </div>
-            <div class="box-group" id="comments-group">
-              <div class="panel box box-primary">
-                <a data-toggle="collapse" data-parent="#comments-group" href="#collapseComment" class="collapsed" aria-expanded="false">
-                  <div class="box-header with-border">
-                    <h4 class="box-title">#i18n{blog.create_blog.labelEditComment}</h4>
-                  </div>
-                </a>
-                <div id="collapseComment" class="panel-collapse collapse" aria-expanded="false">
-                  <div class="panel-body">
-                    <label for="edit_comment" class="sr-only">#i18n{blog.create_blog.labelEditComment}</label>
-                    <input class="form-control" name="edit_comment" id="edit_comment" type="text" value="">
-                  </div>
-                </div>
-            </div>
-          </div>
+						
+						
+						<@box collapsed=true>
+							<@boxHeader title='#i18n{blog.dashboard.columnActions}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='<!-- #i18n{blog.create_blog.labelCollapse} -->' buttonIcon='plus' />
+							</@boxHeader>
+							<@boxBody>
+								<@btnGroup>
+									<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
+										 ${extendableResourceActionsHtml!}
+									</#if>
+									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' 										class='btn-publish' title='#i18n{blog.modify_blogs.managePublication}' buttonIcon='globe' showTitle=false />
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;d=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory} (${blog.version} versions)' buttonIcon='history' showTitle=false />
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' showTitle=false color='btn-danger' />
+								</@btnGroup>
+							</@boxBody>
+						</@box>
+						
+						<@box collapsed=true>
+							<@boxHeader title='#i18n{blog.modify_blog.labelDescription}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='<!-- #i18n{blog.create_blog.labelCollapse} -->' buttonIcon='plus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='description' labelKey='#i18n{blog.modify_blog.labelEditComment}' rows=2>
+									<@input type='textarea' id='description' name='description' rows=2>${blog.description!}</@input>
+								</@formGroup>
+							</@boxBody>
+						</@box>
+						
+						<@box collapsed=true>
+							<@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='<!-- #i18n{blog.create_blog.labelCollapse} -->' buttonIcon='plus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
+									<@inputGroup>
+										<@select name='tag_doc' default_value='' items=list_tag />
+										<@inputGroupItem type='btn'>
+											<@button type='button' value='addTag' id='addTag' name='addTag' buttonIcon='tag' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+
+								<@listGroup id='tag-list'>
+									<#list blog.tag as tg>
+										<li id="tag_${tg.idTag}" class="${listElementClass} clearfix" title="${tg.name}">
+											<span class="pull-left">${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
+											<span class="pull-right">
+												<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' buttonIcon='arrow-down' size='xs' showTitle=false />
+												<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' buttonIcon='arrow-up' size='xs' showTitle=false />
+												<@button type='button' value='removeTag' name='removeTag' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' buttonIcon='trash' color='btn-danger' size='xs' showTitle=false />
+											</span>
+										</li>
+								 </#list>
+								</@listGroup>
+								<#if permission_manage_create_tag>
+								<@formGroup labelFor='tag_name' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
+									<@inputGroup>
+										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.manage_tags.buttonAdd}' />
+										<@inputGroupItem type='btn'>
+											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' buttonIcon='plus' showTitle=false />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+								</#if>
+							</@boxBody>
+						</@box>
+						
+						<@box collapsed=true>
+							<@boxHeader title='#i18n{blog.modify_blog.labelImage}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='<!-- #i18n{blog.create_blog.labelCollapse} -->' buttonIcon='plus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='attachment' labelKey='#i18n{blog.modify_blog.labelAttachment}' rows=2>
+									<@select name='fileType' id='fileType' params='style="margin-bottom:10px;"'>
+									<#list image_type as type>
+										<option value= "${type.idContentType}">${type.label}</option>             
+									</#list>
+									</@select>
+									<#if is_crop_image> <!--To the use of the image crop plugin -->
+										<#include "/skin/plugins/uploadimage/uploadimage.html" />
+										<@addRequiredJsUploadImages/>
+										<@cropimage fieldName= "attachment" file="images/admin/skin/plugins/uploadimage/picture.jpg" cssClass="text-center" synchronous="false" />
+									<#else>
+										<@input type='file' class='filestyle' name='attachment' id='attachment' params='data-iconName="fa fa-image" data-buttonText="" onchange="getImage()"' value='' />
+									</#if>
+								</@formGroup>
+								
+								<#if blog.docContent?? && blog.docContent?size!=0>
+								<@listGroup id='content-list'>
+								<#list blog.docContent as docContent >
+									<li id ="doc_${docContent.id}" class="${listElementClass} clearfix">
+									<div id= "${docContent.id}">
+										<@button type='button' id='deleteButtonattachment' params='onclick=deleteImage("${docContent.id}")' title='#i18n{blog.create_blog.labelRemove}' buttonIcon='times' />
+										<a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
+											${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
+										</a>
+										<span class="pull-right">
+											<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' onclick='doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' buttonIcon='arrow-down' size='xs' showTitle=false />
+											<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' buttonIcon='arrow-up' size='xs' showTitle=false />
+										</span>
+									</div>
+									<div>
+									<@select name='fileType' id='fileType' params='onchange="doUpdateContentType(${docContent.id},this.value)"'>
+									<#list image_type as type>
+										<option value= "${type.idContentType}" <#if type.idContentType= docContent.contentType.idContentType>selected</#if>>${type.label}</option>             
+									</#list>
+									</@select>
+									</div>
+									</li>
+								</#list>
+								</@listGroup>
+								</#if>
+								<div id="imageappend"></div>
+							</@boxBody>
+						</@box>
+						
+						<@box collapsed=true>
+							<@boxHeader title='#i18n{blog.create_blog.labelUrl}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='<!-- #i18n{blog.create_blog.labelCollapse} -->' buttonIcon='plus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='url' labelKey='#i18n{blog.create_blog.labelUrl}' rows=2>
+									<@input type='text' name='url' id='url' value='${blog.url!}' />
+								</@formGroup>
+							</@boxBody>
+            </@box>
+						
+						<@box collapsed=true>
+							<@boxHeader title='#i18n{blog.create_blog.labelEditComment}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='<!-- #i18n{blog.create_blog.labelCollapse} -->' buttonIcon='plus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelEditComment}'>
+									<@input type='text' name='edit_comment' id='edit_comment' value='' />
+								</@formGroup>
+							</@boxBody>
+						</@box>
         </@columns>
-    </div>
 				</@tform>
 			</@boxBody>
 		</@box>
@@ -306,23 +264,16 @@ $( function(){
 });
 </script>
 
-<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel">
-    <div class="modal-dialog modal-lg" role="document" >
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="#i18n{blog.create_blog.labelCollapse}"><i class="fa fa-remove" aria-hidden="true"></i></button>
-                <h4 class="modal-title" id="previewModalLabel">#i18n{blog.publication_blog.labelPublication}</h4>
-            </div>
-            <div class="modal-body">
-                <p id="loader" class="text-center">
-                    <i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
-                    <span class="sr-only">#i18n{blog.modify_blog.labelLoading}</span>
-                </p>
-                <iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">#i18n{blog.create_blog.labelCollapse}</button>
-            </div>
-        </div>
-    </div>
-</div>
+<@modal id='previewModal'>
+	<@modalHeader modalTitle='#i18n{blog.publication_blog.labelPublication}' />
+	<@modalBody>
+			<p id="loader" class="text-center">
+				<@icon style='circle-o-notch' class='fa-spin fa-5x fa-fw' />
+				<span class="sr-only">#i18n{blog.modify_blog.labelLoading}</span>
+			</p>
+			<iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
+	</@modalBody>
+	<@modalFooter>
+			<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' color='btn-default' />
+	</@modalFooter>
+</@modal>
