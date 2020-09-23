@@ -58,7 +58,6 @@
 			<@boxBody>
 
 			<#assign idx=0 />
-			<div class="box-body table-responsive no-padding">
 				<@table>
 					<thead>
 						<tr>
@@ -108,36 +107,37 @@
 								</#list>
 							</td>
 							<td>
-								<div class="btn-group">
+								<@btnGroup>
 								<#if permission_manage_publish_blog>
-									<a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}" class="btn-publish btn btn-sm <#if blog.blogPublication?size == 0>btn-default<#else>btn-primary notif</#if>" title="<#if blog.blogPublication?size==0>Publier<#else>#i18n{blog.manage_blogs.managePublication}</#if>">
-										<i class="fa fa-globe"></i>
+									<#assign btnClass>
+										<#if blog.blogPublication?size == 0>btn-default<#else>btn-primary notif</#if>
+									</#assign>
+									<#assign btnTitle>
+										<#if blog.blogPublication?size==0>Publier<#else>#i18n{blog.manage_blogs.managePublication}</#if>
+									</#assign>
+									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' class='btn-publish' color='${btnClass}' title=title buttonIcon='globe' size='sm'>
 										<#if blog.blogPublication?size &gt; 0>
 											<span class="notification left bg-purple-active">${blog.blogPublication?size}</span>
 										</#if>
-									</a>
+									</@aButton>
+
 									<#if blog.blogPublication?size &gt; 0>
-										<button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<span class="caret"></span>
-											<span class="sr-only">#i18n{blog.modify_blog.labelToggleDropdown}</span>
-										</button>
-										<ul class="dropdown-menu">
+										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' showTitle=false size='sm'>
+
 											<#list blog.blogPublication?sort_by("idPortlet") as publication>
 												<li>
-													<div class="btn-group" role="group" aria-label="...">
-														<a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}" class="btn btn-danger btn-xs hidden" title="Depublier">
-															<i class="fa fa-remove"></i>
-														</a>
+													<@btnGroup>
+														<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' title="Depublier" color='btn-danger' class='hidden' buttonIcon='remove' />
 														<a href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link"  title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
-															${publication.portlet.name} - #i18n{blog.modify_blogs.labelPage} ${publication.portlet.pageId} <i class="fa fa-external-link" aria-hidden="true"></i>
+															${publication.portlet.name} - #i18n{blog.modify_blogs.labelPage} ${publication.portlet.pageId} <@icon style='external-link' />
 														</a>
-													</div>
+													</@btnGroup>
 												</li>
 											</#list>
-										</ul>
+										</@button>
 									</#if>
 								</#if>
-								</div>
+								</@btnGroup>
 							</td>
 							<td>
 								<!-- modal Front preview --->

@@ -1,7 +1,19 @@
-<@rowBoxHeader i18nTitleKey="blog.modify_tag.title">
-  <form class="form-horizontal" method="post" name="modify_tag" action="jsp/admin/plugins/blog/ManageTags.jsp">
-    <@messages errors=errors />
-    <@fieldInputText i18nLabelKey="blog.modify_tag.labelTagName" inputName="name" mandatory=true value="${tags.name!}" i18nHelpBlockKey="blog.modify_tag.labelTagName.help" />
-    <@actionButtons button1Name="action_modifyTag" button2Name="view_manageTags"/>
-  </form>
-</@rowBoxHeader>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{blog.modify_tag.title}' />
+			<@boxBody>
+				<@tform name='modify_tag' action='jsp/admin/plugins/blog/ManageTags.jsp'>
+					<@messages errors=errors />
+					<@formGroup labelFor='name' labelKey='#i18n{blog.modify_tag.labelTagName}' helpKey='#i18n{blog.modify_tag.labelTagName.help}' mandatory=true>
+						<@input type='text' name='name' id='name' value='${tags.name!}' />
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' name='action_modifyTag' buttonIcon='check' title='#i18n{portal.admin.message.buttonValidate}' />
+						<@button type='submit' name='view_manageTags' buttonIcon='times' title='#i18n{portal.admin.message.buttonCancel}' color='btn-secondary' cancel=true />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

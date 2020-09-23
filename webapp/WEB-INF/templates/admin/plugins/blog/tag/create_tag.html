@@ -1,7 +1,19 @@
-<@rowBoxHeader i18nTitleKey="blog.create_tag.title">
-  <form class="form-horizontal" method="post" name="create_tag" action="jsp/admin/plugins/blog/ManageTags.jsp">
-    <@messages errors=errors />
-    <@fieldInputText i18nLabelKey="blog.create_tag.labelTagName" inputName="name" mandatory=true value="" i18nHelpBlockKey="blog.create_tag.labelTagName.help" />
-    <@actionButtons button1Name="action_createTag" button2Name="view_manageTags"/>
-  </form>
-</@rowBoxHeader>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{blog.create_tag.title}' />
+			<@boxBody>
+				<@tform name='create_tag' action='jsp/admin/plugins/blog/ManageTags.jsp'>
+					<@messages errors=errors />
+					<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' mandatory=true>
+						<@input type='text' name='name' value='' />
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' name='action_createTag' buttonIcon='check' title='#i18n{portal.admin.message.buttonValidate}' />
+						<@button type='submit' name='view_manageTags' buttonIcon='times' title='#i18n{portal.admin.message.buttonCancel}' color='btn-secondary' cancel=true />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
