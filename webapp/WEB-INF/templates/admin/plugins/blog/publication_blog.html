@@ -6,13 +6,13 @@
   <input type='hidden' id='id' name='id' value='${blog.id}' />
 	<@row>
 		<@columns xs=6>
-			<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.publication_blog.labelSearchBy}'>
+			<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
 				<#assign value><#if portlet_filter??>${portlet_filter.searchValue}</#if></#assign>
 				<@input type='text' id='portlet_filter_value' name='portlet_filter_value' placeHolder='#i18n{blog.publication_blog.labelSearchBy}' value=value />
 			</@formGroup>
 		</@columns>
 		<@columns xs=6>
-			<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{blog.publication_blog.labelSearchBy}'>
+			<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
 				<@select name='portlet_filter_type' id='portlet_filter_type' title='#i18n{blog.publication_blog.labelSearchBy}'>
 					<option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType = "page_id"> selected="selected" </#if>>#i18n{blog.publication_blog.labelSearchByIdPage}</option>
 					<option value="page_name" <#if !portlet_filter?? ||portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{blog.publication_blog.labelSearchByPageName}</option>
@@ -21,7 +21,7 @@
 			</@formGroup>
 		</@columns>
 		<@columns xs=6>
-			<@formGroup labelFor='order_portlet' labelKey='#i18n{blog.publication_blog.labelOrder}'>
+			<@formGroup labelFor='order_portlet' labelKey='#i18n{blog.publication_blog.labelOrder}' rows=2>
 				<@select name='order_portlet' title='#i18n{blog.publication_blog.labelOrder}'>
 					<option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{blog.publication_blog.labelDateUpdatePortlet}</option>
 					<option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{blog.publication_blog.labelPageName}</option>
@@ -31,7 +31,7 @@
 			</@formGroup>
 		</@columns>
 		<@columns xs=6>
-			<@formGroup labelFor='order_portlet_asc' labelKey='#i18n{blog.publication_blog.labelOrderAsc}'>
+			<@formGroup labelFor='order_portlet_asc' labelKey='#i18n{blog.publication_blog.labelOrderAsc}' rows=2>
 				<@select name='order_portlet_asc'>
 					<option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{blog.publication_blog.labelOrderDesc}</option>
 					<option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{blog.publication_blog.labelOrderAsc}</option>
@@ -39,7 +39,7 @@
 			</@formGroup>
 		</@columns>
 	</@row>
-	<@formGroup>
+	<@formGroup rows=2>
 		<@button type='submit' class='btn-block' title='#i18n{blog.manage_documents.buttonSearch}' name='view_manageBlogsPublication' buttonIcon='search' />
 	</@formGroup>
 	<#if !portlet_filter?? || portlet_filter.displayLatestPortlets >
@@ -96,7 +96,7 @@
 			
 		<@row class='input-daterange'>
 			<@columns xs=6>
-				<@formGroup labelFor='dateBeginPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateBegin}'>
+				<@formGroup labelFor='dateBeginPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateBegin}' rows=2>
 					<@inputGroup>
 						<@input type='text' name='dateBeginPublishing' id='dateBeginPublishing' value='' />
 						<@inputGroupItem type='addon'>
@@ -106,7 +106,7 @@
 				</@formGroup>
 			</@columns>
 			<@columns xs=6>
-				<@formGroup labelFor='dateEndPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateEnd}'>
+				<@formGroup labelFor='dateEndPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateEnd}' rows=2>
 					<@inputGroup>
 						<@input type='text' name='dateEndPublishing' id='dateEndPublishing' value='' />
 						<@inputGroupItem type='addon'>
@@ -117,7 +117,7 @@
 			</@columns>
 		</@row>
 		
-		<@formGroup>
+		<@formGroup rows=2>
 			<@button type='submit' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' class='btn-block' title='#i18n{blog.publication_blog.buttonPublish}' />
 		</@formGroup>
 				
@@ -140,14 +140,14 @@
 					<#if portlet.id==pub.idPortlet>
 						${portlet.name!} ${pub.dateBeginPublishing} - ${pub.dateEndPublishing}
 						<a href='jsp/admin/site/AdminSite.jsp?page_id=${pub.portlet.pageId}' target="_parent" class="btn btn-link"  title=" ${portlet.name} - Page ${pub.portlet.pageId}">
-						 <i class="fa fa-external-link" aria-hidden="true"></i>
+						 <@icon style='external-link' />
 						</a>
 						<#break>
 					</#if>
 				</#list>
 			</td>
 			<td>
-				<@aButton  href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${pub.idPortlet}&id=${blog.id}' color='btn-danger' size='sm' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' showTitle=false />
+				<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${pub.idPortlet}&id=${blog.id}' color='btn-danger' size='sm' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' showTitle=false />
 			</td>
 		</tr>
 		</#list>
