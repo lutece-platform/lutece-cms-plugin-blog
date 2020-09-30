@@ -23,62 +23,63 @@
 </div>
 </#macro>
 <#macro blogSearch>
+<hr></hr>
  <!-- Collect the nav links, forms, and other content for toggling -->
 <div class="">
 
-      <div class="form-group">
-        <label for="search_text">#i18n{blog.manage_blogs.search}</label>
-        <div class="input-group">
-          <input type="text" class="form-control" id="search_text" name="search_text" value="${search_text!''}">
-          <div class="input-group-addon">
-              <label id="mydocs" for="current_user">
-                  <input type="checkbox" name="current_user" id="current_user" value="true" <#if is_checked>checked</#if> title="#i18n{blog.manage_blogs.sortByUserButton}">
-              </label>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="search_text">#i18n{blog.manage_blogs.labelTag}</label>
-        <select id="tag_doc" multiple name="tag_doc" class="form-control">
-          <#list list_tag?sort as tgName>
-            <option <#if tags?? && tags?seq_contains(tgName.code)> selected</#if> value="${tgName.code!}">${tgName.name!?capitalize}</option>
-          </#list>
-        </select>
-		  </div>
-      <div class="form-group">
-        <div class="input-daterange row">
-          <div class="col-xs-12 col-sm-6">
-            <label for="dateUpdateBlogAfter">#i18n{blog.manage_blogs.labelAfter}</label>
-            <div class="input-group">
-              <input type="text" name="dateUpdateBlogAfter" id="dateUpdateBlogAfter" class="form-control" value="${dateUpdateBlogAfter!}">
-              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-            </div>
-          </div>
-          <div class="col-xs-12 col-sm-6">
-            <label class="" for="dateUpdateBlogBefor">#i18n{blog.manage_blogs.labelBefore}</label>
-            <div class="input-group">
-              <input type="text" name="dateUpdateBlogBefor" id="dateUpdateBlogBefor" class="form-control" value="${dateUpdateBlogBefor!}">
-              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-            </div>
-          </div>
-	        <div class="col-xs-12 col-sm-6">
-            <label for="unpublished">#i18n{blog.manage_blogs.labelNotPublished}</label>
-            <input type="checkbox" name="unpublished" id="unpublished" value="false" <#if unpublished>checked</#if> title="#i18n{blog.manage_blogs.labelNotPublished}" />
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-default" name="button_search" id="button_search"  onclick="changeformtarget();" >#i18n{blog.manage_blogs.search}</button>
-        <button type="submit" class="btn btn-default" name="button_reset" id="button_reset"  onclick="changeformtarget();" >#i18n{blog.manage_blogs.reset}</button>
-      </div>
-      <ul class="nav navbar-nav navbar-right hidden">
-        <li>
-          <a href="jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs" title="#i18n{blog.manage_tags.title}">
-              <i class="fa fa-tags" aria-hidden="true"></i> <span class="hidden-xs">#i18n{blog.manage_blogs.labelManageTags}</span>
-          </a>
-        </li>
-      </ul>
+	<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' rows=2>
+		<@inputGroup>
+			<@input type='text' id='search_text' name='search_text' value='${search_text!\'\'}' />
+			<@inputGroupItem type='addon'>
+				<@checkBox labelFor='current_user' labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked />
+			</@inputGroupItem>
+		</@inputGroup>
+	</@formGroup>
+	<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}' rows=2>
+		<@select id='tag_doc' multiple=3 name='tag_doc'>
+			<#list list_tag?sort as tgName>
+			<option <#if tags?? && tags?seq_contains(tgName.code)> selected</#if> value="${tgName.code!}">${tgName.name!?capitalize}</option>
+			</#list>
+		</@select>
+		<a href="jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs" title="#i18n{blog.manage_tags.title}" target='_top'>
+			<@icon style='tags' /> #i18n{blog.manage_blogs.labelManageTags}
+		</a>
+	</@formGroup>
+
+	<@row class='input-daterange'>
+		<@columns sm=6>
+			<@formGroup labelFor='dateUpdateBlogAfter' labelKey='#i18n{blog.manage_blogs.labelAfter}' rows=2>
+				<@inputGroup>
+					<@input type='text' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
+					<@inputGroupItem type='addon'>
+						<@icon style='calendar' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+		</@columns>
+		<@columns sm=6>
+			<@formGroup labelFor='dateUpdateBlogBefor' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2>
+				<@inputGroup>
+					<@input type='text' name='dateUpdateBlogBefor' id='dateUpdateBlogBefor'  value='${dateUpdateBlogBefor!}' />
+					<@inputGroupItem type='addon'>
+						<@icon style='calendar' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+		</@columns>
+	</@row>
+	
+	<@formGroup labelFor='unpublished' labelKey='#i18n{blog.manage_blogs.labelNotPublished}' rows=2>
+		<@checkBox name='unpublished' id='unpublished' value='false' checked=unpublished title='#i18n{blog.manage_blogs.labelNotPublished}' />
+	</@formGroup>
+
+	<@formGroup rows=2>
+		<@button type='submit' name='button_search' id='button_search' params='onclick="changeformtarget();"' title='#i18n{blog.manage_blogs.search}' />
+		<@button type='submit' name='button_reset' id='button_reset' params='onclick="changeformtarget();"' title='#i18n{blog.manage_blogs.reset}' color='btn-secondary' />
+	</@formGroup>
 </div>
+
+<hr></hr>
 
 <script type="text/javascript">
 function changeformtarget() {

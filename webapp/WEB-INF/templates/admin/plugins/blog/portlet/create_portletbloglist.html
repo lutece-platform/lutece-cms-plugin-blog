@@ -24,6 +24,7 @@
 		<@listGroup id='published_docs' params='class="connectedSortable"'>
 			<#list blog_list_published as blog>
 				<li class="list-group-item" id="${blog.id}">${blog.contentLabel}</li>
+			</#list>
 		</@listGroup>
 	</@columns>
 </@row>
