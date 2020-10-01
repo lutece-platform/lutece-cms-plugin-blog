@@ -3,55 +3,55 @@
 			<#if permission_manage_create_blog>
 				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' title='#i18n{blog.manage_blogs.buttonAdd}' showTitle=false buttonIcon='plus' size='xs' class="btn-box-tool" />
 			</#if>
-		</@boxHeader>
-		<@boxBody>
-			<@table>
-				<thead class="sr-only">
-					<tr>
-						<th></th>
-						<th>#i18n{blog.dashboard.columnLastModifiedDocument}</th>
-						<th>#i18n{blog.dashboard.columnActions}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<#list last_modified_document as blog>
-					<tr>
-							<td>
-							<#list blog.docContent as content>
-									<img src="servlet/plugins/blogs/file?id_file=${content.id}" alt="" class="img-responsive blog-thumbnails">
-									<#break>
-							</#list> 
-							</td>
-							<td>
-								<strong>${blog.id} - ${blog.name}</strong>
-								<p><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small></p>
-							</td>
-							<td>
-								<#if permission_manage_modify_blog>
-								<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' showTitle=false size='sm' />
-								</#if>
-								<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}' title='#i18n{blog.history_blog.labelPreview}' buttonIcon='eye' showTitle=false size='sm' />
-								<#if permission_manage_publish_blog>
-										<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' class='btn-publish' title='#i18n{blog.dashboard.managePublication}' showTitle=false buttonIcon='globe' color='btn-default' size='sm' />
-								</#if>   
-							</td>
-					</tr>
-					</#list>
-					<#if last_modified_document?size=0>
-					<tr>
-							<td colspan="3">
-									#i18n{blog.manage_documents.noDocument}
-							</td>
-					</tr>
-					</#if>
-				</tbody>
-			</@table>
+	</@boxHeader>
+	<@boxBody>
+		<@table>
+			<thead class="sr-only">
+				<tr>
+					<th></th>
+					<th>#i18n{blog.dashboard.columnLastModifiedDocument}</th>
+					<th>#i18n{blog.dashboard.columnActions}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list last_modified_document as blog>
+				<tr>
+					<td>
+						<#list blog.docContent as content>
+						<img src="servlet/plugins/blogs/file?id_file=${content.id}" alt="" class="img-responsive blog-thumbnails">
+								<#break>
+						</#list> 
+					</td>
+					<td>
+						<strong>${blog.id} - ${blog.name}</strong>
+						<p><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small></p>
+					</td>
+					<td>
+						<#if permission_manage_modify_blog>
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' showTitle=false size='sm' />
+						</#if>
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}' title='#i18n{blog.history_blog.labelPreview}' buttonIcon='eye' showTitle=false size='sm' />
+						<#if permission_manage_publish_blog>
+						<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' class='btn-publish' title='#i18n{blog.dashboard.managePublication}' showTitle=false buttonIcon='globe' color='btn-default' size='sm' />
+						</#if>   
+					</td>
+				</tr>
+				</#list>
+				<#if last_modified_document?size=0>
+				<tr>
+					<td colspan="3">
+						#i18n{blog.manage_documents.noDocument}
+					</td>
+				</tr>
+				</#if>
+			</tbody>
+		</@table>
     </@boxBody>
     <@boxFooter class="text-center">
-			<a href="${url}" title="#i18n{document.plugin.description}">
-					#i18n{blog.plugin.description} <@icon style='arrow-circle-right' />
-			</a>
-		</@boxFooter>
+		<a href="${url}" title="#i18n{document.plugin.description}">
+			#i18n{blog.plugin.description} <@icon style='arrow-circle-right' />
+		</a>
+	</@boxFooter>
 </@box>
 <script>
 $( function(){
@@ -75,13 +75,13 @@ $( function(){
 <@modal id='previewModal'>
 	<@modalHeader modalTitle='#i18n{blog.publication_blog.labelPublication}' />
 	<@modalBody>
-			<p id="loader" class="text-center">
-					<i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
-					<span class="sr-only"> #i18n{blog.modify_blog.labelLoading}</span>
-			</p>
-			<iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
+		<p id="loader" class="text-center">
+			<i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
+			<span class="sr-only"> #i18n{blog.modify_blog.labelLoading}</span>
+		</p>
+		<iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
 	</@modalBody>
 	<@modalFooter>
-			<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' />
+		<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' />
 	</@modalFooter>
 </@modal>

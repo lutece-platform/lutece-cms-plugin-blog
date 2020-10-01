@@ -4,38 +4,36 @@
 			<@boxHeader title='Diff ${blog.contentLabel}' />
 			<@boxBody>
 				<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-						<input type='hidden' name='view' value='diffBlog' />
-						<input type='hidden' name='id' value='${blog.id}' />
-						<@formGroup>
-							<@select name='blog_version2'>
-									<#list blog_version_list as blog_tmp>
-									<option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
-									</#list>
-							</@select>
-						</@formGroup>
-						<@formGroup>
-							<@select name='blog_version2'>
-									<#list blog_version_list as blog_tmp>
-									<option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
-									</#list>
-							</@select>
-						</@formGroup>
-						<@formGroup>
-								<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' />
-						</@formGroup>
-					</@tform>
-				</@boxBody>
-			</@box>
+					<input type='hidden' name='view' value='diffBlog' />
+					<input type='hidden' name='id' value='${blog.id}' />
+					<@formGroup>
+						<@select name='blog_version2'>
+							<#list blog_version_list as blog_tmp>
+							<option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
+							</#list>
+						</@select>
+					</@formGroup>
+					<@formGroup>
+						<@select name='blog_version2'>
+							<#list blog_version_list as blog_tmp>
+							<option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
+							</#list>
+						</@select>
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
 			
-			<@box>
-				<@boxHeader title='#i18n{blog.diff_blog.CurrentVersion}' />
-				<@boxBody>
-					${blog_diff!}
-				</@boxBody>
-			</@box>
+		<@box>
+			<@boxHeader title='#i18n{blog.diff_blog.CurrentVersion}' />
+			<@boxBody>
+				${blog_diff!}
+			</@boxBody>
+		</@box>
 			
-			
- 
 		<@row>
 			<@columns sm=6>
 				<@box>
@@ -59,7 +57,7 @@
 					</@boxBody>
 				</@box>
 			</@columns>
-    </@row>
+		</@row>
 
 	</@columns>
 </@row>

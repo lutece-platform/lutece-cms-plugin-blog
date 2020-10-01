@@ -2,11 +2,11 @@
 	<@columns>
 		<@box>
 			<@boxHeader title='#i18n{blog.adminFeature.ManageBlogs.name}'>
-      <#if permission_manage_create_blog>
-        <@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-          <@button type='submit' name='view_createBlog' buttonIcon='plus' title='#i18n{blog.manage_blogs.buttonAdd}' />
-        </@tform>
-      </#if>
+			  <#if permission_manage_create_blog>
+				<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+				  <@button type='submit' name='view_createBlog' buttonIcon='plus' title='#i18n{blog.manage_blogs.buttonAdd}' />
+				</@tform>
+			  </#if>
 			</@boxHeader>
 			<@boxBody>
 				<@messages infos=infos />
@@ -14,8 +14,8 @@
 					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}'>
 						<@inputGroup>
 							<@input type='text' id='search_text' name='search_text' value='${search_text!\'\'}' />
-								<@inputGroupItem type='addon'>
-									<@checkBox labelFor='current_user' labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked orientation='horizontal' />
+							<@inputGroupItem type='addon'>
+								<@checkBox labelFor='current_user' labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked orientation='horizontal' />
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
@@ -62,12 +62,12 @@
 					<thead>
 						<tr>
 							<th>
-									#i18n{blog.manage_blogs.columnContentLabel}
-									<@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" />
+								#i18n{blog.manage_blogs.columnContentLabel}
+								<@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" />
 							</th>
 							<th>
-									#i18n{blog.manage_blogs.columnCreationDate}
-									<@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" />
+								#i18n{blog.manage_blogs.columnCreationDate}
+								<@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" />
 							</th>
 							<th>#i18n{blog.manage_blogs.columnUpdateDate} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="updateDate" /></th>
 							<th>#i18n{blog.create_blog.TagsTitle}</th>
@@ -161,7 +161,7 @@
 								<#if permission_manage_delete_blog>
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='sm' showTitle=false color='btn-danger' />
 								</#if>
-								</td>
+							</td>
 						</tr>
 						<#assign idx=idx + 1/>
 						</#list>
@@ -247,25 +247,23 @@ $(function () {
 
 <@modal id='previewModal'>
 	<div class="modal-header">
-			<button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="#i18n{blog.create_blog.labelCollapse}">
-				<i class="fa fa-remove" aria-hidden="true"></i>
-			</button>
-			<button type="button" id="btn-expand" class="btn btn-link pull-right" aria-label="#i18n{blog.manage_blog.labelExpand}">
-				<i class="fa fa-expand" aria-hidden="true"></i>
-			</button>
-			<h4 class="modal-title" id="previewModalLabel">#i18n{blog.create_blog.labelPreview}</h4>
+		<button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="#i18n{blog.create_blog.labelCollapse}">
+			<i class="fa fa-remove" aria-hidden="true"></i>
+		</button>
+		<button type="button" id="btn-expand" class="btn btn-link pull-right" aria-label="#i18n{blog.manage_blog.labelExpand}">
+			<i class="fa fa-expand" aria-hidden="true"></i>
+		</button>
+		<h4 class="modal-title" id="previewModalLabel">#i18n{blog.create_blog.labelPreview}</h4>
 	</div>
 	<@modalBody>
-			<p id="loader" class="text-center">
-					<i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
-					<span class="sr-only">#i18n{blog.modify_blog.labelLoading}</span>
-			</p>
-			<iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
+		<p id="loader" class="text-center">
+			<i class="fa fa-circle-o-notch fa-spin fa-5x fa-fw"></i>
+			<span class="sr-only">#i18n{blog.modify_blog.labelLoading}</span>
+		</p>
+		<iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
 	</@modalBody>
 	<@modalFooter>
-			<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' color='btn-default' />
+		<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' color='btn-default' />
 	</@modalFooter>
 </@modal>
-<script>
 
-</script>
