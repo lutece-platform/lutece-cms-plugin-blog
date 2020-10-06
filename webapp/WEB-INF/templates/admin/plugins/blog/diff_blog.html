@@ -1,58 +1,66 @@
-<@box>
-<@boxHeader title='Diff ${blog.contentLabel}' i18nTitleKey='${blog.contentLabel}' boxTools=true>
-<form action="jsp/admin/plugins/blog/ManageBlogs.jsp" class="form-inline">
-    <input type="hidden" name="view" value="diffBlog">
-    <input type="hidden" name="id" value="${blog.id}">
-    <div class="form-group">
-        <select name="blog_version2" class="form-control">
-            <#list blog_version_list as blog_tmp>
-            <option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
-            </#list>
-        </select>
-    </div>
-    <div class="form-group">
-        <select name="blog_version2" class="form-control">
-            <#list blog_version_list as blog_tmp>
-            <option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
-            </#list>
-        </select>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-default" name="button_search" value="1">#i18n{blog.diff_blog.labelButtonCompare}</button>
-    </div>
-</form>
-</@boxHeader>
-<@boxBody>
-<div class="row">
-    <div class="col-xs-12 col-md-12">
-        <h3>#i18n{blog.diff_blog.CurrentVersion}</h3>
-        <div class="well" style="overflow: auto;">${blog_diff!}</div>
-    </div>
-</div>
- 
-<div class="row">
-        <div class="col-xs-12 col-sm-6">
-            <h3> Version ${blog2.version} <small>${blog2.updateDate}</small>
-            <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}"
-                class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelReset} ${blog2.version}">
-                    <i class="fa fa-undo"></i>
-                </a>
-            </h3>
-            <div class="well" style="overflow: auto;">${blog2.htmlContent}</div>
-        </div> 
-        <div class="col-xs-12col-sm-6">
-            <h3> #i18n{blog.diff_blog.Version} ${blog.version} 
-                <small>${blog.updateDate}</small>
-                <a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}"
-                class="btn btn-primary btn-sm" title="#i18n{blog.history_blog.labelReset} ${blog.version}">
-                    <i class="fa fa-undo"></i>
-                </a>
-            </h3>
-           <div class="well" style="overflow: auto;">${blog.htmlContent}</div>
-        </div>
-    </div>
-   </@boxBody>
-</@box>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='Diff ${blog.contentLabel}' />
+			<@boxBody>
+				<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+					<input type='hidden' name='view' value='diffBlog' />
+					<input type='hidden' name='id' value='${blog.id}' />
+					<@formGroup>
+						<@select name='blog_version2'>
+							<#list blog_version_list as blog_tmp>
+							<option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
+							</#list>
+						</@select>
+					</@formGroup>
+					<@formGroup>
+						<@select name='blog_version2'>
+							<#list blog_version_list as blog_tmp>
+							<option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
+							</#list>
+						</@select>
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
+			
+		<@box>
+			<@boxHeader title='#i18n{blog.diff_blog.CurrentVersion}' />
+			<@boxBody>
+				${blog_diff!}
+			</@boxBody>
+		</@box>
+			
+		<@row>
+			<@columns sm=6>
+				<@box>
+					<@boxHeader title='Version ${blog2.version}'>
+						<small>${blog2.updateDate}</small>
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' showTitle=false buttonIcon='undo' size='sm' />
+					</@boxHeader>
+					<@boxBody>
+						${blog2.htmlContent}
+					</@boxBody>
+				</@box>
+			</@columns> 
+			<@columns sm=6>
+				<@box>
+					<@boxHeader title='#i18n{blog.diff_blog.Version} ${blog.version}'>
+						<small>${blog.updateDate}</small>
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' showTitle=false buttonIcon='undo' size='sm' />
+					</@boxHeader>
+					<@boxBody>
+						${blog.htmlContent}
+					</@boxBody>
+				</@box>
+			</@columns>
+		</@row>
+
+	</@columns>
+</@row>
 <script type = 'text/javascript'>
 //lifted from daisy diff.js, just this part without the whole dojo/prev/next
 function updateOverlays(){

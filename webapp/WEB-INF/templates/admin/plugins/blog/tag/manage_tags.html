@@ -1,54 +1,42 @@
-<@rowBox>
-  <@boxHeader title="#i18n{blog.manage_tags.title}" boxTools=true>
-    <@headerButtons>
-      <form class="form-inline" method="post" name="manage_blogs" action="jsp/admin/plugins/blog/ManageTags.jsp">
-      	<#if permission_manage_create_tag>
-        <button class="btn btn-primary btn-flat" type="submit" name="view_createTag" >
-          <i class="fa fa-plus"></i>
-          <span class="hidden-xs">#i18n{blog.manage_tags.buttonAdd}</span>
-        </button>
-        </#if>
-      </form>
-    </@headerButtons>
-  </@boxHeader>
-  <@boxBody>
-     <@messages infos=infos />
-      <@table>
-      <thead>
-        <tr>
-          <th>
-            #i18n{blog.manage_tags.columnTagLabel}
-          </th>
-          <th>#i18n{portal.util.labelActions}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <#list tag_list as tag >
-        <tr>
-          <td>
-            ${tag.name}
-          </td>
-
-          <td>
-			<#if permission_manage_modify_tag>
-            <a href="jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}"
-                class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}" >
-              <i class="fa fa-pencil"></i>
-            </a>
-            </#if>
-			<#if permission_manage_delete_tag>
-            <a  href="jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}"
-                class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
-              <i class="fa fa-trash"></i>
-            </a>
-            </#if>
-          </td>
-        </tr>
-        </#list>
-      </tbody>
-      </@table>
-    </div>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{blog.manage_tags.title}'>
+				<@tform name='manage_blogs' action='jsp/admin/plugins/blog/ManageTags.jsp'>
+					<#if permission_manage_create_tag>
+					<@button type='submit' name='view_createTag' buttonIcon='plus' title='#i18n{blog.manage_tags.buttonAdd}' />
+					</#if>
+				</@tform>
+			</@boxHeader>
+			<@boxBody>
+				 <@messages infos=infos />
+					<@table>
+					<thead>
+						<tr>
+							<th>#i18n{blog.manage_tags.columnTagLabel}</th>
+							<th>#i18n{portal.util.labelActions}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list tag_list as tag >
+						<tr>
+							<td>
+								${tag.name}
+							</td>
+							<td>
+							<#if permission_manage_modify_tag>
+								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' size='sm' showTitle=false />
+								</#if>
+							<#if permission_manage_delete_tag>
+								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' size='sm' showTitle=false />
+								</#if>
+							</td>
+						</tr>
+						</#list>
+					</tbody>
+					</@table>
         <@paginationAdmin paginator=paginator combo=1 />
-
-  </@boxBody>
-</@rowBox>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

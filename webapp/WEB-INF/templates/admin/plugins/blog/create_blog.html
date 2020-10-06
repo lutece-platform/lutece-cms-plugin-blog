@@ -1,180 +1,142 @@
 <#include "/admin/util/editor/editor_keditor.html" />
-<form class="form" id="form-editor" name="create_blog" method="post" enctype="multipart/form-data" action="jsp/admin/plugins/blog/ManageBlogs.jsp">
-    <@messages errors=errors />
-    <input type="hidden" id="action" name="action" value="createBlog">
-    <input type="hidden" id="id" name="id" value="0">
-    <input id="tag_remove" type="hidden" name="tag_remove" value="">
-    <div class="row">
-        <article class="col-xs-12 col-sm-10">
-            <div class="form-group">
-                <label for="content_label" class="sr-only">#i18n{blog.create_blog.labelContentLabel} </label>
-                <input class="form-control" name="content_label" id="content_label" type="text" placeholder="#i18n{blog.create_blog.labelContentLabel.help}" value="" required>
-            </div>
-          <div class="form-group">
-              <label for="html_content" class="sr-only">#i18n{blog.create_blog.labelEditContent} </label>
-              <textarea id="html_content" class="hidden" name="html_content" rows="12"></textarea>
-              <@initEditor />
-          </div>
-        </article>
-        <aside class="col-xs-12 col-sm-2 aside">
-          <div class="form-group">
-              <button class="btn btn-primary btn-block" type="submit" title="#i18n{portal.util.labelCreate}" name="action_createBlog">
-                <i class="fa fa-check" aria-hidden="true"></i> #i18n{portal.util.labelCreate}
-              </button>
-          </div>
-          <div class="form-group">
-              <button class="btn btn-primary btn-block" type="submit" title="#i18n{blog.create_blog.labelApply}" value="apply" name="button">
-                <i class="fa fa-check" aria-hidden="true"></i> #i18n{blog.create_blog.labelApply}
-              </button>
-          </div>
-          <div class="box box-default" data-widget="box-widget">
-      			<div class="box-header with-border">
-      				<h3 class="box-title">#i18n{blog.create_blog.labelDescription}</h3>
-      				<div class="box-tools">
-      					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
-                  <i class="fa fa-minus"></i>
-                </button>
-      				</div>
-      			</div>
-      			<div class="box-body">
-              <label for="description" class="sr-only">#i18n{blog.modify_blog.labelEditComment}</label>
-              <textarea id="description" class="form-control" name="description" rows="2">${blog.description!}</textarea>
-            </div>
-          </div>
-          <div class="box box-default" data-widget="box-widget">
-            <div class="box-header with-border">
-              <h3 class="box-title">#i18n{blog.create_blog.TagsTitle}</h3>
-              <div class="box-tools">
-                <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
-                  <i class="fa fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="box-body">
-              <div class="form-group">
-                <label for="addTag" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
-                  <div class="input-group">
-                    <@comboSortedWithParams name="tag_doc" default_value="" additionalParameters=" class=\"form-control\" " items=list_tag />
-                    <span class="input-group-btn">                    
-                      <button type="button" value="addTag" id="addTag" name="addTag" class="btn btn-primary">
-                        <i class="fa fa-tag"></i>
-                       </button>
-                      </span>
-                    </div>
-                </div>
-                <ul id="tag-list" class="list-group">
-                  <#list blog.tag as tg>
-                    <li id="tag_${tg.idTag}" class="list-group-item clearfix" title="${tg.name}">
-                      <span class="pull-left">${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
-                      <span class="pull-right">
-                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="#i18n{blog.create_blog.labelDown}" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveDown' );">
-                          <i class="fa fa-arrow-down"></i>
-                        </button>
-                        <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="#i18n{blog.create_blog.labelUp}" onclick="doUpdatePriorityTag( ${tg.idTag}, 'moveUp');">
-                          <i class="fa fa-arrow-up"></i>
-                        </button>
-                        <button type="button" value="removeTag" name="removeTag" class="btn btn-danger btn-xs btn-flat" onclick="doDeleteTag( ${tg.idTag}, '${tg.name!}');">
-                          <i class="fa fa-trash"></i>
-                        </button>
-                      </span>
-                    </li>
-                   </#list>
-                  </ul>
-                  <#if permission_manage_create_tag>
-                  <label for="tag_name" class="sr-only">#i18n{blog.manage_tags.buttonAdd}</label>
-                    <div class="input-group">
-                      <input type="text" id="tag_name" class="form-control" name="tag_name" value="" placeholder="#i18n{blog.manage_tags.buttonAdd}">
-                      <span class="input-group-btn">
-                        <button type="button" value="createTag" id="createTag" name="createTag" class="btn btn-primary" title="#i18n{blog.create_tag.pageTitle}">
-                          <i class="fa fa-plus"></i>
-                        </button>
-                      </span>
-                  </div>
-                  </#if>
-                </div>
-              </div>
-              <div class="box box-default" data-widget="box-widget">
-                <div class="box-header with-border">
-                  <h3 class="box-title">#i18n{blog.create_blog.labelImage}</h3>
-                  <div class="box-tools">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}"><i class="fa fa-minus"></i></button>
-                  </div>
-                </div>
-                <div class="box-body">
-                  <div class="form-group">
-                    <label for="attachment" class="sr-only">#i18n{blog.create_blog.labelAttachment}</label>
-                    <div class="text-center">
-                    <select name="fileType" id="fileType">
-                    <#list image_type as type>
-				              <option value= "${type.idContentType}">${type.label}</option>             
-                    </#list>
-                  </select>
-                  <#if is_crop_image><!--To the use of the image crop plugin -->
-                    <#include "/skin/plugins/uploadimage/uploadimage.html" />
-                    <@addRequiredJsUploadImages/>
-                    <@cropimage  fieldName= "attachment"  file="images/admin/skin/plugins/uploadimage/picture.jpg"  cssClass="text-center"  synchronous= "false"/>
-                  <#else>
-                    <input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )" value="">
-                  </#if>
-                  <ul id="content-list" class="list-group">
-                  <#if blog.docContent?? && blog.docContent?size!=0>
-                    <#list blog.docContent as docContent >
-                    <li id ="doc_${docContent.id}" class="list-group-item clearfix">
-                      <div id= "${docContent.id}">
-                        <button id="deleteButtonattachment" class="btn btn-default" onclick=deleteImage("${docContent.id}") type="button" title="#i18n{blog.create_blog.labelRemove}" style="">
-                          <span class="glyphicon glyphicon-remove-circle"></span> #i18n{blog.create_blog.labelRemove}
-                        </button>
-                        <a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
-                          ${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
-                        </a>
-                        <span class="pull-right">
-                          <button type="button" class="btn btn-primary btn-xs btn-flat btn-down" title="#i18n{blog.create_blog.labelDown}" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveDown' );">
-                            <i class="fa fa-arrow-down"></i>
-                          </button>
-                          <button type="button" class="btn btn-primary btn-xs btn-flat btn-up" title="#i18n{blog.create_blog.labelUp}" onclick="doUpdatePriorityContent( ${docContent.id}, 'moveUp');">
-                            <i class="fa fa-arrow-up"></i>
-                          </button>
-                        </span>
-                      </div>
-                    </li>
-                    </#list>
-                  </#if>
-                  </ul>
-                </div>                 
-              </div>
-            </div>
-          </div>
-          <div class="box box-default" data-widget="box-widget">
-            <div class="box-header with-border">
-              <h3 class="box-title">#i18n{blog.create_blog.labelUrl}</h3>
-              <div class="box-tools">
-                <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
-                  <i class="fa fa-minus"></i>
-                </button>
-              </div>
-          </div>
-          <div class="box-body">
-            <label for="edit_comment" class="sr-only">#i18n{blog.create_blog.labelUrl</label>
-            <input class="form-control" name="url" id="url" type="text" value="">
-          </div>
-        </div>
-        <div class="box box-default" data-widget="box-widget">
-          <div class="box-header with-border">
-            <h3 class="box-title">#i18n{blog.create_blog.labelEditComment}</h3>
-            <div class="box-tools">
-              <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="#i18n{blog.create_blog.labelCollapse}">
-                <i class="fa fa-minus"></i>
-              </button>
-            </div>
-          </div>
-          <div class="box-body">
-            <label for="edit_comment" class="sr-only">#i18n{blog.create_blog.labelEditComment}</label>
-            <input class="form-control" name="edit_comment" id="edit_comment" type="text" value="">
-          </div>
-        </div>
-      </aside>
-    </div>
-</form>
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='' />
+			<@boxBody>
+			<@tform id='form-editor' name='create_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+				<@messages errors=errors />
+				<input type='hidden' id='action' name='action' value='createBlog' />
+				<input type='hidden' id='id' name='id' value='0' />
+				<input type='hidden' id='tag_remove' name='tag_remove' value='' />
+				<@row>
+					<@columns <!-- LUTECE VII ONLY tag='article' -->sm=9>
+						<@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' mandatory=true rows=2>
+								<@input type='text' name='content_label' id='content_label' placeHolder='#i18n{blog.create_blog.labelContentLabel.help}' value='' />
+						</@formGroup>
+						<@formGroup labelFor='html_content' labelKey='#i18n{blog.create_blog.labelEditContent}' rows=2>
+							<@input type='textarea' name='html_content' id='html_content' rows=12 />
+							<@initEditor />
+						</@formGroup>
+					</@columns>
+					<@columns <!-- LUTECE VII ONLY tag='aside' -->sm=3 class='aside'>
+						<@formGroup rows=2>
+							<@button class='btn-block' type='submit' title='#i18n{portal.util.labelCreate}' name='action_createBlog' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+							<@button class='btn-block' type='submit' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button' buttonIcon='check' title='#i18n{blog.create_blog.labelApply}' />
+						</@formGroup>
+						<@box>
+							<@boxHeader title='#i18n{blog.create_blog.labelDescription}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='description' labelKey='#i18n{blog.modify_blog.labelEditComment}' rows=2>
+									<@input type='textarea' id='description' name='description' rows=2>${blog.description!}</@input>
+								</@formGroup>
+							</@boxBody>
+						</@box>
+						<@box>
+							<@boxHeader title='#i18n{blog.create_blog.TagsTitle}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
+									<@inputGroup>
+										<@select name='tag_doc' default_value='' items=list_tag />
+										<@inputGroupItem>                    
+											<@button type='button' value='addTag' id='addTag' name='addTag' buttonIcon='tag' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+								<ul id="tag-list" class="list-group">
+									<#list blog.tag as tg>
+										<li id="tag_${tg.idTag}" class="list-group-item clearfix" title="${tg.name}">
+											<span>${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
+											<span style="position:absolute; right:10px;">
+												<@button type='button' class='btn-down' size='xs' title='#i18n{blog.create_blog.labelDown}' buttonIcon='arrow-down' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' />
+												<@button type='button' class='btn-up' size='xs' title='#i18n{blog.create_blog.labelUp}' buttonIcon='arrow-up' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' />
+												<@button type='button' value='removeTag' name='removeTag' size='xs' buttonIcon='trash' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' color='btn-danger' />
+											</span>
+										</li>
+									 </#list>
+								</ul>
+								<#if permission_manage_create_tag>
+								<@formGroup labelFor='tag_name' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
+									<@inputGroup>
+										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.manage_tags.buttonAdd}' />
+										<@inputGroupItem>
+											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' showTitle=false buttonIcon='plus' />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
+								</#if>
+							</@boxBody>
+						</@box>
+						<@box>
+							<@boxHeader title='#i18n{blog.create_blog.labelImage}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='attachment' labelKey='#i18n{blog.create_blog.labelAttachment}' rows=2>
+									<@select name='fileType' id='fileType' params='style="margin-bottom:10px;"'>
+										<#list image_type as type>
+											<option value= "${type.idContentType}">${type.label}</option>             
+										</#list>
+									</@select>
+										<#if is_crop_image><!--To the use of the image crop plugin -->
+											<#include "/skin/plugins/uploadimage/uploadimage.html" />
+											<@addRequiredJsUploadImages/>
+											<@cropimage fieldName='attachment' file='images/admin/skin/plugins/uploadimage/picture.jpg'  cssClass='text-center' synchronous='false' />
+										<#else>
+											<@input type='file' class='filestyle' name='attachment' id='attachment' params='data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )"' value='' />
+										</#if>
+										<ul id="content-list" class="list-group" style="margin-top:10px;">
+										<#if blog.docContent?? && blog.docContent?size!=0>
+											<#list blog.docContent as docContent >
+											<li id="doc_${docContent.id}" class="list-group-item clearfix">
+												<div id="${docContent.id}">
+													<@button type='button' id='deleteButtonattachment' color='btn-default' params='onclick=deleteImage("${docContent.id}")' title='#i18n{blog.create_blog.labelRemove}' buttonIcon='times' title='#i18n{blog.create_blog.labelRemove}' />
+													<a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
+														${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
+													</a>
+													<span class="pull-right">
+														<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' buttonIcon='arrow-down' />
+														<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' buttonIcon='arrow-up' />
+													</span>
+												</div>
+											</li>
+											</#list>
+										</#if>
+										</ul>
+								</@formGroup>
+							</@boxBody>
+						</@box>
+						<@box>
+							<@boxHeader title='#i18n{blog.create_blog.labelUrl}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelUrl}' rows=2>
+									<@input type='text' name='url' id='url' value='' />
+								</@formGroup>
+							</@boxBody>
+						</@box>
+						<@box>
+							<@boxHeader title='#i18n{blog.create_blog.labelEditComment}'>
+								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
+							</@boxHeader>
+							<@boxBody>
+								<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelEditComment}' rows=2>
+									<@input type='text' name='edit_comment' id='edit_comment' type='text' value='' />
+								</@formGroup>
+							</@boxBody>
+						</@box>
+					</@columns>
+					</@row>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 <script src="js/plugins/blog/manage_tag.js"></script>
 <script src="js/plugins/blog/manage_image.js"></script>
 <script>

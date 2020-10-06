@@ -1,15 +1,18 @@
 <#include "/admin/util/editor/editor_keditor.html" />
-<div class="form-group">
-<label>#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}</label>
-<select class="form-control" id="page_template_code" name="page_template_code">
-  <#list pages_list as key, value >
-     <option value="${key}" <#if portlet.pageTemplateDocument== key>selected</#if>>${value}</option>
-  </#list>
-</select>
-</div>
-<div class="form-group">
-	<label class="sr-only" for="html_content">#i18n{blog.modify_.labelContent}</label>
-	<textarea id="html_content" class="richtext" name="html_content" rows="12">${htmlcontent!}</textarea>
+
+<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2>
+	<@select id='page_template_code' name='page_template_code'>
+	<#list pages_list as key, value>
+		<option value="${key}" <#if portlet.pageTemplateDocument== key>selected</#if>>${value}</option>
+	</#list>
+	</@select>
+</@formGroup>
+
+<@formGroup labelFor='html_content' labelKey='#i18n{blog.modify_.labelContent}' rows=2>
+	<@input type='textarea' id='html_content' richtext=true name='html_content' rows=12>${htmlcontent!}</@input>
 	<@initEditor fsubmit='form-portlet' />
-</div>
-<@fieldInputText i18nLabelKey="blog.modify_.labelEditComment" inputName="edit_comment" mandatory=false value="${edit_comment!''}" i18nHelpBlockKey="blog.modify_.labelEditComment.help" />
+</@formGroup>
+
+<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.modify_blog.labelEditComment}' helpKey='#i18n{blog.modify_blog.labelEditComment.help}' rows=2>
+	<@input type='text' name='edit_comment' value=edit_comment!'' />
+</@formGroup>
