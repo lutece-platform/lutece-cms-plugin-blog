@@ -1,4 +1,4 @@
-<#include "/admin/util/editor/editor_keditor.html" />
+<#include '/admin/util/editor/editor_keditor.html' />
 <@row>
 	<@columns>
 		<@box>
@@ -6,13 +6,13 @@
 			<@boxBody>
 			<@tform id='form-editor' name='create_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
 				<@messages errors=errors />
-				<input type='hidden' id='action' name='action' value='createBlog' />
-				<input type='hidden' id='id' name='id' value='0' />
-				<input type='hidden' id='tag_remove' name='tag_remove' value='' />
+				<@input type='hidden' id='action' name='action' value='createBlog' />
+				<@input type='hidden' id='id' name='id' value='0' />
+				<@input type='hidden' id='tag_remove' name='tag_remove' value='' />
 				<@row>
 					<@columns <!-- LUTECE VII ONLY tag='article' -->sm=9>
 						<@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' mandatory=true rows=2>
-								<@input type='text' name='content_label' id='content_label' placeHolder='#i18n{blog.create_blog.labelContentLabel.help}' value='' />
+							<@input type='text' name='content_label' id='content_label' placeHolder='#i18n{blog.create_blog.labelContentLabel.help}' value='' />
 						</@formGroup>
 						<@formGroup labelFor='html_content' labelKey='#i18n{blog.create_blog.labelEditContent}' rows=2>
 							<@input type='textarea' name='html_content' id='html_content' rows=12 />
@@ -54,7 +54,7 @@
 											<span style="position:absolute; right:10px;">
 												<@button type='button' class='btn-down' size='xs' title='#i18n{blog.create_blog.labelDown}' buttonIcon='arrow-down' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' />
 												<@button type='button' class='btn-up' size='xs' title='#i18n{blog.create_blog.labelUp}' buttonIcon='arrow-up' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' />
-												<@button type='button' value='removeTag' name='removeTag' size='xs' buttonIcon='trash' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' color='btn-danger' />
+												<@button type='button' value='removeTag' name='removeTag' size='xs' buttonIcon='trash' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' color='danger' />
 											</span>
 										</li>
 									 </#list>
@@ -64,7 +64,7 @@
 									<@inputGroup>
 										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.manage_tags.buttonAdd}' />
 										<@inputGroupItem>
-											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' showTitle=false buttonIcon='plus' />
+											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' hideTitle=['all']buttonIcon='plus' />
 										</@inputGroupItem>
 									</@inputGroup>
 								</@formGroup>
@@ -83,7 +83,7 @@
 										</#list>
 									</@select>
 										<#if is_crop_image><!--To the use of the image crop plugin -->
-											<#include "/skin/plugins/uploadimage/uploadimage.html" />
+											<#include '/skin/plugins/uploadimage/uploadimage.html' />
 											<@addRequiredJsUploadImages/>
 											<@cropimage fieldName='attachment' file='images/admin/skin/plugins/uploadimage/picture.jpg'  cssClass='text-center' synchronous='false' />
 										<#else>
@@ -94,7 +94,7 @@
 											<#list blog.docContent as docContent >
 											<li id="doc_${docContent.id}" class="list-group-item clearfix">
 												<div id="${docContent.id}">
-													<@button type='button' id='deleteButtonattachment' color='btn-default' params='onclick=deleteImage("${docContent.id}")' title='#i18n{blog.create_blog.labelRemove}' buttonIcon='times' title='#i18n{blog.create_blog.labelRemove}' />
+													<@button type='button' id='deleteButtonattachment' color='default' params='onclick=deleteImage("${docContent.id}")' title='#i18n{blog.create_blog.labelRemove}' buttonIcon='times' title='#i18n{blog.create_blog.labelRemove}' />
 													<a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
 														${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
 													</a>

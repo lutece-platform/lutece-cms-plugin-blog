@@ -25,17 +25,17 @@
 							</td>
 							<td>
 							<#if permission_manage_modify_tag>
-								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' size='sm' showTitle=false />
+								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' size='sm' hideTitle=['all']/>
 								</#if>
 							<#if permission_manage_delete_tag>
-								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' size='sm' showTitle=false />
+								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all']/>
 								</#if>
 							</td>
 						</tr>
 						</#list>
 					</tbody>
 					</@table>
-        <@paginationAdmin paginator=paginator combo=1 />
+				<@paginationAdmin paginator=paginator combo=1 />
 			</@boxBody>
 		</@box>
 	</@columns>

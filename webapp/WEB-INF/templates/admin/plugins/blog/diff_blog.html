@@ -4,8 +4,8 @@
 			<@boxHeader title='Diff ${blog.contentLabel}' />
 			<@boxBody>
 				<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-					<input type='hidden' name='view' value='diffBlog' />
-					<input type='hidden' name='id' value='${blog.id}' />
+					<@input type='hidden' name='view' value='diffBlog' />
+					<@input type='hidden' name='id' value='${blog.id}' />
 					<@formGroup>
 						<@select name='blog_version2'>
 							<#list blog_version_list as blog_tmp>
@@ -39,7 +39,7 @@
 				<@box>
 					<@boxHeader title='Version ${blog2.version}'>
 						<small>${blog2.updateDate}</small>
-						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' showTitle=false buttonIcon='undo' size='sm' />
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' hideTitle=['all']buttonIcon='undo' size='sm' />
 					</@boxHeader>
 					<@boxBody>
 						${blog2.htmlContent}
@@ -50,7 +50,7 @@
 				<@box>
 					<@boxHeader title='#i18n{blog.diff_blog.Version} ${blog.version}'>
 						<small>${blog.updateDate}</small>
-						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' showTitle=false buttonIcon='undo' size='sm' />
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' hideTitle=['all']buttonIcon='undo' size='sm' />
 					</@boxHeader>
 					<@boxBody>
 						${blog.htmlContent}

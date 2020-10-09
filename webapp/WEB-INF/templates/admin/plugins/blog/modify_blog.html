@@ -6,8 +6,8 @@
 			<@boxBody>
 				<@tform method='post' name='modify_blog' id='form-editor' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
 					<@messages errors=errors />
-					<input type='hidden' id='id' name='id' value='${blog.id}' />
-					<input type='hidden' id='action' name='action' value='modifyBlog' />
+					<@input type='hidden' id='id' name='id' value='${blog.id}' />
+					<@input type='hidden' id='action' name='action' value='modifyBlog' />
 					<@columns <!-- LUTECE VII ONLY tag='article' ---> sm=9>
 						<@formGroup labelFor='content_label' labelKey='#i18n{blog.modify_blog.labelContentLabel}' mandatory=true rows=2>
 							<@input type='text' name='content_label' id='content_label' placeHolder='#i18n{blog.modify_blog.labelContentLabel.help}' value='${blog.contentLabel}' />
@@ -21,7 +21,7 @@
 						<@formGroup rows=2>
 							<@button type='submit' class='btn-block' title='#i18n{portal.util.labelModify}' name='action_modifyBlog' buttonIcon='check' />
 							<@button type='submit' class='btn-block' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button' buttonIcon='check' />
-							<@button type='submit' class='btn-block' title='#i18n{portal.util.labelCancel}' name='view_manageBlogs' buttonIcon='times' color='btn-default' />
+							<@button type='submit' class='btn-block' title='#i18n{portal.util.labelCancel}' name='view_manageBlogs' buttonIcon='times' color='default' />
 						</@formGroup>
 							
 						
@@ -30,7 +30,7 @@
 								<#assign title>
 									Publication
 									<#if blog.blogPublication?size &gt; 0>
-											 <span class="notification left bg-purple-active">${blog.blogPublication?size}</span>
+										<span class="notification left bg-purple-active">${blog.blogPublication?size}</span>
 									</#if>
 								</#assign>
 								<@boxHeader title=title />
@@ -56,7 +56,7 @@
 										<#list blog.blogPublication as publication>
 											<li>
 												<@btnGroup>
-													<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' color='btn-danger' class='hidden' title='#i18n{blog.publication_blog.buttonUnPublish}' buttonIcon='times' />
+													<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' color='danger' class='hidden' title='#i18n{blog.publication_blog.buttonUnPublish}' buttonIcon='times' />
 													<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class='btn-link' title='#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}'>
 														 ${publication.portlet.name} - #i18n{blog.publication_blog.labelPage} ${publication.portlet.pageId} <@icon style='external-link' />
 													</@aButton>
@@ -79,9 +79,9 @@
 									<#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
 										 ${extendableResourceActionsHtml!}
 									</#if>
-									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' 										class='btn-publish' title='#i18n{blog.modify_blogs.managePublication}' buttonIcon='globe' showTitle=false />
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;d=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory} (${blog.version} versions)' buttonIcon='history' showTitle=false />
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' showTitle=false color='btn-danger' />
+									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' 										class='btn-publish' title='#i18n{blog.modify_blogs.managePublication}' buttonIcon='globe' hideTitle=['all']/>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;d=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory} (${blog.version} versions)' buttonIcon='history' hideTitle=['all']/>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all']color='danger' />
 								</@btnGroup>
 							</@boxBody>
 						</@box>
@@ -113,14 +113,14 @@
 
 								<@listGroup id='tag-list'>
 									<#list blog.tag as tg>
-										<li id="tag_${tg.idTag}" class="${listElementClass} clearfix" title="${tg.name}">
+										<@listGroupItem id='tag_${tg.idTag}' params='title="${tg.name}">
 											<span class="pull-left">${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
 											<span class="pull-right">
-												<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' buttonIcon='arrow-down' size='xs' showTitle=false />
-												<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' buttonIcon='arrow-up' size='xs' showTitle=false />
-												<@button type='button' value='removeTag' name='removeTag' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' buttonIcon='trash' color='btn-danger' size='xs' showTitle=false />
+												<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' buttonIcon='arrow-down' size='xs' hideTitle=['all']/>
+												<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' buttonIcon='arrow-up' size='xs' hideTitle=['all']/>
+												<@button type='button' value='removeTag' name='removeTag' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' buttonIcon='trash' color='danger' size='xs' hideTitle=['all']/>
 											</span>
-										</li>
+										</@listGroupItem>
 								 </#list>
 								</@listGroup>
 								<#if permission_manage_create_tag>
@@ -128,7 +128,7 @@
 									<@inputGroup>
 										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.manage_tags.buttonAdd}' />
 										<@inputGroupItem type='btn'>
-											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' buttonIcon='plus' showTitle=false />
+											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' buttonIcon='plus' hideTitle=['all']/>
 										</@inputGroupItem>
 									</@inputGroup>
 								</@formGroup>
@@ -166,8 +166,8 @@
 											${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
 										</a>
 										<span class="pull-right">
-											<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' onclick='doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' buttonIcon='arrow-down' size='xs' showTitle=false />
-											<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' buttonIcon='arrow-up' size='xs' showTitle=false />
+											<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' onclick='doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' buttonIcon='arrow-down' size='xs' hideTitle=['all']/>
+											<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' buttonIcon='arrow-up' size='xs' hideTitle=['all']/>
 										</span>
 									</div>
 									<div>
@@ -274,6 +274,6 @@ $( function(){
 		<iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
 	</@modalBody>
 	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' color='btn-default' />
+		<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' color='default' />
 	</@modalFooter>
 </@modal>

@@ -122,12 +122,11 @@
 									</@aButton>
 
 									<#if blog.blogPublication?size &gt; 0>
-										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' showTitle=false size='sm'>
-
+										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all']size='sm'>
 											<#list blog.blogPublication?sort_by("idPortlet") as publication>
 												<li>
 													<@btnGroup>
-														<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' title="Depublier" color='btn-danger' class='hidden' buttonIcon='remove' />
+														<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' title="Depublier" color='danger' class='hidden' buttonIcon='remove' />
 														<a href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link"  title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
 															${publication.portlet.name} - #i18n{blog.modify_blogs.labelPage} ${publication.portlet.pageId} <@icon style='external-link' />
 														</a>
@@ -141,25 +140,25 @@
 							</td>
 							<td>
 								<!-- modal Front preview --->
-								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{blog.history_blog.labelPreview}' buttonIcon='eye' showTitle=false class='btn-preview' size='sm' />
+								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{blog.history_blog.labelPreview}' buttonIcon='eye' hideTitle=['all']class='btn-preview' size='sm' />
 								<!-- Admin preview --->
-								<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&amp;id=${blog.id}' class='hidden' title='#i18n{blog.manage_blogs.labelAdmin} #i18n{blog.history_blog.labelPreview}' buttonIcon='eye' showTitle=false size='sm' />
+								<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&amp;id=${blog.id}' class='hidden' title='#i18n{blog.manage_blogs.labelAdmin} #i18n{blog.history_blog.labelPreview}' buttonIcon='eye' hideTitle=['all']size='sm' />
 								<#if permission_manage_modify_blog>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' showTitle=false size='sm' />
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' hideTitle=['all']size='sm' />
 								</#if>
 								<#if permission_manage_create_blog>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=duplicateBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelDuplicateBlog}' buttonIcon='copy' showTitle=false size='sm' />
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=duplicateBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelDuplicateBlog}' buttonIcon='copy' hideTitle=['all']size='sm' />
 								</#if>
 									<@btnGroup>
 										<#if blog.version !=1>
-											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' buttonIcon='code-fork' showTitle=false size='sm' />
+											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' buttonIcon='code-fork' hideTitle=['all']size='sm' />
 										</#if>
 										<#if blog.version &gt; 1>
-											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='notif' title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions=Versions}' buttonIcon='history' showTitle=false size='sm'><@tag color='success'>${blog.version}</@tag></@aButton>
+											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='notif' title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions=Versions}' buttonIcon='history' hideTitle=['all']size='sm'><@tag color='success'>${blog.version}</@tag></@aButton>
 										</#if>
 								</@btnGroup>
 								<#if permission_manage_delete_blog>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='sm' showTitle=false color='btn-danger' />
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='sm' hideTitle=['all']color='danger' />
 								</#if>
 							</td>
 						</tr>
@@ -263,7 +262,7 @@ $(function () {
 		<iframe style="width:100%;height:60vh;border:0" frameborder="0" id="previewModalFrame" src=""></iframe>
 	</@modalBody>
 	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' color='btn-default' />
+		<@button type='button' params='data-dismiss="modal"' title='#i18n{blog.create_blog.labelCollapse}' color='default' />
 	</@modalFooter>
 </@modal>
 

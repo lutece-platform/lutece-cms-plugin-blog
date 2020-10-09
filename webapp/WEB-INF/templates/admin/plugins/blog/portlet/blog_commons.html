@@ -17,7 +17,7 @@
 		</#if>
 		</@select>
 		<@inputGroupItem type='btn'>
-			<@button type='submit' title='#i18n{portal.util.labelRefresh}' name='refresh' value='refresh' params='onclick="changeformtarget();"' buttonIcon='repeat' size='xs' showTitle=false color='btn-secondary' />
+			<@button type='submit' title='#i18n{portal.util.labelRefresh}' name='refresh' value='refresh' params='onclick="changeformtarget();"' buttonIcon='repeat' size='xs' hideTitle=['all']color='secondary' />
 		</@inputGroupItem>
 	</@inputGroup>
 </@columns>
@@ -72,7 +72,7 @@
 
 <@formGroup rows=2>
 	<@button type='submit' name='button_search' id='button_search' params='onclick="changeformtarget();"' title='#i18n{blog.manage_blogs.search}' />
-	<@button type='submit' name='button_reset' id='button_reset' params='onclick="changeformtarget();"' title='#i18n{blog.manage_blogs.reset}' color='btn-secondary' />
+	<@button type='submit' name='button_reset' id='button_reset' params='onclick="changeformtarget();"' title='#i18n{blog.manage_blogs.reset}' color='secondary' />
 </@formGroup>
 
 <script type="text/javascript">

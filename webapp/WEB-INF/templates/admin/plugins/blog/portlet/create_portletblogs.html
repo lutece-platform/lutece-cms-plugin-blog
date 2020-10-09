@@ -10,13 +10,13 @@
 </@formGroup>
 
 <@tabs>
-	<@listTabs>
-	  <li role="presentation" class="active"><a href="#creation" aria-controls="creation" role="tab" data-toggle="tab">#i18n{blog.portlet.blogsBlogsPortlet.labelCreationNewTab}</a></li>
-	  <li role="presentation"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">#i18n{blog.portlet.blogsBlogsPortlet.labelCreationExistingTab}</a></li>
-	</@listTabs>
+	<@tabList>
+	  <@tabLink active=true href='#creation' title='#i18n{blog.portlet.blogsBlogsPortlet.labelCreationNewTab}' />
+	  <@tabLink href='#existing' title='#i18n{blog.portlet.blogsBlogsPortlet.labelCreationExistingTab}' />
+	</@tabList>
 
 	<@tabContent>
-		<div role="tabpanel" class="tab-pane active" id="creation">
+		<@tabPanel id='creation' active=true>
 			<@formGroup labelFor='html_content' labelKey='#i18n{blog.portlet.blogsBlogsPortlet.labelEditNewContent}' rows=2>
 				<@input type='textarea' id='html_content' richtext=true name='html_content' rows=12 />
 				<@initEditor fsubmit='form-portlet' />
@@ -24,8 +24,8 @@
 			<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelEditComment}' helpKey='#i18n{blog.create_blog.labelEditComment.help}' rows=2>
 				<@input type='text' name='edit_comment' value='' />
 			</@formGroup>
-		</div>
-		<div role="tabpanel" class="tab-pane" id="existing">
+		</@tabPanel>
+		<@tabPanel id='existing'>
 		  <@formGroup labelFor='blog_selected' labelKey='' rows=2>
 			<@select name='blog_selected' id='blog_selected'>
 			  <option value=""></option>
@@ -36,7 +36,7 @@
 			  </#list>
 			</@select>
 		  </@formGroup>
-		</div>
+		</@tabPanel>
 	</@tabContent>
 </@tabs>
 <!--

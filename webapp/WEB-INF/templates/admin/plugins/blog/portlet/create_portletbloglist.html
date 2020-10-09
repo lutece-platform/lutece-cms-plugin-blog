@@ -17,7 +17,7 @@
 		<h4 class="lead">#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}</h4>
 		<@listGroup id='docs' params='class="connectedSortable"'>
 			<#list blog_list as doc>
-				<li class="list-group-item" id="${doc.id}">${doc.contentLabel}</li>
+				<@listGroupItem id='${doc.id}'>${doc.contentLabel}</@listGroupItem>
 			</#list>
 		</@listGroup>
 	</@columns>
@@ -25,7 +25,7 @@
 		<h4 class="lead">#i18n{blog.portlet.blogsListBlogsPortlet.titlePublishedPostList}</h4>
 		<@listGroup id='published_docs' params='class="connectedSortable"'>
 			<#list blog_list_published as blog>
-				<li class="list-group-item" id="${blog.id}">${blog.contentLabel}</li>
+				<@listGroupItem id='${blog.id}'>${blog.contentLabel}</@listGroupItem>
 			</#list>
 		</@listGroup>
 	</@columns>

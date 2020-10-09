@@ -10,22 +10,18 @@
 
 <@row>
 	<@columns sm=6>
-      <h4 class="lead">#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}</h4>
-      <@listGroup id='docs' params='class="connectedSortable"'>
-        <#list blog_list?reverse as doc>
-          <li id="${doc.id}" class="list-group-item">
-            ${doc.contentLabel}
-          </li>
-        </#list>
-      </@listGroup>
+		<h4 class="lead">#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}</h4>
+		<@listGroup id='docs' params='class="connectedSortable"'>
+			<#list blog_list?reverse as doc>
+				<@listGroupItem id='${doc.id}'>${doc.contentLabel}</@listGroupItem>
+			</#list>
+		</@listGroup>
 	</@columns>
 	<@columns sm=6>
 		<h4 class="lead">#i18n{blog.portlet.blogsListBlogsPortlet.titlePublishedPostList}</h4>
 		<@listGroup id='published_docs' params='class="connectedSortable"'>
 			<#list blog_list_published as blog>
-			<li id="${blog.id}" class="list-group-item">
-			   ${blog.contentLabel}
-			</li>
+				<@listGroupItem id='${blog.id}'>${blog.contentLabel}</@listGroupItem>
 			</#list>
 		</@listGroup>
 	</@columns>

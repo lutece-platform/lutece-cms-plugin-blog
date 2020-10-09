@@ -3,7 +3,7 @@
 </header>
 <@tform id='publication_blog' name='publication_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp'>
   <@messages errors=errors />
-  <input type='hidden' id='id' name='id' value='${blog.id}' />
+  <@input type='hidden' id='id' name='id' value='${blog.id}' />
 	<@row>
 		<@columns xs=6>
 			<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
@@ -43,12 +43,12 @@
 		<@button type='submit' class='btn-block' title='#i18n{blog.manage_documents.buttonSearch}' name='view_manageBlogsPublication' buttonIcon='search' />
 	</@formGroup>
 	<#if !portlet_filter?? || portlet_filter.displayLatestPortlets >
-		<input type='hidden' name='is_display_latest_portlets' value='false' />
+		<@input type='hidden' name='is_display_latest_portlets' value='false' />
 	<#else>
 		<@formGroup>
-			<@button type='submit' color='btn-danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
+			<@button type='submit' color='danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
 		</@formGroup>
-		<input type='hidden' name='is_display_latest_portlets' value='true' />
+		<@input type='hidden' name='is_display_latest_portlets' value='true' />
 	</#if>
 
     <!-- FIX
@@ -147,7 +147,7 @@
 				</#list>
 			</td>
 			<td>
-				<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${pub.idPortlet}&id=${blog.id}' color='btn-danger' size='sm' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' showTitle=false />
+				<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${pub.idPortlet}&id=${blog.id}' color='danger' size='sm' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all']/>
 			</td>
 		</tr>
 		</#list>
