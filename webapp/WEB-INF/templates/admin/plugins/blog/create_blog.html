@@ -41,9 +41,9 @@
 							<@boxBody>
 								<@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
 									<@inputGroup>
-										<@select name='tag_doc' default_value='' items=list_tag />
+										<@select name='tag_doc' default_value='' items=list_tag size='sm' />
 										<@inputGroupItem>                    
-											<@button type='button' value='addTag' id='addTag' name='addTag' buttonIcon='tag' />
+											<@button type='button' value='addTag' id='addTag' name='addTag' buttonIcon='tag' size='sm' />
 										</@inputGroupItem>
 									</@inputGroup>
 								</@formGroup>
@@ -52,9 +52,9 @@
 										<li id="tag_${tg.idTag}" class="list-group-item clearfix" title="${tg.name}">
 											<span>${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
 											<span style="position:absolute; right:10px;">
-												<@button type='button' class='btn-down' size='xs' title='#i18n{blog.create_blog.labelDown}' buttonIcon='arrow-down' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' />
-												<@button type='button' class='btn-up' size='xs' title='#i18n{blog.create_blog.labelUp}' buttonIcon='arrow-up' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' />
-												<@button type='button' value='removeTag' name='removeTag' size='xs' buttonIcon='trash' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' color='danger' />
+												<@button type='button' class='btn-down' size='sm' title='#i18n{blog.create_blog.labelDown}' buttonIcon='arrow-down' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' hideTitle=['all'] />
+												<@button type='button' class='btn-up' size='sm' title='#i18n{blog.create_blog.labelUp}' buttonIcon='arrow-up' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' hideTitle=['all'] />
+												<@button type='button' value='removeTag' name='removeTag' size='sm' buttonIcon='trash' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' color='danger' hideTitle=['all'] />
 											</span>
 										</li>
 									 </#list>
@@ -62,9 +62,9 @@
 								<#if permission_manage_create_tag>
 								<@formGroup labelFor='tag_name' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
 									<@inputGroup>
-										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.manage_tags.buttonAdd}' />
+										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.manage_tags.buttonAdd}' size='sm' />
 										<@inputGroupItem>
-											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' hideTitle=['all']buttonIcon='plus' />
+											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' hideTitle=['all']buttonIcon='plus' size='sm' />
 										</@inputGroupItem>
 									</@inputGroup>
 								</@formGroup>
@@ -89,24 +89,24 @@
 										<#else>
 											<@input type='file' class='filestyle' name='attachment' id='attachment' params='data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )"' value='' />
 										</#if>
-										<ul id="content-list" class="list-group" style="margin-top:10px;">
+										<@listGroup id='content-list' params='style="margin-top:10px;"'>
 										<#if blog.docContent?? && blog.docContent?size!=0>
 											<#list blog.docContent as docContent >
-											<li id="doc_${docContent.id}" class="list-group-item clearfix">
+											<@listGroupItem id='doc_${docContent.id}' params='style="padding:0;"'>
 												<div id="${docContent.id}">
-													<@button type='button' id='deleteButtonattachment' color='default' params='onclick=deleteImage("${docContent.id}")' title='#i18n{blog.create_blog.labelRemove}' buttonIcon='times' title='#i18n{blog.create_blog.labelRemove}' />
+													<@button type='button' id='deleteButtonattachment' color='danger' params='onclick=deleteImage("${docContent.id}")' title='#i18n{blog.create_blog.labelRemove}' buttonIcon='times' title='#i18n{blog.create_blog.labelRemove}' hideTitle=['all'] size='sm' />
+													<span style="position:absolute; right:0;">
+														<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' buttonIcon='arrow-down' hideTitle=['all'] size='sm' />
+														<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' buttonIcon='arrow-up' hideTitle=['all'] size='sm' />
+													</span>
 													<a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
 														${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
 													</a>
-													<span class="pull-right">
-														<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' buttonIcon='arrow-down' />
-														<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' buttonIcon='arrow-up' />
-													</span>
 												</div>
-											</li>
+											</@listGroupItem>
 											</#list>
 										</#if>
-										</ul>
+										</@listGroup>
 								</@formGroup>
 							</@boxBody>
 						</@box>

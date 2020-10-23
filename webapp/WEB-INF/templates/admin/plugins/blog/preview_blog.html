@@ -30,8 +30,8 @@
 				- <small>#i18n{blog.preview_blog.createdBy} ${blog.userCreator} ${blog.creationDate} / #i18n{blog.preview_blog.lastUpdate} ${blog.updateDate} #i18n{blog.manage_blogs.labelBy} ${blog.user}</small>
 			</#assign>
 			<@boxHeader title=boxHeaderTitle>
-				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' style='btn-box-tool'  title='#i18n{blog.modify_blog.title}' buttonIcon='edit' />
-				<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' style='btn-box-tool' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' />
+				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
+				<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
 				<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='Collapse' buttonIcon='plus' />
 			</@boxHeader>
 			
