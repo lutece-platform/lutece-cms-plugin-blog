@@ -227,8 +227,6 @@ public final class DocContentDAO implements IDocContentDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
         {
-
-            // daoUtil.setInt( 1, docContent.getId( ));
             daoUtil.setInt( 1, docContent.getContentType( ).getIdContentType( ) );
 
             daoUtil.setString( 2, docContent.getTextValue( ) );
