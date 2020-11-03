@@ -126,9 +126,12 @@ public class TagJspBean extends ManageBlogJspBean
         Collections.sort( listTag, ( tag1, tag2 ) -> tag1.getName( ).compareToIgnoreCase( tag2.getName( ) ) );
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_TAG_LIST, listTag, JSP_MANAGE_TAGS );
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, (User) getUser( ) );
-        boolean bPermissionModify = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_MODIFY, (User) getUser( ) );
-        boolean bPermissionDelete = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_DELETE, (User) getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
+                (User) getUser( ) );
+        boolean bPermissionModify = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_MODIFY,
+                (User) getUser( ) );
+        boolean bPermissionDelete = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_DELETE,
+                (User) getUser( ) );
 
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_TAG, bPermissionModify );

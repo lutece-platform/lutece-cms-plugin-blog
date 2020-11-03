@@ -117,7 +117,7 @@ import fr.paris.lutece.util.url.UrlItem;
 public class BlogJspBean extends ManageBlogJspBean
 {
     private static final long serialVersionUID = 9149742923528515045L;
-    
+
     // Templates
     private static final String TEMPLATE_MANAGE_BLOGS = "/admin/plugins/blog/manage_blogs.html";
     private static final String TEMPLATE_CREATE_BLOG = "/admin/plugins/blog/create_blog.html";
@@ -391,10 +391,14 @@ public class BlogJspBean extends ManageBlogJspBean
             _strSortedAttributeName = strSortedAttributeName;
             _bIsAscSort = bIsAscSort;
         }
-        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User)  getUser( ) );
-        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_MODIFY, (User)  getUser( ) );
-        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, (User)  getUser( ) );
-        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH, (User)  getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE,
+                (User) getUser( ) );
+        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_MODIFY,
+                (User) getUser( ) );
+        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE,
+                (User) getUser( ) );
+        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH,
+                (User) getUser( ) );
 
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_BLOG_LIST, listDocuments );
@@ -467,7 +471,8 @@ public class BlogJspBean extends ManageBlogJspBean
         String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
         Map<String, Object> model = getModel( );
 
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, (User) getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
+                (User) getUser( ) );
 
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
@@ -490,7 +495,7 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doCreateBlog( HttpServletRequest request )
     {
 
-        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User)  getUser( ) ) )
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User) getUser( ) ) )
         {
             String strAction = request.getParameter( PARAMETER_ACTION_BUTTON );
             _blog.setCreationDate( getSqlDate( ) );
@@ -588,7 +593,7 @@ public class BlogJspBean extends ManageBlogJspBean
                 return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, (User)  getUser( ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, (User) getUser( ) ) )
         {
             Tag tag = _blog.getTag( ).stream( ).filter( tg -> tg.getIdTag( ) == Integer.parseInt( strIdTag ) ).collect( Collectors.toList( ) ).get( 0 );
             _blog.deleteTag( tag );
@@ -798,7 +803,7 @@ public class BlogJspBean extends ManageBlogJspBean
     {
         String strId = request.getParameter( PARAMETER_ID_BLOG );
 
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, (User)  getUser( ) ) )
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -849,7 +854,8 @@ public class BlogJspBean extends ManageBlogJspBean
         _blog.getDocContent( ).sort( ( dc1, dc2 ) -> dc1.getPriority( ) - dc2.getPriority( ) );
         Map<String, Object> model = getModel( );
 
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, (User) getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
+                (User) getUser( ) );
 
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
@@ -1104,7 +1110,7 @@ public class BlogJspBean extends ManageBlogJspBean
         // Gestion des fichiers vides
         if ( !result.endsWith( "," ) )
         {
-            String[] thirdParts = result.split( thirdDelimiter );
+            String [ ] thirdParts = result.split( thirdDelimiter );
             base64FileString = thirdParts [1];
         }
 
