@@ -197,7 +197,7 @@ public final class BlogSearchService
         IndexWriter writer = null;
         boolean bCreateIndex = bCreate;
 
-        try 
+        try
         {
             sbLogs.append( "\r\nIndexing all contents ...\r\n" );
 
@@ -317,7 +317,7 @@ public final class BlogSearchService
         convertList( listResults, listSearchResult );
         return nNbResults;
     }
-    
+
     private Query prepareQueryForFilter( BlogSearchFilter filter ) throws org.apache.lucene.queryparser.classic.ParseException
     {
         boolean bDateAfter = false;

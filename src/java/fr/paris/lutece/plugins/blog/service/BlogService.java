@@ -223,8 +223,8 @@ public class BlogService
 
         fireUpdateBlogEvent( blog.getId( ) );
     }
-    
-    private void updateDocContentList(  Blog blog, List<DocContent> docContent )
+
+    private void updateDocContentList( Blog blog, List<DocContent> docContent )
     {
         List<DocContent> listDocContent = DocContentHome.getDocsContentByHtmlDoc( blog.getId( ) );
         List<DocContent> listToCompare = new ArrayList<>( );
