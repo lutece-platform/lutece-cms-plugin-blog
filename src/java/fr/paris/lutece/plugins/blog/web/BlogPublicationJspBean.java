@@ -389,7 +389,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         Collection<ReferenceItem> listPortlets = new ArrayList<>( );
 
         // Check role PERMISSION_MANAGE for DocumentListPortlet
-        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogListPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, getUser( ) ) )
+        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogListPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, (User) getUser( ) ) )
         {
             listPortlets.addAll( BlogListPortletHome.findByFilter( nDocumentId, pOrder, pFilter ) );
         }
@@ -469,7 +469,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         Collection<ReferenceItem> listPortlets = new ArrayList<>( );
 
         // Check role PERMISSION_MANAGE for DocumentPortlet
-        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, getUser( ) ) )
+        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, (User) getUser( ) ) )
         {
             listPortlets.addAll( BlogPortletHome.findByFilter( nDocumentId, pOrder, pFilter ) );
         }

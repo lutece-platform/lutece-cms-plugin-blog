@@ -38,8 +38,6 @@ import fr.paris.lutece.plugins.blog.business.IndexerAction;
 import fr.paris.lutece.plugins.blog.business.IndexerActionFilter;
 import fr.paris.lutece.plugins.blog.business.IndexerActionHome;
 import fr.paris.lutece.plugins.blog.service.BlogPlugin;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.search.LuceneSearchEngine;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.search.SearchResult;
@@ -99,7 +97,6 @@ public final class BlogSearchService
 
     // Constants corresponding to the variables defined in the lutece.properties file
     private static BlogSearchService _singleton;
-    private static Plugin _plugin;
 
     private Analyzer _analyzer;
     private IBlogSearchIndexer _indexer;
@@ -147,9 +144,7 @@ public final class BlogSearchService
         if ( _singleton == null )
         {
             _singleton = new BlogSearchService( );
-            _plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
         }
-
         return _singleton;
     }
 
@@ -169,7 +164,7 @@ public final class BlogSearchService
         try
         {
             List<SearchResult> listResults = new ArrayList<>( );
-            nNbItems = getSearchResults( filter, _plugin, listResults );
+            nNbItems = getSearchResultsByFilter( filter, listResults );
 
             for ( SearchResult searchResult : listResults )
             {
@@ -202,7 +197,7 @@ public final class BlogSearchService
         IndexWriter writer = null;
         boolean bCreateIndex = bCreate;
 
-        try
+        try 
         {
             sbLogs.append( "\r\nIndexing all contents ...\r\n" );
 
@@ -277,113 +272,20 @@ public final class BlogSearchService
      * 
      * @param filter
      *            The filter
-     * @param plugin
-     *            The plugin
      * @param listSearchResult
      *            The list of results
      * @return The result count
      */
-    private int getSearchResults( BlogSearchFilter filter, Plugin plugin, List<SearchResult> listSearchResult )
+    private int getSearchResultsByFilter( BlogSearchFilter filter, List<SearchResult> listSearchResult )
     {
         ArrayList<SearchItem> listResults = new ArrayList<>( );
-        IndexSearcher searcher;
-        boolean bDateAfter = false;
-        boolean bDateBefore = false;
 
         int nNbResults = 0;
         try ( Directory dir = FSDirectory.open( Paths.get( _strIndex ) ) ; DirectoryReader reader = DirectoryReader.open( dir ) ; )
         {
-            searcher = new IndexSearcher( reader );
+            IndexSearcher searcher = new IndexSearcher( reader );
 
-            Collection<String> queries = new ArrayList<>( );
-            Collection<String> sectors = new ArrayList<>( );
-            Collection<BooleanClause.Occur> flags = new ArrayList<>( );
-
-            if ( filter.getKeywords( ) != null && StringUtils.isNotBlank( filter.getKeywords( ) ) )
-            {
-
-                Term term = new Term( SearchItem.FIELD_CONTENTS, filter.getKeywords( ) );
-                Query termQuery = new TermQuery( term );
-                queries.add( termQuery.toString( ) );
-                sectors.add( SearchItem.FIELD_CONTENTS );
-                flags.add( BooleanClause.Occur.MUST );
-
-            }
-            if ( filter.getTag( ) != null )
-            {
-                for ( String tag : filter.getTag( ) )
-                {
-                    Term term = new Term( BlogSearchItem.FIELD_TAGS, tag );
-                    Query termQuery = new TermQuery( term );
-                    queries.add( termQuery.toString( ) );
-                    sectors.add( BlogSearchItem.FIELD_TAGS );
-                    flags.add( BooleanClause.Occur.MUST );
-                }
-
-            }
-            if ( filter.getUser( ) != null )
-            {
-
-                Term term = new Term( BlogSearchItem.FIELD_USER, filter.getUser( ) + WILDCARD );
-                Query termQuery = new TermQuery( term );
-                queries.add( termQuery.toString( ) );
-                sectors.add( BlogSearchItem.FIELD_USER );
-                flags.add( BooleanClause.Occur.MUST );
-
-            }
-            if ( filter.getUserEditedBlogVersion( ) != null )
-            {
-
-                Term term = new Term( BlogSearchItem.FIELD_USERS_EDITED_BLOG, filter.getUserEditedBlogVersion( ) );
-                Query termQuery = new TermQuery( term );
-                queries.add( termQuery.toString( ) );
-                sectors.add( BlogSearchItem.FIELD_USERS_EDITED_BLOG );
-                flags.add( BooleanClause.Occur.MUST );
-
-            }
-
-            if ( filter.getUpdateDateAfter( ) != null || filter.getUpdateDateBefor( ) != null )
-            {
-                BytesRef strAfter = null;
-                BytesRef strBefore = null;
-
-                if ( filter.getUpdateDateAfter( ) != null )
-                {
-                    strAfter = new BytesRef( DateTools.dateToString( filter.getUpdateDateAfter( ), DateTools.Resolution.MINUTE ) );
-                    bDateAfter = true;
-                }
-
-                if ( filter.getUpdateDateBefor( ) != null )
-                {
-                    Date dateBefore = filter.getUpdateDateBefor( );
-                    strBefore = new BytesRef( DateTools.dateToString( dateBefore, DateTools.Resolution.MINUTE ) );
-                    bDateBefore = true;
-                }
-
-                Query queryDate = new TermRangeQuery( SearchItem.FIELD_DATE, strAfter, strBefore, bDateAfter, bDateBefore );
-                queries.add( queryDate.toString( ) );
-                sectors.add( SearchItem.FIELD_DATE );
-                flags.add( BooleanClause.Occur.MUST );
-            }
-
-            if ( filter.getIsUnpulished( ) )
-            {
-
-                Term term = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) ) );
-                Query termQuery = new TermQuery( term );
-                queries.add( termQuery.toString( ) );
-                sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
-                flags.add( BooleanClause.Occur.MUST );
-
-            }
-            Term term = new Term( SearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );
-            Query termQuery = new TermQuery( term );
-            queries.add( termQuery.toString( ) );
-            sectors.add( SearchItem.FIELD_TYPE );
-            flags.add( BooleanClause.Occur.MUST );
-
-            Query queryMulti = MultiFieldQueryParser.parse( queries.toArray( new String [ queries.size( )] ), sectors.toArray( new String [ sectors.size( )] ),
-                    flags.toArray( new BooleanClause.Occur [ flags.size( )] ), _analyzer );
+            Query queryMulti = prepareQueryForFilter( filter );
 
             Sort sorter = new Sort( );
             String field = BlogSearchItem.FIELD_DATE_UPDATE;
@@ -413,8 +315,98 @@ public final class BlogSearchService
         }
 
         convertList( listResults, listSearchResult );
-
         return nNbResults;
+    }
+    
+    private Query prepareQueryForFilter( BlogSearchFilter filter ) throws org.apache.lucene.queryparser.classic.ParseException
+    {
+        boolean bDateAfter = false;
+        boolean bDateBefore = false;
+        Collection<String> queries = new ArrayList<>( );
+        Collection<String> sectors = new ArrayList<>( );
+        Collection<BooleanClause.Occur> flags = new ArrayList<>( );
+
+        if ( filter.getKeywords( ) != null && StringUtils.isNotBlank( filter.getKeywords( ) ) )
+        {
+            Term term = new Term( SearchItem.FIELD_CONTENTS, filter.getKeywords( ) );
+            Query termQuery = new TermQuery( term );
+            queries.add( termQuery.toString( ) );
+            sectors.add( SearchItem.FIELD_CONTENTS );
+            flags.add( BooleanClause.Occur.MUST );
+
+        }
+        if ( filter.getTag( ) != null )
+        {
+            for ( String tag : filter.getTag( ) )
+            {
+                Term term = new Term( BlogSearchItem.FIELD_TAGS, tag );
+                Query termQuery = new TermQuery( term );
+                queries.add( termQuery.toString( ) );
+                sectors.add( BlogSearchItem.FIELD_TAGS );
+                flags.add( BooleanClause.Occur.MUST );
+            }
+
+        }
+        if ( filter.getUser( ) != null )
+        {
+            Term term = new Term( BlogSearchItem.FIELD_USER, filter.getUser( ) + WILDCARD );
+            Query termQuery = new TermQuery( term );
+            queries.add( termQuery.toString( ) );
+            sectors.add( BlogSearchItem.FIELD_USER );
+            flags.add( BooleanClause.Occur.MUST );
+
+        }
+        if ( filter.getUserEditedBlogVersion( ) != null )
+        {
+            Term term = new Term( BlogSearchItem.FIELD_USERS_EDITED_BLOG, filter.getUserEditedBlogVersion( ) );
+            Query termQuery = new TermQuery( term );
+            queries.add( termQuery.toString( ) );
+            sectors.add( BlogSearchItem.FIELD_USERS_EDITED_BLOG );
+            flags.add( BooleanClause.Occur.MUST );
+
+        }
+
+        if ( filter.getUpdateDateAfter( ) != null || filter.getUpdateDateBefor( ) != null )
+        {
+            BytesRef strAfter = null;
+            BytesRef strBefore = null;
+
+            if ( filter.getUpdateDateAfter( ) != null )
+            {
+                strAfter = new BytesRef( DateTools.dateToString( filter.getUpdateDateAfter( ), DateTools.Resolution.MINUTE ) );
+                bDateAfter = true;
+            }
+
+            if ( filter.getUpdateDateBefor( ) != null )
+            {
+                Date dateBefore = filter.getUpdateDateBefor( );
+                strBefore = new BytesRef( DateTools.dateToString( dateBefore, DateTools.Resolution.MINUTE ) );
+                bDateBefore = true;
+            }
+
+            Query queryDate = new TermRangeQuery( SearchItem.FIELD_DATE, strAfter, strBefore, bDateAfter, bDateBefore );
+            queries.add( queryDate.toString( ) );
+            sectors.add( SearchItem.FIELD_DATE );
+            flags.add( BooleanClause.Occur.MUST );
+        }
+
+        if ( filter.getIsUnpulished( ) )
+        {
+            Term term = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) ) );
+            Query termQuery = new TermQuery( term );
+            queries.add( termQuery.toString( ) );
+            sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
+            flags.add( BooleanClause.Occur.MUST );
+
+        }
+        Term term = new Term( SearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );
+        Query termQuery = new TermQuery( term );
+        queries.add( termQuery.toString( ) );
+        sectors.add( SearchItem.FIELD_TYPE );
+        flags.add( BooleanClause.Occur.MUST );
+
+        return MultiFieldQueryParser.parse( queries.toArray( new String [ queries.size( )] ), sectors.toArray( new String [ sectors.size( )] ),
+                flags.toArray( new BooleanClause.Occur [ flags.size( )] ), _analyzer );
     }
 
     /**

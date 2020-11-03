@@ -74,7 +74,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 public class BlogResourceRss extends ResourceRss
 {
     // templates
-    private static final String TEMPLATE_PUSH_RSS_XML_BLOG = "admin/plugins/blog/rss/rss_xml_blogs.html";
     private static final String TEMPLATE_RSS_BLOG_ITEM_TITLE = "admin/plugins/blog/rss/rss_blogs_item_title.html";
     private static final String TEMPLATE_TASK_CREATE_CONFIG = "admin/plugins/blog/rss/rss_create_config.html";
     private static final String TEMPLATE_TASK_MODIFY_CONFIG = "admin/plugins/blog/rss/rss_modify_config.html";

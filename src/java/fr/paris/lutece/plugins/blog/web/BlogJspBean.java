@@ -33,11 +33,47 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
-import fr.paris.lutece.plugins.blog.business.ContentType;
-import fr.paris.lutece.plugins.blog.business.DocContent;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.outerj.daisy.diff.HtmlCleaner;
+import org.outerj.daisy.diff.html.HTMLDiffer;
+import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
+import org.outerj.daisy.diff.html.TextNodeComparator;
+import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
+import org.xml.sax.InputSource;
+
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
+import fr.paris.lutece.plugins.blog.business.ContentType;
+import fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
 import fr.paris.lutece.plugins.blog.business.Tag;
 import fr.paris.lutece.plugins.blog.business.TagHome;
@@ -48,64 +84,31 @@ import fr.paris.lutece.plugins.blog.service.BlogServiceSession;
 import fr.paris.lutece.plugins.blog.service.BlogSessionListner;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
 import fr.paris.lutece.plugins.blog.utils.BlogLock;
+import fr.paris.lutece.portal.business.rbac.RBAC;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.date.DateUtil;
-import fr.paris.lutece.util.html.Paginator;
+import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
-import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.portal.service.rbac.RBACService;
-import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
-import fr.paris.lutece.portal.service.datastore.DatastoreService;
-import fr.paris.lutece.portal.business.rbac.RBAC;
-import fr.paris.lutece.portal.business.user.AdminUser;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URLConnection;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-
-import org.outerj.daisy.diff.HtmlCleaner;
-import org.outerj.daisy.diff.html.HTMLDiffer;
-import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
-import org.outerj.daisy.diff.html.TextNodeComparator;
-import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
-import org.xml.sax.InputSource;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This class provides the user interface to manage Blog features ( manage, create, modify, remove )
@@ -113,6 +116,8 @@ import org.apache.commons.lang.StringUtils;
 @Controller( controllerJsp = "ManageBlogs.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
 public class BlogJspBean extends ManageBlogJspBean
 {
+    private static final long serialVersionUID = 9149742923528515045L;
+    
     // Templates
     private static final String TEMPLATE_MANAGE_BLOGS = "/admin/plugins/blog/manage_blogs.html";
     private static final String TEMPLATE_CREATE_BLOG = "/admin/plugins/blog/create_blog.html";
@@ -271,9 +276,9 @@ public class BlogJspBean extends ManageBlogJspBean
     public String getManageBlogs( HttpServletRequest request )
     {
         _blog = null;
-        _strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
-        _nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
 
         // SORT
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
@@ -312,17 +317,29 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
+            {
                 filter.setKeywords( _strSearchText );
-            if ( _strTag != null && ( _strTag.length > 0 ) )
+            }
+            if ( !ArrayUtils.isEmpty( _strTag ) )
+            {
                 filter.setTag( _strTag );
+            }
             if ( _bIsChecked )
+            {
                 filter.setUser( user.getAccessCode( ) );
+            }
             if ( _bIsUnpulished )
+            {
                 filter.setIsUnpulished( _bIsUnpulished );
+            }
             if ( _dateUpdateBlogAfter != null )
+            {
                 filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+            }
             if ( _dateUpdateBlogBefor != null )
+            {
                 filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
+            }
 
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
 
@@ -333,7 +350,7 @@ public class BlogJspBean extends ManageBlogJspBean
         }
 
         LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( (List<Integer>) listBlogsId, _nItemsPerPage, getHomeUrl( request ),
-                Paginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
+                AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
 
         List<Blog> listDocuments = new ArrayList<>( );
 
@@ -374,10 +391,10 @@ public class BlogJspBean extends ManageBlogJspBean
             _strSortedAttributeName = strSortedAttributeName;
             _bIsAscSort = bIsAscSort;
         }
-        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) );
-        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_MODIFY, getUser( ) );
-        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, getUser( ) );
-        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH, getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User)  getUser( ) );
+        boolean bPermissionModify = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_MODIFY, (User)  getUser( ) );
+        boolean bPermissionDelete = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, (User)  getUser( ) );
+        boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH, (User)  getUser( ) );
 
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_BLOG_LIST, listDocuments );
@@ -438,7 +455,7 @@ public class BlogJspBean extends ManageBlogJspBean
     public String getCreateBlog( HttpServletRequest request ) throws AccessDeniedException
     {
 
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -450,7 +467,7 @@ public class BlogJspBean extends ManageBlogJspBean
         String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
         Map<String, Object> model = getModel( );
 
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, (User) getUser( ) );
 
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
@@ -473,7 +490,7 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doCreateBlog( HttpServletRequest request )
     {
 
-        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User)  getUser( ) ) )
         {
             String strAction = request.getParameter( PARAMETER_ACTION_BUTTON );
             _blog.setCreationDate( getSqlDate( ) );
@@ -530,7 +547,7 @@ public class BlogJspBean extends ManageBlogJspBean
                 return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_CREATE, getUser( ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_CREATE, (User) getUser( ) ) )
         {
 
             String strTagName = request.getParameter( PARAMETER_TAG_NAME );
@@ -571,12 +588,12 @@ public class BlogJspBean extends ManageBlogJspBean
                 return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, getUser( ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, (User)  getUser( ) ) )
         {
             Tag tag = _blog.getTag( ).stream( ).filter( tg -> tg.getIdTag( ) == Integer.parseInt( strIdTag ) ).collect( Collectors.toList( ) ).get( 0 );
             _blog.deleteTag( tag );
 
-            List<Tag> listTag = _blog.getTag( ).stream( ).map( tg -> {
+            List<Tag> listTag = _blog.getTag( ).stream( ).map( ( Tag tg ) -> {
                 if ( ( tg.getPriority( ) > tag.getPriority( ) ) )
                 {
                     tg.setPriority( tg.getPriority( ) - 1 );
@@ -675,7 +692,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         String strId = request.getParameter( PARAMETER_ID_BLOG );
         int nId = Integer.parseInt( strId );
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -710,7 +727,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         int nId = Integer.parseInt( strId );
 
-        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, getUser( ) ) )
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, (User) getUser( ) ) )
         {
 
             if ( checkLockBlog( nId, request.getSession( ).getId( ) ) )
@@ -724,7 +741,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
             List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
 
-            if ( docPublication.size( ) > 0 )
+            if ( CollectionUtils.isNotEmpty( docPublication ) )
             {
                 String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
 
@@ -745,7 +762,7 @@ public class BlogJspBean extends ManageBlogJspBean
     public String doDuplicateBlog( HttpServletRequest request ) throws AccessDeniedException
     {
 
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -781,7 +798,7 @@ public class BlogJspBean extends ManageBlogJspBean
     {
         String strId = request.getParameter( PARAMETER_ID_BLOG );
 
-        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, getUser( ) ) )
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, (User)  getUser( ) ) )
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
@@ -832,7 +849,7 @@ public class BlogJspBean extends ManageBlogJspBean
         _blog.getDocContent( ).sort( ( dc1, dc2 ) -> dc1.getPriority( ) - dc2.getPriority( ) );
         Map<String, Object> model = getModel( );
 
-        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, (User) getUser( ) );
 
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
@@ -867,7 +884,7 @@ public class BlogJspBean extends ManageBlogJspBean
         String strShareable = request.getParameter( PARAMETER_SHAREABLE );
         String strUrl = request.getParameter( PARAMETER_URL );
 
-        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, getUser( ) ) )
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, (User) getUser( ) ) )
         {
             _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nId );
             if ( checkLockBlog( Integer.parseInt( strId ), request.getSession( ).getId( ) ) || _blog == null )
@@ -1014,11 +1031,11 @@ public class BlogJspBean extends ManageBlogJspBean
             Locale locale = getLocale( );
 
             DomTreeBuilder oldHandler = new DomTreeBuilder( );
-            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( blog2.getHtmlContent( ).getBytes( "UTF-8" ) ) ), oldHandler );
+            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( blog2.getHtmlContent( ).getBytes( StandardCharsets.UTF_8 ) ) ), oldHandler );
             TextNodeComparator leftComparator = new TextNodeComparator( oldHandler, locale );
 
             DomTreeBuilder newHandler = new DomTreeBuilder( );
-            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( blog.getHtmlContent( ).getBytes( "UTF-8" ) ) ), newHandler );
+            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( blog.getHtmlContent( ).getBytes( StandardCharsets.UTF_8 ) ) ), newHandler );
             TextNodeComparator rightComparator = new TextNodeComparator( newHandler, locale );
 
             HtmlSaxDiffOutput output = new HtmlSaxDiffOutput( result, "" );
@@ -1087,7 +1104,7 @@ public class BlogJspBean extends ManageBlogJspBean
         // Gestion des fichiers vides
         if ( !result.endsWith( "," ) )
         {
-            String thirdParts[] = result.split( thirdDelimiter );
+            String[] thirdParts = result.split( thirdDelimiter );
             base64FileString = thirdParts [1];
         }
 
@@ -1096,7 +1113,7 @@ public class BlogJspBean extends ManageBlogJspBean
         String strFileName = request.getParameter( PARAMETER_FILE_NAME );
         String strFileType = request.getParameter( "fileType" );
 
-        if ( StringUtils.isEmpty( mimeType ) || mimeType == null )
+        if ( StringUtils.isEmpty( mimeType ) )
         {
 
             InputStream is = new ByteArrayInputStream( fileByteArray );
@@ -1165,7 +1182,7 @@ public class BlogJspBean extends ManageBlogJspBean
             }
 
         DocContent docCont = _blog.getDocContent( ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
-        List<DocContent> listDocs = _blog.getDocContent( ).stream( ).map( dc -> {
+        List<DocContent> listDocs = _blog.getDocContent( ).stream( ).map( ( DocContent dc ) -> {
             if ( ( dc.getPriority( ) > docCont.getPriority( ) ) && ( docCont.getId( ) != dc.getId( ) ) )
             {
 
@@ -1293,7 +1310,7 @@ public class BlogJspBean extends ManageBlogJspBean
             }
         }
 
-        return JsonUtil.buildJsonResponse( new JsonResponse( "SUCCESS" ) );
+        return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_SUCCESS ) );
     }
 
     /**
@@ -1353,14 +1370,14 @@ public class BlogJspBean extends ManageBlogJspBean
     private ReferenceList getTageList( )
     {
 
-        ReferenceList BlogList = TagHome.getTagsReferenceList( );
+        ReferenceList blogList = TagHome.getTagsReferenceList( );
 
         for ( Tag tg : _blog.getTag( ) )
         {
-            BlogList.removeIf( item -> item.getCode( ).equals( String.valueOf( tg.getIdTag( ) ) ) );
+            blogList.removeIf( item -> item.getCode( ).equals( String.valueOf( tg.getIdTag( ) ) ) );
 
         }
-        return BlogList;
+        return blogList;
     }
 
     /**
@@ -1374,14 +1391,7 @@ public class BlogJspBean extends ManageBlogJspBean
      */
     private boolean checkLockBlog( int nIdBlog, String strIdSession )
     {
-
-        if ( _mapLockBlog.get( nIdBlog ) != null && !_mapLockBlog.get( nIdBlog ).getSessionId( ).equals( strIdSession ) )
-        {
-
-            return true;
-
-        }
-        return false;
+        return _mapLockBlog.get( nIdBlog ) != null && !_mapLockBlog.get( nIdBlog ).getSessionId( ).equals( strIdSession );
     }
 
     /**
