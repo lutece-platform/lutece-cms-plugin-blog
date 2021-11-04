@@ -33,11 +33,13 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-import javax.validation.constraints.*;
-
-import org.hibernate.validator.constraints.*;
-
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -45,10 +47,6 @@ import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.util.ReferenceItem;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is the business class for the object Blog
