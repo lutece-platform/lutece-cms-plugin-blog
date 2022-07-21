@@ -530,7 +530,7 @@ public class BlogJspBean extends ManageBlogJspBean
                 return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_CREATE, getUser( ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_CREATE, getUser( ) == null ? AdminUserService.getAdminUser( request ) : getUser()) )
         {
 
             String strTagName = request.getParameter( PARAMETER_TAG_NAME );
@@ -571,7 +571,7 @@ public class BlogJspBean extends ManageBlogJspBean
                 return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
             }
 
-        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, getUser( ) ) )
+        if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strIdTag, Tag.PERMISSION_DELETE, getUser( ) == null ? AdminUserService.getAdminUser( request ) : getUser() ) )
         {
             Tag tag = _blog.getTag( ).stream( ).filter( tg -> tg.getIdTag( ) == Integer.parseInt( strIdTag ) ).collect( Collectors.toList( ) ).get( 0 );
             _blog.deleteTag( tag );

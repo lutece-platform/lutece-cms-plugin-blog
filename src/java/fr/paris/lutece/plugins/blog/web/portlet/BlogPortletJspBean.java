@@ -35,16 +35,23 @@ package fr.paris.lutece.plugins.blog.web.portlet;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
+import fr.paris.lutece.plugins.blog.business.DocContentHome;
+import fr.paris.lutece.plugins.blog.business.Tag;
+import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
+import fr.paris.lutece.plugins.blog.service.BlogServiceSession;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
+import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,6 +75,9 @@ public class BlogPortletJspBean extends PortletJspBean
     public static final String MARK_LIST_HTMLDOC = "blog_list";
     public static final String MARK_LIST_PAGES = "pages_list";
     public static final String MARK_BLOG_ID = "blog_id";
+    public static final String MARK_BLOG = "blog";
+
+    public static final String MARK_LIST_IMAGE_TYPE = "image_type";
 
     public static final String PARAMETER_CONTENT_ID = "content_id";
     public static final String PARAMETER_HTML_CONTENT = "html_content";
@@ -77,6 +87,15 @@ public class BlogPortletJspBean extends PortletJspBean
     private static final String PARAMETER_PAGE_TEMPLATE_CODE = "page_template_code";
 
     public static final String TEMPLATE_MODIFY_PORTLET = "admin/portlet/modify_portlet.html";
+    public Blog blog;
+    
+
+    protected static final String MESSAGE_CONFIRM_REMOVE_TAG = "blog.message.confirmRemoveTag";
+    protected static final String MARK_PERMISSION_CREATE_TAG = "permission_manage_create_tag";
+    protected static final String MARK_PERMISSION_MODIFY_TAG = "permission_manage_modify_tag";
+    protected static final String MARK_PERMISSION_DELETE_TAG = "permission_manage_delete_tag";
+
+    protected static final String MARK_LIST_TAG = "list_tag";
 
     /**
      * Returns the BlogPortlet form of creation
@@ -96,10 +115,33 @@ public class BlogPortletJspBean extends PortletJspBean
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listBlog );
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
+        blog = ( blog != null && blog.getId( ) == 0 ) ? blog : new Blog( );
+        BlogServiceSession blogServiceSession = BlogServiceSession.getInstance( );
+        blogServiceSession.saveBlogInSession( request.getSession( ), blog );
+        blog.getTag( ).sort( ( tg1, tg2 ) -> tg1.getPriority( ) - tg2.getPriority( ) );
+        model.put( MARK_BLOG, blog);
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
+        model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
+        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
+        model.put( MARK_BLOG, blog );
+        model.put( MARK_LIST_TAG, getTageList( ) );
 
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
 
         return template.getHtml( );
+    }
+    
+    private ReferenceList getTageList( )
+    {
+
+        ReferenceList BlogList = TagHome.getTagsReferenceList( );
+
+        for ( Tag tg : blog.getTag( ) )
+        {
+            BlogList.removeIf( item -> item.getCode( ).equals( String.valueOf( tg.getIdTag( ) ) ) );
+
+        }
+        return BlogList;
     }
 
     /**
@@ -143,11 +185,13 @@ public class BlogPortletJspBean extends PortletJspBean
         AdminUser user = AdminUserService.getAdminUser( request );
         String strSelectedBlog = request.getParameter( PARAMETER_HTMLDOC_SELECTED );
         String strTemplateCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
+        int nIdBlog = Integer.parseInt( request.getParameter( "id" ) );
+        BlogServiceSession blogServiceSession = BlogServiceSession.getInstance( );
 
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         int nPageId = Integer.parseInt( strPageId );
-        Blog blog = new Blog( );
+        Blog blog = blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog ) !=null  ? blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog ) : new Blog( );
         if ( strSelectedBlog == null || StringUtils.isEmpty( strSelectedBlog ) || !StringUtils.isNumeric( strSelectedBlog ) )
         {
             blog.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
@@ -160,6 +204,8 @@ public class BlogPortletJspBean extends PortletJspBean
             blog.setUser( user.getAccessCode( ) );
             blog.setUserCreator( user.getAccessCode( ) );
             BlogHome.addInitialVersion( blog );
+            populate( blog, request );
+            
         }
         else
         {
