@@ -61,6 +61,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class provides the user interface to manage BlogsPortlet features
@@ -96,6 +97,7 @@ public class BlogPortletJspBean extends PortletJspBean
     protected static final String MARK_PERMISSION_DELETE_TAG = "permission_manage_delete_tag";
 
     protected static final String MARK_LIST_TAG = "list_tag";
+    public BlogServiceSession blogServiceSession = BlogServiceSession.getInstance( );
 
     /**
      * Returns the BlogPortlet form of creation
@@ -116,7 +118,6 @@ public class BlogPortletJspBean extends PortletJspBean
         model.put( MARK_LIST_HTMLDOC, listBlog );
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
         blog = ( blog != null && blog.getId( ) == 0 ) ? blog : new Blog( );
-        BlogServiceSession blogServiceSession = BlogServiceSession.getInstance( );
         blogServiceSession.saveBlogInSession( request.getSession( ), blog );
         blog.getTag( ).sort( ( tg1, tg2 ) -> tg1.getPriority( ) - tg2.getPriority( ) );
         model.put( MARK_BLOG, blog);
@@ -165,6 +166,14 @@ public class BlogPortletJspBean extends PortletJspBean
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_BLOG_ID, blog.getId( ) );
+        model.put( MARK_LIST_TAG, getTageList( ) );
+        blog.getTag( ).sort( ( tg1, tg2 ) -> tg1.getPriority( ) - tg2.getPriority( ) );
+        blog.getDocContent( ).sort( ( dc1, dc2 ) -> dc1.getPriority( ) - dc2.getPriority( ) );
+        blogServiceSession.saveBlogInSession( request.getSession( ), blog );
+
+        boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE, getUser( ) );
+        model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
+        model.put( MARK_BLOG, blog );
 
         HtmlTemplate template = getModifyTemplate( portlet, model );
 
@@ -203,7 +212,6 @@ public class BlogPortletJspBean extends PortletJspBean
             blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
             blog.setUser( user.getAccessCode( ) );
             blog.setUserCreator( user.getAccessCode( ) );
-            BlogHome.addInitialVersion( blog );
             populate( blog, request );
             
         }
@@ -211,6 +219,7 @@ public class BlogPortletJspBean extends PortletJspBean
         {
             blog = BlogHome.findByPrimaryKey( Integer.parseInt( strSelectedBlog ) );
         }
+        BlogService.getInstance( ).createBlog( blog, blog.getDocContent( ) );
         int nContentId = blog.getId( );
 
         // get portlet common attributes
