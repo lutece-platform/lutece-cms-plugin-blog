@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
-import fr.paris.lutece.api.user.User;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

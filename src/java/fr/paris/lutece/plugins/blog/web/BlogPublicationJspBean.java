@@ -70,7 +70,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.api.user.User;
 
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
