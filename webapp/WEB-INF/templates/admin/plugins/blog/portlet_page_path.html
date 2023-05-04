@@ -1,4 +1,1 @@
-<#list page_list as page>
-${page.name}<#if page_has_next>&nbsp;&#62;&nbsp;<#else>&nbsp;(#i18n{blog.manage_document_publishing.columnTitleId} : ${page.id})</#if>
-</#list>
-&nbsp;[${portlet.name}]
+<#list page_list as page>${page.name}<#if page_has_next> &#62; <#else> (#i18n{blog.manage_document_publishing.columnTitleId} : ${page.id})</#if></#list> [${portlet.name}]

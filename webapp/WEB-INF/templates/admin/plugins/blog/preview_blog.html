@@ -1,69 +1,42 @@
-<style>
-.panel.panel-horizontal {
-    display:table;
-    width:100%;
-}
-.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-body, .panel.panel-horizontal > .panel-footer {
-    display:table-cell;
-}
-.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-footer {
-    width: 25%;
-    border:0;
-    vertical-align: middle;
-}
-.panel.panel-horizontal > .panel-heading {
-    border-right: 1px solid #ddd;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 4px;
-}
-.panel.panel-horizontal > .panel-footer {
-    border-left: 1px solid #ddd;
-    border-top-left-radius: 0;
-    border-bottom-right-radius: 4px;
-}
-</style>
-<@row>
-	<@columns>
-		<@box>
-			<#assign boxHeaderTitle>
-				${blog.contentLabel} #i18n{blog.manage_blogs.columnVersion}	<span class="badge">${blog.version}</span>
-				- <small>#i18n{blog.preview_blog.createdBy} ${blog.userCreator} ${blog.creationDate} / #i18n{blog.preview_blog.lastUpdate} ${blog.updateDate} #i18n{blog.manage_blogs.labelBy} ${blog.user}</small>
-			</#assign>
-			<@boxHeader title=boxHeaderTitle>
-				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
-				<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
-				<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='Collapse' buttonIcon='plus' />
-			</@boxHeader>
-			
-			<@boxBody>
-				<@card headerTitle='#i18n{blog.manage_blogs.columnDescription}'>
-					${blog.description}
-				</@card>
-				<@card headerTitle='#i18n{blog.manage_blogs.columnUrl}'>
-					${blog.url}
-				</@card>
-				<@card headerTitle='#i18n{blog.manage_blogs.columnEditComment}'>
-					${blog.editComment}
-				</@card>
-				<@card headerTitle='#i18n{blogcreate_blog.labelImage}'>
-					<img src="servlet/plugins/blogs/file?id_file=${blog.id}" alt="" title="">
-				</@card>
-				<@card headerTitle='#i18n{blog.manage_tags.title}'>
-					<#list blog.tag as tg>
-						<#list list_tag as tgName>
-							<#if tgName.code == tg.idTag?string >
-								<@tag>${tgName.name!}</@tag>
-								<#break>
-							</#if>
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='${blog.contentLabel} #i18n{blog.manage_blogs.columnVersion}	<span class="badge">${blog.version}</span>'>
+			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
+			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
+		</@pageHeader>
+		<@row>
+			<@columns sm=9>
+				<iframe frameborder="0" style="width:100%;height:100vh" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}"></iframe>
+			</@columns>
+			<@columns sm=3>
+				<@card headerTitle='#i18n{blog.manage_blogs.columnDescription}' header=true >
+					<@p><@span class="font-weight-bold">#i18n{blog.preview_blog.createdBy} :</@span><br> ${blog.userCreator} ${blog.creationDate} </@p>
+					<@p><@span class="font-weight-bold">#i18n{blog.preview_blog.lastUpdate}:</@span><br> ${blog.updateDate} #i18n{blog.manage_blogs.labelBy} ${blog.user}</@p>
+					<hr/>
+					${blog.description!'RAS'}
+					<#if blog.url?? && blog.url !=''>
+						<@p>#i18n{blog.manage_blogs.columnUrl}</@p>
+						${blog.url}
+					</#if>
+					<#if blog.editComment?? && blog.editComment !=''>
+						<@p>#i18n{blog.manage_blogs.columnEditComment}</@p>
+						${blog.editComment}
+					</#if>
+					<@p>#i18n{blog.create_blog.labelImage}</@p>
+					<@img url="servlet/plugins/blogs/file?id_file=${blog.id}" class="img-fluid img-thumbnail" alt="" title="" />
+					<#if blog.tag?? && blog.tag?size gt 0>
+						<@p>#i18n{blog.manage_tags.title}</@p>
+						<#list blog.tag as tg>
+							<#list list_tag as tgName>
+								<#if tgName.code == tg.idTag?string >
+									<@tag>${tgName.name!}</@tag>
+									<#break>
+								</#if>
+							</#list>
 						</#list>
-					</#list>
+					</#if>
 				</@card>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-<@row>
-	<@columns>
-		<iframe frameborder="0" style="width:100%;height:100vh" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}"></iframe>
-	</@columns>
-</@row>
+			</@columns>
+		</@row>
+	</@pageColumn>
+</@pageContainer>

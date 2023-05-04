@@ -1,98 +1,113 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='Diff ${blog.contentLabel}' />
-			<@boxBody>
-				<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-					<@input type='hidden' name='view' value='diffBlog' />
-					<@input type='hidden' name='id' value='${blog.id}' />
-					<@formGroup>
-						<@select name='blog_version2'>
-							<#list blog_version_list as blog_tmp>
-							<option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
-							</#list>
-						</@select>
-					</@formGroup>
-					<@formGroup>
-						<@select name='blog_version2'>
-							<#list blog_version_list as blog_tmp>
-							<option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}</option>
-							</#list>
-						</@select>
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-			
-		<@box>
-			<@boxHeader title='#i18n{blog.diff_blog.CurrentVersion}' />
-			<@boxBody>
-				${blog_diff!}
-			</@boxBody>
-		</@box>
-			
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='Diff ${blog.contentLabel}'>
+			<a class="btn btn-primary btn-notif" href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}" title="#i18n{blog.manage_blogs.labelHistory}  ${blog.version} versions ">
+				<i class="fa fa-history"  aria-hidden="true"></i>  #i18n{blog.manage_blogs.labelHistory}  [version: ${blog.version!}]
+			</a>
+			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
+			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
+        </@pageHeader>
+		<@tform boxed=true action='jsp/admin/plugins/blog/ManageBlogs.jsp' >
+		<@input type='hidden' name='view' value='diffBlog' />
+		<@input type='hidden' name='id' value='${blog.id}' />
 		<@row>
-			<@columns sm=6>
-				<@box>
-					<@boxHeader title='Version ${blog2.version}'>
-						<small>${blog2.updateDate}</small>
-						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' hideTitle=['all']buttonIcon='undo' size='sm' />
-					</@boxHeader>
-					<@boxBody>
-						${blog2.htmlContent}
-					</@boxBody>
-				</@box>
-			</@columns> 
-			<@columns sm=6>
-				<@box>
-					<@boxHeader title='#i18n{blog.diff_blog.Version} ${blog.version}'>
-						<small>${blog.updateDate}</small>
-						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' hideTitle=['all']buttonIcon='undo' size='sm' />
-					</@boxHeader>
-					<@boxBody>
-						${blog.htmlContent}
-					</@boxBody>
-				</@box>
+			<@columns>
+				<@select name='blog_version2'>
+				<#list blog_version_list as blog_tmp>
+					<option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >
+						#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}
+					</option>
+				</#list>
+				</@select>
+			</@columns>
+			<@columns>
+				<@select name='blog_version2'>
+				<#list blog_version_list as blog_tmp>
+					<option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>
+						selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}
+					</option>
+				</#list>
+				</@select>
+			</@columns>
+			<@columns>
+				<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' buttonIcon='git-compare' />
 			</@columns>
 		</@row>
-
-	</@columns>
-</@row>
-<script type = 'text/javascript'>
+		</@tform>
+		<@tabs>
+			<@tabList>
+				<@tabLink active=true href='#current' title='#i18n{blog.diff_blog.CurrentVersion}' />
+				<@tabLink href='#diff' title='#i18n{blog.diff_blog.Version}' />
+			</@tabList>
+			<@tabContent>
+				<@tabPanel id='current' active=true>
+					<@row>
+						<@columns>
+							${blog_diff!}
+						</@columns>
+					</@row>
+				</@tabPanel>
+				<@tabPanel id='diff'>
+					<@row>
+						<@columns sm=6>
+							<@box>
+								<@boxHeader title='Version ${blog2.version}'>
+									<small>${blog2.updateDate}</small>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' hideTitle=['all'] buttonIcon='arrow-back-up' />
+								</@boxHeader>
+								<@boxBody>
+									${blog2.htmlContent}
+								</@boxBody>
+							</@box>
+						</@columns> 
+						<@columns sm=6>
+							<@box>
+								<@boxHeader title='#i18n{blog.diff_blog.Version} ${blog.version}'>
+									<small>${blog.updateDate}</small>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' hideTitle=['all'] buttonIcon='arrow-back-up' />
+								</@boxHeader>
+								<@boxBody>
+									${blog.htmlContent}
+								</@boxBody>
+							</@box>
+						</@columns>
+					</@row>
+				</@tabPanel>
+			</@tabContent>
+		</@tabs>
+	</@pageColumn>
+</@pageContainer>
+<script>
 //lifted from daisy diff.js, just this part without the whole dojo/prev/next
 function updateOverlays(){
-
-    var images = document.getElementsByTagName("img");
-
-    for (var i = 0; i < images.length; i++) {
-        var image = images [i];
-        if (image.getAttribute('changeType') == "diff-removed-image" || image.getAttribute('changeType') == "diff-added-image") {
-            var filter;
-            var existingDivs = image.parentNode.getElementsByTagName('div');
-            if(existingDivs.length > 0 && existingDivs[0].className==image.getAttribute("changeType")){
-                filter = existingDivs[0];
-            }else {
-                filter = document.createElement("div");
-                filter.className= image.getAttribute("changeType");
-            }
-            //TODO this still places the div in a bad place sometimes, find a way to do it correctly !
-            // In particular this doesn't work very well with overflow:auto
-            filter.style.width = image.offsetWidth-4 + "px";
-            filter.style.height = image.offsetHeight-4 + "px";
-            filter.style.top = image.offsetTop + "px";
-            filter.style.left = image.offsetLeft + "px";
-            filter.style.position = "absolute";
-
-
-            if(existingDivs.length == 0 ){
-                image.parentNode.insertBefore(filter, image);
-            }
-        }
-    }
+	const images = document.getElementsByTagName("img");
+	for (var i = 0; i < images.length; i++) {
+		let image = images [i];
+		if (image.getAttribute('changeType') == "diff-removed-image" || image.getAttribute('changeType') == "diff-added-image") {
+			var filter;
+			var existingDivs = image.parentNode.getElementsByTagName('div');
+			if(existingDivs.length > 0 && existingDivs[0].className==image.getAttribute("changeType")){
+				filter = existingDivs[0];
+			}else {
+				filter = document.createElement("div");
+				filter.className= image.getAttribute("changeType");
+			}
+			//TODO this still places the div in a bad place sometimes, find a way to do it correctly !
+			// In particular this doesn't work very well with overflow:auto
+			filter.style.width = image.offsetWidth-4 + "px";
+			filter.style.height = image.offsetHeight-4 + "px";
+			filter.style.top = image.offsetTop + "px";
+			filter.style.left = image.offsetLeft + "px";
+			filter.style.position = "absolute";
+			if(existingDivs.length == 0 ){
+				image.parentNode.insertBefore(filter, image);
+			}
+		}
+	}
 }
-$( window ).load( updateOverlays );
-$( window ).resize( updateOverlays );
+
+document.addEventListener( "DOMContentLoaded", function(){
+	updateOverlays;
+	window.onresize = updateOverlays;
+});
 </script>

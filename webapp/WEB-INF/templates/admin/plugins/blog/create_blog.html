@@ -1,173 +1,271 @@
-<#include '/admin/util/editor/editor_keditor.html' />
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='' />
-			<@boxBody>
-			<@tform id='form-editor' name='create_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-				<@messages errors=errors />
-				<@input type='hidden' id='action' name='action' value='createBlog' />
-				<@input type='hidden' id='id' name='id' value='0' />
-				<@input type='hidden' id='tag_remove' name='tag_remove' value='' />
-				<@row>
-					<@columns <!-- LUTECE VII ONLY tag='article' -->sm=9>
-						<@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' mandatory=true rows=2>
-							<@input type='text' name='content_label' id='content_label' placeHolder='#i18n{blog.create_blog.labelContentLabel.help}' value='' />
-						</@formGroup>
-						<@formGroup labelFor='html_content' labelKey='#i18n{blog.create_blog.labelEditContent}' rows=2>
-							<@input type='textarea' name='html_content' id='html_content' rows=12 />
-							<@initEditor />
-						</@formGroup>
-					</@columns>
-					<@columns <!-- LUTECE VII ONLY tag='aside' -->sm=3 class='aside'>
-						<@formGroup rows=2>
-							<@button class='btn-block' type='submit' title='#i18n{portal.util.labelCreate}' name='action_createBlog' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
-							<@button class='btn-block' type='submit' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button' buttonIcon='check' title='#i18n{blog.create_blog.labelApply}' />
-						</@formGroup>
-						<@box>
-							<@boxHeader title='#i18n{blog.create_blog.labelDescription}'>
-								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
-							</@boxHeader>
-							<@boxBody>
-								<@formGroup labelFor='description' labelKey='#i18n{blog.modify_blog.labelEditComment}' rows=2>
-									<@input type='textarea' id='description' name='description' rows=2>${blog.description!}</@input>
-								</@formGroup>
-							</@boxBody>
-						</@box>
-						<@box>
-							<@boxHeader title='#i18n{blog.create_blog.TagsTitle}'>
-								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
-							</@boxHeader>
-							<@boxBody>
-								<@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
+<#include "blog_commons.html" />
+<@messages errors=errors />
+<@tform name='create_blog' id='form-editor' enctype='multipart/form-data' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+  <@input type="hidden" id="id" name="id" value="0" />
+  <@input type="hidden" id="action" name="action" value="createBlog" />
+  <@input type="hidden" id="tag_remove" name="tag_remove" value="" />
+  <@row>
+    <@columns class="d-flex justify-content-end position-relative z-2">
+      <@btnToolbar params='aria-label="Toolbar with button groups"'>
+        <@btnGroup class='me-2' params='aria-label="#i18n{portal.util.labelModify} / #i18n{blog.create_blog.labelApply} / #i18n{portal.util.labelDelete} - #i18n{blog.create_blog.labelContentId} ${blog.id}"'>
+          <@button type='submit' size='sm' buttonIcon='check' title='#i18n{blog.create_blog.labelCreate}' id='action_createBlog' name='action_createBlog'  />
+          <@button type='submit'size='sm' buttonIcon='device-floppy' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button'  />
+          <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='sm' />
+        </@btnGroup>
+        <@btnGroup class='me-2' params='aria-label="Second group"'>
+          <@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
+        </@btnGroup>
+        <@btnGroup params='aria-label="Third group"'>
+          <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions] ' buttonIcon='history' size='sm' />
+        </@btnGroup>
+        <@offcanvas id='blog-tools' title='#i18n{blog.manage_blogs.title}' position='end' btnIcon='cog' >
+          <@box>
+            <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
+              <@icon style='tags' />
+            </@boxHeader>
+            <@boxBody>
+              <@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
+                <@inputGroup>
+                  <@select name='tag_doc' default_value='' items=list_tag size='sm' />
+                  <@inputGroupItem type='btn'>
+                    <@button type='button' value='addTag' id='addTag' name='addTag' buttonIcon='bookmark-plus' size='sm' />
+                  </@inputGroupItem>
+                </@inputGroup>
+              </@formGroup>
+              <@listGroup id='tag-list'>
+                <#assign blogTagSize=blog.tag?size />
+                <#list blog.tag as tg>
+                  <@listGroupItem id='tag_${tg.idTag}' class='d-flex justify-content-between' params='title="${tg.name}"'>
+                    ${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if>
+                    <@btnGroup>
+                      <@button class='btn-down text-primary' title='#i18n{blog.create_blog.labelDown}' color='flat' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' buttonIcon='arrow-down' size='xs' hideTitle=['all'] />
+                      <@button class='btn-up text-primary' title='#i18n{blog.create_blog.labelUp}' color='flat' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' buttonIcon='arrow-up' size='xs' hideTitle=['all'] />
+                      <@button class='text-danger' value='removeTag' name='removeTag' color='flat' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' buttonIcon='x' size='xs' hideTitle=['all'] />
+                    </@btnGroup>
+                  </@listGroupItem>
+              </#list>
+              </@listGroup>
+              <#if permission_manage_create_tag>
+								<@formGroup labelFor='tag_name' labelKey='#i18n{blog.create_tag.title}' class='mt-3' rows=2>
 									<@inputGroup>
-										<@select name='tag_doc' default_value='' items=list_tag size='sm' />
-										<@inputGroupItem>                    
-											<@button type='button' value='addTag' id='addTag' name='addTag' buttonIcon='tag' size='sm' />
+										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.create_tag.title}' />
+										<@inputGroupItem type='btn'>
+											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.title}' buttonIcon='plus' hideTitle=['all'] size='sm' />
 										</@inputGroupItem>
 									</@inputGroup>
 								</@formGroup>
-								<ul id="tag-list" class="list-group">
-									<#list blog.tag as tg>
-										<li id="tag_${tg.idTag}" class="list-group-item clearfix" title="${tg.name}">
-											<span>${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if></span>
-											<span style="position:absolute; right:10px;">
-												<@button type='button' class='btn-down' size='sm' title='#i18n{blog.create_blog.labelDown}' buttonIcon='arrow-down' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\' );"' hideTitle=['all'] />
-												<@button type='button' class='btn-up' size='sm' title='#i18n{blog.create_blog.labelUp}' buttonIcon='arrow-up' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\');"' hideTitle=['all'] />
-												<@button type='button' value='removeTag' name='removeTag' size='sm' buttonIcon='trash' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\');"' color='danger' hideTitle=['all'] />
-											</span>
-										</li>
-									 </#list>
-								</ul>
-								<#if permission_manage_create_tag>
-								<@formGroup labelFor='tag_name' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
-									<@inputGroup>
-										<@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.manage_tags.buttonAdd}' size='sm' />
-										<@inputGroupItem>
-											<@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.pageTitle}' hideTitle=['all']buttonIcon='plus' size='sm' />
-										</@inputGroupItem>
-									</@inputGroup>
-								</@formGroup>
-								</#if>
-							</@boxBody>
-						</@box>
-						<@box>
-							<@boxHeader title='#i18n{blog.create_blog.labelImage}'>
-								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
-							</@boxHeader>
-							<@boxBody>
-								<@formGroup labelFor='attachment' labelKey='#i18n{blog.create_blog.labelAttachment}' rows=2>
-									<@select name='fileType' id='fileType' params='style="margin-bottom:10px;"'>
-										<#list image_type as type>
-											<option value= "${type.idContentType}">${type.label}</option>             
-										</#list>
-									</@select>
-										<#if is_crop_image><!--To the use of the image crop plugin -->
-											<#include '/skin/plugins/uploadimage/uploadimage.html' />
-											<@addRequiredJsUploadImages/>
-											<@cropimage fieldName='attachment' file='images/admin/skin/plugins/uploadimage/picture.jpg'  cssClass='text-center' synchronous='false' />
-										<#else>
-											<@input type='file' class='filestyle' name='attachment' id='attachment' params='data-iconName="fa fa-image" data-buttonText="" onchange="getImage( )"' value='' />
-										</#if>
-										<@listGroup id='content-list' params='style="margin-top:10px;"'>
-										<#if blog.docContent?? && blog.docContent?size!=0>
-											<#list blog.docContent as docContent >
-											<@listGroupItem id='doc_${docContent.id}' params='style="padding:0;"'>
-												<div id="${docContent.id}">
-													<@button type='button' id='deleteButtonattachment' color='danger' params='onclick=deleteImage("${docContent.id}")' title='#i18n{blog.create_blog.labelRemove}' buttonIcon='times' title='#i18n{blog.create_blog.labelRemove}' hideTitle=['all'] size='sm' />
-													<span style="position:absolute; right:0;">
-														<@button type='button' class='btn-down' title='#i18n{blog.create_blog.labelDown}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' buttonIcon='arrow-down' hideTitle=['all'] size='sm' />
-														<@button type='button' class='btn-up' title='#i18n{blog.create_blog.labelUp}' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' buttonIcon='arrow-up' hideTitle=['all'] size='sm' />
-													</span>
-													<a href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="preview">
-														${docContent.textValue!} <img id="preview_attachment" src="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="#i18n{blog.create_blog.labelPreview}" class="img-responsive img-thumbnail">
-													</a>
-												</div>
-											</@listGroupItem>
-											</#list>
-										</#if>
-										</@listGroup>
-								</@formGroup>
-							</@boxBody>
-						</@box>
-						<@box>
-							<@boxHeader title='#i18n{blog.create_blog.labelUrl}'>
-								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
-							</@boxHeader>
-							<@boxBody>
-								<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelUrl}' rows=2>
-									<@input type='text' name='url' id='url' value='' />
-								</@formGroup>
-							</@boxBody>
-						</@box>
-						<@box>
-							<@boxHeader title='#i18n{blog.create_blog.labelEditComment}'>
-								<@button style='btn-box-tool' params='data-widget="collapse" data-toggle="tooltip"' title='#i18n{blog.create_blog.labelCollapse}' buttonIcon='minus' />
-							</@boxHeader>
-							<@boxBody>
-								<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelEditComment}' rows=2>
-									<@input type='text' name='edit_comment' id='edit_comment' type='text' value='' />
-								</@formGroup>
-							</@boxBody>
-						</@box>
-					</@columns>
-					</@row>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-<script src="js/plugins/blog/manage_tag.js"></script>
-<script src="js/plugins/blog/manage_image.js"></script>
+              </#if>  
+            </@boxBody>
+          </@box>
+          <@box>
+            <@boxHeader title='#i18n{blog.modify_blog.labelAttachment}' boxTools=true>
+              <@icon style='files' />
+            </@boxHeader>
+            <@boxBody>
+              <@button title="#i18n{blog.modify_blog.labelAttachment}" id='btn-add-files' color='outline-primary my-2' buttonIcon='plus' size='sm' />
+              <#assign is_crop_image=false >
+              <!--To the use of the image crop plugin -->
+              <#if is_crop_image> 
+                <#include "/skin/plugins/uploadimage/uploadimage.html" />
+                <@addRequiredJsUploadImages/>
+                <@cropimage  fieldName="attachment"  file="images/admin/skin/plugins/uploadimage/picture.jpg"  cssClass="text-center"  synchronous= "false"/>
+              <#else>
+                <@input class='visually-hidden' name='attachment' id='attachment' type='file' params=' onchange="getImage( )"' value='' />
+              </#if>
+              <#if image_type?? && image_type?size gt 1> 
+              <@select name='fileType' id='fileType'>
+                <#list image_type as type>
+                  <@option value=type.idContentType mabel=type.label />
+                </#list>
+              </@select>
+              </#if>
+              <@div class="blog-resources">
+                <@listGroup id='content-list'>
+                  <#if blog.docContent?? && blog.docContent?size!=0>
+                    <#list blog.docContent as docContent>
+                      <#assign itemClass>d-flex justify-content-between blog-<#if docContent.contentType.idContentType=1>image<#else>file</#if>-content</#assign>
+                      <@listGroupItem id='doc_${docContent.id}' class=itemClass >
+                        <#if docContent.contentType.idContentType=1>
+                          <@img class="img-fluid img-thumbnail blog-thumbnails" url="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
+                        <#else>
+                          <@link href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="${docContent.textValue!}">${docContent.textValue!}</@link>
+                        </#if>
+                        <#if image_type?? && image_type?size gt 1> 
+                        <@select name='fileType' class='fileTypeUpdate' params='onchange="doUpdateContentType( ${docContent.id}, this.value)"'>
+                        <#list image_type as type>
+                          <#assign itemSelected><#if type.idContentType=docContent.contentType.idContentType>true<#else>false</#if></#assign>
+                          <@option value=type.idContentType! label=type.label selected=itemSelected?boolean />
+                        </#list>
+                        </@select>
+                        </#if>
+                        <@btnGroup>
+                          <@button color='none' size='sm' class='btn-down text-primary' buttonIcon='arrow-down' hideTitle=['all'] title='#i18n{blog.create_blog.labelDown}' params=' onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\' );"' />
+                          <@button color='none' size='sm' class='btn-up text-primary' buttonIcon='arrow-down' hideTitle=['all'] title="#i18n{blog.create_blog.labelUp}" params=' onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\');"' />
+                          <@button color='none' size='sm' class='text-danger' buttonIcon='x' hideTitle=['all'] title="#i18n{blog.create_blog.labelRemove}" params=' onclick="deleteImage( \'${docContent.id!}\' );"' />
+                        </@btnGroup>
+                      </@listGroupItem>
+                    </#list>
+                  </#if>
+                  </@listGroup>
+                </@div>
+            </@boxBody>
+          </@box>
+          <@box>
+            <@boxHeader title='#i18n{blog.create_blog.labelUrl}'>
+              <@icon style='link' />
+            </@boxHeader>
+            <@boxBody>
+              <@formGroup labelFor='url' labelKey='#i18n{blog.create_blog.labelUrl}' rows=2 >
+                <#assign urlPattern><#noparse>[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\-\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)</#noparse></#assign>
+                <@input name='url' id='url' value='${blog.url!}' helpKey='#i18n{blog.create_blog.labelUrl.help}' pattern=urlPattern />
+              </@formGroup>
+            </@boxBody>
+          </@box>
+          <@box>
+            <@boxHeader title='#i18n{blog.create_blog.labelEditComment}'>
+              <@icon style='comment' />
+            </@boxHeader>
+            <@boxBody>
+              <@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelEditComment}' helpKey='#i18n{blog.create_blog.labelEditComment.help}' rows=2>
+                <@input name='edit_comment' id='edit_comment' value='${blog.editComment!}' />
+              </@formGroup>
+            </@boxBody>
+          </@box>
+        </@offcanvas>
+      </@btnToolbar>
+    </@columns>
+  </@row>
+  <@row>
+    <@columns>
+      <@messages errors=errors />
+      <@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' hideLabel=['all'] rows=2>
+          <@input name='content_label' id='content_label' value='${blog.contentLabel!}' class='visually-hidden' />
+          <@div id='div_content_label' class='content-head font-bold main-color' params='contenteditable="true"'>Titre...</@div>
+      </@formGroup>
+      <@formGroup labelFor='description' labelKey='#i18n{blog.create_blog.description}' hideLabel=['all'] rows=2>
+          <@input name='description' id='description' value='${blog.description!}' class='visually-hidden' />
+          <@div id='div_description' class='content-desc' params='contenteditable="true"'>Description...</@div>
+      </@formGroup>
+      <@formGroup labelFor='html_content' labelKey='#i18n{blog.create_blog.labelEditComment}' hideLabel=['all'] rows=2>
+          <@input type='textarea' name='html_content' id='html_content' value='${blog.htmlContent!}' class='visually-hidden' />
+          <@div id='div_html_content' class='content-body' params='contenteditable="true"'><@p>Saisir ici le contenu</@p></@div>
+      </@formGroup>
+    </@columns>
+  </@row>
+</@tform>
+<@blogEditor />
+<#-- 
+<@initToast>
+    <@addToast content='TEST' class='text-bg-warning border-0' show=false />
+</@initToast> 
+-->
 <script>
-function readURL( input ){
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      $('#preview_attachment').attr('src', e.target.result);
-      $("#preview_attachment").toggle();
-      $("#group_update_attachment").toggle();
-    }
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
 $( function(){
+	$('#form-editor').submit( function(){
+    const t = $('#div_content_label').text();
+		if( t.trim() == '' ){
+			alert("Le titre ne peut être vide !");
+			return false;
+		} else {
+      $('#content_label').val( t );
+    }
+		
+		const d = $('#div_description').html();
+		if( d.trim() == '<p><br data-mce-bogus=\"1\"></p>' || d.trim() == '<p>Description...</p>' ){
+			alert("La description ne peut être vide !");
+			return false;
+		} else {
+      $('#description').val( d );
+    }
+
+    const c = $('#div_html_content').html();
+		$('#html_content').val( c );
+
+		const tagsLen = $("#tag-list li").length;
+		if ( tagsLen == 0  ){
+		  alert("Il vous faut au moins un tag !");
+		  openOffcanvas('#blog-tools');
+      return false;
+		}
+
+	});
+
+// FIXME : MDP Nomade
+// if ( typeof DanaUrl === "function" ){
+// 	$('#uploadimage-group').remove();
+// 	$('#image-group').removeClass('hidden');
+// }
+
+	/* Tags */
+	$("#addTag").click( function(){
+	  doAddTag( $('#tag_doc').val(), $('#tag_doc option:selected').text() );
+	});
+
   $("#createTag").click( function(){
     createTag();
   });
 
-  $("#addTag").click( function(){
-    doAddTag( $('#tag_doc').val(), $('#tag_doc option:selected').text() );
-  });
+	$("#input-add-tag").toggle();
+	$("#btn-show-add-tag").click( function(){
+	  $("#input-add-tag").toggle();
+	});
 
-  <#if !blog.docContent??>
-    $("#preview_attachment").toggle();
-    $("#group_update_attachment").toggle();
-  </#if>
+	$(".form-add-tag").toggle();
+	$(".btn-add-tag").click( function(){
+	  $(".form-add-tag").toggle();
+	});
 
-  $("#attachment").change(function() {
-   readURL(this);
+	/* Affiche images */
+  $("#btn-add-files").click( function(){
+    $('#attachment').click();
   });
+	<#if !blog.docContent??>$("#preview_attachment").toggle();</#if>
+
+	// Limite les saisies Titre et Description
+	var limit1=300, limit2=75;
+	$("#content_label").attr("maxlength","75").after(" <span id=\"charlimit2\"></span>");
+	$("#description").after(" <span id=\"charlimit1\"></span>");
+	$("#content_label").keypress(function(e) {
+	  if(e.charCode >= 48 ){
+		var nCar = $(this).val().length
+		$("span#charlimit2").html("<strong>" + eval(nCar + 1) + " caract&egrave;res</strong>")
+		if( nCar >= limit2){
+		  $("span#charlimit2").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>')
+		  return false;
+		}
+	  }
+	});
+
+	$("#content_label").blur(function(e) {
+	  var txt = $(this).val();
+	  if( txt.length > limit2){
+		$("span#charlimit2").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>');
+		$(this).val( txt.substr(0,limit) );
+	  } else {
+		$("span#charlimit2").html('');
+	  }
+	});
+
+	$("#description").keypress(function(e) {
+	if(e.charCode >= 48 ){
+	  var nCar = $(this).val().length
+	  $("span#charlimit1").html("<strong>" + eval(nCar + 1) + " caract&egrave;res</strong>")
+	  if( nCar >= limit1){
+		$("span#charlimit1").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>')
+		return false;
+		}
+	  }
+	});
+
+	$("#description").blur(function(e) {
+	  var txt = $(this).val();
+	  if( txt.length > limit1){
+		$("span#charlimit1").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>');
+		$(this).val( txt.substr(0,limit1) );
+	  } else {
+		$("span#charlimit1").html('');
+	  }
+	});
+
 });
 </script>

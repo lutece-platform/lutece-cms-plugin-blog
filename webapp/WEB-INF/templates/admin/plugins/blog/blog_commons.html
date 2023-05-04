@@ -1,0 +1,248 @@
+<#macro blogEditor lang='fr_FR' colorsMap=''  >
+<script src="js/admin/plugins/blog/tinymce/tinymce.min.js"></script>
+<script src="js/admin/plugins/blog/tinymce/jquery.tinymce.min.js"></script>
+<script src="js/admin/plugins/blog/tinymce/langs/${lang}.js"></script>
+<script>
+var baseUrl='${webapp_url}';
+var colorMap =  [
+  "FFFFFF", "FFFFFF",
+  "000000", "000000",
+  "071F32", "071F32",
+  "354BCF", "354BCF",
+  "E22C3F", "E22C3F",
+  "248619", "248619",
+  "D14800", "D14800",
+  "31EEF3", "31EEF3",
+  "25DCCC", "25DCCC",
+  "3ECD2E", "3ECD2E",
+  "FFCD00", "FFCD00",
+  "FF3300", "FF3300"
+];
+
+var fontsizes = '10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px';
+var contentBodyConfig = {
+  selector: '.content-body',
+  menubar: false,
+  inline: true,
+  plugins: [
+    'autolink',
+    'code',
+    'image',
+    'importcss',
+    'link',
+    'lists',
+    'media',
+    'table',
+    'paste',
+    'quickbars',
+    'help'
+  ],
+  toolbar: false,
+  quickbars_insert_toolbar: 'quicktable image media code',
+  quickbars_selection_toolbar: 'undo redo | paste | formatselect fontsizeselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | blockquote link',
+  language: '${lang}',
+  document_base_url : '${webapp_url}',
+  color_map: colorMap,
+  inline: true,
+  /* enable title field in the Image dialog*/
+	/* image_title: true, */
+  /* enable automatic uploads of images represented by blob or data URIs*/
+  // images_upload_handler: lutece_image_upload_handler,
+  automatic_uploads: false,
+  images_upload_url: '',
+  image_caption: true,
+  image_advtab: true,
+  /*
+    URL of our upload handler (for more details check: https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_url)
+    images_upload_url: 'postAcceptor.php',
+    here we add custom filepicker only to Image dialog
+  */
+  file_picker_types: 'image',
+  /* and here's our custom image picker*/
+  file_picker_callback: function (cb, value, meta) {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.onchange = function () {
+      var file = this.files[0];
+      var reader = new FileReader();
+      reader.onload = function () {
+        var idBlog = $('#id').val();
+        var fileType=1; /* Type image */
+        var jRes=doAddContent( file.name, reader.result, fileType, idBlog );
+        /* call the callback and populate the Title field with the file name */
+        cb( jRes.location, { title: file.name });
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  },
+  content_css: "css/page_template_styles.css",
+  importcss_append: false,
+  extended_valid_elements : "iframe[style|src|width|height|name|align|frameborder|scrolling],script[src|type]",
+  paste_word_valid_elements: "b,strong,i,em,h1,h2,h3,h4,h5,h6,p,br,blockquote",
+  fontsize_formats: fontsizes,
+  target_list: [
+    {title: 'None', value: ''},
+    {title: 'Même page', value: '_self'},
+    {title: 'Nouvelle page', value: '_blank'},
+    {title: 'Fenêtre Parent', value: '_parent'}
+  ],
+  contextmenu: 'undo redo | image insert | inserttable | cell row column deletetable | code | help'
+};
+
+var contentDescConfig = {
+  selector: '.content-desc',
+  language: 'fr_FR',
+  height: 250,
+  menubar: false,
+  inline: true,
+  toolbar: false,
+  plugins: [ 'quickbars' ],
+  quickbars_insert_toolbar: 'undo redo',
+  quickbars_selection_toolbar: 'italic bold'
+};
+document.addEventListener("DOMContentLoaded", function() {
+  tinymce.init( contentBodyConfig );
+	tinymce.init( contentDescConfig );
+})
+</script>
+</#macro>
+<#macro blogScriptInit >
+<@initToast id='blogToastContainer' showAll=false >
+  <@addToast id='blogToast' title='Blog' content='to change' />
+</@initToast>
+<script>
+var toastBlogItem;
+
+function setBlogToast( toastType, toastTitle, toastContent ){
+	const toastBlog = document.querySelector('#blogToast');
+  if( toastType !='' ){ <#noparse>toastBlog.classList.add( `text-bg-warning` );</#noparse> }
+	const blogToastTitle = document.querySelector( '#blogToast .toast-header strong' );
+	const blogToastBody = document.querySelector( '#blogToast .toast-body' );
+	blogToastTitle.textContent = toastTitle;
+	blogToastBody.textContent = toastContent;
+	toastBlogItem.show()
+}
+
+document.addEventListener( "DOMContentLoaded", function(){
+  const toastBlog = document.querySelector('#blogToast');
+  toastBlogItem = bootstrap.Toast.getOrCreateInstance( toastBlog );
+  const formEditor = document.querySelector('#form-editor'), 
+  dLabel=document.querySelector('#div_content_label') , iLabel=document.querySelector('#content_label'),
+  dDesc=document.querySelector('#div_description') , iDesc=document.querySelector('#description'),
+  dHtml=document.querySelector('#div_html_content') , iHtml=document.querySelector('#html_content');
+
+  formEditor.addEventListener( "submit", event => {
+    const t = dLabel.textContent;
+    if( t.trim() == '' ){
+      blogToastTitle.textContent = 'TEST'
+      blogToastBody.textContent = 'Le titre ne peut etre vide !'
+      //blogToast.show()
+      return false;
+    } else {
+      iLabel.value = t ;
+    }
+    
+    const d = dDesc.html();
+    
+    if( d.trim() == '<p><br data-mce-bogus=\"1\"></p>' || d.trim() == '<p>Description...</p>' || d.trim() == '' ) {
+      alert( "La description ne peut être vide !" );
+      return false;
+    } else {
+      iDesc.value = d;
+    }
+
+    const c = dHtml.html();
+    idHtml.val = c;
+
+    const tagsLen = document.querySelector("#tag-list li").length;
+    if ( tagsLen == 0  ){
+      alert( "Il vous faut au moins un tag !" );
+      return false;
+    }
+  });
+
+  /* Offcanvas */
+  /* Tags */
+  const myOffcanvas = document.getElementById('blog-properties')
+  myOffcanvas.addEventListener('show.bs.offcanvas', event => {
+    const btnAddTag = document.querySelector( "#addTag" )
+    btnAddTag.addEventListener( 'click', function(e){
+      const tagDoc = document.querySelector('#tag_doc');
+      const index = tagDoc.selectedIndex;
+      const selOption = tagDoc.options[ index ].textContent;
+      doAddTag( tagDoc.value, selOption );
+    });
+
+    const btnCreateTag = document.querySelector( "#createTag" )
+    btnCreateTag.addEventListener( 'click', event => {
+      createTag( toastBlogItem );
+    });
+
+    const btnAddFiles = document.querySelector("#btn-add-files")
+    btnAddFiles.addEventListener( 'click', event => {
+      document.querySelector('#attachment').click();
+    });
+
+    <#if !blog.docContent??>
+    const previewAtt = document.querySelector("#preview_attachment")
+    if ( previewAtt.style.display == 'none' ) {
+      previewAtt.style.display = '';
+    } else {
+      previewAtt.style.display = 'none';
+    }
+    </#if>
+    })
+
+    /*
+    // Limite les saisies Titre et Description
+    var limit1=300, limit2=75;
+    $("#content_label").attr("maxlength","75").after(" <span id=\"charlimit2\"></span>");
+    $("#description").after(" <span id=\"charlimit1\"></span>");
+    $("#content_label").keypress(function(e) {
+      if(e.charCode >= 48 ){
+      var nCar = $(this).val().length
+      $("span#charlimit2").html("<strong>" + eval(nCar + 1) + " caract&egrave;res</strong>")
+      if( nCar >= limit2){
+        $("span#charlimit2").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>')
+        return false;
+      }
+      }
+    });
+  
+    $("#content_label").blur(function(e) {
+      var txt = $(this).val();
+      if( txt.length > limit2){
+      $("span#charlimit2").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>');
+      $(this).val( txt.substr(0,limit) );
+      } else {
+      $("span#charlimit2").html('');
+      }
+    });
+  
+    $("#description").keypress(function(e) {
+    if(e.charCode >= 48 ){
+      var nCar = $(this).val().length
+      $("span#charlimit1").html("<strong>" + eval(nCar + 1) + " caract&egrave;res</strong>")
+      if( nCar >= limit1){
+      $("span#charlimit1").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>')
+      return false;
+      }
+      }
+    });
+  
+    $("#description").blur(function(e) {
+      var txt = $(this).val();
+      if( txt.length > limit1){
+      $("span#charlimit1").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>');
+      $(this).val( txt.substr(0,limit1) );
+      } else {
+      $("span#charlimit1").html('');
+      }
+    });
+  */
+});
+</script>
+<script src="js/admin/plugins/blog/blog.js"></script>
+</#macro>

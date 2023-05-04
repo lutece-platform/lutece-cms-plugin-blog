@@ -1,168 +1,175 @@
-<header>
-  <h2 class="no-margin">${blog.contentLabel}</h2>
-</header>
-<@tform id='publication_blog' name='publication_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp'>
-  <@messages errors=errors />
-  <@input type='hidden' id='id' name='id' value='${blog.id}' />
-	<@row>
-		<@columns xs=6>
-			<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
-				<#assign value><#if portlet_filter??>${portlet_filter.searchValue}</#if></#assign>
-				<@input type='text' id='portlet_filter_value' name='portlet_filter_value' placeHolder='#i18n{blog.publication_blog.labelSearchBy}' value=value />
-			</@formGroup>
-		</@columns>
-		<@columns xs=6>
-			<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
-				<@select name='portlet_filter_type' id='portlet_filter_type' title='#i18n{blog.publication_blog.labelSearchBy}'>
-					<option value="page_id" <#if portlet_filter??  && portlet_filter.portletFilterType = "page_id"> selected="selected" </#if>>#i18n{blog.publication_blog.labelSearchByIdPage}</option>
-					<option value="page_name" <#if !portlet_filter?? ||portlet_filter.portletFilterType = "page_name">selected="selected"</#if>>#i18n{blog.publication_blog.labelSearchByPageName}</option>
-					<option value="portlet_name"<#if portlet_filter??  && portlet_filter.portletFilterType  = "portlet_name">selected="selected"</#if>>#i18n{blog.publication_blog.labelSearchByPortletName}</option>
-				</@select>
-			</@formGroup>
-		</@columns>
-		<@columns xs=6>
-			<@formGroup labelFor='order_portlet' labelKey='#i18n{blog.publication_blog.labelOrder}' rows=2>
-				<@select name='order_portlet' title='#i18n{blog.publication_blog.labelOrder}'>
-					<option value="0" <#if !order_portlet?? || order_portlet?? && order_portlet = 0> selected="selected" </#if> >#i18n{blog.publication_blog.labelDateUpdatePortlet}</option>
-					<option value="1" <#if order_portlet?? && order_portlet = 1> selected="selected" </#if> >#i18n{blog.publication_blog.labelPageName}</option>
-					<option value="2" <#if order_portlet?? && order_portlet = 2> selected="selected" </#if> >#i18n{blog.publication_blog.labelPageId}</option>
-					<option value="3" <#if order_portlet?? && order_portlet = 3> selected="selected" </#if> >#i18n{blog.publication_blog.labelPortletName}</option>
-				</@select>
-			</@formGroup>
-		</@columns>
-		<@columns xs=6>
-			<@formGroup labelFor='order_portlet_asc' labelKey='#i18n{blog.publication_blog.labelOrderAsc}' rows=2>
-				<@select name='order_portlet_asc'>
-					<option value="0" <#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0> selected="selected" </#if> >#i18n{blog.publication_blog.labelOrderDesc}</option>
-					<option value="1" <#if order_portlet_asc?? && order_portlet_asc = 1> selected="selected" </#if>>#i18n{blog.publication_blog.labelOrderAsc}</option>
-				</@select>
-			</@formGroup>
-		</@columns>
-	</@row>
-	<@formGroup rows=2>
-		<@button type='submit' class='btn-block' title='#i18n{blog.manage_documents.buttonSearch}' name='view_manageBlogsPublication' buttonIcon='search' />
-	</@formGroup>
-	<#if !portlet_filter?? || portlet_filter.displayLatestPortlets >
-		<@input type='hidden' name='is_display_latest_portlets' value='false' />
-	<#else>
-		<@formGroup>
-			<@button type='submit' color='danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
-		</@formGroup>
-		<@input type='hidden' name='is_display_latest_portlets' value='true' />
-	</#if>
-
-    <!-- FIX
-    <#if portlet_filter_error??>
-    <div class="callout callout-danger">
-      <p class="lead"> <i class="fa fa-exclamation-triangle"></i> ${portlet_filter_error}</p>
-    </div>
-    </#if>
-    -->
-    <#if document_list_portlet_list?size &gt; 0  || document_portlet_list?size &gt; 0 >
-			<h3>#i18n{blog.publication_blog.labelAvailablePortlet} <#if !portlet_filter?? || portlet_filter.displayLatestPortlets> ${label_display_latest_portlets} </#if></h3>
-			<@tabs>
-			<@listTabs>
-				<li <#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>class="active"</#if>>
-					<a href="#document_list_portlet" role="tab" data-toggle="tab">
-						#i18n{blog.publication_blog.labelAvailableDocumentListPortlet}
-					</a>
-				</li>
-				<li <#if portlet_filter?? && !portlet_filter.displayLatestPortlets>class="active"</#if> title="#i18n{blog.publication_blog.labelAvailableDocumentPortlet} - #i18n{blog.publication_blog.labelAvailableDocumentPortletComment}">
-					<a href="#document_portlet" role="tab" data-toggle="tab">
-						#i18n{blog.publication_blog.labelAvailableDocumentPortlet}
-					</a>
-				</li>
-			</@listTabs>
-			<@tabContent>
-				<div class="tab-pane active" id="document_list_portlet">
-					<#if document_list_portlet_list?size &gt; 0>
-						<@select name='idPortlet' default_value='' multiple=10 params='style=\"overflow-x:scroll\"' items=document_list_portlet_list />
+<@pageContainer id='publication_blog'>
+    <@pageColumn>
+		<@pageHeader title='${blog.contentLabel} #i18n{blog.manage_blogs.managePublication}'>
+			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
+			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory}' buttonIcon='history' size='sm' />
+		</@pageHeader>
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+			<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
+			</li>
+			<li class="nav-item" role="presentation">
+			<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+			</li>
+			<li class="nav-item" role="presentation">
+			<button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Messages</button>
+			</li>
+			<li class="nav-item" role="presentation">
+			<button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
+			</li>
+		</ul>
+  		<!-- Tab panes -->
+		<div class="tab-content">
+			<div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
+			<div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+			<div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
+			<div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+		</div>
+		<@tform boxed=true  name='publication_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp'>
+		<@messages errors=errors />
+		<@input type='hidden' id='id' name='id' value='${blog.id}' />
+			<@row>
+				<@columns sm=3>
+					<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
+						<#assign value><#if portlet_filter??>${portlet_filter.searchValue}</#if></#assign>
+						<@input type='text' id='portlet_filter_value' name='portlet_filter_value' placeHolder='#i18n{blog.publication_blog.labelSearchBy}' value=value />
+					</@formGroup>
+				</@columns>
+				<@columns sm=2>
+					<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
+						<@select name='portlet_filter_type' id='portlet_filter_type' title='#i18n{blog.publication_blog.labelSearchBy}'>
+							<#assign isSelected><#if portlet_filter??  && portlet_filter.portletFilterType = "page_id">true<#else>false</#if></#assign>
+							<@option value='page_id' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelSearchByIdPage}' />
+							<#assign isSelected><#if portlet_filter??  && portlet_filter.portletFilterType = "page_name">true<#else>false</#if></#assign>
+							<@option value='page_name' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelSearchByPageName}' />
+							<#assign isSelected><#if portlet_filter??  && portlet_filter.portletFilterType = "portlet_name">true<#else>false</#if></#assign>
+							<@option value='portlet_name' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelSearchByPortletName}' />
+						</@select>
+					</@formGroup>
+				</@columns>
+				<@columns sm=3>
+					<@formGroup labelFor='order_portlet' labelKey='#i18n{blog.publication_blog.labelOrder}' rows=2>
+						<@select name='order_portlet' title='#i18n{blog.publication_blog.labelOrder}'>
+							<#assign isSelected><#if !order_portlet?? || order_portlet?? && order_portlet = 0>true<#else>false</#if></#assign>
+							<@option value='0' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelDateUpdatePortlet}' />
+							<#assign isSelected><#if order_portlet?? && order_portlet = 1>true<#else>false</#if></#assign>
+							<@option value='1' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelPageName}' />
+							<#assign isSelected><#if order_portlet?? && order_portlet = 2>true<#else>false</#if></#assign>
+							<@option value='2' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelPageId}' />
+							<#assign isSelected><#if order_portlet?? && order_portlet = 3>true<#else>false</#if></#assign>
+							<@option value='3' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelPortletName}' />
+						</@select>
+					</@formGroup>
+				</@columns>
+				<@columns sm=2>
+					<@formGroup labelFor='order_portlet_asc' labelKey='#i18n{blog.publication_blog.labelOrderAsc}' rows=2>
+						<@select name='order_portlet_asc'>
+							<#assign isSelected><#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0>true<#else>false</#if></#assign>
+							<@option value='0' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderDesc}' />
+							<#assign isSelected><#if order_portlet_asc?? && order_portlet_asc = 1>true<#else>false</#if></#assign>
+							<@option value='1' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderAsc}' />
+						</@select>
+					</@formGroup>
+				</@columns>
+				<@columns sm=2 class='d-flex align-items-center'>
+					<@button type='submit' class='btn-block' title='#i18n{blog.manage_documents.buttonSearch}' name='view_manageBlogsPublication' buttonIcon='search' />
+					<#if !portlet_filter?? || portlet_filter.displayLatestPortlets >
+						<@input type='hidden' name='is_display_latest_portlets' value='false' />
 					<#else>
-						<@callOut color='warning'><@icon style='exclamation-circle' /> #i18n{blog.publication_blog.messagePortletNotExist}</@callOut>
+						<@button type='submit' color='danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
+						<@input type='hidden' name='is_display_latest_portlets' value='true' />
 					</#if>
-				</div>
-				<div role="tabpanel" class="tab-pane fade" id="document_portlet">
-					<#if document_portlet_list?size &gt; 0>
-						<@select name='idPortlet' default_value='' multiple=10 params='style=\"overflow-x:scroll\"' items=document_portlet_list />
-					<#else>
-						<@callOut color='warning'><@icon style='exclamation-circle' /> #i18n{blog.publication_blog.messagePortletNotExist}</@callOut>
-					</#if>
-				</div>
-			</@tabContent>
-			</@tabs>
-		<#else>
-			<@callOut color='warning'><@icon style='exclamation-circle' />  #i18n{blog.publication_blog.messagePortletNotExist}</@callOut>
-		</#if>
-			
-		<@row class='input-daterange'>
-			<@columns xs=6>
-				<@formGroup labelFor='dateBeginPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateBegin}' rows=2>
-					<@inputGroup>
-						<@input type='text' name='dateBeginPublishing' id='dateBeginPublishing' value='' />
-						<@inputGroupItem type='addon'>
-							<@icon style='calendar' />
-						</@inputGroupItem>
-					</@inputGroup>
-				</@formGroup>
-			</@columns>
-			<@columns xs=6>
-				<@formGroup labelFor='dateEndPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateEnd}' rows=2>
-					<@inputGroup>
-						<@input type='text' name='dateEndPublishing' id='dateEndPublishing' value='' />
-						<@inputGroupItem type='addon'>
-							<@icon style='calendar' />
-						</@inputGroupItem>
-					</@inputGroup>
-				</@formGroup>
-			</@columns>
-		</@row>
-		
-		<@formGroup rows=2>
-			<@button type='submit' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' class='btn-block' title='#i18n{blog.publication_blog.buttonPublish}' />
-		</@formGroup>
-				
-</@tform>
-
-
-<h3>#i18n{blog.publication_blog.labelPublishedPost}</h3>
-<@table>
-	<thead>
-		<tr>
-			<th>Portlet</th>
-			<th>#i18n{portal.util.labelActions}</th>
-		</tr>
-	</thead>
-	<tbody>
-	<#list blog.blogPublication as pub>
-		<tr>
-			<td>
-				<#list portlet_list as portlet>
-					<#if portlet.id==pub.idPortlet>
-						${portlet.name!} ${pub.dateBeginPublishing} - ${pub.dateEndPublishing}
-						<a href='jsp/admin/site/AdminSite.jsp?page_id=${pub.portlet.pageId}' target="_parent" class="btn btn-link"  title=" ${portlet.name} - Page ${pub.portlet.pageId}">
-						 <@icon style='external-link' />
-						</a>
-						<#break>
-					</#if>
-				</#list>
-			</td>
-			<td>
-				<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${pub.idPortlet}&id=${blog.id}' color='danger' size='sm' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all']/>
-			</td>
-		</tr>
-		</#list>
-	</tbody>
-</@table>
-<@getDatePickerRangeBootstrap language="fr" />
-<script>
-  $(".content-header").hide();
-  /*
-  $("#publication_blog").submit(
-    function(){
-      var s=$("#portlet_filter_value").val();
-      if ( s.trim()=='' ){
-        $("#portlet_filter_value").val(" ");
-      }
-    });
-    */
-</script>
+				</@columns>
+			</@row>
+			<#if portlet_filter_error??>
+				<@callOut color='warning' title=portlet_filter_error callOutIcon='exclamation-circle' />
+			</#if>
+			<#if document_list_portlet_list?size &gt; 0  || document_portlet_list?size &gt; 0 >
+				<h3>#i18n{blog.publication_blog.labelAvailablePortlet} <#if !portlet_filter?? || portlet_filter.displayLatestPortlets> ${label_display_latest_portlets} </#if></h3>
+				<@tabs>
+					<@tabList>
+						<#assign isActive><#if !portlet_filter?? ||portlet_filter.displayLatestPortlets>true<#else>false</#if></#assign>
+						<@tabLink active=isActive?boolean href='#document_list_portlet' tabLabel='#i18n{blog.publication_blog.labelAvailableDocumentListPortlet}' />
+						<#assign isActive><#if portlet_filter?? && !portlet_filter.displayLatestPortlets>true<#else>false</#if></#assign>
+						<@tabLink active=isActive?boolean href='#document_portlet' tabLabel='#i18n{blog.publication_blog.labelAvailableDocumentPortlet}' />
+					</@tabList>
+					<@tabContent>
+						<@tabPanel id='document_list_portlet' active=true>
+						<#if document_list_portlet_list?size &gt; 0>
+							<@select name='idPortlet' default_value='' multiple=10 params='style=\"overflow-x:scroll\"' items=document_list_portlet_list />
+						<#else>
+							<@empty  title='#i18n{blog.publication_blog.messagePortletNotExist}' />
+						</#if>
+						</@tabPanel>
+						<@tabPanel id='document_portlet'>
+						<#if document_portlet_list?size &gt; 0>
+							<@select name='idPortlet' default_value='' multiple=10 params='style=\"overflow-x:scroll\"' items=document_portlet_list />
+						<#else>
+							<@empty  title='#i18n{blog.publication_blog.messagePortletNotExist}' />
+						</#if>
+						</@tabPanel>
+					</@tabContent>
+				</@tabs>
+			<#else>
+				<@callOut color='warning'><@icon style='exclamation-circle' />  #i18n{blog.publication_blog.messagePortletNotExist}</@callOut>
+			</#if>
+			<@row class='input-daterange'>
+				<@columns xs=6>
+					<@formGroup labelFor='dateBeginPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateBegin}' rows=2>
+						<@inputGroup>
+							<@input type='text' name='dateBeginPublishing' id='dateBeginPublishing' value='' />
+							<@inputGroupItem>
+								<@icon style='calendar' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+				</@columns>
+				<@columns xs=6>
+					<@formGroup labelFor='dateEndPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateEnd}' rows=2>
+						<@inputGroup>
+							<@input type='text' name='dateEndPublishing' id='dateEndPublishing' value='' />
+							<@inputGroupItem>
+								<@icon style='calendar' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+				</@columns>
+			</@row>
+			<@formGroup rows=2>
+				<@button type='submit' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' class='btn-block' title='#i18n{blog.publication_blog.buttonPublish}' />
+			</@formGroup>
+		</@tform>
+		<@box>
+			<@boxHeader title='#i18n{blog.publication_blog.labelPublishedPost}' />
+			<@boxBody>
+				<@table headBody=true >
+					<@tr>
+						<@th>Portlet</@th>
+						<@th>#i18n{portal.util.labelActions}</@th>
+					</@tr>
+					<@tableHeadBodySeparator />
+					<#list blog.blogPublication as pub>
+					<@tr>
+						<@td>
+							<#list portlet_list as portlet>
+								<#if portlet.id==pub.idPortlet>
+									${portlet.name!} ${pub.dateBeginPublishing!} - ${pub.dateEndPublishing!}
+									<#assign portletPubId=pub.portlet.pageId />
+									<#assign portletTitle='${portlet.name!} - Page ${pub.portlet.pageId!}' />
+									<#break>
+								</#if>
+							</#list>
+						</@td>
+						<@td>
+							<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${portletPubId!}' title='${portletTitle!}' buttonIcon='external-link' hideTitle=['all'] target='_blank' />
+							<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${pub.idPortlet}&id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] />
+						</@td>
+					</@tr>
+					</#list>
+				</@table>
+			</@boxBody>
+		</@box>
+	</@pageColumn>
+</@pageContainer>
+<@getDateRange idField='dateBeginPublishing' idEndField='dateEndPublishing' language=.lang format='' showFormat='' />

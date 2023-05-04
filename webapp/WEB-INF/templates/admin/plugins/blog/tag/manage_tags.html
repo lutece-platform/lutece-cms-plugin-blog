@@ -1,42 +1,33 @@
-<@row>
-	<@columns>
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{blog.manage_tags.title}'>
+			<@offcanvas targetUrl="jsp/admin/plugins/blog/ManageTags.jsp?view_createTag=view_createTag&manage_blogs" targetElement="#add_tag" id="tag-create"  btnIcon="plus" btnColor="primary" position="end" title="#i18n{blog.manage_tags.buttonAdd}" btnTitle="#i18n{blog.manage_tags.buttonAdd}"  />
+        </@pageHeader>
 		<@box>
-			<@boxHeader title='#i18n{blog.manage_tags.title}'>
-				<@tform name='manage_blogs' action='jsp/admin/plugins/blog/ManageTags.jsp'>
-					<#if permission_manage_create_tag>
-					<@button type='submit' name='view_createTag' buttonIcon='plus' title='#i18n{blog.manage_tags.buttonAdd}' />
-					</#if>
-				</@tform>
-			</@boxHeader>
 			<@boxBody>
-				 <@messages infos=infos />
-					<@table>
-					<thead>
-						<tr>
-							<th>#i18n{blog.manage_tags.columnTagLabel}</th>
-							<th>#i18n{portal.util.labelActions}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<#list tag_list as tag >
-						<tr>
-							<td>
-								${tag.name}
-							</td>
-							<td>
-							<#if permission_manage_modify_tag>
-								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' size='sm' hideTitle=['all']/>
-								</#if>
-							<#if permission_manage_delete_tag>
-								<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all']/>
-								</#if>
-							</td>
-						</tr>
-						</#list>
-					</tbody>
-					</@table>
+				<@messages infos=infos />
+				<@table headBody=true >
+					<@tr>
+						<@th>#i18n{blog.manage_tags.columnTagLabel}</@th>
+						<@th>#i18n{portal.util.labelActions}</@th>
+					</@tr>
+					<@tableHeadBodySeparator />
+					<#list tag_list as tag >
+					<@tr>
+						<@td>${tag.name}</@td>
+						<@td>
+						<#if permission_manage_modify_tag>
+							<@offcanvas targetUrl="jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}" targetElement="#edit_tag" id="tag-edit-${tag.idTag}"  btnIcon="edit" btnColor="primary" position="end" title="#i18n{portal.util.labelModify}" />
+						</#if>
+						<#if permission_manage_delete_tag>
+							<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all']/>
+						</#if>
+						</@td>
+					</@tr>
+					</#list>
+				</@table>
 				<@paginationAdmin paginator=paginator combo=1 />
 			</@boxBody>
 		</@box>
-	</@columns>
-</@row>
+	</@pageColumn>
+</@pageContainer>

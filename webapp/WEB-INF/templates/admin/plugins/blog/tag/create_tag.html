@@ -2,7 +2,7 @@
 	<@columns>
 		<@box>
 			<@boxHeader title='#i18n{blog.create_tag.title}' />
-			<@boxBody>
+			<@boxBody id='add_tag'>
 				<@tform name='create_tag' action='jsp/admin/plugins/blog/ManageTags.jsp'>
 					<@messages errors=errors />
 					<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' mandatory=true>

@@ -1,55 +1,71 @@
 <!-- Portlet specific parameters -->
-<#include "/admin/util/editor/editor_keditor.html" />
+<#include "../blog_commons.html" />
+<input type="hidden" id="id" name="id" value="0">
+<!-- <input type="hidden" id="action" name="action" value="createBlog"> -->
+<div class="form-group">
+  <label>#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}</label>
+  <select class="form-control" id="page_template_code" name="page_template_code">
+  <#list pages_list as key, value >
+     <option value="${key}">${value}</option>
+  </#list>
+</select>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#creation" aria-controls="creation" role="tab" data-toggle="tab">#i18n{blog.portlet.blogsBlogsPortlet.labelCreationNewTab}</a></li>
+  <li role="presentation"><a href="#existing" aria-controls="existing" role="tab" data-toggle="tab">#i18n{blog.portlet.blogsBlogsPortlet.labelCreationExistingTab}</a></li>
+</ul>
+<div class="tab-content">
+  	<div role="tabpanel" class="tab-pane active" id="creation">
+		<hr> 
+		<div class="form-group">
+			<label for="html_content" class="sr-only">#i18n{blog.create_blog.labelEditContent} </label>
+			<textarea id="html_content" class="hidden" name="html_content" rows="12"></textarea>
+			<div id="div_html_content" class="content-body" contenteditable="true">
+				<p>Saisir ici le contenu</p>
+			</div>
+		</div>
+		<@input type='hidden' name='edit_comment' value=edit_comment!'' />
+	</div>
+    <div role="tabpanel" class="tab-pane" id="existing">
+      <div class="form-group">
+        <select class="form-control" name="blog_selected" id="blog_selected">
+          <option value=""></option>
+          <#list blog_list?sort_by('contentLabel') as blog>
+            <#if blog.attachedPortletId == 0>
+              <option value="${blog.id}">${blog.contentLabel} - ${blog.id}</option>
+            </#if>
+          </#list>
+        </select>
+      </div>
+  </div>
+</div>
+<div class="blog-resources sr-only">
+	<ul id="content-list" class="list-group"></ul>
+</div>
+<div id="filesappend"></div>
 
-<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2>
-	<@select id='page_template_code' name='page_template_code'>
-		<#list pages_list as key, value>
-			<option value="${key}">${value}</option>
-		</#list>
-	</@select>
-</@formGroup>
-
-<@tabs>
-	<@tabList>
-	  <@tabLink active=true href='#creation' title='#i18n{blog.portlet.blogsBlogsPortlet.labelCreationNewTab}' />
-	  <@tabLink href='#existing' title='#i18n{blog.portlet.blogsBlogsPortlet.labelCreationExistingTab}' />
-	</@tabList>
-
-	<@tabContent>
-		<@tabPanel id='creation' active=true>
-			<@formGroup labelFor='html_content' labelKey='#i18n{blog.portlet.blogsBlogsPortlet.labelEditNewContent}' rows=2>
-				<@input type='textarea' id='html_content' richtext=true name='html_content' rows=12 />
-				<@initEditor fsubmit='form-portlet' />
-			</@formGroup>
-			<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelEditComment}' helpKey='#i18n{blog.create_blog.labelEditComment.help}' rows=2>
-				<@input type='text' name='edit_comment' value='' />
-			</@formGroup>
-		</@tabPanel>
-		<@tabPanel id='existing'>
-		  <@formGroup labelFor='blog_selected' labelKey='' rows=2>
-			<@select name='blog_selected' id='blog_selected'>
-			  <option value=""></option>
-			  <#list blog_list?sort_by('contentLabel') as blog>
-				<#if blog.attachedPortletId == 0>
-				  <option value="${blog.id}">${blog.contentLabel} - ${blog.id}</option>
-				</#if>
-			  </#list>
-			</@select>
-		  </@formGroup>
-		</@tabPanel>
-	</@tabContent>
-</@tabs>
-<!--
-<link href="css/admin/plugins/blog/blog.css" rel="stylesheet">
-<link href="js/jquery/plugins/multiple-select/multiple-select.css" rel="stylesheet">
-<script src="js/jquery/plugins/multiple-select/multiple-select.js"></script>
--->
+<script src="js/plugins/blog/manage_image.js"></script>
+<@editBlog />
+<style>
+	.content-body{ height: 15rem}
+	.wrapper{ overflow: auto }
+  </style>
 <script>
-$(function () {
-  $("#style").parent().toggle();
-  /*$("#blog_selected").multipleSelect({
-    filter: true,
-    selectAll: false
-  });*/
+$( function(){
+$('#style').parents('.form-group').toggle();
+$('#footer').css('position','relative');
+	$('.content-header').html('');
+	tinymce.init(contentBodyConfig);
+	tinymce.init(contentDescConfig);
+	
+	$('#form-portlet').submit( function(){
+		var t = $('#div_content_title').html();
+		$('#content_label').val( t );
+		var c = $('#div_html_content').html();
+		$('#html_content').val( c );
+		var d = $('#div_description').html();
+		$('#description').val( d );
+	});
+
 });
 </script>

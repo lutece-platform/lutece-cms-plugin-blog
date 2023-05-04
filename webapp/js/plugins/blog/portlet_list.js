@@ -1,7 +1,6 @@
 var baseUrl = document.getElementsByTagName('base')[0].href;
 
 $(function () {
-
   $("#style").parent().toggle();
 
   var isAdded= true;
@@ -50,7 +49,7 @@ $(function () {
     drop: function (event, ui) {
       ui.draggable.fadeOut(function () {
       ui.draggable
-        .appendTo($docs)
+        .appendTo( $docs )
         .fadeIn();
       });
   	isAdded= false;
@@ -58,9 +57,6 @@ $(function () {
     doDeleteDocument(ui.draggable.attr("id"));
     }
   });
-
-  
-
 });
 
 function doAddDocument(idDocument, orderDocument) {

@@ -1,31 +1,40 @@
 <#include "blog_commons.html" />
-<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2>
-	<@select id='page_template_code' name='page_template_code'>
-	  <#list pages_list as key, value >
-		 <option value="${key}" <#if portlet.pageTemplateDocument== key>selected</#if>>${value}</option>
-	  </#list>
-	</@select>
-</@formGroup>
+<div class="form-group">
+<label>Mod&egrave;le de pr&eacute;sentation</label>
+<select class="form-control" id="page_template_code" name="page_template_code">
+  <#list pages_list as key, value >
+     <option value="${key}" <#if portlet.pageTemplateDocument== key>selected</#if>>${value}</option>
+  </#list>
+</select>
+</div>
 <@blogSearch />
 
-<@row>
-	<@columns sm=6>
-		<h4 class="lead">#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}</h4>
-		<@listGroup id='docs' params='class="connectedSortable"'>
-			<#list blog_list?reverse as doc>
-				<@listGroupItem id='${doc.id}'>${doc.contentLabel}</@listGroupItem>
-			</#list>
-		</@listGroup>
-	</@columns>
-	<@columns sm=6>
-		<h4 class="lead">#i18n{blog.portlet.blogsListBlogsPortlet.titlePublishedPostList}</h4>
-		<@listGroup id='published_docs' params='class="connectedSortable"'>
-			<#list blog_list_published as blog>
-				<@listGroupItem id='${blog.id}'>${blog.contentLabel}</@listGroupItem>
-			</#list>
-		</@listGroup>
-	</@columns>
-</@row>
+<div class="form-group">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6">
+      <h4 class="lead">Liste Billets </h4>
+      <div id="docs" class="connectedSortable list-group">
+        <#list blog_list?reverse as doc>
+          <a id="${doc.id}" class="list-group-item" href="#">
+            ${doc.contentLabel}
+          </a>
+        </#list>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+
+   <h4 class="lead">Liste Billets publi&eacute;s</h4>
+    <div id="published_docs" class="connectedSortable list-groups">
+        <#list blog_list_published as blog>
+        <a id="${blog.id}" class="list-group-item" href="#">
+           ${blog.contentLabel}
+        </a>
+        </#list>
+    </div>
+  </div>
+ </div>
+</div>
 
 <@paginationAdmin paginator=paginator combo=1 />
+<script src="js/jquery/jquery-ui.min.js"></script>
 <script src="js/plugins/blog/portlet_list.js?id=541646"></script>

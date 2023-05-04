@@ -2,7 +2,7 @@
 	<@columns>
 		<@box>
 			<@boxHeader title='#i18n{blog.modify_tag.title}' />
-			<@boxBody>
+			<@boxBody id='edit_tag' >
 				<@tform name='modify_tag' action='jsp/admin/plugins/blog/ManageTags.jsp'>
 					<@messages errors=errors />
 					<@formGroup labelFor='name' labelKey='#i18n{blog.modify_tag.labelTagName}' helpKey='#i18n{blog.modify_tag.labelTagName.help}' mandatory=true>

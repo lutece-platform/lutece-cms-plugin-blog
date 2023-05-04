@@ -1,5 +1,7 @@
-<#include "/admin/util/editor/editor_keditor.html" />
-
+<!-- Portlet specific parameters -->
+<#include "../blog_commons.html" />
+<input type="hidden" id="id" name="id" value="${blog_id!}">
+<input type="hidden" id="action" name="action" value="modifyBlog">
 <@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2>
 	<@select id='page_template_code' name='page_template_code'>
 	<#list pages_list as key, value>
@@ -7,12 +9,76 @@
 	</#list>
 	</@select>
 </@formGroup>
+<div class="row">
+<article class="col-xs-12 col-sm-10">
+	<hr>
+	<div class="form-group">
+		<label for="html_content" class="sr-only">#i18n{blog.create_blog.labelEditContent} </label>
+		<textarea id="html_content" class="hidden" name="html_content" rows="12">${htmlcontent!}</textarea>
+		<div id="div_html_content" class="content-body" contenteditable="true">
+			${htmlcontent!}
+		</div>
+	</div>
+	<@input type='hidden' name='edit_comment' value=edit_comment!'' />
+</article>
+</div>
+<style>
+  .content-body{ height: 15rem}
+  .wrapper{ overflow: auto }
+  </style>
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imgModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="Close">
+            <i class="fa fa-remove" aria-hidden="true"></i>
+          </button>
+          <h4 class="modal-title" id="imgModalLabel">Publication</h4>
+        </div>
+        <div class="modal-body">
+        <#if true>
+          <!--To the use of the image crop plugin -->
+          <#include "/skin/plugins/uploadimage/uploadimage.html" />
+          <@addRequiredJsUploadImages/>
+          <@cropimage fieldName="attachment" file="images/admin/skin/plugins/uploadimage/picture.jpg" cssClass="text-center" synchronous="false"  />
+        <#else>
+            <input class="filestyle" name="attachment" id="attachment" type="file" data-iconName="fa fa-image" data-buttonText="" onchange="getImage()"
+              value="">
+        </#if>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+</div>
 
-<@formGroup labelFor='html_content' labelKey='#i18n{blog.modify_.labelContent}' rows=2>
-	<@input type='textarea' id='html_content' richtext=true name='html_content' rows=12>${htmlcontent!}</@input>
-	<@initEditor fsubmit='form-portlet' />
-</@formGroup>
+<div class="blog-resources sr-only">
+	<ul id="content-list" class="list-group"></ul>
+</div>
+<div id="filesappend"></div>
+<@blogEditor />
 
-<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.modify_blog.labelEditComment}' helpKey='#i18n{blog.modify_blog.labelEditComment.help}' rows=2>
-	<@input type='text' name='edit_comment' value=edit_comment!'' />
-</@formGroup>
+
+<script src="js/plugins/blog/manage_image.js"></script>
+
+<script>
+$( function(){
+$('#style').parents('.form-group').toggle();
+$('#footer').css('position','relative');
+	$('.content-header').html('');
+	tinymce.init(contentBodyConfig);
+	tinymce.init(contentDescConfig);
+	
+	$('#form-portlet').submit( function(){
+		var t = $('#div_content_title').html();
+		$('#content_label').val( t );
+		var c = $('#div_html_content').html();
+		$('#html_content').val( c );
+		var d = $('#div_description').html();
+		$('#description').val( d );
+	});
+
+
+});
+</script>
