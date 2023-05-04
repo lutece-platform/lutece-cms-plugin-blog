@@ -110,20 +110,10 @@ document.addEventListener("DOMContentLoaded", function() {
 </#macro>
 <#macro blogScriptInit >
 <@initToast id='blogToastContainer' showAll=false >
-  <@addToast id='blogToast' title='Blog' content='to change' />
+  <@addToast id='blogToast' content='to change' />
 </@initToast>
 <script>
 var toastBlogItem;
-
-function setBlogToast( toastType, toastTitle, toastContent ){
-	const toastBlog = document.querySelector('#blogToast');
-  if( toastType !='' ){ <#noparse>toastBlog.classList.add( `text-bg-warning` );</#noparse> }
-	const blogToastTitle = document.querySelector( '#blogToast .toast-header strong' );
-	const blogToastBody = document.querySelector( '#blogToast .toast-body' );
-	blogToastTitle.textContent = toastTitle;
-	blogToastBody.textContent = toastContent;
-	toastBlogItem.show()
-}
 
 document.addEventListener( "DOMContentLoaded", function(){
   const toastBlog = document.querySelector('#blogToast');
@@ -134,31 +124,40 @@ document.addEventListener( "DOMContentLoaded", function(){
   dHtml=document.querySelector('#div_html_content') , iHtml=document.querySelector('#html_content');
 
   formEditor.addEventListener( "submit", event => {
-    const t = dLabel.textContent;
-    if( t.trim() == '' ){
-      blogToastTitle.textContent = 'TEST'
-      blogToastBody.textContent = 'Le titre ne peut etre vide !'
-      //blogToast.show()
+    const t = dLabel.textContent.replace('\n','').replace('Titre...','').trim();
+    if( t == '' ){
+      setBlogToast( 'warning' , 'Veuillez saisir un titre' );
+      event.preventDefault();
+      dLabel.focus({ focusVisible: true })
       return false;
     } else {
       iLabel.value = t ;
     }
     
-    const d = dDesc.html();
-    
-    if( d.trim() == '<p><br data-mce-bogus=\"1\"></p>' || d.trim() == '<p>Description...</p>' || d.trim() == '' ) {
-      alert( "La description ne peut être vide !" );
+    const d = dDesc.textContent.replace('Description...','').trim();
+    if( d == '' ) {
+      setBlogToast( 'warning' , 'Saisir une description !' )	
+      event.preventDefault();
+      dDesc.focus({ focusVisible: true })
       return false;
     } else {
       iDesc.value = d;
     }
 
-    const c = dHtml.html();
-    idHtml.val = c;
+    const c = dHtml.textContent.replace('Saisir ici le contenu...','').trim();
+    if( c == '' ) {
+      setBlogToast( 'warning' , 'Saisir du contenu !' )	
+      event.preventDefault();
+      dHtml.focus({ focusVisible: true })
+      return false;
+    } else {
+      idHtml.val = c;
+    }
 
     const tagsLen = document.querySelector("#tag-list li").length;
     if ( tagsLen == 0  ){
-      alert( "Il vous faut au moins un tag !" );
+      setBlogToast( 'warning' , 'Il vous faut au moins un tag !' )
+      event.preventDefault();
       return false;
     }
   });
@@ -195,53 +194,10 @@ document.addEventListener( "DOMContentLoaded", function(){
     </#if>
     })
 
-    /*
     // Limite les saisies Titre et Description
-    var limit1=300, limit2=75;
-    $("#content_label").attr("maxlength","75").after(" <span id=\"charlimit2\"></span>");
-    $("#description").after(" <span id=\"charlimit1\"></span>");
-    $("#content_label").keypress(function(e) {
-      if(e.charCode >= 48 ){
-      var nCar = $(this).val().length
-      $("span#charlimit2").html("<strong>" + eval(nCar + 1) + " caract&egrave;res</strong>")
-      if( nCar >= limit2){
-        $("span#charlimit2").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>')
-        return false;
-      }
-      }
-    });
-  
-    $("#content_label").blur(function(e) {
-      var txt = $(this).val();
-      if( txt.length > limit2){
-      $("span#charlimit2").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>');
-      $(this).val( txt.substr(0,limit) );
-      } else {
-      $("span#charlimit2").html('');
-      }
-    });
-  
-    $("#description").keypress(function(e) {
-    if(e.charCode >= 48 ){
-      var nCar = $(this).val().length
-      $("span#charlimit1").html("<strong>" + eval(nCar + 1) + " caract&egrave;res</strong>")
-      if( nCar >= limit1){
-      $("span#charlimit1").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>')
-      return false;
-      }
-      }
-    });
-  
-    $("#description").blur(function(e) {
-      var txt = $(this).val();
-      if( txt.length > limit1){
-      $("span#charlimit1").html('<span class="label label-warning"><i class="fa fa-exclamation-circle"></i>&nbsp;<strong>&nbsp;Limite atteinte !</strong></span>');
-      $(this).val( txt.substr(0,limit1) );
-      } else {
-      $("span#charlimit1").html('');
-      }
-    });
-  */
+    limitInputCharacters( 'div_content_label', 75 );
+    limitInputCharacters( 'div_description', 300 );
+
 });
 </script>
 <script src="js/admin/plugins/blog/blog.js"></script>

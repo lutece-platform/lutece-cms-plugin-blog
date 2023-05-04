@@ -6,21 +6,27 @@
 					<@button type='submit' name='view_createBlog' buttonIcon='plus' class='me-1' title='#i18n{blog.manage_blogs.buttonAdd}' />
 				</@tform>
 			</#if>
-            <@offcanvas id="search-users" title="#i18n{portal.users.manage_users.search_users.buttonSearch}" position="end" btnTitle="#i18n{portal.users.manage_users.search_users.buttonSearch}" btnIcon="search">
-				<@tform id='form-manage' name='form-manage' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}'>
-						<@input type='text' id='search_text' name='search_text' value='${search_text!\'\'}' />
-						<@checkBox labelFor='current_user' labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked orientation='horizontal' />
+        </@pageHeader>
+		<@box class='p-0'>
+			<@boxBody>
+				<@tform id='form-manage' name='form-manage' formStyle='inline' class='d-flex justify-content-evenly align-items-center p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' rows=2 >
+						<@inputGroup>
+							<@input type='text' id='search_text' name='search_text' value='${search_text!\'\'}' />
+							<@inputGroupItem>
+								<@checkBox labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked orientation='switch' />
+							</@inputGroupItem>
+						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}'>
-						<@select id='tag_doc' multiple=1 name='tag_doc'>
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}' rows=2 >
+						<@select id='tag_doc' multiple=1 name='tag_doc' class='form-control'>
 						<#list list_tag?sort as tgName>
 							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
 							<@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
 						</#list>
 						</@select>
 					</@formGroup>
-					<@formGroup labelFor='dateUpdateBlogAfter' labelKey='#i18n{blog.manage_blogs.labelAfter}'>
+					<@formGroup labelFor='dateUpdateBlogAfter' labelKey='#i18n{blog.manage_blogs.labelAfter}' rows=2 >
 						<@inputGroup>
 							<@input type='text' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
 							<@inputGroupItem>
@@ -28,7 +34,7 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='dateUpdateBlogBefore' labelKey='#i18n{blog.manage_blogs.labelBefore}'>
+					<@formGroup labelFor='dateUpdateBlogBefore' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2 >
 						<@inputGroup>
 							<@input type='text' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
 							<@inputGroupItem>
@@ -36,19 +42,29 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup>
-						<@checkBox labelFor='unpublished' labelKey='#i18n{blog.manage_blogs.labelNotPublished}' name='unpublished' id='unpublished' value='false' checked=unpublished title='#i18n{blog.manage_blogs.labelNotPublished}' />
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.dashboard.columnStatus} ' rows=2 >
+						<@checkBox labelKey='#i18n{blog.manage_blogs.labelNotPublished}' name='unpublished' id='unpublished' value='false' checked=unpublished title='#i18n{blog.dashboard.PublishedStatus} / #i18n{blog.dashboard.UnPublishedStatus}' orientation='switch' />
 					</@formGroup>
-					<@formGroup>
-						<@button type='submit' name='button_search' id='button_search' title='#i18n{blog.manage_blogs.search}' />
-						<@button type='submit' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
+					<@formGroup rows=2 class='pt-3'>
+						<@button type='submit' buttonIcon='search' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
+						<@button type='submit' color='danger' buttonIcon='x' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
 					</@formGroup>
 				</@tform>
-            </@offcanvas>
-        </@pageHeader>
+			</@boxBody>
+		</@box>
 		<@messages infos=infos />
 		<@box>
 			<@boxBody>
+				<#-- 
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}'>
+						<@select id='multiple' multiple=1 name='tag_doc'>
+						<#list list_tag?sort as tgName>
+							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
+							<@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
+						</#list>
+						</@select>
+					</@formGroup> 
+				-->
 				<#assign idx=0 />
 				<@table headBody=true >
 					<@tr>
@@ -166,13 +182,22 @@
 	</@pageColumn>
 </@pageContainer>
 <@getDateRange idField='dateUpdateBlogAfter' idEndField='dateUpdateBlogBefore' language=.lang format='' showFormat='' />
-<link href="js/admin/plugins/blog/multiple-select/multiple-select.css" rel="stylesheet">
-<script src="js/admin/plugins/blog/multiple-select/multiple-select.js"></script>
+<script src="js/admin/plugins/blog/slim-select/slimselect.min.js"></script>
+<link rel="stylesheet" href="js/admin/plugins/blog/slim-select/slimselect.css" />
 <script>
-$(function () {
-	$("#tag_doc").multipleSelect({
-    	selectAll: false,
-    	filter: true
-  });
+document.addEventListener( "DOMContentLoaded", function(){
+  	new SlimSelect({
+        select: '#tag_doc',
+		settings: {
+			// Below are a list of optional fields
+			// their values are the defaults
+			searchPlaceholder: 'Recherche',
+			searchText: 'Pas de resultats',
+			searchingText: 'Recherche...',
+			searchHighlight: true,
+			placeholderText: 'Choisir une valeur',
+			timeoutDelay: 200,
+		},
+	});
 });
 </script>

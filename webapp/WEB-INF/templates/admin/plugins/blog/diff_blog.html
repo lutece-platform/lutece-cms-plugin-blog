@@ -1,9 +1,9 @@
 <@pageContainer>
     <@pageColumn>
         <@pageHeader title='Diff ${blog.contentLabel}'>
-			<a class="btn btn-primary btn-notif" href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}" title="#i18n{blog.manage_blogs.labelHistory}  ${blog.version} versions ">
-				<i class="fa fa-history"  aria-hidden="true"></i>  #i18n{blog.manage_blogs.labelHistory}  [version: ${blog.version!}]
-			</a>
+			<@aButton class='btn-notif' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory}  ${blog.version} versions' btnIcon='history'>
+				#i18n{blog.manage_blogs.labelHistory}  [version: ${blog.version!}]
+			</@aButton>
 			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
 			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
         </@pageHeader>
@@ -14,18 +14,16 @@
 			<@columns>
 				<@select name='blog_version2'>
 				<#list blog_version_list as blog_tmp>
-					<option value="${blog_tmp.version}" <#if blog_tmp.version == blog2.version>selected="selected"</#if> >
-						#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}
-					</option>
+					<#assign isSelected><#if blog_tmp.version == blog2.version>true<#else>false</#if></#assign>
+					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
 				</#list>
 				</@select>
 			</@columns>
 			<@columns>
 				<@select name='blog_version2'>
 				<#list blog_version_list as blog_tmp>
-					<option value="${blog_tmp.version}" <#if blog_tmp.version == blog.version>
-						selected="selected"</#if> >#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}
-					</option>
+					<#assign isSelected><#if blog_tmp.version == blo2.version>true<#else>false</#if></#assign>
+					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
 				</#list>
 				</@select>
 			</@columns>
@@ -78,7 +76,7 @@
 	</@pageColumn>
 </@pageContainer>
 <script>
-//lifted from daisy diff.js, just this part without the whole dojo/prev/next
+// Lifted from daisy diff.js, just this part without the whole dojo/prev/next
 function updateOverlays(){
 	const images = document.getElementsByTagName("img");
 	for (var i = 0; i < images.length; i++) {

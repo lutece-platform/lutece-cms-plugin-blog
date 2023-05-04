@@ -4,28 +4,6 @@
 			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
 			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory}' buttonIcon='history' size='sm' />
 		</@pageHeader>
-		<!-- Nav tabs -->
-		<ul class="nav nav-tabs" id="myTab" role="tablist">
-			<li class="nav-item" role="presentation">
-			<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
-			</li>
-			<li class="nav-item" role="presentation">
-			<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
-			</li>
-			<li class="nav-item" role="presentation">
-			<button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">Messages</button>
-			</li>
-			<li class="nav-item" role="presentation">
-			<button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
-			</li>
-		</ul>
-  		<!-- Tab panes -->
-		<div class="tab-content">
-			<div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-			<div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-			<div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-			<div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
-		</div>
 		<@tform boxed=true  name='publication_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp'>
 		<@messages errors=errors />
 		<@input type='hidden' id='id' name='id' value='${blog.id}' />
@@ -82,9 +60,6 @@
 					</#if>
 				</@columns>
 			</@row>
-			<#if portlet_filter_error??>
-				<@callOut color='warning' title=portlet_filter_error callOutIcon='exclamation-circle' />
-			</#if>
 			<#if document_list_portlet_list?size &gt; 0  || document_portlet_list?size &gt; 0 >
 				<h3>#i18n{blog.publication_blog.labelAvailablePortlet} <#if !portlet_filter?? || portlet_filter.displayLatestPortlets> ${label_display_latest_portlets} </#if></h3>
 				<@tabs>
@@ -173,3 +148,9 @@
 	</@pageColumn>
 </@pageContainer>
 <@getDateRange idField='dateBeginPublishing' idEndField='dateEndPublishing' language=.lang format='' showFormat='' />
+<#if portlet_filter_error??>
+<@initToast id='blogToastContainer' >
+	<#assign errorText><@icon style='exclamation-circle' /> ${portlet_filter_error!}</#assign>
+  	<@addToast content=errorText class='text-bg-warning' />
+</@initToast>
+</#if>
