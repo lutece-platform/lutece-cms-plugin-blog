@@ -41,10 +41,6 @@
     height: auto !important;
 }
 
-:focus{
-	outline: none;
-}
-
 .label-tag { margin:2px; padding: 8px; border-radius: 15px; display: inline-block}
 .label-tag .btn{ display: none}
 .label-tag:hover .btn{ display: inline-block}
