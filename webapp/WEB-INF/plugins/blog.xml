@@ -9,8 +9,8 @@
     <description>blog.plugin.description</description>
     <provider>blog.plugin.provider</provider>
     <provider-url>http://dev.lutece.paris.fr</provider-url>
-    <icon-url>images/admin/skin/feature_default_icon.png</icon-url>
-    <copyright>Copyright (c) 2016 Your Company</copyright>
+    <icon-url>themes/admin/shared/plugins/blog/images/blog.svg</icon-url>
+    <copyright>Copyright (c) 2023 Ville de Paris</copyright>
     <db-pool-required>1</db-pool-required>
     
     <core-version-dependency>
@@ -42,7 +42,7 @@
 
     <!-- Specific plugin CSS stylesheet -->
     <admin-css-stylesheets>
-        <admin-css-stylesheet>css/admin/plugins/blog/blog.css</admin-css-stylesheet>
+        <admin-css-stylesheet>themes/admin/shared/plugins/blog/blog.min.css</admin-css-stylesheet>
     </admin-css-stylesheets>
 	  <!-- Search Indexer Service -->
     <search-indexers>
