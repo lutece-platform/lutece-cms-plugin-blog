@@ -46,8 +46,8 @@
 						<@checkBox labelKey='#i18n{blog.manage_blogs.labelNotPublished}' name='unpublished' id='unpublished' value='false' checked=unpublished title='#i18n{blog.dashboard.PublishedStatus} / #i18n{blog.dashboard.UnPublishedStatus}' orientation='switch' />
 					</@formGroup>
 					<@formGroup rows=2 class='pt-3'>
-						<@button type='submit' buttonIcon='search' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
-						<@button type='submit' color='danger' buttonIcon='x' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
+						<@button type='submit' buttonIcon='search me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
+						<@button type='submit' color='danger' buttonIcon='x me-1' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
 					</@formGroup>
 				</@tform>
 			</@boxBody>
@@ -55,16 +55,14 @@
 		<@messages infos=infos />
 		<@box>
 			<@boxBody>
-				<#-- 
-					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}'>
-						<@select id='multiple' multiple=1 name='tag_doc'>
-						<#list list_tag?sort as tgName>
-							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
-							<@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
-						</#list>
-						</@select>
-					</@formGroup> 
-				-->
+				<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}'>
+					<@select id='multiple' class='form-control' multiple=1 name='tag_doc'>
+					<#list list_tag?sort as tgName>
+						<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
+						<@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
+					</#list>
+					</@select>
+				</@formGroup> 
 				<#assign idx=0 />
 				<@table headBody=true >
 					<@tr>
@@ -85,11 +83,11 @@
 											${blog.contentLabel!} <#if blog.locked><@icon style='lock' /></#if>
 										</@link>
 										<@p class='mt-2'>
-											<small>
-												Cr&eacute;&eacute; par 
-												<strong>${blog.userCreatorInfos.lastName!}</strong>
-												<strong> ${blog.userCreatorInfos.firstName!}</strong> le ${blog.creationDate?date}
-											</small>
+										<small>
+											#i18n{blog.manage_blogs.labelCreate} #i18n{blog.manage_blogs.labelBy}
+											<strong>${blog.userCreatorInfos.lastName!}</strong>
+											<strong> ${blog.userCreatorInfos.firstName!}</strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}
+										</small>
 										</@p>
 										<#if blog.editComment?? && blog.editComment?trim !=''>
 											<@p><@span class="label label-default"><@icon style='comment' /> <strong>#i18n{blog.manage_blogs.columnEditComment}:</strong> ${blog.editComment} </@span></@p>
@@ -111,7 +109,7 @@
 								<#list blog.tag as tg>
 									<#list list_tag as tgName>
 										<#if tgName.code==tg.idTag?string>
-											<@tag color='info mb-1'>${tgName.name!}</@tag> 
+											<@tag color='info text-white mb-1'>${tgName.name!}</@tag> 
 											<#break>
 										</#if>
 									</#list>
@@ -120,17 +118,17 @@
 							<@td>
 							<#if permission_manage_publish_blog>
 								<#assign btnColor><#if blog.blogPublication?size = 0>default<#else>primary</#if></#assign>
-								<#assign btnTitle><#if blog.blogPublication?size==0>Publier<#else>#i18n{blog.manage_blogs.managePublication}</#if></#assign>
+								<#assign btnTitle><#if blog.blogPublication?size==0>#i18n{blog.manage_blogs.labelPublished}<#else>#i18n{blog.manage_blogs.managePublication}</#if></#assign>
 								<@btnGroup params='aria-label="Manage"'>
-									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' class='position-relative overflow-visible' color='${btnColor}' title=title buttonIcon='globe' size='sm'>
+									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' class='position-relative overflow-visible' color='${btnColor}' title=title buttonIcon='globe' size=''>
 									<#if blog.blogPublication?size &gt; 0>
 										<@span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success z-2">
-											${blog.blogPublication?size} <@span class="visually-hidden">publications</@span>
+											${blog.blogPublication?size} <@span class="visually-hidden">#i18n{blog.manage_blogs.labelDisplays}</@span>
 										</@span>
 									</#if>
 									</@aButton>
 									<#if blog.blogPublication?size &gt; 0>
-										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all']size='sm'>
+										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all']size=''>
 											<#list blog.blogPublication?sort_by("idPortlet") as publication>
 												<@li>
 													<@btnGroup>
@@ -161,7 +159,7 @@
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' buttonIcon='git-compare' hideTitle=['all'] />
 								</#if>
 								<#if blog.version &gt; 1>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='notif position-relative overflow-visible' title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions=Versions}' buttonIcon='history' hideTitle=['all']size='sm'>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='notif position-relative overflow-visible' title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions=Versions}' buttonIcon='history' hideTitle=['all']size=''>
 										<@span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
 											${blog.version}
 										</@span>
@@ -182,8 +180,8 @@
 	</@pageColumn>
 </@pageContainer>
 <@getDateRange idField='dateUpdateBlogAfter' idEndField='dateUpdateBlogBefore' language=.lang format='' showFormat='' />
-<script src="js/admin/plugins/blog/slim-select/slimselect.min.js"></script>
-<link rel="stylesheet" href="js/admin/plugins/blog/slim-select/slimselect.min.css" />
+<script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
+<link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
 <script>
 document.addEventListener( "DOMContentLoaded", function(){
   	new SlimSelect({
@@ -191,11 +189,11 @@ document.addEventListener( "DOMContentLoaded", function(){
 		settings: {
 			// Below are a list of optional fields
 			// their values are the defaults
-			searchPlaceholder: 'Recherche',
-			searchText: 'Pas de resultats',
-			searchingText: 'Recherche...',
+			searchPlaceholder: '#i18n{blog.manage_blogs.search}',
+			searchText: '#i18n{blog.manage_blogs.labelNoResult}',
+			searchingText: '#i18n{blog.manage_blogs.labelSearch}...',
 			searchHighlight: true,
-			placeholderText: 'Choisir une valeur',
+			placeholderText: '#i18n{blog.manage_blogs.labelChooseValue}',
 			timeoutDelay: 200,
 		},
 	});

@@ -1,8 +1,8 @@
-<@pageContainer id='publication_blog'>
+	<@pageContainer id='publication_blog'>
     <@pageColumn>
 		<@pageHeader title='${blog.contentLabel} #i18n{blog.manage_blogs.managePublication}'>
-			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
-			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory}' buttonIcon='history' size='sm' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory}' buttonIcon='history me-2' size='' />
 		</@pageHeader>
 		<@tform boxed=true  name='publication_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp'>
 		<@messages errors=errors />

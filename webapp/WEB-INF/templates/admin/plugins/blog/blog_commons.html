@@ -1,7 +1,6 @@
 <#macro blogEditor lang='fr_FR' colorsMap=''  >
-<script src="js/admin/plugins/blog/tinymce/tinymce.min.js"></script>
-<script src="js/admin/plugins/blog/tinymce/jquery.tinymce.min.js"></script>
-<script src="js/admin/plugins/blog/tinymce/langs/${lang}.js"></script>
+<script src="themes/admin/shared/plugins/blog/js/tinymce/tinymce.min.js"></script>
+<script src="themes/admin/shared/plugins/blog/js/tinymce/langs/${lang}.js"></script>
 <script>
 var baseUrl='${webapp_url}';
 var colorMap =  [
@@ -44,34 +43,40 @@ var contentBodyConfig = {
   document_base_url : '${webapp_url}',
   color_map: colorMap,
   inline: true,
-  /* enable title field in the Image dialog*/
-	/* image_title: true, */
   /* enable automatic uploads of images represented by blob or data URIs*/
-  // images_upload_handler: lutece_image_upload_handler,
   automatic_uploads: false,
   images_upload_url: '',
   image_caption: true,
   image_advtab: true,
   /*
-    URL of our upload handler (for more details check: https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_url)
-    images_upload_url: 'postAcceptor.php',
+    URL of our upload handler 
     here we add custom filepicker only to Image dialog
   */
   file_picker_types: 'image',
   /* and here's our custom image picker*/
   file_picker_callback: function (cb, value, meta) {
-    var input = document.createElement('input');
+    let fileRes = '';
+    let input = document.createElement('input');
     input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
     input.onchange = function () {
-      var file = this.files[0];
-      var reader = new FileReader();
+      const file = this.files[0];
+      const reader = new FileReader();
       reader.onload = function () {
-        var idBlog = $('#id').val();
-        var fileType=1; /* Type image */
-        var jRes=doAddContent( file.name, reader.result, fileType, idBlog );
-        /* call the callback and populate the Title field with the file name */
-        cb( jRes.location, { title: file.name });
+        let blogId = document.querySelector('#id').value;
+        const fileType=1; 
+        doAddContent( file.name, file.size, reader.result, fileType, blogId ).then( resp => {
+          /* call the callback and populate the Title field with the file name */
+          if ( resp.status == 'OK' ){
+            if( resp.result == "BLOG_LOCKED" ){
+              setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+            } else {
+              setListFile( resp.result[1], resp.result[0], fileType, blogId )
+              <#noparse>fileRes = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
+              /* call the callback and populate the Title field with the file name */
+              cb( fileRes , { title: file.name });
+            }
+          }
+        });
       };
       reader.readAsDataURL(file);
     };
@@ -110,23 +115,42 @@ document.addEventListener("DOMContentLoaded", function() {
 </#macro>
 <#macro blogScriptInit >
 <@initToast id='blogToastContainer' showAll=false >
-  <@addToast id='blogToast' content='to change' />
+<@addToast id='blogToast' content='to change' />
 </@initToast>
 <script>
-var toastBlogItem;
+var msgErrorTagExist = '#i18n{blog.message.errorTagExist}' 
+var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
+var msgErrorTagDeletion = '#i18n{blog.message.errorTagDeletion}' 
+var msgErrorTagTitleNotEmpty = '#i18n{blog.message.errorTagTitleNotEmpty}'
+var msgErrorTagNotSet = '#i18n{blog.message.message.errorTagNotSet}'
+
+var msgErrorBlogLocked = '#i18n{blog.message.blogLocked}' 
+var msgErrorBlogFileCannotBeDeleted = '#i18n{blog.message.blogFileCannotBeDeleted}' 
+var msgErrorBlogFileTypeNotUpdated = '#i18n{blog.message.blogFileTypeNotUpdated}' 
+
+var labelWarning='#i18n{portal.util.labelWarning}'
+var labelDanger='#i18n{portal.util.labelDanger}'
+var labelError='#i18n{portal.util.message.titleError}'
+
+function setBlogToast( toastType, toastTitle, toastContent ){
+	const toastBlog = document.querySelector('#blogToast');
+  const toastBlogItem = bootstrap.Toast.getOrCreateInstance('#blogToast');
+  if( toastType !='' ){ <#noparse>toastBlog.classList.add( `text-bg-warning` );</#noparse> }
+	const blogToastBody = document.querySelector( '#blogToast .toast-body' );
+  blogToastBody.innerHTML = <#noparse>`<h2>${toastTitle}</h2><p>${toastContent}</p>`</#noparse>
+	toastBlogItem.show()
+}
 
 document.addEventListener( "DOMContentLoaded", function(){
-  const toastBlog = document.querySelector('#blogToast');
-  toastBlogItem = bootstrap.Toast.getOrCreateInstance( toastBlog );
   const formEditor = document.querySelector('#form-editor'), 
   dLabel=document.querySelector('#div_content_label') , iLabel=document.querySelector('#content_label'),
   dDesc=document.querySelector('#div_description') , iDesc=document.querySelector('#description'),
   dHtml=document.querySelector('#div_html_content') , iHtml=document.querySelector('#html_content');
 
   formEditor.addEventListener( "submit", event => {
-    const t = dLabel.textContent.replace('\n','').replace('Titre...','').trim();
+    const t = dLabel.textContent.replace('\n','').replace('#i18n{blog.message.default.blogTitle}','').trim();
     if( t == '' ){
-      setBlogToast( 'warning' , 'Veuillez saisir un titre' );
+      setBlogToast( 'warning' , '#i18n{blog.message.blogTitleNotEmpty}', ''  );
       event.preventDefault();
       dLabel.focus({ focusVisible: true })
       return false;
@@ -134,9 +158,9 @@ document.addEventListener( "DOMContentLoaded", function(){
       iLabel.value = t ;
     }
     
-    const d = dDesc.textContent.replace('Description...','').trim();
+    const d = dDesc.textContent.replace('#i18n{blog.message.default.blogDescription}','').trim();
     if( d == '' ) {
-      setBlogToast( 'warning' , 'Saisir une description !' )	
+      setBlogToast( 'warning' , '#i18n{blog.message.blogDescriptionNotEmpty}', ''  )	
       event.preventDefault();
       dDesc.focus({ focusVisible: true })
       return false;
@@ -144,26 +168,19 @@ document.addEventListener( "DOMContentLoaded", function(){
       iDesc.value = d;
     }
 
-    const c = dHtml.textContent.replace('Saisir ici le contenu...','').trim();
-    if( c == '' ) {
-      setBlogToast( 'warning' , 'Saisir du contenu !' )	
-      event.preventDefault();
-      dHtml.focus({ focusVisible: true })
-      return false;
-    } else {
-      idHtml.val = c;
-    }
-
+    iHtml.value = dHtml.innerHTML.trim();
+    
     const tagsLen = document.querySelector("#tag-list li").length;
     if ( tagsLen == 0  ){
-      setBlogToast( 'warning' , 'Il vous faut au moins un tag !' )
+      setBlogToast( 'warning' , '#i18n{blog.message.message.errorTagNotSet}', '' )
       event.preventDefault();
       return false;
     }
   });
 
-  /* Offcanvas */
-  /* Tags */
+  /* Offcanvas  */
+  /* Tags       */
+  const idBlog = document.querySelector('#id').value;
   const myOffcanvas = document.getElementById('blog-properties')
   myOffcanvas.addEventListener('show.bs.offcanvas', event => {
     const btnAddTag = document.querySelector( "#addTag" )
@@ -171,12 +188,12 @@ document.addEventListener( "DOMContentLoaded", function(){
       const tagDoc = document.querySelector('#tag_doc');
       const index = tagDoc.selectedIndex;
       const selOption = tagDoc.options[ index ].textContent;
-      doAddTag( tagDoc.value, selOption );
+      doAddTag( tagDoc.value, selOption, idBlog );
     });
 
     const btnCreateTag = document.querySelector( "#createTag" )
     btnCreateTag.addEventListener( 'click', event => {
-      createTag( toastBlogItem );
+      createTag( idBlog );
     });
 
     const btnAddFiles = document.querySelector("#btn-add-files")
@@ -184,6 +201,7 @@ document.addEventListener( "DOMContentLoaded", function(){
       document.querySelector('#attachment').click();
     });
 
+    <#if blog??>
     <#if !blog.docContent??>
     const previewAtt = document.querySelector("#preview_attachment")
     if ( previewAtt.style.display == 'none' ) {
@@ -192,13 +210,14 @@ document.addEventListener( "DOMContentLoaded", function(){
       previewAtt.style.display = 'none';
     }
     </#if>
+    </#if>
     })
 
-    // Limite les saisies Titre et Description
-    limitInputCharacters( 'div_content_label', 75 );
-    limitInputCharacters( 'div_description', 300 );
+    // TODO Limite les saisies Titre et Description
+    // limitInputCharacters( 'div_content_label', 75 );
+    // limitInputCharacters( 'div_description', 300 );
 
 });
 </script>
-<script src="js/admin/plugins/blog/blog.js"></script>
+<script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
 </#macro>

@@ -1,0 +1,217 @@
+<#macro blogPortletList >
+<@row id='blog-portlet' class='mt-3'>
+  <@columns sm=6>
+    <@box>
+      <@boxHeader title='#i18n{blog.portlet.blogsListBlogsPortlet.titleNotPublishedPostList}' boxTools=true >
+        <@button buttonIcon='layout-navbar-expand' id='btn-toggle-search' size='sm' color='default' title='#i18n{portal.util.labelMore}' hideTitle=['all'] params='aria-expanded="false"'/>
+      </@boxHeader>
+      <@boxBody class='p-3'>
+        <@formGroup labeFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' >
+          <@inputGroup>
+            <@input id='search_text' name='search_text' value=search_text!'' />
+            <@inputGroupItem type='btn'>
+              <@btnGroup>
+                <@button type='submit' class='btn-target' buttonIcon='search me-1' name='button_search' title='#i18n{blog.manage_blogs.search}' />
+                <@button type='submit' class='btn-target' buttonIcon='refresh me-1'  color='secondary' name='button_reset' title='#i18n{blog.manage_blogs.reset}' />
+              </@btnGroup>
+            </@inputGroupItem>
+          </@inputGroup>
+        </@formGroup>
+        <@row class='mt-2' id='adv-search'>
+          <@columns sm=3 class='d-flex align-items-center'>
+            <@checkBox name='current_user' id='current_user' orientation='switch' value='true' checked=is_checked labelKey='#i18n{blog.manage_blogs.sortByUserButton}' />
+          </@columns>
+          <@columns sm=4>
+            <@formGroup labelFor='tag_doc' labelKey='#i18n{blog.manage_blogs.labelTag}' rows=2>
+              <@select id='tag_doc' multiple=1 name='tag_doc' class='form-control'>
+                <#list list_tag?sort as tgName>
+                  <#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
+                  <@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
+                </#list>
+              </@select>
+              <@link href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs' title='#i18n{blog.manage_tags.title}' target='_blank' />
+            </@formGroup>
+          </@columns>
+          <@columns sm=5>
+            <@row>
+              <@columns>
+                <@formGroup labelFor="dateUpdateBlogAfter" labelKey='#i18n{blog.manage_blogs.labelAfter}' rows=2>
+                  <@inputGroup>
+                    <@input type='text' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value=dateUpdateBlogAfter! />
+                    <@inputGroupItem>
+                      <@icon style='calendar' />
+                    </@inputGroupItem>
+                  </@inputGroup>
+                </@formGroup>
+              </@columns>
+              <@columns>
+                <@formGroup labelFor="dateUpdateBlogBefore" labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2>
+                  <@inputGroup>
+                    <@input type='text' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value=dateUpdateBlogBefor! />
+                    <@inputGroupItem>
+                      <@icon style='calendar' />
+                    </@inputGroupItem>
+                  </@inputGroup>
+                </@formGroup>
+              </@columns>
+            </@row>
+          </@columns>
+        </@row>
+        <@box>
+          <@boxHeader title='#i18n{blog.portlet.blog.titleListNotPublished}' />
+          <@boxBody class='p-2'>
+          <@listGroup id='doc-available' params='style="min-height:15rem;"'>
+            <#list blog_list as doc>
+              <@listGroupItem id=doc.id!?string class='bg-gray-100 border border-gray-300 min-h-40 d-flex justify-content-between' params='draggable="true" tabindex="0"'>
+                <@span>${doc.contentLabel}</@span> <@icon style='arrows-move ms-auto' />
+              </@listGroupItem>
+            </#list>
+          </@listGroup>
+          <@row>
+            <@columns sm=4 offsetSm=8>
+            <@formGroup labelFor='${paginator.itemsPerPageParameterName!}' labelKey='#i18n{blog.portlet.blog.lableNbPost!}' rows=2>
+              <@inputGroup>
+                <@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='w-25' params='data-max-item="${paginator.itemsCount}"'>
+                  <#list [ "10" , "20" , "50" , "100" ] as nb><@option value=nb?string label=nb?string selected=nb_items_per_page=nb /></#list>
+                </@select>
+                <@inputGroupItem type=''>
+                  <@button type='submit' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' class='btn-target' name='refresh' value='refresh' hideTitle=['all']/>
+                </@inputGroupItem>
+              </@inputGroup>
+            </@formGroup>
+            </@columns>
+          </@row>
+          </@boxBody>
+        </@box>
+      </@boxBody>
+    </@box>
+  </@columns>
+  <@columns sm=6>
+    <@box>
+      <@boxHeader title='#i18n{blog.portlet.blogsListBlogsPortlet.titlePublishedPostList}' />
+      <@boxBody class='p-3'>
+        <@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2>
+          <@inputGroup>
+            <@inputGroupItem>
+              <@icon style='layout-2' />
+            </@inputGroupItem>
+            <@select name='page_template_code' >
+            <#list pages_list as key, value >
+              <#assign isModelSelected><#if portlet??><#if portlet.pageTemplateDocument==key>true<#else>false</#if><#else>false</#if></#assign>
+              <@option label=value value=key selected=isModelSelected?boolean />
+              </#list>
+            </@select>
+          </@inputGroup>
+        </@formGroup>
+        <@box>
+          <@boxHeader title='#i18n{blog.portlet.blog.titleListPublished}' />
+          <@boxBody class='p-2'>
+          <#if blog_list_published?size gt 0>
+            <@listGroup id='doc-published' class='w-100' params='style="min-height:15rem;"'>
+            <#list blog_list_published as doc>
+            <@listGroupItem id=doc.id!?string class='bg-gray-100 border border-gray-300 min-h-40 d-flex justify-content-between' params='draggable="true" tabindex="0"'>
+              <@span>${doc.contentLabel}</@span> <@icon style='arrows-move ms-auto' />
+            </@listGroupItem>
+            </#list>
+            </@listGroup>
+          <#else>
+            <@listGroup id='doc-published' class='w-100 px-3' params='style="min-height:15rem;"'>
+              <@li id='dropzone-text' class='text-center list-unstyled'>#i18n{blog.portlet.blog.titleDropHere}</@li>
+            </@listGroup>
+          </#if>
+          </@boxBody>
+        </@box>
+      </@boxBody>
+    </@box>   
+  </@columns>
+</@row>
+<@getDateRange idField='dateUpdateBlogAfter' idEndField='dateUpdateBlogBefore' language=.lang format='' showFormat='' />
+<!-- Collect the nav links, forms, and other content for toggling -->
+<link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
+<script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
+<script type="module">
+import {
+    LuteceDraggable
+} from './themes/shared/modules/luteceDraggable.js';
+
+const baseUrl = document.getElementsByTagName('base')[0].href;
+
+function changeformtarget() {
+  document.getElementById('form-portlet').target = '';
+  this.form.elements["portlet_name"].required = false;
+}
+
+document.addEventListener( "DOMContentLoaded", function(){
+  const docAvailable = document.querySelector("#doc-available");
+  const docPublished = document.querySelector("#doc-published"); 
+  const btnTarget = document.querySelectorAll('.btn-target');
+  const btnAdvSearch = document.getElementById('btn-toggle-search');
+  const advSearch = document.getElementById('adv-search');
+  
+  btnTarget.forEach( ( btn ) => {
+    btn.addEventListener( 'click',  (e) => {
+      changeformtarget() 
+    })
+  })
+
+  advSearch.classList.toggle('visually-hidden')
+  
+  btnAdvSearch.addEventListener( 'click',  (e) => {
+    advSearch.classList.toggle('visually-hidden')
+    const btn = e.currentTarget
+    const btnIcon = e.currentTarget.querySelector(".ti")
+    btnIcon.classList.toggle('ti-layout-navbar-expand')
+    btnIcon.classList.toggle('ti-layout-bottombar-expand')
+    
+      if (btn.getAttribute("aria-expanded") === "true") {
+        btn.setAttribute("aria-expanded", "false");
+      } else {
+        btn.setAttribute("aria-expanded", "true");
+      }
+  })
+  
+  new SlimSelect({
+    select: '#tag_doc',
+		settings: {
+			// Below are a list of optional fields
+			// their values are the defaults
+			searchPlaceholder: '#i18n{blog.manage_blogs.search}',
+			searchText: '#i18n{blog.manage_blogs.labelNoResult}',
+			searchingText: '#i18n{blog.manage_blogs.labelSearch}...',
+			searchHighlight: true,
+			placeholderText: '#i18n{blog.manage_blogs.labelChooseValue}',
+			timeoutDelay: 200,
+		},
+	});
+
+  const containers = document.querySelectorAll('#blog-portlet .list-group');
+  const draggables = Array.from(containers).flatMap(container => [...container.children]);
+  const AdminHomeDraggable = new LuteceDraggable( draggables, containers);
+
+  AdminHomeDraggable.on('dragover', (event) => {
+    docPublished.classList.add('bg-gray');
+  });
+
+  AdminHomeDraggable.on('dragged', (event) => {
+    event.preventDefault();
+    const itemId = event.target.id;
+    const droppedItem = document.getElementById(itemId);
+    const parentItem = droppedItem.parentElement.id;
+    const itemIndex = Array.from( docPublished.children ).indexOf( droppedItem ) - 1;
+    docPublished.classList.remove('bg-gray');
+    if( itemIndex >= 0 ){ 
+      doAddDocument( itemId, itemIndex );
+    } else {
+      doDeleteDocument( itemId )
+    }
+  });
+});
+async function doAddDocument( idDocument, orderDocument ){
+  await fetch(`<#noparse>${baseUrl}jsp/admin/plugins/blog/DoAddDocument.jsp?idDocument=${idDocument}&orderDocument=${orderDocument}&action=add</#noparse>`)
+}
+
+async function doDeleteDocument(idDocument) {
+  await fetch(`<#noparse>${baseUrl}jsp/admin/plugins/blog/DoAddDocument.jsp?idDocument=${idDocument}&action=remove</#noparse>`)
+}
+</script>
+</#macro>

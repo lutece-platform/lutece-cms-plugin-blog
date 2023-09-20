@@ -10,18 +10,18 @@
 					<#break>
 				</#list> 
 			</@columns>
-			<@columns sm=8>
+			<@columns sm=7>
 				<strong>${blog.id} - ${blog.name}</strong>
 				<br>
 				<small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small>
 			</@columns>
 			<@columns>
 				<#if permission_manage_modify_blog>
-					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' hideTitle=['all']size='sm' />
+					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' hideTitle=['all'] size='' />
 				</#if>
-				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}' title='#i18n{blog.history_blog.labelPreview}' buttonIcon='eye' hideTitle=['all']size='sm' />
+				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}' title='#i18n{blog.history_blog.labelPreview}' buttonIcon='eye' hideTitle=['all'] size='' color='info' />
 				<#if permission_manage_publish_blog>
-					<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' class='btn-publish' title='#i18n{blog.dashboard.managePublication}' hideTitle=['all']buttonIcon='globe' color='default' size='sm' />
+					<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' class='btn-publish' title='#i18n{blog.dashboard.managePublication}' hideTitle=['all'] buttonIcon='globe' color='default' size='' />
 				</#if>
 			</@columns>	
 		</@row>	
@@ -29,7 +29,7 @@
 	<#if permission_manage_create_blog>
 		<@row class='border-top mt-2 pt-2'>
 			<@columns>
-				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' title='#i18n{blog.manage_blogs.buttonAdd}' buttonIcon='plus' class='ms-auto' />
+				<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' title='#i18n{blog.manage_blogs.buttonAdd}' buttonIcon='plus' class='ms-auto' size='' />
 			</@columns>	
 		</@row>	
 	</#if>

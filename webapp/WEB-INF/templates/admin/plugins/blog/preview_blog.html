@@ -1,23 +1,24 @@
 <@pageContainer>
     <@pageColumn>
-		<#assign pageTitle>${blog.contentLabel} <@tag class='ms-2'>#i18n{blog.manage_blogs.columnVersion} ${blog.version}</@tag></#assign>
+		<#assign pageTitle><@tag class='me-2'>#i18n{blog.manage_blogs.columnVersion} ${blog.version}</@tag>${blog.contentLabel}</#assign>
         <@pageHeader title=pageTitle>
-			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
-			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
 		</@pageHeader>
 		<@row>
 			<@columns sm=9>
 				<iframe class="w-100 vh-100 border-0" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}"></iframe>
 			</@columns>
 			<@columns sm=3>
-				<@card headerTitle='#i18n{blog.manage_blogs.columnDescription}' header=true >
+				<@card>
+					<h3>#i18n{blog.manage_blogs.columnDescription}</h3>
+					<hr class="my-2">
 					<@p><@span class="font-weight-bold">#i18n{blog.preview_blog.createdBy} :</@span><br> ${blog.userCreator} ${blog.creationDate} </@p>
 					<@p><@span class="font-weight-bold">#i18n{blog.preview_blog.lastUpdate}:</@span><br> ${blog.updateDate} #i18n{blog.manage_blogs.labelBy} ${blog.user}</@p>
-					<hr/>
+					<hr class="my-2">
 					${blog.description!'RAS'}
 					<#if blog.url?? && blog.url !=''>
-						<@p>#i18n{blog.manage_blogs.columnUrl}</@p>
-						${blog.url}
+						<@p><strong>#i18n{blog.manage_blogs.columnUrl}</strong><@link href=blog.url target='_blank' label='${blog.url}' /></@p>
 					</#if>
 					<#if blog.editComment?? && blog.editComment !=''>
 						<@p>#i18n{blog.manage_blogs.columnEditComment}</@p>

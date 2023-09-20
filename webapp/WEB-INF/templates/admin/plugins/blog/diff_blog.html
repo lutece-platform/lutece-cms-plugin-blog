@@ -1,18 +1,16 @@
 <@pageContainer>
     <@pageColumn>
         <@pageHeader title='Diff ${blog.contentLabel}'>
-			<@aButton class='btn-notif' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory}  ${blog.version} versions' btnIcon='history'>
-				#i18n{blog.manage_blogs.labelHistory}  [version: ${blog.version!}]
-			</@aButton>
-			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit' size='sm' />
-			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='sm' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory} [ ${blog.version} versions ]' buttonIcon='history me-2' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
+			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
         </@pageHeader>
 		<@tform boxed=true action='jsp/admin/plugins/blog/ManageBlogs.jsp' >
 		<@input type='hidden' name='view' value='diffBlog' />
 		<@input type='hidden' name='id' value='${blog.id}' />
 		<@row>
 			<@columns>
-				<@select name='blog_version2'>
+				<@select name='blog_version'>
 				<#list blog_version_list as blog_tmp>
 					<#assign isSelected><#if blog_tmp.version == blog2.version>true<#else>false</#if></#assign>
 					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
@@ -22,20 +20,20 @@
 			<@columns>
 				<@select name='blog_version2'>
 				<#list blog_version_list as blog_tmp>
-					<#assign isSelected><#if blog_tmp.version == blo2.version>true<#else>false</#if></#assign>
+					<#assign isSelected><#if blog_tmp.version == blog.version>true<#else>false</#if></#assign>
 					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
 				</#list>
 				</@select>
 			</@columns>
 			<@columns>
-				<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' buttonIcon='git-compare' />
+				<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' buttonIcon='git-compare me-2' />
 			</@columns>
 		</@row>
 		</@tform>
 		<@tabs>
 			<@tabList>
-				<@tabLink active=true href='#current' title='#i18n{blog.diff_blog.CurrentVersion}' />
-				<@tabLink href='#diff' title='#i18n{blog.diff_blog.Version}' />
+				<@tabLink active=true href='#current' title='#i18n{blog.diff_blog.currentVersion}' />
+				<@tabLink href='#diff' title='#i18n{blog.diff_blog.latestVersion}' />
 			</@tabList>
 			<@tabContent>
 				<@tabPanel id='current' active=true>
@@ -49,23 +47,21 @@
 					<@row>
 						<@columns sm=6>
 							<@box>
-								<@boxHeader title='Version ${blog2.version}'>
-									<small>${blog2.updateDate}</small>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' hideTitle=['all'] buttonIcon='arrow-back-up' />
+								<@boxHeader titleClass='d-flex w-100' title='#i18n{blog.model.entity.blog.attribute.version} ${blog2.version} <small class="mx-auto">${blog2.updateDate}</small>'>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' buttonIcon='arrow-back-up me-2' />
 								</@boxHeader>
 								<@boxBody>
-									${blog2.htmlContent}
+								${blog2.htmlContent}
 								</@boxBody>
 							</@box>
 						</@columns> 
 						<@columns sm=6>
 							<@box>
-								<@boxHeader title='#i18n{blog.diff_blog.Version} ${blog.version}'>
-									<small>${blog.updateDate}</small>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' hideTitle=['all'] buttonIcon='arrow-back-up' />
+								<@boxHeader titleClass='d-flex w-100' title='#i18n{blog.model.entity.blog.attribute.version} ${blog.version} <small class="mx-auto">${blog.updateDate}</small>'>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' buttonIcon='arrow-back-up me-2' />
 								</@boxHeader>
 								<@boxBody>
-									${blog.htmlContent}
+								${blog.htmlContent}
 								</@boxBody>
 							</@box>
 						</@columns>
