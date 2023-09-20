@@ -1,9 +1,7 @@
-DROP TABLE IF EXISTS blog_content;
-DROP TABLE IF EXISTS blog_content_type;
-
 --
 -- Structure for table blog_content_type
 --
+DROP TABLE IF EXISTS blog_content_type;
 CREATE TABLE blog_content_type (
 	id_type int NOT NULL,
 	type_label varchar(50),
@@ -11,12 +9,9 @@ CREATE TABLE blog_content_type (
 	
 );
 
-
-
 --
 -- Structure for table blog
 --
-
 DROP TABLE IF EXISTS blog_blog;
 CREATE TABLE blog_blog (
 id_blog int NOT NULL,
@@ -36,6 +31,7 @@ url varchar(100) default '',
 PRIMARY KEY (id_blog)
 );
 
+DROP TABLE IF EXISTS blog_content;
 --
 -- Structure for table blog_content
 --
@@ -47,13 +43,11 @@ CREATE TABLE blog_content (
 	binary_value long varbinary,
 	CONSTRAINT fk_content_type FOREIGN KEY(id_type) references blog_content_type (id_type),
 	PRIMARY KEY (id_document)
-
 );
 
 --
 -- Structure for table blog_blog_content
 --
-
 DROP TABLE IF EXISTS blog_blog_content;
 CREATE TABLE blog_blog_content (
 id_document int NOT NULL,
@@ -62,12 +56,11 @@ priority int NOT NULL,
 CONSTRAINT fk_id_blog_blog FOREIGN KEY(id_blog) references blog_blog(id_blog),
 PRIMARY KEY (id_document, id_blog)
 );
-	
+
 
 --
 -- Structure for table blog_portlet
 --
-
 DROP TABLE IF EXISTS blog_portlet;
 CREATE TABLE blog_portlet (
 id_portlet int NOT NULL,
@@ -81,7 +74,6 @@ PRIMARY KEY (id_portlet)
 --
 -- Structure for table blog_versions
 --
-
 DROP TABLE IF EXISTS blog_versions;
 CREATE TABLE blog_versions (
 id_version int NOT NULL,
@@ -105,7 +97,6 @@ PRIMARY KEY (id_version)
 --
 -- Structure for table blogs_tag
 --
-
 DROP TABLE IF EXISTS blog_tag;
 CREATE TABLE blog_tag (
 id_tag int NOT NULL,
@@ -113,11 +104,9 @@ name varchar(50) NOT NULL,
 PRIMARY KEY (id_tag)
 );
 
-
 --
 -- Structure for table blog_tag
 --
-
 DROP TABLE IF EXISTS blog_tag_document;
 CREATE TABLE blog_tag_document (
 id_tag int NOT NULL,
@@ -125,7 +114,6 @@ id_blog int NOT NULL,
 priority int NOT NULL,
 CONSTRAINT fk_blog FOREIGN KEY(id_blog) references blog_blog (id_blog),
 CONSTRAINT fk_id_tag FOREIGN KEY(id_tag) references blog_tag(id_tag),
-
 PRIMARY KEY (id_tag, id_blog)
 );
 
@@ -184,18 +172,9 @@ CREATE TABLE blog_list_portlet_htmldocs (
 -- Table structure for table blog_rss_cf
 --
 DROP TABLE IF EXISTS blog_rss_cf;
-
 CREATE TABLE blog_rss_cf (
 	id_rss int NOT NULL,
 	id_portlet int default 0 NOT NULL,
 	
 	PRIMARY KEY (id_rss)
 );
-
-
-
-
-
-
-
-
