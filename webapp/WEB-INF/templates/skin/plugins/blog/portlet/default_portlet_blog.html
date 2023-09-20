@@ -1,0 +1,19 @@
+<#if blog??>
+<section class="card portlet">
+<div class="row">
+    <article class="col p-3">
+        <header>        
+            <h2>${blog.contentLabel}</h2>
+            <figure class="float-left p-3">
+                <img src="servlet/plugins/blogs/file?id_file=${blog.id}" alt="${blog.contentLabel}" title="${blog.contentLabel}" style="width:150px" class="img-fluid">
+            </figure>
+            <h3>${blog.description!}</h3>
+        </header>
+        <div class="py-4 px-5">
+        ${blog.htmlContent}
+        </div>
+    </article>
+    <div class=" overflow-hidden"></div>
+</div>
+</section>
+</#if>
