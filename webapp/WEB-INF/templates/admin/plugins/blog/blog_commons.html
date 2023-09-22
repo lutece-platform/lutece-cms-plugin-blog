@@ -170,11 +170,13 @@ document.addEventListener( "DOMContentLoaded", function(){
 
     iHtml.value = dHtml.innerHTML.trim();
     
-    const tagsLen = document.querySelector("#tag-list li").length;
-    if ( tagsLen == 0  ){
-      setBlogToast( 'warning' , '#i18n{blog.message.message.errorTagNotSet}', '' )
-      event.preventDefault();
-      return false;
+    if( document.querySelector("#tag-list li") != null ){
+      const tagsLen = document.querySelector("#tag-list li").length;
+      if ( tagsLen == 0  ){
+        setBlogToast( 'warning' , '#i18n{blog.message.message.errorTagNotSet}', '' )
+        event.preventDefault();
+        return false;
+      }
     }
   });
 
