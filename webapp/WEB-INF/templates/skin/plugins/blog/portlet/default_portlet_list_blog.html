@@ -6,7 +6,14 @@
 	<div class="media">
 		<div class="media-left">
 			<a href="jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}">
-				<img alt="${doc.contentLabel}" src="servlet/plugins/blogs/file?id_file=${doc.id}" style="width:80px" class="media-object img-fluid">
+			<#if doc.docContent?? && doc.docContent?size!=0>
+				<#list doc.docContent as docContent >
+					<#if docContent.contentType.idContentType=1>
+						<img  src="servlet/plugins/blogs/file?id_file=${docContent.id}"  title="${doc.contentLabel}" alt="${doc.contentLabel}" style="width:80px" class="media-object img-fluid">
+						<#break>
+					</#if>
+				</#list>
+			</#if>
     		</a>
 		</div>
 		<div class="media-body pl-3">
