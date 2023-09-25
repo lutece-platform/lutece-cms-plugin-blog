@@ -6,7 +6,6 @@ CREATE TABLE blog_content_type (
 	id_type int NOT NULL,
 	type_label varchar(50),
 	PRIMARY KEY (id_type)
-	
 );
 
 --
@@ -16,7 +15,7 @@ DROP TABLE IF EXISTS blog_blog;
 CREATE TABLE blog_blog (
 id_blog int NOT NULL,
 version int default '0' NOT NULL,
-content_label varchar(50) default '' NOT NULL,
+content_label varchar(75) default '' NOT NULL,
 creation_date datetime NOT NULL,
 update_date datetime NOT NULL,
 html_content LONG VARCHAR,

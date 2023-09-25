@@ -215,9 +215,25 @@ document.addEventListener( "DOMContentLoaded", function(){
     </#if>
     })
 
-    // TODO Limite les saisies Titre et Description
-    // limitInputCharacters( 'div_content_label', 75 );
-    // limitInputCharacters( 'div_description', 300 );
+    // Limite la saisie du Titre à 75 chars
+    const messageElement = document.querySelector("#div_content_label");
+    const characterCounterElement = document.querySelector("#messagecharcounter");
+    const typedCharElement = document.querySelector("#typedchar");
+    const maxChar = ${dskey('portal.site.site_property.portlet.title.maxlength')!75};
+    messageElement.addEventListener("input", (e) => {
+      const typedChar = messageElement.value.length;
+      if (typedChar > maxChar) {
+        return false;
+      }
+      typedCharElement.textContent = typedChar;
+      if (typedChar > maxChar - 1) {
+        characterCounterElement.classList = "charcounter text-danger";
+      } else if (typedChar < maxChar && typedChar > maxChar * (90 / 100)) {
+        characterCounterElement.classList = "charcounter text-warning";
+      } else if (typedChar < maxChar - ((maxChar * (10 / 100)) - 1)) {
+        characterCounterElement.classList = "charcounter text-normal";
+      }
+    });
 
 });
 </script>
