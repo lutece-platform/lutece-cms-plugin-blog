@@ -126,8 +126,11 @@
     <@columns>
       <@messages errors=errors />
       <@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' hideLabel=['all'] rows=2>
-          <@input name='content_label' id='content_label' value='${blog.contentLabel!}' class='visually-hidden' />
+          <@input name='content_label' id='content_label' value='${blog.contentLabel!}' class='visually-hidden' maxlength=dskey('portal.site.site_property.portlet.title.maxlength')?number!70/>
           <@div id='div_content_label' class='content-head font-bold main-color' params='contenteditable="true"'>${blog.contentLabel!}</@div>
+          <@div id="messagecharcounter" class="help-block">
+            <@span id="typedchar">0</@span><@span id="maxchar">/ ${dskey('portal.site.site_property.portlet.title.maxlength')?number!75}</@span>
+          </@div>
       </@formGroup>
       <@formGroup labelFor='description' labelKey='#i18n{blog.create_blog.description}' hideLabel=['all'] rows=2>
           <@input name='description' id='description' value='${blog.description!}' class='visually-hidden' />
