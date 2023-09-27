@@ -1,26 +1,26 @@
 <#if blog??>
 <section class="card portlet">
 <div class="row">
-    <article class="col p-3">
-        <header>        
-            <h2>${blog.contentLabel}</h2>
-            <figure class="float-left p-3">
-            <#if doc.docContent?? && doc.docContent?size!=0>
-				<#list doc.docContent as docContent >
+	<article class="col p-3">
+		<header>
+			<h2>${blog.contentLabel}</h2>
+			<figure class="float-left p-3">
+			<#if blog.docContent?? && blog.docContent?size!=0>
+				<#list blog.docContent as docContent >
 					<#if docContent.contentType.idContentType=1>
-						<img src="servlet/plugins/blogs/file?id_file=${docContent.id}" title="${doc.contentLabel}" alt="${doc.contentLabel}" style="width:150px" class="img-fluid">
+						<img src="servlet/plugins/blogs/file?id_file=${docContent.id!}" title="${blog.contentLabel}" alt="${blog.contentLabel}" style="width:150px" class="img-fluid">
 						<#break>
 					</#if>
 				</#list>
 			</#if>
-            </figure>
-            <h3>${blog.description!}</h3>
-        </header>
-        <div class="py-4 px-5">
-        ${blog.htmlContent}
-        </div>
-    </article>
-    <div class=" overflow-hidden"></div>
+			</figure>
+			<h3>${blog.description!}</h3> 
+		</header>
+		<div class="py-4 px-5">
+		${blog.htmlContent}
+		</div>
+	</article>
+	<div class=" overflow-hidden"></div>
 </div>
 </section>
 </#if>
