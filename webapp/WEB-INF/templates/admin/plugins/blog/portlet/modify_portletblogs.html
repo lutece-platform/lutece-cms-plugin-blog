@@ -1,6 +1,8 @@
 <!-- Portlet specific parameters -->
-<@input type="hidden" id="id" name="id" value="${blog_id!}" />
-<@input type="hidden" id="action" name="action" value="modifyBlog" />
+<@input type='hidden' id='id' name='id' value=blog_id! />
+<@input type='hidden' id='action' name='action' value='modifyBlog' />
+<@input type='hidden' name='edit_comment' value=edit_comment!'' />
+<@input type='textarea' name='html_content' value=htmlcontent!'' params='hidden' />
 <@row>
 	<@columns sm=3>
 		<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2 >
