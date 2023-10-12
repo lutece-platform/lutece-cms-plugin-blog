@@ -221,7 +221,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     const typedCharElement = document.querySelector("#typedchar");
     const maxChar = ${dskey('portal.site.site_property.portlet.title.maxlength')!75};
     messageElement.addEventListener("input", (e) => {
-      const typedChar = messageElement.value.length;
+      const typedChar = messageElement.textContent.length;
       if (typedChar > maxChar) {
         return false;
       }
