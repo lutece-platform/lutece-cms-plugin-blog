@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS blog_content_type;
 CREATE TABLE blog_content_type (
 	id_type int NOT NULL,
-	type_label varchar(50),
+	type_label varchar(255),
 	PRIMARY KEY (id_type)
 );
 
@@ -15,17 +15,17 @@ DROP TABLE IF EXISTS blog_blog;
 CREATE TABLE blog_blog (
 id_blog int NOT NULL,
 version int default '0' NOT NULL,
-content_label varchar(75) default '' NOT NULL,
+content_label varchar(255) default '' NOT NULL,
 creation_date datetime NOT NULL,
 update_date datetime NOT NULL,
 html_content LONG VARCHAR,
-user_editor varchar(100) default '' NOT NULL,
-user_creator varchar(100) default '' NOT NULL,
+user_editor varchar(255) default '' NOT NULL,
+user_creator varchar(255) default '' NOT NULL,
 attached_portlet_id int NOT NULL,
-edit_comment varchar(100) default '' NOT NULL,
+edit_comment varchar(255) default '' NOT NULL,
 description long varchar,
 shareable int default 0 NOT NULL,
-url varchar(100) default '',
+url varchar(255) default '',
 
 PRIMARY KEY (id_blog)
 );
@@ -63,7 +63,7 @@ PRIMARY KEY (id_document, id_blog)
 DROP TABLE IF EXISTS blog_portlet;
 CREATE TABLE blog_portlet (
 id_portlet int NOT NULL,
-name varchar(50) default '' NOT NULL,
+name varchar(255) default '' NOT NULL,
 content_id int NOT NULL,
 id_page_template_document int default 0 NOT NULL,
 
@@ -78,17 +78,17 @@ CREATE TABLE blog_versions (
 id_version int NOT NULL,
 id_blog int NOT NULL,
 version int default '0' NOT NULL,
-content_label varchar(50) default '' NOT NULL,
+content_label varchar(255) default '' NOT NULL,
 creation_date datetime NOT NULL,
 update_date datetime NOT NULL,
 html_content LONG VARCHAR,
-user_editor varchar(100) default '' NOT NULL,
-user_creator varchar(100) default '' NOT NULL,
+user_editor varchar(255) default '' NOT NULL,
+user_creator varchar(255) default '' NOT NULL,
 attached_portlet_id int NOT NULL,
-edit_comment varchar(100) default '' NOT NULL,
+edit_comment varchar(255) default '' NOT NULL,
 description long varchar,
 shareable int default 0 NOT NULL,
-url varchar(100) default '',
+url varchar(255) default '',
 
 PRIMARY KEY (id_version)
 );
@@ -158,7 +158,7 @@ CREATE TABLE blog_list_portlet_htmldocs (
 	id_portlet int NOT NULL,
 	id_blog int NOT NULL,
     date_begin_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
-	date_end_publishing timestamp default  '2030-01-01 11:59:59' NOT NULL,
+	date_end_publishing timestamp default  '2050-01-01 11:59:59' NOT NULL,
 	status int default 0 NOT NULL,
 	document_order int default NULL,
 
