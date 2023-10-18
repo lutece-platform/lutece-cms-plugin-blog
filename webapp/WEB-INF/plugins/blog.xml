@@ -42,7 +42,7 @@
 
     <!-- Specific plugin CSS stylesheet -->
     <admin-css-stylesheets>
-        <admin-css-stylesheet>themes/admin/shared/plugins/blog/blog.min.css</admin-css-stylesheet>
+        <admin-css-stylesheet>themes/admin/shared/plugins/blog/css/blog.min.css</admin-css-stylesheet>
     </admin-css-stylesheets>
 	  <!-- Search Indexer Service -->
     <search-indexers>
