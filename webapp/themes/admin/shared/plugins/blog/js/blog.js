@@ -13,7 +13,7 @@ async function createTag( blogId ){
 				if( data.result == "BLOG_LOCKED" ){
 					setBlogToast( typeWarning ,  labelWarning, msgErrorTagExist )	
 				} else if( data.result != 'TAG_EXIST'){
-					setListTag(  data.result, tgName, blogId  )
+					doAddTag( data.result, tgName, blogId )
 				} else {
 					setBlogToast( typeWarning , labelWarning, msgErrorTagExist )	
 				}
@@ -43,7 +43,7 @@ async function doAddTag( idTag, tgName, blogId ) {
 }
 
 async function doDeleteTag( idTag, tgName, blogId ){
-	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoDeleteTag.jsp?action=removeTag&tag_doc=${idTag}&id=${blogId}` );
+	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoDeleteTag.jsp?tagAction=removeTag&tag_doc=${idTag}&id=${blogId}` );
 	if (!response.ok) {
 		setBlogToast( typeDanger , labelError, response.statusText )	
 	} else {
@@ -88,28 +88,28 @@ function setListTag( idTag, tgName, blogId ){
 	let div = li.appendChild( document.createElement( 'div' ) );
 	div.classList.add( 'btn-group' );
 	div.setAttribute( 'role', 'group' );
-	div.setAttribute('aria-label', 'Update Tag' );
+	div.setAttribute('aria-label', `Tag ${tgName}`);
 	let btnDown = div.appendChild( document.createElement( 'button' ) );
-	btnDown.classList.add( 'btn','btn-sm', 'btn-down' ,'text-primary');
+	btnDown.classList.add( 'btn', 'btn-none' ,'btn-down' ,'text-primary');
 	btnDown.setAttribute('type', 'button' );
 	btnDown.setAttribute('title', 'Down' );
 	btnDown.setAttribute('onclick', `doUpdatePriorityTag( ${idTag}, 'moveDown', ${blogId})` );
 	let iconDown = btnDown.appendChild( document.createElement( 'i' ) );
 	iconDown.classList.add( 'ti','ti-arrow-down');
 	let btnUp = div.appendChild( document.createElement( 'button' ) );
-	btnUp.classList.add( 'btn', 'btn-sm', 'btn-up', 'text-primary');
+	btnUp.classList.add( 'btn', 'btn-none' ,'btn-up', 'text-primary');
 	btnUp.setAttribute('type', 'button' );
 	btnUp.setAttribute('title', 'Down' );
 	btnUp.setAttribute('onclick', `doUpdatePriorityTag( ${idTag}, 'moveUp', ${blogId})` );
 	let iconUp = btnUp.appendChild( document.createElement( 'i' ) );
 	iconUp.classList.add( 'ti','ti-arrow-up');
 	let btnRm = div.appendChild( document.createElement( 'button' ) );
-	btnRm.classList.add( 'btn', 'btn-sm', 'text-danger');
+	btnRm.classList.add( 'btn', 'btn-none' ,'text-danger');
 	btnRm.setAttribute('id', idTag );
 	btnRm.setAttribute('type', 'button' );
 	btnRm.setAttribute('value', 'removeTag' );
 	btnRm.setAttribute('name', 'removeTag' );
-	btnRm.setAttribute('onclick', `doDeleteTag( ${idTag}, '${tgName}')` );
+	btnRm.setAttribute('onclick', `doDeleteTag( ${idTag}, '${tgName}', ${blogId})` );
 	let iconRm = btnRm.appendChild( document.createElement( 'i' ) );
 	iconRm.classList.add( 'ti','ti-x');
 	document.querySelector( "#tag-list" ).appendChild( li );
@@ -134,13 +134,13 @@ function setListFile( idFile, fileName, fileType, blogId ){
 	let div = li.appendChild( document.createElement( 'div' ) );
 	div.classList.add( 'btn-group' );
 	div.setAttribute( 'role', 'group' );
-	div.setAttribute('aria-label', 'Update File' );
+	div.setAttribute('aria-label', `Manage ${fileName}` );
 	let btnInsert = div.appendChild( document.createElement( 'button' ) );
 	btnInsert.classList.add( 'btn','btn-none', 'btn-down' ,'text-primary');
 	btnInsert.setAttribute('title', 'Ajouter au contenu' );
 	btnInsert.setAttribute('type', 'button' );
 	btnInsert.setAttribute('title', 'Down' );
-	btnInsert.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId})` );
+	btnInsert.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId}` );
 	let btnDown = div.appendChild( document.createElement( 'button' ) );
 	btnDown.classList.add( 'btn','btn-none', 'btn-down' ,'text-primary');
 	btnDown.setAttribute('type', 'button' );

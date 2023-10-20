@@ -150,7 +150,6 @@
 }
 
 /* Move buttons */
-#tag-list  .btn{ padding: 0 }
 #tag-list li:first-child .btn-up{ 
 	display: none 
 }

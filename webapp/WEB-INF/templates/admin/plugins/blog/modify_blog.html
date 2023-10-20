@@ -30,12 +30,12 @@
                   <@listGroup id='tag-list'>
                     <#assign blogTagSize=blog.tag?size />
                     <#list blog.tag as tg>
-                      <@listGroupItem id='tag_${tg.idTag}' class='d-flex justify-content-between' params='title="${tg.name}"'>
+                      <@listGroupItem id='tag_${tg.idTag}' class='d-flex justify-content-between align-items-center' params='title="${tg.name}"'>
                         ${tg.name?string[0..*14]}<#if tg.name?length &gt; 14>...</#if>
                         <@btnGroup>
-                          <@button class='btn-down text-primary' title='#i18n{blog.create_blog.labelDown}' color='flat' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\', ${blog.id} );"' buttonIcon='arrow-down' size='xs' hideTitle=['all'] />
-                          <@button class='btn-up text-primary' title='#i18n{blog.create_blog.labelUp}' color='flat' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\', ${blog.id} );"' buttonIcon='arrow-up' size='xs' hideTitle=['all'] />
-                          <@button class='text-danger' value='removeTag' name='removeTag' color='flat' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\', ${blog.id});"' buttonIcon='x' size='xs' hideTitle=['all'] />
+                          <@button class='btn-down text-primary' title='#i18n{blog.create_blog.labelDown}' color='none' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\', ${blog.id} );"' buttonIcon='arrow-down' size='' hideTitle=['all'] />
+                          <@button class='btn-up text-primary' title='#i18n{blog.create_blog.labelUp}' color='none' params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\', ${blog.id} );"' buttonIcon='arrow-up' size='' hideTitle=['all'] />
+                          <@button class='text-danger' value='removeTag' name='removeTag' color='none' params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!}\', ${blog.id});"' buttonIcon='x' size='' hideTitle=['all'] />
                         </@btnGroup>
                       </@listGroupItem>
                   </#list>
