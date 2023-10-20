@@ -6,7 +6,7 @@
 #form-editor .offcanvas {
     height: 100vh; 
     max-height: 100vh; 
-	margin-top: 4.5rem
+	margin-top: 4.15rem
 }
 
 /* Dashboard*/
@@ -255,4 +255,22 @@ div.diff-added-image {
 	background-color: #ccffcc; 
 	background-image: url(../images/diffplus.gif); 
 	background-repeat: no-repeat;
+}
+
+/* 	Portlet Admin 		*/
+#doc-published{
+	background-color: var( --white-color );
+	background-repeat: no-repeat;
+	border: .25rem dashed transparent;
+}
+
+#doc-published:hover{
+	border-color: var( --dark-gray );
+}
+
+#doc-published.no-blog{
+	background-color: var( --dark-light );
+	background-image: url( ../images/empty-list.svg );
+	background-size: 25%;
+	background-position: center center;
 }
