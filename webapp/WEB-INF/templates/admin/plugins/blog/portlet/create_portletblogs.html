@@ -13,7 +13,7 @@
 	</@columns>
 	<@columns sm=3>
 		<@formGroup labelFor='blog_selected' labelKey='#i18n{blog.portlet.blogsBlogsPortlet.labelChoosePost}'  rows=2>
-			<@select name='blog_selected' id='blog_selected'>
+			<@select name='blog_selected' id='blog_selected' mandatory=true>
 				<@option value='' label='' />
 				<#list blog_list?sort_by('contentLabel') as blog>
 				<#if blog.attachedPortletId == 0>
