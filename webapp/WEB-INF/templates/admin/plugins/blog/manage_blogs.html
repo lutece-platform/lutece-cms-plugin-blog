@@ -55,14 +55,6 @@
 		<@messages infos=infos />
 		<@box>
 			<@boxBody>
-				<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}'>
-					<@select id='multiple' class='form-control' multiple=1 name='tag_doc'>
-					<#list list_tag?sort as tgName>
-						<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
-						<@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
-					</#list>
-					</@select>
-				</@formGroup> 
 				<#assign idx=0 />
 				<@table headBody=true >
 					<@tr>
