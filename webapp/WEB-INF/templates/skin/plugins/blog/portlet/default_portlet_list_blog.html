@@ -20,7 +20,7 @@
 			<h4 class="media-heading">${doc.contentLabel}</h4>
 			${doc.description!}
 			<p class="lead">
-				<a href="jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}" alt="" title="">
+				<a href="<#if doc.url?trim != ''>${doc.url}<#else>jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}</#if>" alt="" title="">
 					Read More
 				</a>
 			</p>
