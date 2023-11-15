@@ -85,14 +85,6 @@
 											<@p><@span class="label label-default"><@icon style='comment' /> <strong>#i18n{blog.manage_blogs.columnEditComment}:</strong> ${blog.editComment} </@span></@p>
 										</#if>
 									</@div>		
-									<@div>		
-										<@btnGroup>
-											<!-- modal Front preview --->
-											<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default' size='xs' class='btn-preview'  />
-											<!-- Admin preview --->
-											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&amp;id=${blog.id}'  title='#i18n{blog.manage_blogs.labelAdmin} #i18n{blog.history_blog.labelPreview}' size='xs' buttonIcon='device-desktop-cog' hideTitle=['all'] />
-										</@btnGroup>
-									</@div>
 								</@div>
 							</@td>
 							<@td>${blog.creationDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userCreatorInfos.lastName!} ${blog.userCreatorInfos.firstName!}</strong></@td>
@@ -161,6 +153,8 @@
 								<#if permission_manage_delete_blog>
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='danger' />
 								</#if>
+								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default ms-1' size='' class='btn-preview'  />
+
 							</@td>
 						</@tr>
 						<#assign idx=idx + 1/>
