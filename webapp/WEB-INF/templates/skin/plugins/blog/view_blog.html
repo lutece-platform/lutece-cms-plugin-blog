@@ -2,7 +2,7 @@
     <div class="row px-5">
         <article class="col p-3 mt-4">
             <header class="px-5">        
-                <h2>${blog.contentLabel}</h2>
+                <h2 class="h1">${blog.contentLabel}</h2>
 				<#if blog.docContent?? && blog.docContent?size!=0>
                 <#list blog.docContent?sort_by('priority') as docContent >
                 <#if docContent.contentType.idContentType=1>
