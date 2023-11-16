@@ -9,10 +9,10 @@
         </@pageHeader>
 		<@box class='p-0'>
 			<@boxBody>
-				<@tform id='form-manage' name='form-manage' formStyle='inline' class='d-flex justify-content-evenly align-items-center p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' rows=2 >
+				<@tform id='form-manage' name='form-manage' formStyle='inline' class='d-flex justify-content-evenly align-items-center p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp?search='>
+					<@formGroup labelFor='search_text' labelClass='pt-4' labelKey='#i18n{blog.manage_blogs.search}' helpKey='#i18n{blog.manage_blogs.search.help}' rows=2 >
 						<@inputGroup>
-							<@input type='text' id='search_text' name='search_text' value='${search_text!\'\'}' />
+							<@input type='text' id='search_text' name='search_text' placeHolder='lutece lut*' value='${search_text!\'\'}' />
 							<@inputGroupItem>
 								<@checkBox labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked orientation='switch' />
 							</@inputGroupItem>
@@ -183,5 +183,15 @@ document.addEventListener( "DOMContentLoaded", function(){
 			timeoutDelay: 200,
 		},
 	});
+	
+	const btnReset = document.getElementById('button_reset'), btnSearch = document.getElementById('button_search')
+	if( window.location.search.match('search') === null ){
+		btnReset.classList.add( 'd-none' )
+	} 
+
+	btnReset.addEventListener( 'click', (e) => {
+		const newUrl = e.target.formAction.replace('?search=','')
+		e.target.formAction = newUrl
+	})
 });
 </script>
