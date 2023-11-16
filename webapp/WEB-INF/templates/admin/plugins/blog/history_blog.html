@@ -10,10 +10,9 @@
 		<@table headBody=true >
 			<@tr>
 				<@th>
-					<@button type='submit' value='1' buttonIcon='git-compare' title='#i18n{blog.history_blog.columnDiffSelect}' color='info me-4' />
-					<@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&id=${id}" attribute="updateDate" />
-					#i18n{blog.manage_blogs.columnVersion} 
+					<@button type='submit' value='1' buttonIcon='git-compare' title='#i18n{blog.history_blog.columnDiffSelect}' color='info' />
 				</@th>
+				<@th>#i18n{blog.manage_blogs.columnUpdateDate} / #i18n{blog.manage_blogs.columnCreator} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&id=${id}" attribute="updateDate" /></@th>
 				<@th>#i18n{blog.manage_blogs.columnEditComment}</@th>
 				<@th colspan=2>#i18n{portal.util.labelActions}</@th>
 			</@tr>
@@ -23,17 +22,20 @@
 			<#list blog_list?reverse as blog >
 			<@tr>
 				<@td>
-					<@div class='d-flex align-items-center'>
+					<@div class='d-flex align-items-center justify-content-evenly w-50'>
+						<strong>#i18n{blog.manage_blogs.columnVersion} ${blog.version}</strong>
 						<#assign isChecked><#if nIdxVersion==1>true<#else>false</#if></#assign>
-						<@radioButton class='ms-4' name='blog_version' id='blog_version_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
+						<@radioButton name='blog_version' id='blog_version_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
 						<#assign isChecked><#if nIdxVersion==nbVersion>true<#else>false</#if></#assign>
-						<@radioButton class='ms-2 me-5' name='blog_version2' id='blog_version2_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
-						<@p class='ms-4 mb-0'>#i18n{blog.diff_blog.Version} <strong>${blog.version}</strong> ${i18n("blog.history_blog.updatedBy")?cap_first}<em class="ms-1">${blog.updateDate}</em> #i18n{blog.manage_blogs.labelBy} <strong>${blog.user}</strong></@p>
+						<@radioButton name='blog_version2' id='blog_version2_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
 					</@div>
 				</@td>
+				<@td>${i18n("blog.history_blog.updatedBy")?cap_first}<em class="ms-1">${blog.updateDate}</em> #i18n{blog.manage_blogs.labelBy} <strong>${blog.user}</strong></@td>
 				<@td>${blog.editComment}</@td>
 				<@td>
-					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelPreview}' hideTitle=['all']  color='default' size='' buttonIcon='eye' />
+					<#-- TO FIX LUT-26613  https://dev.lutece.paris.fr/bugtracker/issues/26613 
+					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelPreview}' hideTitle=['all']  color='default' size='' buttonIcon='eye' /> 
+					-->
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' hideTitle=['all'] buttonIcon='arrow-back-up' size='' />
 					<#if blog.version != 1>
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' hideTitle=['all'] buttonIcon='git-fork' color='info' size='' />
