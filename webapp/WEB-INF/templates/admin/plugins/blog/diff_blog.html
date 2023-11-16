@@ -39,6 +39,8 @@
 				<@tabPanel id='current' active=true>
 					<@row>
 						<@columns>
+							<h2><span<#if blog.contentLabel! != blog2.contentLabel!> class="diff-html-added"</#if>>${blog.contentLabel!}</span><#if blog.contentLabel! != blog2.contentLabel!><span class="diff-html-removed">${blog2.contentLabel!}</span></h2></#if></h2>
+							<h3><span<#if blog.description! != blog2.description!> class="diff-html-added"</#if>>${blog.description!}</span> <#if blog.description! != blog2.description!><span class="diff-html-removed">${blog2.description!}</span></#if></h3>
 							${blog_diff!}
 						</@columns>
 					</@row>
@@ -51,9 +53,9 @@
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' buttonIcon='arrow-back-up me-2' />
 								</@boxHeader>
 								<@boxBody>
-								<h2>${blog2.contentLabel}</h2>
-								<h3>${blog2.description}</h3>
-								${blog2.htmlContent}
+								<h2>${blog2.contentLabel!}</h2>
+								<h3>${blog2.description!}</h3>
+								${blog2.htmlContent!}
 								</@boxBody>
 							</@box>
 						</@columns> 
@@ -63,9 +65,9 @@
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' buttonIcon='arrow-back-up me-2' />
 								</@boxHeader>
 								<@boxBody>
-								<h2>${blog.contentLabel}</h2>
-								<h3>${blog.description}</h3>
-								${blog.htmlContent}
+								<h2>${blog.contentLabel!}</h2>
+								<h3>${blog.description!}</h3>
+								${blog.htmlContent!}
 								</@boxBody>
 							</@box>
 						</@columns>
