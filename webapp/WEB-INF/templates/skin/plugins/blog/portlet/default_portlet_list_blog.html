@@ -22,7 +22,7 @@
 			${doc.description!}
 			<p class="lead">
 				<a href="<#if doc.url?trim != ''>${doc.url}<#else>jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}</#if>" alt="" title="">
-					Read More
+					#i18n{blog.xpage.blog.readMoreLabel}
 				</a>
 			</p>
 		</div>
