@@ -4,7 +4,7 @@
             <header class="px-5">        
                 <h2>${blog.contentLabel}</h2>
 				<#if blog.docContent?? && blog.docContent?size!=0>
-                <#list blog.docContent as docContent >
+                <#list blog.docContent?sort_by('priority') as docContent >
                 <#if docContent.contentType.idContentType=1>
                     <figure class="float-left p-3"> 
                         <img src="servlet/plugins/blogs/file?id_file=${docContent.id!}" title="${blog.contentLabel}" alt="${blog.contentLabel}" style="width:150px" class="img-fluid">
