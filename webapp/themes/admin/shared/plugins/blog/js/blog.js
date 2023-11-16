@@ -136,11 +136,12 @@ function setListFile( idFile, fileName, fileType, blogId ){
 	div.setAttribute( 'role', 'group' );
 	div.setAttribute('aria-label', `Manage ${fileName}` );
 	let btnInsert = div.appendChild( document.createElement( 'button' ) );
-	btnInsert.classList.add( 'btn','btn-none', 'btn-down' ,'text-primary');
+	btnInsert.classList.add( 'btn','btn-none', 'text-primary');
 	btnInsert.setAttribute('title', 'Ajouter au contenu' );
 	btnInsert.setAttribute('type', 'button' );
-	btnInsert.setAttribute('title', 'Down' );
-	btnInsert.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId}` );
+	btnInsert.setAttribute('onclick', `doInsertContent( ${idFile}, '${fileName}', ${fileType} )` );
+	let iconInsert = btnInsert.appendChild( document.createElement( 'i' ) );
+	iconInsert.classList.add( 'ti','ti-file-plus');
 	let btnDown = div.appendChild( document.createElement( 'button' ) );
 	btnDown.classList.add( 'btn','btn-none', 'btn-down' ,'text-primary');
 	btnDown.setAttribute('type', 'button' );
