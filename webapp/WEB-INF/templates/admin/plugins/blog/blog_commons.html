@@ -149,7 +149,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 
   formEditor.addEventListener( "submit", event => {
     const t = dLabel.textContent.replace('\n','').replace('#i18n{blog.message.default.blogTitle}','').trim();
-    if( t == '' ){
+    if( t === '' ){
       setBlogToast( 'warning' , '#i18n{blog.message.blogTitleNotEmpty}', ''  );
       event.preventDefault();
       dLabel.focus({ focusVisible: true })
@@ -158,8 +158,8 @@ document.addEventListener( "DOMContentLoaded", function(){
       iLabel.value = t ;
     }
     
-    const d = dDesc.textContent.replace('#i18n{blog.message.default.blogDescription}','').trim();
-    if( d == '' ) {
+    const d = dDesc.innerHTML.replace('#i18n{blog.message.default.blogDescription}','').replace('<p>','').replace('</p>','').trim();
+    if( d === '' ) {
       setBlogToast( 'warning' , '#i18n{blog.message.blogDescriptionNotEmpty}', ''  )	
       event.preventDefault();
       dDesc.focus({ focusVisible: true })
