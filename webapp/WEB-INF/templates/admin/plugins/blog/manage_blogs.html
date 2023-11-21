@@ -18,7 +18,7 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}' rows=2 >
+					<@formGroup labelFor='search_text' labelClass='pt-4' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}'  rows=2 >
 						<@select id='tag_doc' multiple=1 name='tag_doc' class='form-control'>
 						<#list list_tag?sort as tgName>
 							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
@@ -26,7 +26,7 @@
 						</#list>
 						</@select>
 					</@formGroup>
-					<@formGroup labelFor='dateUpdateBlogAfter' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}' rows=2 >
+					<@formGroup labelFor='dateUpdateBlogAfter' labelClass='pt-4' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'  rows=2 >
 						<@inputGroup>
 							<@input type='text' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
 							<@inputGroupItem>
@@ -115,12 +115,14 @@
 										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all']size=''>
 											<#list blog.blogPublication?sort_by("idPortlet") as publication>
 												<@li>
-													<@btnGroup>
-														<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idDocument=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='danger' class='rounded-0' hideTitle=['all'] buttonIcon='playlist-x' />
-														<@span class='mx-2 pt-1'>${publication.portlet.name} - #i18n{blog.modify_blog.labelPage} ${publication.portlet.pageId} </@span>
-														<@link href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-link border-0 rounded-0" title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
-															<@icon style='external-link' />
-														</@link>
+													<@btnGroup class='d-flex justify-content-between'>
+														<@span class='mx-2 pt-1'>${publication.portlet.name} - #i18n{blog.modify_blog.labelPage}   ${publication.portlet.pageId} </@span>
+														<@span>
+															<#if !publication.portlet.contentId??> 
+																<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idPortlet=${publication.idPortlet}&id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='danger' size='sm' hideTitle=['all'] buttonIcon='trash' />
+															</#if>	
+															<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}" color='outline-primary' size='sm' hideTitle=['all'] buttonIcon='external-link' />
+														</@span>
 													</@btnGroup>
 												</@li>
 											</#list>
@@ -183,7 +185,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 			timeoutDelay: 200,
 		},
 	});
-	
+
 	const btnReset = document.getElementById('button_reset'), btnSearch = document.getElementById('button_search')
 	if( window.location.search.match('search') === null ){
 		btnReset.classList.add( 'd-none' )
