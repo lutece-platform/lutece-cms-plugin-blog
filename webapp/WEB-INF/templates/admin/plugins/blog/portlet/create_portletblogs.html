@@ -2,28 +2,85 @@
 <@input type="hidden" id="id" name="id" value="0" />
 <@input type="hidden" id="action" name="action" value="createBlog" />
 <@row>
-	<@columns sm=3>
-		<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2 >
-			<@select id='page_template_code' name='page_template_code'>
-			<#list pages_list as key, value >
-				<@option value=key label=value />
-			</#list>
-			</@select>
-		</@formGroup>
-	</@columns>
-	<@columns sm=3>
-		<@formGroup labelFor='blog_selected' labelKey='#i18n{blog.portlet.blogsBlogsPortlet.labelChoosePost}'  rows=2>
-			<@select name='blog_selected' id='blog_selected' mandatory=true>
-				<@option value='' label='' />
-				<#list blog_list?sort_by('contentLabel') as blog>
-				<#if blog.attachedPortletId == 0>
-					<@option value=blog.id label='${blog.contentLabel} - ${blog.id}' />
-				</#if>
-				</#list>
-			</@select>
-		</@formGroup>
-	</@columns>
-	<@columns sm=3>
-		<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?plugin_name=blog' title='#i18n{blog.manage_blogs.title}' buttonIcon='external-link' target='_blank' params='style="margin-top:22.5px"' />
+	<@columns sm=4 offsetSm=8 class='mb-3'>
+		<@tform>
+			<@formGroup labelFor='search_post' labelKey='#i18n{portal.system.manage_plugins.buttonFilter}' hideLabel=['all'] formStyle='inline'>
+				<@inputGroup>
+					<@input type='text' name='search_post' id='search_post' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' params='autocomplete="off"' size='' />
+					<@button type='button' title='#i18n{portal.system.manage_plugins.buttonFilter}' buttonIcon='filter' hideTitle=['all'] size='' />
+				</@inputGroup>
+			</@formGroup>
+		</@tform>
 	</@columns>
 </@row>
+<@row>
+	<@columns sm=12>
+		<@listGroup params='style="height:40vh;overflow-y: auto"'>
+			<#list blog_list?sort_by('updateDate')?reverse as blog>
+				<@listGroupItem class='d-flex justify-content-between vh-50' params='data-post="${blog.id} ${blog.contentLabel}" data-blog="${blog.id}"'>
+					<@span class='searchable mx-2 pt-1'>${blog.id}</@span>
+					<@span class='searchable mx-2 pt-1 w-50'>${blog.contentLabel}</@span>
+					<@span class='searchable mx-2 pt-1'><@icon style='user' /> ${blog.userCreator}</@span>
+					<@span class='searchable mx-2 pt-1 w-25'><@icon style='calendar-plus' /> ${blog.creationDate?string.short} <@icon style='calendar-cog ms-4' /> ${blog.updateDate?string.short}</@span>
+				</@listGroupItem>
+			</#list>
+		</@listGroup>
+		<@select name='blog_selected' id='blog_selected' mandatory=true params='hidden'>
+			<@option value='' label='' />
+			<#list blog_list?sort_by('contentLabel') as blog>
+				<@option value=blog.id label='${blog.contentLabel} - ${blog.id}' />
+			</#list>
+		</@select>
+		<@row class='mt-2'>
+			<@columns sm=4>
+				<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2 >
+					<@select id='page_template_code' name='page_template_code'>
+					<#list pages_list as key, value >
+						<@option value=key label=value />
+					</#list>
+					</@select>
+					<@span class='invalid-feedback'>Vous devez sélectionner un billet</@span>
+				</@formGroup>
+			</@columns>
+			<@columns sm=3>
+				<@formGroup labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' labelClass='invisible' rows=2 >
+					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?plugin_name=blog' title='#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}' color='link' buttonIcon='external-link' target='_blank' />
+				</@formGroup>
+			</@columns>
+		</@row>
+	</@columns>
+</@row>
+<script type="module">
+import LuteceSearchList from './themes/shared/modules/luteceSearchList.js';
+const searchInput = document.querySelector( "#search_post" );
+const searchElementList = document.querySelectorAll( "*[data-post]" );
+new LuteceSearchList( searchInput, searchElementList, {
+	searchableChild: [".searchable"],
+	highlight: true,
+	hideClass: 'd-none'
+});
+
+document.addEventListener('DOMContentLoaded', (event) => {
+	const form = document.getElementById( 'form-portlet' )
+	const tpl = document.getElementById( 'page_template_code' )
+	const blog = document.getElementById( 'blog_selected' )
+	const listPost = document.querySelectorAll( '.list-group-item' )
+
+	listPost.forEach( post => {
+		post.addEventListener( 'click', (e) => {
+			if( tpl.classList.contains('is-invalid') )	tpl.classList.remove('is-invalid')
+			blog.value = post.dataset.blog
+			listPost.forEach( p => { p.classList.remove('active') })
+			post.classList.toggle('active')
+		})
+	});
+
+	form.addEventListener( 'submit', ( e ) => { 
+		if( blog.value === '0' ){
+			e.preventDefault();
+			tpl.classList.add('is-invalid')
+		}
+	})
+
+});
+</script>

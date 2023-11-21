@@ -13,7 +13,8 @@
 			</@select>
 		</@formGroup>
 	</@columns>
-	<@columns sm=3>
-		<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog_id!}' title='#i18n{blog.modify_blog.title} ' label='#i18n{blog.modify_blog.title}' buttonIcon='external-link' target='_blank' params='style="margin-top:22.5px"' />
+	<@columns sm=3 class='d-flex align-items-center pt-2'>
+		<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog_id!}' title='#i18n{blog.modify_blog.title}' label='#i18n{blog.modify_blog.title}' buttonIcon='external-link' target='_blank' size='' />
+		<@aButton href='jsp/admin/site/RemovePortlet.jsp?portlet_id=${portlet.id!}' title='#i18n{blog.publication_blog.buttonUnPublish}' label='#i18n{blog.publication_blog.buttonUnPublish}' buttonIcon='trash' color='danger' size='' />
 	</@columns>
 </@row>
