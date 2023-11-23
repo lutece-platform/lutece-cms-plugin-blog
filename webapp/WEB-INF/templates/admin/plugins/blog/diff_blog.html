@@ -1,7 +1,7 @@
 <@pageContainer>
     <@pageColumn>
-        <@pageHeader title='Diff ${blog.contentLabel}'>
-			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogss.labelHistory} [ ${blog.version} versions ]' buttonIcon='history me-2' />
+        <@pageHeader title='#i18n{blog.diff_blog.title} "${blog.contentLabel}"'>
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory} [ ${blog.version} versions ]' buttonIcon='history me-2' />
 			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
 			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
         </@pageHeader>
@@ -13,7 +13,7 @@
 				<@select name='blog_version'>
 				<#list blog_version_list as blog_tmp>
 					<#assign isSelected><#if blog_tmp.version == blog2.version>true<#else>false</#if></#assign>
-					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogss.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
+					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
 				</#list>
 				</@select>
 			</@columns>
@@ -21,7 +21,7 @@
 				<@select name='blog_version2'>
 				<#list blog_version_list as blog_tmp>
 					<#assign isSelected><#if blog_tmp.version == blog.version>true<#else>false</#if></#assign>
-					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogss.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
+					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
 				</#list>
 				</@select>
 			</@columns>
