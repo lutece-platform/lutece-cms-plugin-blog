@@ -138,12 +138,41 @@ function changeformtarget() {
   this.form.elements["portlet_name"].required = false;
 }
 
+function moveItem( sourceList, targetList ) {
+      const selectedItem = sourceList.querySelector(':hover');
+      if (selectedItem) {
+        const newItem = selectedItem.cloneNode(true);
+        targetList.appendChild(newItem);
+        sourceList.removeChild(selectedItem);
+      }
+
+      return selectedItem.id
+  }
+
 document.addEventListener( "DOMContentLoaded", function(){
   const docAvailable = document.querySelector("#doc-available");
   const docPublished = document.querySelector("#doc-published"); 
   const btnTarget = document.querySelectorAll('.btn-target');
   const btnAdvSearch = document.getElementById('btn-toggle-search');
   const advSearch = document.getElementById('adv-search');
+
+  docAvailable.addEventListener('dblclick', (e => {
+      const postId = moveItem( docAvailable, docPublished )
+      let docId= 1
+      if( docPublished.querySelectorAll('li').length === 1 ){ 
+        docId = 0 
+        docPublished.classList.remove('no-blog');
+      }
+      doAddDocument( postId, docId );
+  }))
+  
+  docPublished.addEventListener('dblclick', (e => {
+      const postId = moveItem( docPublished, docAvailable )
+      if( docPublished.querySelectorAll('li').length === 0 ){ 
+        docPublished.classList.add('no-blog');
+      }
+      doDeleteDocument( postId );
+  }))
   
   btnTarget.forEach( ( btn ) => {
     btn.addEventListener( 'click',  (e) => {
@@ -159,12 +188,11 @@ document.addEventListener( "DOMContentLoaded", function(){
     const btnIcon = e.currentTarget.querySelector(".ti")
     btnIcon.classList.toggle('ti-layout-navbar-expand')
     btnIcon.classList.toggle('ti-layout-bottombar-expand')
-    
-      if (btn.getAttribute("aria-expanded") === "true") {
-        btn.setAttribute("aria-expanded", "false");
-      } else {
-        btn.setAttribute("aria-expanded", "true");
-      }
+    if (btn.getAttribute("aria-expanded") === "true") {
+      btn.setAttribute("aria-expanded", "false");
+    } else {
+      btn.setAttribute("aria-expanded", "true");
+    }
   })
   
   new SlimSelect({
@@ -181,9 +209,41 @@ document.addEventListener( "DOMContentLoaded", function(){
 		},
 	});
 
+/*
+  const availablePosts = docAvailable.querySelectorAll('.list-group-item.list-group-item-action');
+  const publishedPosts = docPublished.querySelectorAll('.list-group-item.list-group-item-action');
+  
+  availablePosts.forEach( ( aPost ) => {
+    aPost.addEventListener( 'dblclick',  (e) => {
+      let postId = 0
+      if( e.target.id === '' ){
+        postId = e.target.parentElement.id
+        docPublished.append( e.target.parentElement );
+      } else {
+        postId = e.target.id
+        docPublished.append( e.target );
+      }
+      doAddDocument( postId, 1 );
+    })
+  })
+
+  publishedPosts.forEach( ( pPost ) => {
+    pPost.addEventListener( 'dblclick',  (e) => {
+      let postId = 0
+      if( e.target.id === '' ){
+        postId = e.target.parentElement.id
+        docAvailable.append( e.target.parentElement );
+      } else {
+        docAvailable.append( e.target );
+        postId = e.target.id
+      }
+      doDeleteDocument( postId );
+    })
+  })
+*/
   const containers = document.querySelectorAll('#blog-portlet .list-group');
   const draggables = Array.from(containers).flatMap(container => [...container.children]);
-  const AdminHomeDraggable = new LuteceDraggable( draggables, containers);
+  const AdminHomeDraggable = new LuteceDraggable( draggables, containers );
     
   AdminHomeDraggable.on('dragover', (event) => {
     docPublished.classList.add('bg-gray');
@@ -211,6 +271,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     }
   });
 });
+
 async function doAddDocument( idDocument, orderDocument ){
   await fetch(`<#noparse>${baseUrl}jsp/admin/plugins/blog/DoAddDocument.jsp?idDocument=${idDocument}&orderDocument=${orderDocument}&action=add</#noparse>`)
 }
@@ -218,5 +279,7 @@ async function doAddDocument( idDocument, orderDocument ){
 async function doDeleteDocument(idDocument) {
   await fetch(`<#noparse>${baseUrl}jsp/admin/plugins/blog/DoAddDocument.jsp?idDocument=${idDocument}&action=remove</#noparse>`)
 }
+
+
 </script>
 </#macro>
