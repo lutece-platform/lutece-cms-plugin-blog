@@ -1,6 +1,41 @@
 /* Sidebar Modify or create */
 #form-editor{
 	margin: 1rem;
+	z-index: 1;
+}
+
+#blog-toolbar-wrapper {
+    position: sticky;
+    top: .15rem;
+    right: 0;
+    z-index: 300;
+}
+
+#blog-toolbar{
+	display: flex;
+	justify-content: end;
+	margin-bottom: 1rem;
+}
+
+#blog-toolbar.toolbar-small {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: calc( 50vh - 5rem);
+    right: 1.6rem;
+    width: 1.5rem;
+}
+
+#blog-toolbar.toolbar-small .btn{
+	border-radius: 0 !important;
+}
+
+#blog-toolbar.toolbar-small .btn .ti{
+	margin: 0 !important;
+}
+
+#blog-toolbar.toolbar-small .btn span{
+	display: none !important;
 }
 
 #form-editor .offcanvas {
@@ -9,9 +44,13 @@
 	margin-top: 4.15rem
 }
 
+#blog-properties{
+	padding-bottom: 5rem
+}
+
 /* Dashboard*/
 .blog-thumbnails{ 
-	width: 64px 
+	height: 48px 
 }
 
 .blog-thumbnails:before{
@@ -147,6 +186,11 @@
 
 [contenteditable="true"]:hover {
     box-shadow: #dee0e2 0px 8px 19px;
+}
+
+/* TinyMCE FullScreen style override */
+#div_html_content + .tox.tox-tinymce.tox-fullscreen{
+	top: 60px !important
 }
 
 /* Move buttons */

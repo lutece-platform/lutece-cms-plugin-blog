@@ -1,9 +1,22 @@
-<#macro blogEditor lang='fr_FR' colorsMap=''  >
+<#macro blogEditor lang='fr_FR' colorsMap='' editorCss='' >
 <script src="themes/admin/shared/plugins/blog/js/tinymce/tinymce.min.js"></script>
 <script src="themes/admin/shared/plugins/blog/js/tinymce/langs/${lang}.js"></script>
 <script>
 var baseUrl='${webapp_url}';
-var colorMap =  [
+
+/* List of potential user options on editor*/
+const userEditorInline = localStorage.getItem('lutece-blog-user-editor-inline') != null ? true : false
+const userEditorMenubar = localStorage.getItem('lutece-blog-user-editor-menu') != null ? true : false
+const userEditorContextMenubar = localStorage.getItem('lutece-blog-user-editor-contextemnue') != null ? true : false
+const userEditorToolbar = localStorage.getItem('lutece-blog-user-editor-toolbar') != null ? true : false
+const userEditorQuickToolbarInsert = localStorage.getItem('lutece-blog-user-editor-quicktoolbarinsert') != null ? true : false
+const userEditorQuickToolbarSelect = localStorage.getItem('lutece-blog-user-editor-quicktoolbarselect') != null ? true : false
+const userEditorContentCss = localStorage.getItem('lutece-blog-user-editor-contentcss') != null ? true : false
+
+const useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches || localStorage.getItem( 'lutece-tabler-theme' ) === 'dark';
+const isSmallScreen = window.matchMedia('(max-width: 1023.5px)').matches;
+
+const colorMap =  [
   "FFFFFF", "FFFFFF",
   "000000", "000000",
   "071F32", "071F32",
@@ -17,73 +30,153 @@ var colorMap =  [
   "FFCD00", "FFCD00",
   "FF3300", "FF3300"
 ];
+const fontsizes = '10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px';
 
-var fontsizes = '10px 11px 12px 14px 16px 18px 20px 22px 24px 26px 28px 36px 48px 72px';
-var contentBodyConfig = {
+function generateArrayFromNodes( nodes, type='img' ) {
+    const jsonData = [];
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      let title = '';
+      let src = '';
+      let item = {};
+      switch( type ){
+        case 'img' : 
+          title = node.getAttribute('title');
+          src = node.getAttribute('src');
+          item = {
+            title: title,
+            value: src
+          };
+          break
+        case 'file' : 
+          src = node.getAttribute('href') ;
+          title = node.getAttribute('title');  
+          item = {
+            title: title,
+            value: src
+          };
+          break
+        case 'lang' : 
+          title = node.dataset.langName;
+          src = node.dataset.lang;
+          item = {
+            title: title,
+            code: src
+          };
+          break
+      }
+      jsonData.push(item);
+    }
+
+    return jsonData;
+  }
+
+const blogImgList = () => {
+  const imgList = document.querySelectorAll('#content-list .blog-image-content img')
+  if( imgList.length > 0 ){
+    return generateArrayFromNodes( imgList ) 
+  } else {
+    return [];
+  }
+}
+
+const blogFileList = () => {
+  const fileList = document.querySelectorAll('#content-list .blog-file-content a')
+  if( fileList.length > 0 ){
+    return generateArrayFromNodes( fileList, 'file' ) 
+  } else {
+    return [];
+  }
+}
+
+const blogLangList = () => {
+  const langList = document.querySelectorAll('#lutece-language-menu [data-lang]')
+  if( langList.length > 0 ){
+    return generateArrayFromNodes( langList, 'lang' ) 
+  } else {
+    return [];
+  }
+}
+
+const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve, reject) => {
+  const xhr = new XMLHttpRequest();
+  xhr.withCredentials = false;
+  xhr.open('POST', '${webapp_url}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent');
+
+  xhr.upload.onprogress = (e) => {
+    progress(e.loaded / e.total * 100);
+  };
+
+  xhr.onload = () => {
+    if (xhr.status === 403) {
+      reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+      return;
+    }
+
+    if (xhr.status < 200 || xhr.status >= 300) {
+      reject('HTTP Error: ' + xhr.status);
+      return;
+    }
+
+    const json = JSON.parse(xhr.responseText);
+    if (!json ) {
+      reject('Invalid JSON: ' + xhr.responseText);
+      return;
+    }
+    <#noparse>const fileLocation = `servlet/plugins/blogs/file?id_file=${json.result[1]}`</#noparse>
+    setListFile( json.result[1], json.result[0], filetype, idBlog )
+    resolve(fileLocation);
+  };
+
+  xhr.onerror = () => {
+    reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+  };
+
+  formData = new FormData();
+  const idBlog = document.querySelector('#id').value;
+  const filetype = blobInfo.blob().type.startsWith('image') ? 1 : 0;
+  formData.append( 'fileContent', <#noparse>`data:${blobInfo.blob().type};base64,${blobInfo.base64()}`</#noparse> );
+	formData.append( 'fileName', blobInfo.blob().name );
+	formData.append( 'fileType', filetype );
+	formData.append( 'id', idBlog );
+
+  xhr.send(formData);
+});
+
+const contentBodyConfig = {
   selector: '.content-body',
+  // skin: 'oxide-dark',
   menubar: false,
-  inline: true,
+  content_langs: blogLangList(),
   plugins: [
     'autolink',
     'code',
+    'advlist',
     'image',
     'importcss',
     'link',
     'lists',
+    'lutece',
     'media',
     'table',
-    'paste',
     'quickbars',
-    'help'
+    'help',
+    'visualblocks',
+    'visualchars',
+    'accordion',
+    'fullscreen',
+    'template',
+    'wordcount'
   ],
-  toolbar: false,
-  quickbars_insert_toolbar: 'quicktable image media code',
-  quickbars_selection_toolbar: 'undo redo | paste | formatselect fontsizeselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | blockquote link',
-  language: '${lang}',
-  document_base_url : '${webapp_url}',
-  color_map: colorMap,
-  inline: true,
-  /* enable automatic uploads of images represented by blob or data URIs*/
-  automatic_uploads: false,
-  images_upload_url: '',
-  image_caption: true,
-  image_advtab: true,
-  /*
-    URL of our upload handler 
-    here we add custom filepicker only to Image dialog
-  */
-  file_picker_types: 'image',
-  /* and here's our custom image picker*/
-  file_picker_callback: function (cb, value, meta) {
-    let fileRes = '';
-    let input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.onchange = function () {
-      const file = this.files[0];
-      const reader = new FileReader();
-      reader.onload = function () {
-        let blogId = document.querySelector('#id').value;
-        const fileType=1; 
-        doAddContent( file.name, file.size, reader.result, fileType, blogId ).then( resp => {
-          /* call the callback and populate the Title field with the file name */
-          if ( resp.status == 'OK' ){
-            if( resp.result == "BLOG_LOCKED" ){
-              setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
-            } else {
-              setListFile( resp.result[1], resp.result[0], fileType, blogId )
-              <#noparse>fileRes = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
-              /* call the callback and populate the Title field with the file name */
-              cb( fileRes , { title: file.name });
-            }
-          }
-        });
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
-  },
-  content_css: "css/page_template_styles.css",
-  importcss_append: false,
+  // external_plugins: {
+  //   pluginId: 'themes/admin/shared/blog/js/tinymce6/plugins/lutece/plugin.min.js'
+  // },
+  menubar: false,
+  toolbar: 'undo redo | paste | image link lutecePageLink | visualblocks wordcount | code | fullscreen | help',
+  quickbars_insert_toolbar: 'quicktable quickimage link accordion',
+  quickbars_selection_toolbar: 'undo redo | paste | formatselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | blockquote quicklink | code',
+  contextmenu: 'undo redo | image link lutecePageLink | inserttable | cell row column deletetable',
+  content_css: "css/theme-parisfr-editor.min.css,css/page_template_styles.css",
   extended_valid_elements : "iframe[style|src|width|height|name|align|frameborder|scrolling],script[src|type]",
   paste_word_valid_elements: "b,strong,i,em,h2,h3,h4,h5,h6,p,br,blockquote",
   fontsize_formats: fontsizes,
@@ -93,10 +186,105 @@ var contentBodyConfig = {
     {title: 'Nouvelle page', value: '_blank'},
     {title: 'Fenêtre Parent', value: '_parent'}
   ],
-  contextmenu: 'undo redo | image insert | inserttable | cell row column deletetable | code | help'
+  language: '${lang}',
+  document_base_url: '${webapp_url}',
+  // fullscreen_native: true,
+  color_map: colorMap,
+  branding: false,
+  promotion: false,
+  inline: userEditorInline,
+  a11y_advanced_options: true,
+  // Lutece optionnal document link service
+  lutece_insert_service_media_type_image : '#dskey{library.insert_service_media_type_image}',
+	lutece_insert_service_media_type_pdf : '#dskey{library.insert_service_media_type_pdf}',
+	lutece_insert_service_media_type_image_space : '#dskey{library.insert_service_media_type_image_space}',
+	lutece_insert_service_media_type_pdf_space : '#dskey{library.insert_service_media_type_pdf_space}',
+  /* enable automatic uploads of images represented by blob or data URIs*/
+  // automatic_uploads: false,
+  images_upload_handler: blog_image_upload_handler,
+  image_caption: true,
+  image_advtab: true,
+  templates: [
+    { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
+    { title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...' },
+    { title: 'New list with dates', description: 'New List with dates', content: '<div class="mceTmpl"><span class="cdate">cdate</span><br><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>' }
+  ],
+  // template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
+  // template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+  link_list: blogFileList(),
+  image_list: blogImgList(),
+  image_class_list: [
+    { title: 'None', value: 'img-fluid' },
+    { title: 'Circle', value: 'img-fluid rounded-circle' },
+    { title: 'Rounded', value: 'img-fluid rounded' },
+    { title: 'Thumbnail', value: 'img-fluid thumbnail' }
+  ],
+  image_title: true,
+  /*
+    URL of our upload handler 
+    here we add custom filepicker only to Image dialog
+  */
+  automatic_uploads: true,
+  file_picker_types: 'file, image',
+  /*  blog CallBack */
+  file_picker_callback: (cb, value, meta) => {
+    if ( meta.filetype == 'file') {
+      const inputFile = document.createElement('input');
+      inputFile.setAttribute('type', 'file');
+      inputFile.setAttribute('accept', '.pdf');
+      inputFile.addEventListener('change', (e) => {
+        const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=2; 
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          doAddContent( file.name, file.size, reader.result, filetype, blogId ).then( resp => {
+            if ( resp.status == 'OK' ){
+              if( resp.result == "BLOG_LOCKED" ){
+                setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+              } else {
+                setListFile( resp.result[1], resp.result[0], filetype, blogId )
+                <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
+                cb( fileResFile , { title: file.name, text: file.name });
+              }
+            }
+          });
+        });
+        reader.readAsDataURL(file);
+      });
+      inputFile.click();
+    }
+
+    if ( meta.filetype == 'image') {
+      const input = document.createElement('input')
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=1;
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          doAddContent( file.name, file.size, reader.result, filetype, blogId ).then( resp => {
+              if ( resp.status == 'OK' ){
+                if( resp.result == "BLOG_LOCKED" ){
+                  setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+                } else {
+                  setListFile( resp.result[1], resp.result[0], filetype, blogId )
+                  <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
+                  cb( fileResFile , { title: file.name, alt: file.name });
+                }
+              }
+            });
+        });
+        reader.readAsDataURL(file);
+      });
+
+      input.click();
+    }
+  },
+
 };
 
-var contentDescConfig = {
+/* Description config */
+const contentDescConfig = {
   selector: '.content-desc',
   language: 'fr_FR',
   height: 250,
@@ -106,9 +294,11 @@ var contentDescConfig = {
   plugins: [ 'quickbars' ],
   quickbars_insert_toolbar: 'undo redo',
   quickbars_selection_toolbar: 'italic bold'
+  
 };
+
 document.addEventListener("DOMContentLoaded", function() {
-  tinymce.init( contentBodyConfig );
+  tinymce.init( contentBodyConfig )
 	tinymce.init( contentDescConfig );
 })
 </script>
@@ -149,7 +339,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 
   formEditor.addEventListener( "submit", event => {
     const t = dLabel.textContent.replace('\n','').replace('#i18n{blog.message.default.blogTitle}','').trim();
-    if( t === '' ){
+    if( t == '' ){
       setBlogToast( 'warning' , '#i18n{blog.message.blogTitleNotEmpty}', ''  );
       event.preventDefault();
       dLabel.focus({ focusVisible: true })
@@ -159,7 +349,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     }
     
     const d = dDesc.innerHTML.replace('#i18n{blog.message.default.blogDescription}','').replace('<p>','').replace('</p>','').trim();
-    if( d === '' ) {
+    if( d == '' ) {
       setBlogToast( 'warning' , '#i18n{blog.message.blogDescriptionNotEmpty}', ''  )	
       event.preventDefault();
       dDesc.focus({ focusVisible: true })
@@ -249,6 +439,26 @@ document.addEventListener( "DOMContentLoaded", function(){
       }
     });
 
+    const btnToolbarToggle = document.getElementById('toolbar-collapse')
+    const btnToolbarToggleICon = btnToolbarToggle.querySelector('.ti')
+    const blogToolbar = document.getElementById('blog-toolbar')
+    const btnToolbarLabel = blogToolbar.querySelectorAll('.btn span')
+    const localToolbarPos = localStorage.getItem('lutece-blog-edit-toolbar-pos')
+    if( localToolbarPos != null && localToolbarPos === 'sidebar'  ){
+      blogToolbar.classList.toggle('toolbar-small')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-left')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-right')
+    } 
+    btnToolbarToggle.addEventListener( 'click', (e) => {
+      blogToolbar.classList.toggle('toolbar-small')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-left')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-right')
+      if( localToolbarPos === 'sidebar' ){
+        localStorage.setItem('lutece-blog-edit-toolbar-pos','')
+      } else {
+        localStorage.setItem('lutece-blog-edit-toolbar-pos','sidebar')
+      }
+    });
 
 });
 </script>

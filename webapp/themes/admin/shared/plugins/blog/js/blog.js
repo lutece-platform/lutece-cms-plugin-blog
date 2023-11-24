@@ -1,5 +1,6 @@
 const typeWarning = 'warning'
 const typeDanger = 'danger'
+let defaultImgFileType='file-x'
 
 async function createTag( blogId ){
 	const tgName = document.querySelector('#tag_name').value;
@@ -66,7 +67,7 @@ async function doUpdatePriorityTag( idTag, action, blogId ){
 		setBlogToast( typeDanger , labelError, response.statusText )	
 	} else {
 		const data = await response.json();
-		if ( data.status == 'OK' ){
+		if ( data.status === 'OK' ){
 			if(data.result == "BLOG_LOCKED"){
 				setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked )	
 			}else if( action == "moveUp" ){
@@ -117,7 +118,7 @@ function setListTag( idTag, tgName, blogId ){
 
 function setListFile( idFile, fileName, fileType, blogId ){
 	let li = document.createElement( 'li' );
-	li.classList.add( 'list-group-item', 'list-group-item-action', 'blog-image-content', 'd-flex', 'justify-content-between');
+	li.classList.add( 'list-group-item', 'list-group-item-action', 'blog-image-content', 'd-flex', 'justify-content-between', 'align-items-center');
 	li.setAttribute( 'id', `doc_${idFile}` );
 	if ( fileType == 1 ){   
 		let imgFile = li.appendChild( document.createElement( 'img' ) );
@@ -126,6 +127,11 @@ function setListFile( idFile, fileName, fileType, blogId ){
 		imgFile.setAttribute('title', `${fileName}` );
 		imgFile.classList.add( 'img-fluid', 'img-thumbnail', 'blog-thumbnails');
 	} else {
+		let imgFile = li.appendChild( document.createElement( 'img' ) );
+		imgFile.setAttribute('src', 'themes/admin/shared/plugins/blog/images/file-x.svg' );
+		imgFile.setAttribute('alt', `${fileName}` );
+		imgFile.setAttribute('title', `${fileName}` );
+		imgFile.classList.add( 'img-fluid', 'img-thumbnail', 'blog-thumbnails');
 		let linkFile = li.appendChild( document.createElement( 'a' ) );
 		linkFile.setAttribute('href', `servlet/plugins/blogs/file?id_file=${idFile}` );
 		linkFile.setAttribute('title', `${fileName}` );
@@ -227,14 +233,16 @@ async function doAddContent( fileName, fileInfo, result, fileType, idBlog ){
 }
 
 function doInsertContent( idContent, titleContent, typeContent ) {
-	let contentToInsert=''
+	let contentToInsert='', contentTag = 'p';
 	if ( typeContent === 1 ) {
+		contentTag = 'figure'
 		contentToInsert=`<img src="servlet/plugins/blogs/file?id_file=${idContent}" alt="${titleContent}" />`
 	} else {
+		contentTag = 'p'
 		contentToInsert=`<a title="${titleContent}" href="servlet/plugins/blogs/file?id_file=${idContent}">${titleContent}</a>`
 	}
-	contentToInsert = tinymce.get('div_html_content').getContent( ) + contentToInsert
-	tinymce.get('div_html_content').setContent( contentToInsert );
+	const tinyCurrentNode = tinymce.activeEditor.selection.getNode() 
+	tinymce.activeEditor.dom.add( tinyCurrentNode, contentTag, {}, contentToInsert);
 }
 
 async function doDeleteContent( idContent, idBlog ) {

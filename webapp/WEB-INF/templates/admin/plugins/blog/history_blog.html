@@ -9,7 +9,7 @@
 		<@input type='hidden' name='id' value='${(blog_list[0].id)!}' />
 		<@table headBody=true >
 			<@tr>
-				<@th>
+				<@th class='text-center'>
 					<@button type='submit' value='1' buttonIcon='git-compare' title='#i18n{blog.history_blog.columnDiffSelect}' color='info' />
 				</@th>
 				<@th>#i18n{blog.manage_blogs.columnUpdateDate} / #i18n{blog.manage_blogs.columnCreator} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&id=${id}" attribute="updateDate" /></@th>
@@ -21,14 +21,12 @@
 			<#assign nIdxVersion=1>
 			<#list blog_list?reverse as blog >
 			<@tr>
-				<@td>
-					<@div class='d-flex align-items-center justify-content-evenly w-50'>
-						<strong>#i18n{blog.manage_blogs.columnVersion} ${blog.version}</strong>
-						<#assign isChecked><#if nIdxVersion==1>true<#else>false</#if></#assign>
-						<@radioButton name='blog_version' id='blog_version_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
-						<#assign isChecked><#if nIdxVersion==nbVersion>true<#else>false</#if></#assign>
-						<@radioButton name='blog_version2' id='blog_version2_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
-					</@div>
+				<@td class='text-center'>
+					<strong class="me-2">#i18n{blog.manage_blogs.columnVersion} ${blog.version}</strong>
+					<#assign isChecked><#if nIdxVersion==1>true<#else>false</#if></#assign>
+					<@radioButton name='blog_version' id='blog_version_${blog.version}' labelKey='' class='form-check-input me-2' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
+					<#assign isChecked><#if nIdxVersion==nbVersion>true<#else>false</#if></#assign>
+					<@radioButton name='blog_version2' id='blog_version2_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
 				</@td>
 				<@td>${i18n("blog.history_blog.updatedBy")?cap_first}<em class="ms-1">${blog.updateDate}</em> #i18n{blog.manage_blogs.labelBy} <strong>${blog.user}</strong></@td>
 				<@td>${blog.editComment}</@td>
@@ -44,6 +42,7 @@
 			</@tr>
 			<#assign nIdxVersion++>
 			</#list>
+			<#--
 			<@tableFoot>
 				<@td>
 					<@button type='submit' value='1' buttonIcon='git-compare' title='#i18n{blog.history_blog.columnDiffSelect}' color='info'  />
@@ -51,6 +50,7 @@
 				<@td colspan=2>
 				</@td>
 			</@tableFoot>
+				-->
 		</@table>
 		</@tform>
 		<@paginationAdmin paginator=paginator combo=1 showcount=0 />

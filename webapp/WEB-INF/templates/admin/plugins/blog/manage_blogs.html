@@ -3,14 +3,15 @@
         <@pageHeader title='#i18n{blog.manage_blogs.title}' toolsClass='d-flex'>
 			<#if permission_manage_create_blog>
 				<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-					<@button type='submit' name='view_createBlog' buttonIcon='plus' class='me-1' title='#i18n{blog.manage_blogs.buttonAdd}' />
+					<@button type='submit' name='view_createBlog' buttonIcon='plus' class='me-1' title='#i18n{blog.manage_blogs.buttonAdd}' hideTitle=['xs'] />
 				</@tform>
 			</#if>
         </@pageHeader>
 		<@box class='p-0'>
 			<@boxBody>
-				<@tform id='form-manage' name='form-manage' formStyle='inline' class='d-flex justify-content-evenly align-items-center p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp?search='>
-					<@formGroup labelFor='search_text' labelClass='pt-4' labelKey='#i18n{blog.manage_blogs.search}' helpKey='#i18n{blog.manage_blogs.search.help}' rows=2 >
+				<@tform id='form-manage' name='form-manage' class='p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp?search='>
+				<@row>
+					<@formGroup labelFor='search_text' formStyle='col' class='col-md-6 col-lg-4' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.search}' helpKey='#i18n{blog.manage_blogs.search.help}' rows=2 >
 						<@inputGroup>
 							<@input type='text' id='search_text' name='search_text' placeHolder='lutece lut*' value='${search_text!\'\'}' />
 							<@inputGroupItem>
@@ -18,7 +19,7 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='search_text' labelClass='pt-4' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}'  rows=2 >
+					<@formGroup labelFor='search_text' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}'  rows=2 >
 						<@select id='tag_doc' multiple=1 name='tag_doc' class='form-control'>
 						<#list list_tag?sort as tgName>
 							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
@@ -26,7 +27,7 @@
 						</#list>
 						</@select>
 					</@formGroup>
-					<@formGroup labelFor='dateUpdateBlogAfter' labelClass='pt-4' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'  rows=2 >
+					<@formGroup labelFor='dateUpdateBlogAfter' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'  rows=2 >
 						<@inputGroup>
 							<@input type='text' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
 							<@inputGroupItem>
@@ -34,7 +35,7 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='dateUpdateBlogBefore' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2 >
+					<@formGroup labelFor='dateUpdateBlogBefore' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2 >
 						<@inputGroup>
 							<@input type='text' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
 							<@inputGroupItem>
@@ -42,13 +43,14 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='search_text' labelKey='#i18n{blog.dashboard.columnStatus} ' rows=2 >
+					<@formGroup labelFor='' formStyle='col' class='col-md-2 col-lg-1 d-flex align-items-center pt-4' labelKey='' rows=2 >
 						<@checkBox labelKey='#i18n{blog.manage_blogs.labelNotPublished}' name='unpublished' id='unpublished' value='false' checked=unpublished title='#i18n{blog.dashboard.PublishedStatus} / #i18n{blog.dashboard.UnPublishedStatus}' orientation='switch' />
 					</@formGroup>
-					<@formGroup rows=2 class='pt-3'>
+					<@formGroup rows=2 formStyle='col' class='col-md-2 col-lg-1 d-flex align-items-center justify-content-start pt-3'>
 						<@button type='submit' buttonIcon='search me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
 						<@button type='submit' color='danger' buttonIcon='x me-1' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
 					</@formGroup>
+				</@row>	
 				</@tform>
 			</@boxBody>
 		</@box>
@@ -119,7 +121,7 @@
 														<@span class='mx-2 pt-1'>${publication.portlet.name} - #i18n{blog.modify_blog.labelPage}   ${publication.portlet.pageId} </@span>
 														<@span>
 															<#if !publication.portlet.contentId??> 
-																<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idPortlet=${publication.idPortlet}&id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='danger' size='sm' hideTitle=['all'] buttonIcon='trash' />
+																<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idBlog=${blog.id}&amp;idPortlet=${publication.idPortlet}&id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='danger' size='sm' hideTitle=['all'] buttonIcon='trash' />
 															</#if>	
 															<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}" color='outline-primary' size='sm' hideTitle=['all'] buttonIcon='external-link' />
 														</@span>
@@ -156,7 +158,6 @@
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='danger' />
 								</#if>
 								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default ms-1' size='' class='btn-preview'  />
-
 							</@td>
 						</@tr>
 						<#assign idx=idx + 1/>
