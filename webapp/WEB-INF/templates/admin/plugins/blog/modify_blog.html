@@ -11,7 +11,7 @@
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash me-2' size='' />
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
         <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions] ' buttonIcon='history me-2' size='' />
-        <@offcanvas id='blog-properties' title='#i18n{blog.modify_blog.labelProperties}' btnTitle='#i18n{blog.modify_blog.labelProperties}' position='end' btnIcon='cog'>
+        <@offcanvas id='blog-properties' title='#i18n{blog.modify_blog.labelProperties}' btnTitle='#i18n{blog.modify_blog.labelProperties}' position='end' btnIcon='cog me-2'>
           <@box class='mt-3'>
             <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
               <@link href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blog' title='#i18n{blog.manage_tags.columnTagLabel}' target='_blank'><@icon style='tags' /></@link>

@@ -403,63 +403,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     }
     </#if>
     </#if>
-    })
-
-    // Limite la saisie du Titre à 75 chars
-    const messageElement = document.querySelector("#div_content_label");
-    const characterCounterElement = document.querySelector("#messagecharcounter");
-    const typedCharElement = document.querySelector("#typedchar");
-    const maxChar = ${dskey('portal.site.site_property.portlet.title.maxlength')!75};
-    messageElement.addEventListener( "keydown", (e) => {
-      let typedChar = ( messageElement.textContent.length = undefined ? 0 : messageElement.textContent.length );
-      if ( typedChar >= maxChar ) { 
-        switch (e.keyCode) {
-          case 8:
-          case 33:
-          case 34:
-          case 35:
-          case 36:
-          case 37:
-          case 38:
-          case 39:
-          case 40:
-          case 46:
-          break;
-        default:
-          e.preventDefault()
-        }
-      }
-      typedCharElement.textContent = typedChar;
-      if (typedChar > maxChar - 1) {
-        characterCounterElement.classList = "charcounter text-danger";
-      } else if (typedChar < maxChar && typedChar > maxChar * (90 / 100)) {
-        characterCounterElement.classList = "charcounter text-warning";
-      } else if (typedChar < maxChar - ((maxChar * (10 / 100)) - 1)) {
-        characterCounterElement.classList = "charcounter text-normal";
-      }
-    });
-
-    const btnToolbarToggle = document.getElementById('toolbar-collapse')
-    const btnToolbarToggleICon = btnToolbarToggle.querySelector('.ti')
-    const blogToolbar = document.getElementById('blog-toolbar')
-    const btnToolbarLabel = blogToolbar.querySelectorAll('.btn span')
-    const localToolbarPos = localStorage.getItem('lutece-blog-edit-toolbar-pos')
-    if( localToolbarPos != null && localToolbarPos === 'sidebar'  ){
-      blogToolbar.classList.toggle('toolbar-small')
-      btnToolbarToggleICon.classList.toggle('ti-arrow-left')
-      btnToolbarToggleICon.classList.toggle('ti-arrow-right')
-    } 
-    btnToolbarToggle.addEventListener( 'click', (e) => {
-      blogToolbar.classList.toggle('toolbar-small')
-      btnToolbarToggleICon.classList.toggle('ti-arrow-left')
-      btnToolbarToggleICon.classList.toggle('ti-arrow-right')
-      if( localToolbarPos === 'sidebar' ){
-        localStorage.setItem('lutece-blog-edit-toolbar-pos','')
-      } else {
-        localStorage.setItem('lutece-blog-edit-toolbar-pos','sidebar')
-      }
-    });
-
+  })
 });
 </script>
 <script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
