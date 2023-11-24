@@ -168,21 +168,7 @@ const contentBodyConfig = {
     'wordcount'
   ],
   menubar: false,
-  // block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4',
-  formats: {
-    removeformat: [
-      {
-        selector: 'b,strong,em,i,font,u,strike,s,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,del,ins,small',
-        remove: 'all',
-        split: true,
-        block_expand: true,
-        expand: false,
-        deep: true
-      },
-      { selector: 'span', attributes: ['style', 'class'], remove: 'empty', split: true, expand: false, deep: true },
-      { selector: '*', attributes: ['style', 'class'], split: false, expand: false, deep: true }
-    ]
-  },
+  block_formats: 'Titre 2=h2; Titre 3=h3; Titre 4=h4; Paragraphe=p;',
   toolbar_sticky: true,
   toolbar: 'undo redo blocks bold italic alignleft aligncenter alignright bullist numlist blockquote table link lutecePageLink image media bookmark fullscreen code | help',
   quickbars_insert_toolbar: 'quicktable quickimage link media',
