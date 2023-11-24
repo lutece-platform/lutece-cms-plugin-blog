@@ -6,11 +6,11 @@
   <@row id='blog-toolbar-wrapper'>
     <@columns>
       <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>
-        <@button class='me-1' type='submit' size='' buttonIcon='check' title='#i18n{portal.util.labelModify}' value='modify' id='action_modifyblog' name='action_modifyblog'  />
-        <@button class='me-1' type='submit' size='' buttonIcon='device-floppy' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button'  />
-        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='' />
-        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='' />
-        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions] ' buttonIcon='history' size='' />
+        <@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{portal.util.labelModify}' value='modify' id='action_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] />
+        <@button class='me-1' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button' hideTitle=['xs','sm'] />
+        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['xs','sm'] size='' />
+        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' hideTitle=['xs','sm'] size='' />
+        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions]' hideTitle=['xs','sm', 'md'] buttonIcon='history' size='' />
         <@offcanvas id='blog-properties' title='#i18n{blog.modify_blog.labelProperties}' btnTitle='#i18n{blog.modify_blog.labelProperties}' position='end' btnIcon='cog me-2'>
           <@box class='mt-3'>
             <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
@@ -120,16 +120,11 @@
   <@messages errors=errors />
   <@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' hideLabel=['all'] rows=2>
       <@input name='content_label' id='content_label' value='${blog.contentLabel!?trim}' class='visually-hidden' />
-      <@div id='div_content_label' class='content-head font-bold main-color lutece-charcounter' params='contenteditable="true"'>${blog.contentLabel!?trim}</@div>
-      
-      <@div id="charInfo" class="help-block">
-        <@span id='charCount'>0</@span><@span id='maxchar'>/ ${dskey('portal.site.site_property.portlet.title.maxlength')?number!75}</@span>
-      </@div> 
-      
+      <@div id='div_content_label' class='content-head font-bold main-color lutece-charcounter' params='data-lutece-counter-max="75" contenteditable="true"'>${blog.contentLabel!?trim}</@div>
   </@formGroup>
   <@formGroup labelFor='description' labelKey='#i18n{blog.create_blog.description}' hideLabel=['all'] rows=2>
       <@input name='description' id='description' value='${blog.description!}' class='visually-hidden' />
-      <@div id='div_description' class='content-desc lutece-charcounter' params='data-lutece-counter-max="20" data-lutece-counter-title="Nb de cara ! : " data-counter-max="" contenteditable="true"'>${blog.description!}</@div>
+      <@div id='div_description' class='content-desc lutece-charcounter' params='data-lutece-counter-max="300" contenteditable="true"'>${blog.description!}</@div>
   </@formGroup>
   <@formGroup labelFor='html_content' labelKey='#i18n{blog.create_blog.labelEditComment}' helpKey='<svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M11.94 2a2.99 2.99 0 0 1 2.45 1.279l.108 .164l8.431 14.074a2.989 2.989 0 0 1 -2.366 4.474l-.2 .009h-16.856a2.99 2.99 0 0 1 -2.648 -4.308l.101 -.189l8.425 -14.065a2.989 2.989 0 0 1 2.555 -1.438zm.06 14a1 1 0 0 0 -.993 .883l-.007 .117l.007 .127a1 1 0 0 0 1.986 0l.007 -.117l-.007 -.127a1 1 0 0 0 -.993 -.883zm1.368 -6.673a2.98 2.98 0 0 0 -3.631 .728a1 1 0 0 0 1.44 1.383l.171 -.18a.98 .98 0 0 1 1.11 -.15a1 1 0 0 1 -.34 1.886l-.232 .012a1 1 0 0 0 .111 1.994a3 3 0 0 0 1.371 -5.673z" stroke-width="0" fill="currentColor"></path></svg> Appuyer sur la touche "Entr&eacute;e" pour ajouter des contenus ou s&eacute;lectionner du contenu pour le formater !' hideLabel=['all'] rows=2>
       <@input type='textarea' name='html_content' id='html_content' value='${blog.htmlContent!}' class='visually-hidden' />
@@ -143,3 +138,6 @@
 </#if>
 <@blogEditor />
 <@blogScriptInit />
+<script>
+<@charcounter />
+</script>
