@@ -116,7 +116,7 @@ function setListTag( idTag, tgName, blogId ){
 	document.querySelector( "#tag-list" ).appendChild( li );
 }
 
-function setListFile( idFile, fileName, fileType, blogId ){
+function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	let li = document.createElement( 'li' );
 	li.classList.add( 'list-group-item', 'list-group-item-action', 'blog-image-content', 'd-flex', 'justify-content-between', 'align-items-center');
 	li.setAttribute( 'id', `doc_${idFile}` );
@@ -128,7 +128,7 @@ function setListFile( idFile, fileName, fileType, blogId ){
 		imgFile.classList.add( 'img-fluid', 'img-thumbnail', 'blog-thumbnails');
 	} else {
 		let imgFile = li.appendChild( document.createElement( 'img' ) );
-		imgFile.setAttribute('src', 'themes/admin/shared/plugins/blog/images/file-x.svg' );
+		imgFile.setAttribute('src', `themes/admin/shared/plugins/blog/images/file-type-${fileExt}.svg` );
 		imgFile.setAttribute('alt', `${fileName}` );
 		imgFile.setAttribute('title', `${fileName}` );
 		imgFile.classList.add( 'img-fluid', 'img-thumbnail', 'blog-thumbnails');
@@ -172,20 +172,20 @@ function setListFile( idFile, fileName, fileType, blogId ){
 	document.querySelector( '#content-list' ).appendChild( li );
 }
 
-function getImage( blogId ) {
+function getFile( blogId ) {
 	const file =  document.querySelector('#attachment').files[0];
 	const reader = new FileReader();
 	reader.readAsDataURL( file );
 	reader.onload=function(){
 		const rgx = /image/g;
-		const fileType = rgx.test( file.type ) ? 1 : 2;
+		const fileType = rgx.test( file.type ) ? 1 : 2, extension = file.name.split('.').pop().toLowerCase()	
 		doAddContent( file.name, file.size, reader.result, fileType, blogId ).then( resp => {
 			/* call the callback and populate the Title field with the file name */
 			if ( resp.status == 'OK' ){
 			  if( resp.result == "BLOG_LOCKED" ){
 				setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
 			  } else {
-				setListFile( resp.result[1], resp.result[0], fileType, blogId )
+				setListFile( resp.result[1], resp.result[0], fileType, extension, blogId )
 			  }
 			}
 		});

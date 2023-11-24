@@ -6,11 +6,11 @@
   <@row id='blog-toolbar-wrapper'>
     <@columns>
       <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>
-        <@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{portal.util.labelModify}' value='modify' id='action_modifyblog' name='action_modifyblog'  />
-        <@button class='me-1' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button'  />
-        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash me-2' size='' />
-        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
-        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions] ' buttonIcon='history me-2' size='' />
+        <@button class='me-1' type='submit' size='' buttonIcon='check' title='#i18n{portal.util.labelModify}' value='modify' id='action_modifyblog' name='action_modifyblog'  />
+        <@button class='me-1' type='submit' size='' buttonIcon='device-floppy' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button'  />
+        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='' />
+        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' size='' />
+        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions] ' buttonIcon='history' size='' />
         <@offcanvas id='blog-properties' title='#i18n{blog.modify_blog.labelProperties}' btnTitle='#i18n{blog.modify_blog.labelProperties}' position='end' btnIcon='cog me-2'>
           <@box class='mt-3'>
             <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
@@ -63,7 +63,7 @@
                 <@addRequiredJsUploadImages/>
                 <@cropimage fieldName="attachment" file="themes/admin/shared/images/plugins/uploadimage/picture.jpg" cssClass="text-center" synchronous= "false"/>
               <#else>
-                <@input class='visually-hidden' name='attachment' id='attachment' type='file' params=' onchange="getImage( ${blog.id} )"' value='' />
+                <@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='image/*,.pdf,.xls,.doc,.docx,.xls,.xlsx,.odt,.ods,.ppt,.pptx,.odp' params=' onchange="getFile( ${blog.id} )"' value='' />
               </#if>
               <@div class="blog-resources">
                 <@listGroup id='content-list'>
@@ -74,14 +74,9 @@
                         <#if docContent.contentType.idContentType=1>
                           <@img class="img-fluid img-thumbnail blog-thumbnails" url="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
                         <#else>
-                          <@link class='d-flex align-items-center' href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="#i18n{portal.util.labelDownload} ${docContent.textValue!}">
-                            <#list image_type as type>
-                              <#if type.idContentType=docContent.contentType.idContentType>
-                              <#assign itemType>${type.label}</#assign>
-                              <#break />
-                              </#if>
-                            </#list>
-                            <@tag color='text-bg-secondary me-2' tagIcon='${itemType} ti' params='aria-hidden="true"' /> ${docContent.textValue!}
+                          <@img class="img-fluid img-thumbnail blog-thumbnails" url="themes/admin/shared/plugins/blog/images/file-type-${getFileExtension(docContent.textValue)!}.svg" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
+                          <@link href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="#i18n{portal.util.labelDownload} ${docContent.textValue!}">
+                          ${docContent.textValue!}
                           </@link>
                         </#if>
                         <@btnGroup>
@@ -126,11 +121,11 @@
   <@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' hideLabel=['all'] rows=2>
       <@input name='content_label' id='content_label' value='${blog.contentLabel!?trim}' class='visually-hidden' />
       <@div id='div_content_label' class='content-head font-bold main-color lutece-charcounter' params='contenteditable="true"'>${blog.contentLabel!?trim}</@div>
-      <#-- 
+      
       <@div id="charInfo" class="help-block">
         <@span id='charCount'>0</@span><@span id='maxchar'>/ ${dskey('portal.site.site_property.portlet.title.maxlength')?number!75}</@span>
       </@div> 
-      -->
+      
   </@formGroup>
   <@formGroup labelFor='description' labelKey='#i18n{blog.create_blog.description}' hideLabel=['all'] rows=2>
       <@input name='description' id='description' value='${blog.description!}' class='visually-hidden' />

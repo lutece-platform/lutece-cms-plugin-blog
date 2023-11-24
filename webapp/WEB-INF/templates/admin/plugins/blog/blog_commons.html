@@ -139,7 +139,6 @@ const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve
 	formData.append( 'fileName', blobInfo.blob().name );
 	formData.append( 'fileType', filetype );
 	formData.append( 'id', idBlog );
-
   xhr.send(formData);
 });
 
@@ -168,14 +167,27 @@ const contentBodyConfig = {
     'template',
     'wordcount'
   ],
-  // external_plugins: {
-  //   pluginId: 'themes/admin/shared/blog/js/tinymce6/plugins/lutece/plugin.min.js'
-  // },
   menubar: false,
-  toolbar: 'undo redo | paste | image link lutecePageLink | visualblocks wordcount | code | fullscreen | help',
-  quickbars_insert_toolbar: 'quicktable quickimage link accordion',
-  quickbars_selection_toolbar: 'undo redo | paste | formatselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | blockquote quicklink | code',
-  contextmenu: 'undo redo | image link lutecePageLink | inserttable | cell row column deletetable',
+  // block_formats: 'Paragraph=p; Header 2=h2; Header 3=h3; Header 4=h4',
+  formats: {
+    removeformat: [
+      {
+        selector: 'b,strong,em,i,font,u,strike,s,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,del,ins,small',
+        remove: 'all',
+        split: true,
+        block_expand: true,
+        expand: false,
+        deep: true
+      },
+      { selector: 'span', attributes: ['style', 'class'], remove: 'empty', split: true, expand: false, deep: true },
+      { selector: '*', attributes: ['style', 'class'], split: false, expand: false, deep: true }
+    ]
+  },
+  toolbar_sticky: true,
+  toolbar: 'undo redo blocks bold italic alignleft aligncenter alignright bullist numlist blockquote table link lutecePageLink image media bookmark fullscreen code | help',
+  quickbars_insert_toolbar: 'quicktable quickimage link media',
+  quickbars_selection_toolbar: 'blocks | bold italic | alignleft aligncenter alignright | bullist numlist | blockquote | quicklink',
+  contextmenu: 'link image | inserttable | cell row column deletetable',
   content_css: "css/theme-parisfr-editor.min.css,css/page_template_styles.css",
   extended_valid_elements : "iframe[style|src|width|height|name|align|frameborder|scrolling],script[src|type]",
   paste_word_valid_elements: "b,strong,i,em,h2,h3,h4,h5,h6,p,br,blockquote",
@@ -199,18 +211,24 @@ const contentBodyConfig = {
 	lutece_insert_service_media_type_pdf : '#dskey{library.insert_service_media_type_pdf}',
 	lutece_insert_service_media_type_image_space : '#dskey{library.insert_service_media_type_image_space}',
 	lutece_insert_service_media_type_pdf_space : '#dskey{library.insert_service_media_type_pdf_space}',
-  /* enable automatic uploads of images represented by blob or data URIs*/
-  // automatic_uploads: false,
   images_upload_handler: blog_image_upload_handler,
   image_caption: true,
   image_advtab: true,
-  templates: [
-    { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
-    { title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...' },
-    { title: 'New list with dates', description: 'New List with dates', content: '<div class="mceTmpl"><span class="cdate">cdate</span><br><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>' }
+  style_formats: [
+    { title: 'Custom format', format: 'customformat' },
+    { title: 'Align left', format: 'alignleft' },
+    { title: 'Align center', format: 'aligncenter' },
+    { title: 'Align right', format: 'alignright' },
+    { title: 'Align full', format: 'alignfull' },
+    { title: 'Bold text', inline: 'strong' },
+    { title: 'Red text', inline: 'span', styles: { color: '#ff0000' } },
+    { title: 'Red header', block: 'h1', styles: { color: '#ff0000' } },
+    { title: 'Badge', inline: 'span', styles: { display: 'inline-block', border: '1px solid #2276d2', 'border-radius': '5px', padding: '2px 5px', margin: '0 2px', color: '#2276d2' } },
+    { title: 'Table row 1', selector: 'tr', classes: 'tablerow1' },
+    { title: 'Image formats' },
+    { title: 'Image Left', selector: 'img', styles: { 'float': 'left', 'margin': '0 10px 0 10px' } },
+    { title: 'Image Right', selector: 'img', styles: { 'float': 'right', 'margin': '0 0 10px 10px' } },
   ],
-  // template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
-  // template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
   link_list: blogFileList(),
   image_list: blogImgList(),
   image_class_list: [
@@ -231,9 +249,9 @@ const contentBodyConfig = {
     if ( meta.filetype == 'file') {
       const inputFile = document.createElement('input');
       inputFile.setAttribute('type', 'file');
-      inputFile.setAttribute('accept', '.pdf');
+      inputFile.setAttribute('accept', '.pdf,.doc,.docx,.xls,.xlsx,.odt,.ods');
       inputFile.addEventListener('change', (e) => {
-        const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=2; 
+        const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=2, extension = e.target.files[0].name.split('.').pop().toLowerCase()
         const reader = new FileReader();
         reader.addEventListener('load', () => {
           doAddContent( file.name, file.size, reader.result, filetype, blogId ).then( resp => {
@@ -241,7 +259,7 @@ const contentBodyConfig = {
               if( resp.result == "BLOG_LOCKED" ){
                 setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
               } else {
-                setListFile( resp.result[1], resp.result[0], filetype, blogId )
+                setListFile( resp.result[1], resp.result[0], filetype, extension, blogId )
                 <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
                 cb( fileResFile , { title: file.name, text: file.name });
               }
@@ -257,7 +275,6 @@ const contentBodyConfig = {
       const input = document.createElement('input')
       input.setAttribute('type', 'file');
       input.setAttribute('accept', 'image/*');
-
       input.addEventListener('change', (e) => {
         const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=1;
         const reader = new FileReader();
@@ -276,11 +293,9 @@ const contentBodyConfig = {
         });
         reader.readAsDataURL(file);
       });
-
       input.click();
     }
   },
-
 };
 
 /* Description config */
@@ -294,12 +309,43 @@ const contentDescConfig = {
   plugins: [ 'quickbars' ],
   quickbars_insert_toolbar: 'undo redo',
   quickbars_selection_toolbar: 'italic bold'
-  
 };
 
-document.addEventListener("DOMContentLoaded", function() {
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+document.addEventListener( "DOMContentLoaded", function() {
   tinymce.init( contentBodyConfig )
 	tinymce.init( contentDescConfig );
+
+  // Get the sticky element
+  const stickyElement = document.getElementById('blog-toolbar');
+  let toggleToolbarIcon = debounce( function( icon ) {
+    if( icon ){
+      stickyElement.classList.add('no-icon-label')
+    } else {
+      stickyElement.classList.remove('no-icon-label')
+    }
+  }, 100);
+
+  // Add a scroll event listener
+  window.addEventListener('scroll', () => {
+    // Get the current position of the sticky element
+    const currentPosition = ( stickyElement.getBoundingClientRect().top < 10 ) ?  toggleToolbarIcon( true ) :   toggleToolbarIcon( false );
+  });
+
 })
 </script>
 </#macro>
@@ -403,8 +449,72 @@ document.addEventListener( "DOMContentLoaded", function(){
     }
     </#if>
     </#if>
-  })
+    })
+
+    // Limite la saisie du Titre à 75 chars
+    const messageElement = document.querySelector("#div_content_label");
+    const characterCounterElement = document.querySelector("#messagecharcounter");
+    const typedCharElement = document.querySelector("#typedchar");
+    const maxChar = ${dskey('portal.site.site_property.portlet.title.maxlength')!75};
+    messageElement.addEventListener( "keydown", (e) => {
+      let typedChar = ( messageElement.textContent.length = undefined ? 0 : messageElement.textContent.length );
+      if ( typedChar >= maxChar ) { 
+        switch (e.keyCode) {
+          case 8:
+          case 33:
+          case 34:
+          case 35:
+          case 36:
+          case 37:
+          case 38:
+          case 39:
+          case 40:
+          case 46:
+          break;
+        default:
+          e.preventDefault()
+        }
+      }
+      typedCharElement.textContent = typedChar;
+      if (typedChar > maxChar - 1) {
+        characterCounterElement.classList = "charcounter text-danger";
+      } else if (typedChar < maxChar && typedChar > maxChar * (90 / 100)) {
+        characterCounterElement.classList = "charcounter text-warning";
+      } else if (typedChar < maxChar - ((maxChar * (10 / 100)) - 1)) {
+        characterCounterElement.classList = "charcounter text-normal";
+      }
+    });
+    /*
+    const btnToolbarToggle = document.getElementById('toolbar-collapse')
+    const btnToolbarToggleICon = btnToolbarToggle.querySelector('.ti')
+    const blogToolbar = document.getElementById('blog-toolbar')
+    const btnToolbarLabel = blogToolbar.querySelectorAll('.btn span')
+    const localToolbarPos = localStorage.getItem('lutece-blog-edit-toolbar-pos')
+    if( localToolbarPos != null && localToolbarPos === 'sidebar'  ){
+      blogToolbar.classList.toggle('toolbar-small')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-left')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-right')
+    } 
+    btnToolbarToggle.addEventListener( 'click', (e) => {
+      blogToolbar.classList.toggle('toolbar-small')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-left')
+      btnToolbarToggleICon.classList.toggle('ti-arrow-right')
+      if( localToolbarPos === 'sidebar' ){
+        localStorage.setItem('lutece-blog-edit-toolbar-pos','')
+      } else {
+        localStorage.setItem('lutece-blog-edit-toolbar-pos','sidebar')
+      }
+    });
+*/
 });
 </script>
 <script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
 </#macro>
+<#function getFileExtension fileName>
+  <#local lastDotIndex = fileName?last_index_of(".")>
+  <#if lastDotIndex != -1>
+    <#return fileName?substring(lastDotIndex + 1) > 
+  <#else>
+    <#return x > 
+  </#if>
+</#function>

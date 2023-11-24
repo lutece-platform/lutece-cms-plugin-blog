@@ -17,7 +17,7 @@
 	margin-bottom: 1rem;
 }
 
-#blog-toolbar.toolbar-small {
+/* #blog-toolbar.toolbar-small {
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -35,6 +35,11 @@
 }
 
 #blog-toolbar.toolbar-small .btn span{
+	display: none !important;
+} 
+*/
+
+#blog-toolbar.no-icon-label .btn span{
 	display: none !important;
 }
 
