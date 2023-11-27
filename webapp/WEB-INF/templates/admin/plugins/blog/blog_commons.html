@@ -160,11 +160,8 @@ const contentBodyConfig = {
     'table',
     'quickbars',
     'help',
-    'visualblocks',
-    'visualchars',
     'accordion',
     'fullscreen',
-    'template',
     'wordcount'
   ],
   menubar: false,
@@ -184,8 +181,8 @@ const contentBodyConfig = {
     {title: 'Nouvelle page', value: '_blank'},
     {title: 'Fenêtre Parent', value: '_parent'}
   ],
-  language: '${lang}',
-  document_base_url: '${webapp_url}',
+  language: '${lang!}',
+  document_base_url: '${webapp_url!}',
   // fullscreen_native: true,
   color_map: colorMap,
   branding: false,
@@ -200,21 +197,6 @@ const contentBodyConfig = {
   images_upload_handler: blog_image_upload_handler,
   image_caption: true,
   image_advtab: true,
-  style_formats: [
-    { title: 'Custom format', format: 'customformat' },
-    { title: 'Align left', format: 'alignleft' },
-    { title: 'Align center', format: 'aligncenter' },
-    { title: 'Align right', format: 'alignright' },
-    { title: 'Align full', format: 'alignfull' },
-    { title: 'Bold text', inline: 'strong' },
-    { title: 'Red text', inline: 'span', styles: { color: '#ff0000' } },
-    { title: 'Red header', block: 'h1', styles: { color: '#ff0000' } },
-    { title: 'Badge', inline: 'span', styles: { display: 'inline-block', border: '1px solid #2276d2', 'border-radius': '5px', padding: '2px 5px', margin: '0 2px', color: '#2276d2' } },
-    { title: 'Table row 1', selector: 'tr', classes: 'tablerow1' },
-    { title: 'Image formats' },
-    { title: 'Image Left', selector: 'img', styles: { 'float': 'left', 'margin': '0 10px 0 10px' } },
-    { title: 'Image Right', selector: 'img', styles: { 'float': 'right', 'margin': '0 0 10px 10px' } },
-  ],
   link_list: blogFileList(),
   image_list: blogImgList(),
   image_class_list: [
@@ -424,18 +406,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     btnAddFiles.addEventListener( 'click', event => {
       document.querySelector('#attachment').click();
     });
-
-    <#if blog??>
-    <#if !blog.docContent??>
-    const previewAtt = document.querySelector("#preview_attachment")
-    if ( previewAtt.style.display == 'none' ) {
-      previewAtt.style.display = '';
-    } else {
-      previewAtt.style.display = 'none';
-    }
-    </#if>
-    </#if>
-    })
+  })
 });
 </script>
 <script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
