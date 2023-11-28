@@ -4,16 +4,16 @@
 	<article class="col p-3">
 		<header>
 			<h2>${blog.contentLabel}</h2>
-			<figure class="float-left p-3">
 			<#if blog.docContent?? && blog.docContent?size!=0>
 				<#list blog.docContent as docContent >
 					<#if docContent.contentType.idContentType=1>
+					<figure class="float-left p-3">
 						<img src="servlet/plugins/blogs/file?id_file=${docContent.id!}" title="${blog.contentLabel}" alt="${blog.contentLabel}" style="width:150px" class="img-fluid">
 						<#break>
+					</figure>
 					</#if>
 				</#list>
 			</#if>
-			</figure>
 			<h3>${blog.description!}</h3> 
 		</header>
 		<div class="py-4 px-5">
