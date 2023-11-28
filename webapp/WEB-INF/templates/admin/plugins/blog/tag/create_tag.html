@@ -1,19 +1,17 @@
-<@row>
-	<@columns>
-		<@box>
-			<@boxHeader title='#i18n{blog.create_tag.title}' />
-			<@boxBody id='add_tag'>
-				<@tform name='create_tag' action='jsp/admin/plugins/blog/ManageTags.jsp'>
-					<@messages errors=errors />
-					<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' mandatory=true>
-						<@input type='text' name='name' value='' />
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' name='action_createTag' buttonIcon='check' title='#i18n{portal.admin.message.buttonValidate}' />
-						<@button type='submit' name='view_manageTags' buttonIcon='times' title='#i18n{portal.admin.message.buttonCancel}' color='secondary' cancel=true />
-					</@formGroup>
-				</@tform>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{blog.create_tag.title}' />
+		<@div id='add_tag'>
+			<@tform name='create_tag' action='jsp/admin/plugins/blog/ManageTags.jsp' boxed=true >
+				<@messages errors=errors />
+				<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' mandatory=true>
+					<@input type='text' name='name' value='' />
+				</@formGroup>
+				<@formGroup>
+					<@button type='submit' name='action_createTag' buttonIcon='check' title='#i18n{portal.admin.message.buttonValidate}' />
+					<@button type='submit' name='view_manageTags' buttonIcon='times' title='#i18n{portal.admin.message.buttonCancel}' color='secondary' cancel=true />
+				</@formGroup>
+			</@tform>
+		</@div>
+	</@pageColumn>
+</@pageContainer>
