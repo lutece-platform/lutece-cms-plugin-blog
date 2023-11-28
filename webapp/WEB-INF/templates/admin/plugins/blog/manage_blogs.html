@@ -46,10 +46,10 @@
 					<@formGroup labelFor='' formStyle='col' class='col-md-2 col-lg-1 d-flex align-items-center pt-4' labelKey='' rows=2 >
 						<@checkBox labelKey='#i18n{blog.manage_blogs.labelNotPublished}' name='unpublished' id='unpublished' value='false' checked=unpublished title='#i18n{blog.dashboard.PublishedStatus} / #i18n{blog.dashboard.UnPublishedStatus}' orientation='switch' />
 					</@formGroup>
-					<@formGroup rows=2 formStyle='col' class='col-md-2 col-lg-1 d-flex align-items-center justify-content-start pt-3'>
-						<@button type='submit' buttonIcon='search me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
+					<@formGroup rows=2 formStyle='col' class='col-md-2 col-lg-1 d-flex flex-lg-column align-items-center justify-content-center pt-3'>
+						<@button type='submit' class='mb-lg-1' buttonIcon='search me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
 						<@button type='submit' color='danger' buttonIcon='x me-1' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
-					</@formGroup>
+					</@formGroup>				
 				</@row>	
 				</@tform>
 			</@boxBody>
