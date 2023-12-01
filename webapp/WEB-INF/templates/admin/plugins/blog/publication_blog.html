@@ -112,11 +112,11 @@
 								<@listGroupItem class='d-flex justify-content-between vh-50' params='data-portlet="${portlet.code!}"'>
 									<@span class='searchable mx-2 pt-1'>${portlet.code!}</@span>
 									<@span class='searchable mx-2 pt-1 ps-2 w-50'>${portlet.name!}</@span>
-									<@icon style='user mt-2' /> 
-									<@span class='searchable mx-2 pt-1'>${blog.userCreator}</@span>
-									<@icon style='calendar mt-2' />
-									<@span class='searchable ms-2'>#i18n{blog.publication_blog.labelCreated} ${blog.creationDate?string.short} <br> #i18n{blog.publication_blog.labelUpdated} ${blog.updateDate?string.short}</@span>
-									<@button type='submit' class='d-none' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' title='#i18n{blog.publication_blog.buttonPublish}' />
+									<@btnGroup>
+										<@icon style='user mt-2' /> 
+										<@span class='searchable mx-2 pt-1'>${blog.userCreator}</@span>
+									</@btnGroup>
+									<@button type='submit' class='invisible' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' title='#i18n{blog.publication_blog.buttonPublish}' />
 								</@listGroupItem>
 							</#list>
 						</@listGroup>	
