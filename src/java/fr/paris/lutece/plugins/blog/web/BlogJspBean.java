@@ -40,6 +40,8 @@ import java.io.StringWriter;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -291,7 +293,7 @@ public class BlogJspBean extends ManageBlogJspBean
         // SORT
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
         String strAscSort;
-
+        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         AdminUser user = AdminUserService.getAdminUser( request );
         List<Integer> listBlogsId = new ArrayList<>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
@@ -342,11 +344,19 @@ public class BlogJspBean extends ManageBlogJspBean
             }
             if ( _dateUpdateBlogAfter != null )
             {
-                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+                try {
+                    filter.setUpdateDateAfter( isoDateFormat.parse(_dateUpdateBlogAfter)) ;
+                } catch (ParseException e) {
+                    AppLogService.error( "Bad Date Format for indexed item: " + e.getMessage( ) );
+                }
             }
             if ( _dateUpdateBlogBefor != null )
             {
-                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
+                try {
+                    filter.setUpdateDateBefor( isoDateFormat.parse( _dateUpdateBlogBefor ) ) ;
+                } catch ( ParseException e ) {
+                    AppLogService.error( "Bad Date Format for indexed item: " + e.getMessage( ) );
+                }
             }
 
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );

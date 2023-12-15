@@ -29,18 +29,12 @@
 					</@formGroup>
 					<@formGroup labelFor='dateUpdateBlogAfter' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'  rows=2 >
 						<@inputGroup>
-							<@input type='text' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
-							<@inputGroupItem>
-								<@icon style='calendar' />
-							</@inputGroupItem>
+							<@input type='html5date' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
 						</@inputGroup>
 					</@formGroup>
 					<@formGroup labelFor='dateUpdateBlogBefore' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2 >
 						<@inputGroup>
-							<@input type='text' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
-							<@inputGroupItem>
-								<@icon style='calendar' />
-							</@inputGroupItem>
+							<@input type='html5date' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
 						</@inputGroup>
 					</@formGroup>
 					<@formGroup labelFor='' formStyle='col' class='col-md-2 col-lg-1 d-flex align-items-center pt-4' labelKey='' rows=2 >
@@ -168,7 +162,6 @@
 		<@paginationAdmin paginator=paginator combo=1 />
 	</@pageColumn>
 </@pageContainer>
-<@getDateRange idField='dateUpdateBlogAfter' idEndField='dateUpdateBlogBefore' language=.lang format='' showFormat='' />
 <script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
 <link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
 <script>
