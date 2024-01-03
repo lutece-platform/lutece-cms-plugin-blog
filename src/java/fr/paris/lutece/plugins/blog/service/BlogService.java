@@ -308,6 +308,30 @@ public class BlogService
     }
 
     /**
+     * Returns an instance of a blog whose identifier and version is specified in parameter
+     *
+     * @param nIdDocument
+     *            The blog primary key
+     * @param nIdDocument
+     *            The blog primary key
+     * @return an instance of blog
+     */
+    public Blog loadBlogByVersion( int nIdDocument, int nVersion )
+
+    {
+        Blog blog = BlogHome.findVersion( nIdDocument, nVersion );
+        if ( blog != null )
+        {
+            List<DocContent> docContent = DocContentHome.getDocsContentByHtmlDoc( nIdDocument );
+            blog.setDocContent( docContent );
+            blog.setTag( TagHome.loadByDoc( nIdDocument ) );
+            blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nIdDocument ) );
+        }
+        return blog;
+
+    }
+
+    /**
      * Returns an instance of a blog without binairie file whose identifier is specified in parameter
      * 
      * @param nIdDocument

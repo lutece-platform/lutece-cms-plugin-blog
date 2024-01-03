@@ -31,9 +31,9 @@
 				<@td>${i18n("blog.history_blog.updatedBy")?cap_first}<em class="ms-1">${blog.updateDate}</em> #i18n{blog.manage_blogs.labelBy} <strong>${blog.user}</strong></@td>
 				<@td>${blog.editComment}</@td>
 				<@td>
-					<#-- TO FIX LUT-26613  https://dev.lutece.paris.fr/bugtracker/issues/26613 
+
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelPreview}' hideTitle=['all']  color='default' size='' buttonIcon='eye' /> 
-					-->
+
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' hideTitle=['all'] buttonIcon='arrow-back-up' size='' />
 					<#if blog.version != 1>
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' hideTitle=['all'] buttonIcon='git-fork' color='info' size='' />

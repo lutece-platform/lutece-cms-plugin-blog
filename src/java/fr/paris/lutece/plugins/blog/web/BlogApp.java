@@ -73,6 +73,7 @@ public class BlogApp extends MVCApplication
 
     // Parameters
     protected static final String PARAMETER_ID_BLOG = "id";
+    protected static final String PARAMETER_VERSION_BLOG = "version";
     protected static final String PARAMETER_ID_PORTLET = "portlet_id";
 
     protected static final String PARAMETER_VIEW = "view";
@@ -97,10 +98,18 @@ public class BlogApp extends MVCApplication
     @View( value = VIEW_DETAILS, defaultView = true )
     public XPage getBlogDetails( HttpServletRequest request )
     {
-
+        int nVersion = -1;
         List<BlogPublication> listBlogPub = new ArrayList<>( );
 
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+
+        String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
+        if ( strVersion != null )
+        {
+            nVersion = Integer.parseInt( strVersion );
+        }
+
+
         String idPortlet = request.getParameter( PARAMETER_ID_PORTLET );
         if ( idPortlet != null && !idPortlet.isEmpty( ) )
         {
@@ -123,7 +132,15 @@ public class BlogApp extends MVCApplication
 
         }
 
-        Blog blog = BlogService.getInstance( ).loadBlog( nId );
+        Blog blog;
+        if( nVersion > -1 )
+        {
+            blog = BlogService.getInstance( ).loadBlogByVersion( nId, nVersion );
+        }
+        else
+        {
+            blog = BlogService.getInstance( ).loadBlog( nId );
+        }
         Map<String, Object> model = getModel( );
         model.put( MARK_BLOG, blog );
         model.put( MARK_LIST_DOC, listBlogs );
