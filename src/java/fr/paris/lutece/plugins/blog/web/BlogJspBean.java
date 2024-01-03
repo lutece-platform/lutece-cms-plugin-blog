@@ -59,6 +59,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.ArrayUtils;
@@ -328,7 +329,7 @@ public class BlogJspBean extends ManageBlogJspBean
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
             {
-                filter.setKeywords( _strSearchText );
+                filter.setKeywords( BlogUtils.removeAccents( _strSearchText ) );
             }
             if ( !ArrayUtils.isEmpty( _strTag ) )
             {
