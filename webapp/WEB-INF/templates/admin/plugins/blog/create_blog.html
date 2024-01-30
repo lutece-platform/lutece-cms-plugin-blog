@@ -1,4 +1,14 @@
 <#include "blog_commons.html" />
+<#if blog.tag?? && blog.tag?size &gt; 0>
+<#assign blogTagSize=blog.tag?size />
+<#else>
+<#assign blogTagSize=0 />
+</#if>
+<#if number_mandatory_tags-1 &gt; blogTagSize>
+<#assign notEnoughtTags=true />
+<#else>
+<#assign notEnoughtTags=false />
+</#if>
 <@messages errors=errors />
 <@tform name='create_blog' class='position-relative'  id='form-editor' enctype='multipart/form-data' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
   <@input type='hidden' id='id' name='id' value='0' />
@@ -7,15 +17,28 @@
   <@row id='blog-toolbar-wrapper'>
     <@columns>
       <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>
-          <@button class='me-1' color='default' size='sm' buttonIcon='arrow-right' title='#i18n{portal.util.labelModify}' value='' id='toolbar-collapse' hideTitle=['all'] />
-          <@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.create_blog.labelCreate}' id='action_createBlog' name='action_createBlog' hideTitle=['xs','sm'] />
-          <@offcanvas id='blog-properties' title='#i18n{blog.create_blog.labelProperties}' btnTitle='#i18n{blog.create_blog.labelProperties}' position='end' btnIcon='cog me-2' btnClass='me-1' >
+<#if notEnoughtTags>
+<@alert id='notEnoughtTagsAlert' color='warning'>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}  </@alert>
+<@button class='me-1' color='default' size='sm' buttonIcon='arrow-right' title='#i18n{portal.util.labelModify}' value='' id='toolbar-collapse' hideTitle=['all'] disabled=true />
+<@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.create_blog.labelCreate}' id='action_createBlog' name='action_createBlog' hideTitle=['xs','sm'] disabled=true />
+<#else>
+<div id='notEnoughtTagsAlert'  style="display: none" >${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}  </div>
+<@button class='me-1' color='default' size='sm' buttonIcon='arrow-right' title='#i18n{portal.util.labelModify}' value='' id='toolbar-collapse' hideTitle=['all'] />
+<@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.create_blog.labelCreate}' id='action_createBlog' name='action_createBlog' hideTitle=['xs','sm'] />
+</#if>
+<@offcanvas id='blog-properties' title='#i18n{blog.create_blog.labelProperties}' btnTitle='#i18n{blog.create_blog.labelProperties}' position='end' btnIcon='cog me-2' btnClass='me-1' >
+
             <@box>
               <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
                 <@icon style='tags' />
               </@boxHeader>
               <@boxBody>
-                <@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
+<#if number_mandatory_tags &gt; 0 && blogTagSize &gt; number_mandatory_tags-1>
+<@alert id='enoughtTagsInfo'  color='info'>#i18n{blog.mandatoryTags.minimum.number}: ${number_mandatory_tags}</@alert>
+<#elseif number_mandatory_tags &gt; 0 && number_mandatory_tags-1 &gt; blogTagSize>
+<@alert id='enoughtTagsInfo' color='warning'>#i18n{blog.mandatoryTags.minimum.number}: ${number_mandatory_tags}</@alert>
+</#if>
+<@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
                   <@inputGroup>
                     <@select name='tag_doc' default_value='' items=list_tag size='' />
                     <@inputGroupItem type='btn'>
