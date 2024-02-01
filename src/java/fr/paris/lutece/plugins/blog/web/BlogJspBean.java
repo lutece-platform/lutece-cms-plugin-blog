@@ -196,6 +196,7 @@ public class BlogJspBean extends ManageBlogJspBean
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_BLOG = "blog.message.confirmRemoveBlog";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
+    private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
 
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "blog.model.entity.blog.attribute.";
@@ -221,12 +222,19 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_UPDATE_PRIORITY_FILE_CONTENT = "updatePriorityContent";
     private static final String ACTION_UPDATE_CONTENT_TYPE = "updateContentType";
     private static final String ACTION_DUPLICATE_BLOG = "duplicateBlog";
+    private static final String ACTION_REMOVE_HISTORY_BLOG = "removeHistoryBlog";
+    private static final String ACTION_CONFIRM_REMOVE_HISTORY_BLOG = "confirmRemoveHistoryBlog";
 
     // Infos
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
     private static final String INFO_BLOG_UPDATED = "blog.info.blog.updated";
     private static final String INFO_BLOG_REMOVED = "blog.info.blog.removed";
     private static final String BLOG_LOCKED = "blog.message.blogLocked";
+    private static final String INFO_HISTORY_BLOG_REMOVED = "blog.info.history.blog.removed";
+
+    // Errors
+    private static final String ERROR_HISTORY_BLOG_CANT_REMOVE_ORIGINAL = "blog.error.history.blog.cantRemoveOriginal";
+    private static final String ERROR_HISTORY_BLOG_NOT_REMOVED = "blog.error.history.blog.notRemoved";
 
     // Filter Marks
     protected static final String MARK_BLOG_FILTER_LIST = "blog_filter_list";
@@ -445,6 +453,109 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_ID_BLOG, nId );
 
         return getPage( PROPERTY_PAGE_TITLE_HISTORY_BLOG, TEMPLATE_HISTORY_BLOG, model );
+    }
+
+    /**
+     * Manages the removal of a blog's version from its history
+     *
+     * @param request
+     *            The Http request
+     * @return the html code for the removal's confirmation page
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_CONFIRM_REMOVE_HISTORY_BLOG )
+    public String getconfirmRemoveHistoryBlog( HttpServletRequest request ) throws AccessDeniedException
+    {
+        String strId = request.getParameter( PARAMETER_ID_BLOG );
+        int nId = Integer.parseInt( strId );
+        String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
+
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( UNAUTHORIZED );
+        }
+
+        UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_HISTORY_BLOG ) );
+        url.addParameter( PARAMETER_ID_BLOG, nId );
+        url.addParameter( PARAMETER_VERSION_BLOG, strVersion );
+
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+
+        return redirect( request, strMessageUrl );
+    }
+
+    /**
+     * Handles the removal of a blog's version
+     *
+     * @param request
+     *            The Http request
+     * @return the jsp URL to display the page to manage the blog's versions
+     */
+    @Action( ACTION_REMOVE_HISTORY_BLOG )
+    public String doRemoveHistoryBlog( HttpServletRequest request )
+    {
+        String strBlogId = request.getParameter( PARAMETER_ID_BLOG );
+        int nBlogId = Integer.parseInt( strBlogId );
+        String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
+        int nVersion = -1;
+
+        // Make sure the version number is valid, and that the original version ( 1 ) is not being removed somehow
+        if ( StringUtils.isNumeric( strVersion ) )
+        {
+            nVersion = Integer.parseInt( strVersion );
+            if ( nVersion == 1 )
+            {
+                // If a request to delete the original version was made, redirect the user and display an error message
+                addError( ERROR_HISTORY_BLOG_CANT_REMOVE_ORIGINAL, getLocale( ) );
+                return redirect( request, VIEW_HISTORY_BLOG, PARAMETER_ID_BLOG, nBlogId );
+            }
+        }
+        else
+        {
+            // In case the version number is not valid
+            addError( ERROR_HISTORY_BLOG_NOT_REMOVED, getLocale( ) );
+            AppLogService.error( "Plugin Blog: Can't delete invalid version {} for blog ID {}", strVersion, strBlogId );
+            return redirect( request, VIEW_HISTORY_BLOG, PARAMETER_ID_BLOG, nBlogId );
+        }
+
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strBlogId, Blog.PERMISSION_DELETE, (User) getUser( ) ) )
+        {
+            Blog blog = BlogService.getInstance( ).loadBlog( nBlogId );
+
+            // Check if the blog's current version is the one being removed
+            if ( blog.getVersion( ) == nVersion )
+            {
+                // Check if this blog is being modified by another user
+                if ( checkLockBlog( nBlogId, request.getSession( ).getId( ) ) )
+                {
+                    // Inform the user that the blog is locked by another user and redirect to the blog's history view
+                    UrlItem url = new UrlItem( getViewFullUrl( VIEW_HISTORY_BLOG ) );
+                    url.addParameter( PARAMETER_ID_BLOG, nBlogId );
+                    String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+                    return redirect( request, strMessageUrl );
+                }
+                // Check if this blog is currently published
+                List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nBlogId );
+                if ( CollectionUtils.isNotEmpty( docPublication ) )
+                {
+                    // Inform the user that the blog is currently published and redirect to the blog's history view
+                    UrlItem url = new UrlItem( getViewFullUrl( VIEW_HISTORY_BLOG ) );
+                    url.addParameter( PARAMETER_ID_BLOG, nBlogId );
+                    String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, url.getUrl( ),
+                            AdminMessage.TYPE_STOP );
+                    return redirect( request, strMessageUrl );
+                }
+                // Delete the current version of the blog and revert to its previous version
+                BlogService.getInstance( ).revertBlogToPreviousVersion( blog );
+            }
+            else
+            {
+                // Delete an older version of the blog
+                BlogService.getInstance( ).deleteBlogVersion( nBlogId, nVersion );
+            }
+            addInfo( INFO_HISTORY_BLOG_REMOVED, getLocale( ) );
+        }
+        return redirect( request, VIEW_HISTORY_BLOG, PARAMETER_ID_BLOG, nBlogId );
     }
 
     /**

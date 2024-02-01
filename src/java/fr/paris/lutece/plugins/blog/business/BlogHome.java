@@ -121,6 +121,19 @@ public final class BlogHome
     }
 
     /**
+     * Remove a specific version from a blog
+     * 
+     * @param nIdBlog
+     *            The id of the blog to modify
+     * @param nIdVersion
+     *            The value of the version to remove
+     */
+    public static void removeSpecificVersion( int nIdBlog, int nVersion )
+    {
+        _dao.deleteSpecificVersion( nIdBlog, nVersion, _plugin );
+    }
+
+    /**
      * Returns an instance of a blog whose identifier is specified in parameter
      * 
      * @param nKey
@@ -178,6 +191,20 @@ public final class BlogHome
     public static List<Blog> getLastModifiedBlogsList( int nLimit )
     {
         return _dao.selectlastModifiedBlogsList( _plugin, nLimit );
+    }
+
+    /**
+     * Load the data of nLimit last versions of a specific blog and returns them as a list
+     * 
+     * @param nId
+     *            The blog's primary key
+     * @param nLimit
+     *            Maximum amount of Blog Object versions to return
+     * @return The list which contains the data of nLimit last versions of the blog
+     */
+    public static List<Blog> getLastBlogVersionsList( int nId, int nLimit )
+    {
+        return _dao.selectLastBlogVersionsList( nId, nLimit, _plugin );
     }
 
     /**
