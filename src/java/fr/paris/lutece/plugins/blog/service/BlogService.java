@@ -36,6 +36,8 @@ package fr.paris.lutece.plugins.blog.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogFilter;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
@@ -120,6 +122,70 @@ public class BlogService
             throw new AppException( e.getMessage( ), e );
         }
         BlogSearchService.getInstance( ).addIndexerAction( nId, IndexerAction.TASK_DELETE );
+    }
+
+    /**
+     * Delete the specified version from a blog's history
+     * 
+     * @param nIdBlog
+     *            The ID of the blog to process
+     * @param nIdVersion
+     *            The value of the version to delete
+     */
+    public void deleteBlogVersion( int nIdBlog, int nVersion )
+    {
+        BlogHome.removeSpecificVersion( nIdBlog, nVersion );
+    }
+
+    /**
+     * Revert the content of a blog to its previous version's content, and delete the one currently used (no new version is created)
+     * 
+     * @param blog
+     *            The Blog Object that will be processed
+     */
+    public void revertBlogToPreviousVersion( Blog blog )
+    {
+        // Get the last 2 versions of the blog (the current and the previous one)
+        List<Blog> blogVersionsList = getLastBlogVersionsList( blog.getId( ), 2 );
+
+        // Make sure there is a version to revert to
+        if ( CollectionUtils.isNotEmpty( blogVersionsList ) && blogVersionsList.size( ) > 1 )
+        {
+            TransactionManager.beginTransaction( BlogPlugin.getPlugin( ) );
+
+            try
+            {
+                // Get the content of the previous blog version
+                Blog previousBlogVersion = blogVersionsList.get( 1 );
+
+                // Update the content of the blog with the content of its previous version
+                BlogHome.update( previousBlogVersion );
+
+                // Delete the current blog's version
+                BlogHome.removeSpecificVersion( blog.getId( ), blog.getVersion( ) );
+
+                TransactionManager.commitTransaction( BlogPlugin.getPlugin( ) );
+            }
+            catch( Exception e )
+            {
+                TransactionManager.rollBack( BlogPlugin.getPlugin( ) );
+                throw new AppException( e.getMessage( ), e );
+            }
+        }
+    }
+
+    /**
+     * Retrieve the last nLimit versions of a specific blog and returns them as a list
+     * 
+     * @param nIdBlog
+     *            The ID of the blog to process
+     * @param nLimit
+     *            Maximum amount of Blog Object versions to return
+     * @return The list which contains the data of nLimit last modified Blog objects
+     */
+    public List<Blog> getLastBlogVersionsList( int nIdBlog, int nLimit )
+    {
+        return BlogHome.getLastBlogVersionsList( nIdBlog, nLimit );
     }
 
     /**
