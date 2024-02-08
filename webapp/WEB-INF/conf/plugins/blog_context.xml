@@ -15,6 +15,7 @@
     <bean id="blog.blogPublicationDAO" class="fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationDAO" />
     <bean id="blog.blogExtendableResourceService" class="fr.paris.lutece.plugins.blog.service.resource.BlogExtendableResourceService" />
     <bean id="blog.blogResourceRssConfigDAO"  class="fr.paris.lutece.plugins.blog.business.rss.BlogResourceRssConfigDAO" />
+    <bean id="blog.blogAdminDashboardDAO"  class="fr.paris.lutece.plugins.blog.business.BlogAdminDashboardDAO" />
 	 
     <!-- RSS -->
     <bean id="blog.resourceRssTypeForm" class="fr.paris.lutece.portal.business.rss.ResourceRssType" >
