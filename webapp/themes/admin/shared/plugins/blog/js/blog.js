@@ -36,7 +36,22 @@ async function doAddTag( idTag, tgName, blogId ) {
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
 				setListTag(  idTag, tgName, blogId  )
-		  	}
+				numberOfTagsAssigned++;
+				if( numberOfTagsAssigned >= number_mandatory_tags ) {
+					if( document.getElementById('action_modifyblog') != null ){
+                    document.getElementById('action_modifyblog').disabled = false;
+					document.getElementById('apply_modifyblog').disabled = false;
+					}
+					if( document.getElementById('action_createBlog') != null ){
+					document.getElementById('action_createBlog').disabled = false;
+					document.getElementById('toolbar-collapse').disabled = false;
+					}
+					document.getElementById('notEnoughtTagsAlert').className = 'hidden';
+					document.getElementById('notEnoughtTagsAlert').style.display = 'none';
+					document.getElementById('enoughtTagsInfo').classList.remove('alert-warning');
+					document.getElementById('enoughtTagsInfo').classList.add('alert-info');
+				}
+           		  	}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagNotSet )	
 	  }
@@ -54,6 +69,21 @@ async function doDeleteTag( idTag, tgName, blogId ){
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
 				document.querySelector( `#tag_${idTag}`).remove();
+				numberOfTagsAssigned--;
+				if( number_mandatory_tags > numberOfTagsAssigned ) {
+					if( document.getElementById('action_modifyblog') != null ){
+						document.getElementById('action_modifyblog').disabled = true;
+					document.getElementById('apply_modifyblog').disabled = true;
+					}
+					if( document.getElementById('action_createBlog') != null ){
+						document.getElementById('action_createBlog').disabled = true;
+					document.getElementById('toolbar-collapse').disabled = true;
+					}
+					document.getElementById('notEnoughtTagsAlert').className = 'alert alert-warning d-flex align-items-center';
+					document.getElementById('notEnoughtTagsAlert').style.display = 'block';
+					document.getElementById('enoughtTagsInfo').classList.remove('alert-info');
+					document.getElementById('enoughtTagsInfo').classList.add('alert-warning');
+				}
 			}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagDeletion )	
