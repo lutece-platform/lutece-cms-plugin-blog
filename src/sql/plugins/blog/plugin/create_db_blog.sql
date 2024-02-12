@@ -158,7 +158,7 @@ CREATE TABLE blog_list_portlet_htmldocs (
 	id_portlet int NOT NULL,
 	id_blog int NOT NULL,
     date_begin_publishing timestamp default CURRENT_TIMESTAMP NOT NULL,
-	date_end_publishing timestamp default  '2050-01-01 11:59:59' NOT NULL,
+    date_end_publishing date default '2030-01-01' NOT NULL,
 	status int default 0 NOT NULL,
 	document_order int default NULL,
 
@@ -184,5 +184,6 @@ CREATE TABLE blog_rss_cf (
 DROP TABLE IF EXISTS blog_admin_dashboard;
 CREATE TABLE blog_admin_dashboard (
     id_dashboard int NOT NULL,
-    number_mandatory_tags int default 0 NOT NULL
+    number_mandatory_tags int default 0 NOT NULL,
+    maximum_publication_date date default '2050-01-01' NOT NULL
     );
