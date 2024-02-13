@@ -15,6 +15,7 @@ public class BlogAdminDashboardComponent extends AdminDashboardComponent
         private static final String MARK_NUMBER_MANDATORY_TAGS = "number_mandatory_tags";
         private static final String TEMPLATE_MANDATORY_TAGS = "admin/plugins/blog/dashboard/modify_mandatory_blog_tags.html";
         private static final String TEMPLATE_MANAGE_MAX_PUBLICATION_DATE = "admin/plugins/blog/dashboard/manage_maximum_publication_date.html";
+        private static final String TEMPLATE_MANAGE_EDITOR_CONFIG = "admin/plugins/blog/dashboard/manage_editor_config.html";
         private static final String PARAMETER_MAX_PUBLICATION_DATE_VALUE = "maxPublicationDate";
         // tab
         private static final String PARAMETER_TAB = "tab";
@@ -35,8 +36,12 @@ public class BlogAdminDashboardComponent extends AdminDashboardComponent
             HtmlTemplate template2 = AppTemplateService.getTemplate( TEMPLATE_MANAGE_MAX_PUBLICATION_DATE, user.getLocale( ), model );
             strTemplate += template2.getHtml( );
 
+            HtmlTemplate template3 = AppTemplateService.getTemplate( TEMPLATE_MANAGE_EDITOR_CONFIG, user.getLocale( ) );
+            strTemplate += template3.getHtml( );
 
 
-              return strTemplate;
+
+
+            return strTemplate;
         }
 }
