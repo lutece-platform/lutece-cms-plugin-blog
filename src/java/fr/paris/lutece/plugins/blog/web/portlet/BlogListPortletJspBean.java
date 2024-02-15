@@ -42,13 +42,15 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.ArrayUtils;
-
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
+import fr.paris.lutece.plugins.blog.business.BlogSerializable;
 import fr.paris.lutece.plugins.blog.business.TagHome;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
@@ -166,47 +168,7 @@ public class BlogListPortletJspBean extends PortletJspBean
      */
     protected Map<String, Object> getPaginatedListModel( HttpServletRequest request )
     {
-
-        List<Integer> listBlogsId = new ArrayList<>( );
-        AdminUser user = AdminUserService.getAdminUser( request );
-
-        if ( StringUtils.isNotBlank( _strSearchText ) || ArrayUtils.isNotEmpty( _strTag ) || _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null
-                || _dateUpdateBlogBefor != null )
-        {
-            BlogSearchFilter filter = new BlogSearchFilter( );
-            if ( StringUtils.isNotBlank( _strSearchText ) )
-            {
-                filter.setKeywords( _strSearchText );
-            }
-            if ( ArrayUtils.isNotEmpty( _strTag ) )
-            {
-                filter.setTag( _strTag );
-            }
-            if ( _bIsChecked )
-            {
-                filter.setUser( user.getAccessCode( ) );
-            }
-            if ( _bIsUnpulished )
-            {
-                filter.setIsUnpulished( _bIsUnpulished );
-            }
-            if ( _dateUpdateBlogAfter != null )
-            {
-                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
-            }
-            if ( _dateUpdateBlogBefor != null )
-            {
-                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
-            }
-
-            BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
-
-        }
-        else
-        {
-
-            listBlogsId = BlogHome.getIdBlogsList( );
-        }
+        List<Integer> listBlogsId = filterBlogIds( request );
 
         _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
         _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nDefaultItemsPerPage, _nItemsPerPage );
@@ -256,7 +218,60 @@ public class BlogListPortletJspBean extends PortletJspBean
     }
 
     /**
-     * 
+     * Get the list of filtered blog ids.
+     *
+     * @param request
+     * @return list of blog id.
+     */
+    private List<Integer> filterBlogIds( HttpServletRequest request )
+    {
+        List<Integer> listBlogsId = new ArrayList<>( );
+        AdminUser user = AdminUserService.getAdminUser( request );
+
+        if ( StringUtils.isNotBlank( _strSearchText ) || ArrayUtils.isNotEmpty(
+                _strTag ) || _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
+        {
+            BlogSearchFilter filter = new BlogSearchFilter( );
+            if ( StringUtils.isNotBlank( _strSearchText ) )
+            {
+                filter.setKeywords( _strSearchText );
+            }
+            if ( ArrayUtils.isNotEmpty( _strTag ) )
+            {
+                filter.setTag( _strTag );
+            }
+            if ( _bIsChecked )
+            {
+                filter.setUser( user.getAccessCode( ) );
+            }
+            if ( _bIsUnpulished )
+            {
+                filter.setIsUnpulished( _bIsUnpulished );
+            }
+            if ( _dateUpdateBlogAfter != null )
+            {
+                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+            }
+            if ( _dateUpdateBlogBefor != null )
+            {
+                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
+            }
+
+            BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
+
+        }
+        else
+        {
+
+            listBlogsId = BlogHome.getIdBlogsList( );
+        }
+
+        return listBlogsId;
+    }
+
+
+    /**
+     *
      * @param request
      */
     private void setSearchBlog( HttpServletRequest request, String strButtonSearch, String strButtonReset )
@@ -285,6 +300,38 @@ public class BlogListPortletJspBean extends PortletJspBean
                 _dateUpdateBlogBefor = null;
 
             }
+    }
+
+    public String getSearch( HttpServletRequest request )
+    {
+        Map<String, Object> data = new HashMap<>( );
+        String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
+        String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
+        setSearchBlog( request, strButtonSearch, strButtonReset );
+
+        List<Integer> listBlogsId = filterBlogIds( request );
+
+        List<BlogSerializable> listBlogNotPublished = new ArrayList<>( );
+
+        for ( BlogPublication i : _portlet.getArrayBlogs( ) )
+        {
+            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( i.getIdBlog( ) );
+            listBlogsId.removeIf( blg -> blg.equals( blog.getId( ) ) );
+        }
+        LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( listBlogsId, _nItemsPerPage, getCurrentUrlFromRequest( request ),
+                AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
+
+        for ( Integer documentId : paginator.getPageItems( ) )
+        {
+            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( documentId );
+            if ( blog != null )
+            {
+                listBlogNotPublished.add( new BlogSerializable( blog.getId( ), blog.getContentLabel( ) ) );
+            }
+        }
+        data.put( MARK_LIST_HTMLDOC, listBlogNotPublished );
+        JsonResponse json = new JsonResponse( data );
+        return JsonUtil.buildJsonResponse( json );
     }
 
     /**
@@ -469,7 +516,7 @@ public class BlogListPortletJspBean extends PortletJspBean
 
     /**
      * Update blog portlet
-     * 
+     *
      * @param request
      * @return Json The Json succes or echec
      * @throws ParseException
@@ -510,7 +557,7 @@ public class BlogListPortletJspBean extends PortletJspBean
     }
 
     /**
-     * 
+     *
      * @param request
      * @return
      */
