@@ -298,6 +298,7 @@ public class BlogJspBean extends ManageBlogJspBean
         List<Integer> listBlogsId = new ArrayList<>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
+        _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
 
         if ( strButtonSearch != null )
         {
@@ -305,7 +306,6 @@ public class BlogJspBean extends ManageBlogJspBean
             _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
             _strTag = request.getParameterValues( PARAMETER_TAG );
-            _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
             _dateUpdateBlogAfter = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
             _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
 
