@@ -60,6 +60,7 @@
 						<@th>#i18n{blog.create_blog.TagsTitle}</@th>
 						<@th>#i18n{blog.publication_blog.labelPublication}</@th>
 						<@th>#i18n{portal.util.labelActions}</@th>
+						<@th>#i18n{blog.manage_blogs.labelContributors}</@th>
 					</@tr>
 					<@tableHeadBodySeparator />
 						<#list blog_list as blog>
@@ -153,7 +154,16 @@
 								</#if>
 								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default ms-1' size='' class='btn-preview'  />
 							</@td>
-						</@tr>
+                         <@td class='w-12'>
+                            <#list list_blog_contributors as blogId, contributorList>
+                               <#if blogId == blog.id>
+                                   <#list contributorList as contributorName>
+                                     ${contributorName}
+                                  </#list>
+                               </#if>
+                            </#list>
+                         </@td>
+                      </@tr>
 						<#assign idx=idx + 1/>
 					</#list>
 				</@table>
