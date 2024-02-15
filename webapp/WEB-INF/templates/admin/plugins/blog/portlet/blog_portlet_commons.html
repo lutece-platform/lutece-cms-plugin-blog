@@ -11,8 +11,8 @@
             <@input id='search_text' name='search_text' value=search_text!'' />
             <@inputGroupItem type='btn'>
               <@btnGroup>
-                <@button type='submit' class='btn-target' buttonIcon='search me-1' name='button_search' title='#i18n{blog.manage_blogs.search}' />
-                <@button type='submit' class='btn-target' buttonIcon='refresh me-1'  color='secondary' name='button_reset' title='#i18n{blog.manage_blogs.reset}' />
+                <@button type='button' id='search-listPortlet' class='btn-target' buttonIcon='search me-1' name='button_search' title='#i18n{blog.manage_blogs.search}' />
+                <@button type='button' id='reset-listPortlet' class='btn-target' buttonIcon='refresh me-1'  color='secondary' name='button_reset' title='#i18n{blog.manage_blogs.reset}' />
               </@btnGroup>
             </@inputGroupItem>
           </@inputGroup>
@@ -75,7 +75,7 @@
                   <#list [ "10" , "20" , "50" , "100" ] as nb><@option value=nb?string label=nb?string selected=nb_items_per_page=nb /></#list>
                 </@select>
                 <@inputGroupItem type=''>
-                  <@button type='submit' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' class='btn-target' name='refresh' value='refresh' hideTitle=['all']/>
+                  <@button type='button' id='refresh-listPortlet' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' class='btn-target' name='refresh' value='refresh' hideTitle=['all']/>
                 </@inputGroupItem>
               </@inputGroup>
             </@formGroup>
@@ -133,10 +133,6 @@ import {
 
 const baseUrl = document.getElementsByTagName('base')[0].href;
 
-function changeformtarget() {
-  document.getElementById('form-portlet').target = '';
-  this.form.elements["portlet_name"].required = false;
-}
 
 function moveItem( sourceList, targetList ) {
       const selectedItem = sourceList.querySelector(':hover');
@@ -173,12 +169,6 @@ document.addEventListener( "DOMContentLoaded", function(){
       }
       doDeleteDocument( postId );
   }))
-  
-  btnTarget.forEach( ( btn ) => {
-    btn.addEventListener( 'click',  (e) => {
-      changeformtarget() 
-    })
-  })
 
   advSearch.classList.toggle('visually-hidden')
   
@@ -194,6 +184,34 @@ document.addEventListener( "DOMContentLoaded", function(){
       btn.setAttribute("aria-expanded", "true");
     }
   })
+
+  const search = document.getElementById('search-listPortlet');
+  const reset = document.getElementById('reset-listPortlet');
+  const refresh = document.getElementById('refresh-listPortlet');
+
+  const searchText = document.getElementById('search_text');
+  const itemPerPage = document.getElementById('items_per_page');
+
+
+
+  search.addEventListener( 'click',  (e) => {
+    doUpdateBlogList(baseUrl, searchText.value, itemPerPage.value).then( (data) =>  updateBlogListDraggable( data ) );
+  });
+
+  refresh.addEventListener( 'click',  (e) => {
+    doUpdateBlogList(baseUrl, searchText.value, itemPerPage.value).then( (data) =>  updateBlogListDraggable( data ) );
+  });
+
+  reset.addEventListener( 'click',  (e) => {
+    document.getElementById('search_text').value = null;
+    document.getElementById('tag_doc').value = null;
+    document.getElementById('dateUpdateBlogAfter').value = null;
+    document.getElementById('dateUpdateBlogBefore').value = null;
+
+    doUpdateBlogList(baseUrl, "", itemPerPage.value).then((data) =>  updateBlogListDraggable( data ) );
+  });
+
+
   
   new SlimSelect({
     select: '#tag_doc',
@@ -241,6 +259,13 @@ document.addEventListener( "DOMContentLoaded", function(){
     })
   })
 */
+  setBlogListDraggable( );
+});
+
+function setBlogListDraggable( ){
+  const docAvailable = document.querySelector("#doc-available");
+  const docPublished = document.querySelector("#doc-published");
+
   const containers = document.querySelectorAll('#blog-portlet .list-group');
   const draggables = Array.from(containers).flatMap(container => [...container.children]);
   const AdminHomeDraggable = new LuteceDraggable( draggables, containers );
@@ -270,7 +295,44 @@ document.addEventListener( "DOMContentLoaded", function(){
       }
     }
   });
-});
+}
+
+function updateBlogListDraggable( blogList ) {
+  const docAvailable = document.querySelector("#doc-available");
+  const docPublished = document.querySelector("#doc-published");
+
+  const containers = document.querySelectorAll('#blog-portlet .list-group' );
+  const draggables = Array.from(docPublished.children).concat( blogList );
+
+  const AdminHomeDraggable = new LuteceDraggable( draggables, containers );
+
+  AdminHomeDraggable.on('dragover', (event) => {
+    docPublished.classList.add('bg-gray');
+  });
+
+  AdminHomeDraggable.on('dragged', (event) => {
+    event.preventDefault();
+
+    const itemId = event.target.id;
+    const droppedItem = document.getElementById( itemId );
+    const parentItem = droppedItem.parentElement.id;
+
+    const itemIndex = Array.from( docPublished.children ).indexOf( droppedItem );
+
+    if( itemIndex >= 0 ){
+      if( docPublished.childElementCount === 1 ){
+        docPublished.classList.remove( 'no-blog' );
+      }
+      doAddDocument( itemId, itemIndex );
+    } else {
+      doDeleteDocument( itemId )
+      if( docPublished.childElementCount === 0 ){
+        docPublished.classList.add( 'no-blog' );
+      }
+    }
+  });
+};
+
 
 async function doAddDocument( idDocument, orderDocument ){
   await fetch(`<#noparse>${baseUrl}jsp/admin/plugins/blog/DoAddDocument.jsp?idDocument=${idDocument}&orderDocument=${orderDocument}&action=add</#noparse>`)
@@ -282,4 +344,6 @@ async function doDeleteDocument(idDocument) {
 
 
 </script>
+<script src="themes/admin/shared/plugins/blog/js/blogPortlet.js"></script>
+
 </#macro>
