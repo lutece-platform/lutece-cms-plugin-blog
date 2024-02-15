@@ -249,6 +249,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_DATE_UPDATE_BLOG_AFTER = "dateUpdateBlogAfter";
     protected static final String MARK_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
     protected static final String MARK_UNPUBLISHED = "unpublished";
+    protected static final String MARK_LIST_BLOG_CONTRIBUTORS = "list_blog_contributors";
 
     public static final String CONSTANT_DUPLICATE_BLOG_NAME = "Copie de ";
 
@@ -371,20 +372,22 @@ public class BlogJspBean extends ManageBlogJspBean
                 AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
 
         List<Blog> listDocuments = new ArrayList<>( );
-
+        HashMap<Integer, List<String>> mapContributors = new HashMap<>( );
         for ( Integer documentId : paginator.getPageItems( ) )
         {
             Blog document = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( documentId );
 
             if ( document != null )
             {
-                if ( _mapLockBlog.containsKey( document.getId( ) )
-                        && !_mapLockBlog.get( document.getId( ) ).getSessionId( ).equals( request.getSession( ).getId( ) ) )
+                if ( _mapLockBlog.containsKey( document.getId( ) ) && !_mapLockBlog.get( document.getId( ) ).getSessionId( )
+                        .equals( request.getSession( ).getId( ) ) )
                 {
 
                     document.setLocked( true );
                 }
                 listDocuments.add( document );
+                List<String> listContributors = BlogHome.getUsersEditedBlogVersions( document.getId( ) );
+                mapContributors.put( document.getId( ), listContributors );
             }
         }
 
@@ -431,7 +434,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
         model.put( MARK_UNPUBLISHED, _bIsUnpulished );
-
+        model.put( MARK_LIST_BLOG_CONTRIBUTORS, mapContributors );
         model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
@@ -1225,7 +1228,7 @@ public class BlogJspBean extends ManageBlogJspBean
         String partAfterFirstDelimiter = firstParts [0];
         String [ ] secondParts = partAfterFirstDelimiter.split( secondDelimiter );
         // Le mimeType
-        String mimeType = secondParts [1];
+        String mimeType = secondParts[1];
         // Le fichier en base64
         String base64FileString = StringUtils.EMPTY;
         // Gestion des fichiers vides
