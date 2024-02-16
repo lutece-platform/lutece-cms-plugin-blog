@@ -41,15 +41,26 @@
  */
 package fr.paris.lutece.plugins.blog.utils;
 
-import fr.paris.lutece.plugins.blog.service.BlogPlugin;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
-
 import java.text.Normalizer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+
+import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
+import fr.paris.lutece.plugins.blog.service.BlogPlugin;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.util.date.DateUtil;
+import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * Utility class for announce plugin
@@ -61,6 +72,12 @@ public final class BlogUtils
     public static final String CONSTANT_AND = " AND ";
     public static final int CONSTANT_ID_NULL = -1;
     public static final String CONSTANT_TYPE_RESOURCE = "BLOG_DOCUMENT";
+    public static final String CONSTANT_PARAMETER_BLOG = "blog";
+    public static final String CONSTANT_PARAMETER_ID = "id";
+    public static final String CONSTANT_LINK_TARGET_NEW_WINDOW = "_blank";
+
+    // Templates
+    public static final String TEMPLATE_INSERT_BLOG_LINK = "admin/plugins/blog/insertservice/insert_blog_link.html";
 
     /**
      * Private default constructor
@@ -128,6 +145,90 @@ public final class BlogUtils
         response.setHeader( "Pragma", "public" );
         response.setHeader( "Expires", "0" );
         response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+    }
+
+    /**
+     * Create a Blog search filter with specific values. The unnecessary parameters can be replaced by null values
+     * 
+     * @param searchKeyword
+     *            Keywords to search for in the blog posts
+     * @param searchTagsArray
+     *            Specific tags to search for
+     * @param user
+     *            Filter by the user who created the blog
+     * @param isUnpublished
+     *            Search for blogs currently unpublished. Set to 'null' to retrieve all blogs, whether published or not
+     * @param strDateUpdateBlogAfter
+     *            Filter by blogs updated after a specific date
+     * @param strDateUpdateBlogBefore
+     *            Filter by blogs updated before a specific date
+     * @param userEditor
+     *            Filter by the last user who edited the blog
+     * @param locale
+     *            The Locale to use for the dates' format
+     * @return the BlogSearchFilter objects created with the given parameters
+     */
+    public static BlogSearchFilter buildBlogSearchFilter( String searchKeyword, String [ ] searchTagsArray, AdminUser user, Boolean isUnpublished,
+            String strDateUpdateBlogAfter, String strDateUpdateBlogBefore, String userEditor, Locale locale )
+    {
+        BlogSearchFilter filter = new BlogSearchFilter( );
+
+        if ( StringUtils.isNotBlank( searchKeyword ) )
+        {
+            filter.setKeywords( searchKeyword );
+        }
+        if ( !ArrayUtils.isEmpty( searchTagsArray ) )
+        {
+            filter.setTag( searchTagsArray );
+        }
+        if ( user != null )
+        {
+            filter.setUser( user.getAccessCode( ) );
+        }
+        if ( isUnpublished != null )
+        {
+            filter.setIsUnpulished( isUnpublished );
+        }
+        if ( StringUtils.isNotBlank( strDateUpdateBlogAfter ) )
+        {
+            filter.setUpdateDateAfter( DateUtil.formatDate( strDateUpdateBlogAfter, locale ) );
+        }
+        if ( StringUtils.isNotBlank( strDateUpdateBlogBefore ) )
+        {
+            filter.setUpdateDateBefor( DateUtil.formatDate( strDateUpdateBlogBefore, locale ) );
+        }
+        if ( StringUtils.isNotBlank( userEditor ) )
+        {
+            filter.setUserEditedBlogVersion( userEditor );
+        }
+        return filter;
+    }
+
+    /**
+     * Create an HTML link to reach the specified URL
+     * 
+     * @param customLinkUrl
+     *            URL of the link
+     * @param customlinkText
+     *            Text to display in the link
+     * @param customLinkTitle
+     *            Title of the link
+     * @param targetedWindow
+     *            Window where the link will be opened ("_self", "_blank", etc.). Opens in new window by default ("_blank")
+     * @return the HTML link to the specified url
+     */
+    public static String buildCustomBlogLink( String customLinkUrl, String customLinkText, String customLinkTitle, String targetedWindow )
+    {
+        HashMap<String, Object> model = new HashMap<>( );
+
+        model.put( "url", customLinkUrl );
+        model.put( "target", targetedWindow );
+        model.put( "title", StringEscapeUtils.escapeHtml4( customLinkTitle ) );
+        model.put( "text", StringEscapeUtils.escapeHtml4( customLinkText ) );
+
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_INSERT_BLOG_LINK, null, model );
+
+        return template.getHtml( );
     }
 
     /**
