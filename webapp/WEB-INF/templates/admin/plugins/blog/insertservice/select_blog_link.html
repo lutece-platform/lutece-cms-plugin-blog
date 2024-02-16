@@ -1,0 +1,149 @@
+<script src="js/admin/jquery/jquery-3.6.0.min.js"></script>
+<@boxBody>
+	<@row class='mt-2 d-flex'>
+		<@columns md=4>
+			<#if blog_insert_service_type=="blog_resource_insert_service">
+				<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogResourceLink.jsp' />
+			<#elseif blog_insert_service_type=="blog_url_insert_service">
+				<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogUrlLink.jsp' />
+			<#else>
+				<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogPortletLink.jsp' />
+			</#if>
+			<@tform action=formActionSearch boxed=true>
+				<@input type='hidden' name='input' value=.data_model.input! />
+				<@fieldSet legend='#i18n{blog.insertService.blog.searchForBlog}'>
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.insertService.blog.searchByKeyWord}' helpKey='#i18n{blog.insertService.blog.searchByKeyWord.help}' rows=2>
+						<@inputGroup>
+							<@input type='text' id='search_text' name='search_text' placeHolder='#i18n{blog.insertService.blog.keyWord}' value='${search_text!\'\'}' />
+						</@inputGroup>
+					</@formGroup>
+					<@formGroup labelFor='selected_tags' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}' rows=2>
+						<@select id='selected_tags' name='selected_tags' multiple=1 class='input-sm'>
+							<#list tags_reference_list?sort as tagRef>
+								<#assign isSelected><#if tags?? && tags?seq_contains(tagRef.code)>true<#else>false</#if></#assign>
+								<@option value=tagRef.code! label=tagRef.name!?capitalize selected=isSelected?boolean />
+							</#list>
+						</@select>
+					</@formGroup>
+					<@formGroup labelFor='date_blog_published_after' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}' rows=2>
+						<@inputGroup>
+							<@input type='date' name='date_blog_published_after' id='date_blog_published_after' value='' language=.lang format='d/m/Y' showFormat='d/m/Y' />
+							<@inputGroupItem type='text'>
+								<@icon style='calendar' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+					<@formGroup labelFor='date_blog_published_before' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2>
+						<@inputGroup>
+							<@input type='date' name='date_blog_published_before' id='date_blog_published_before' value='' language=.lang format='d/m/Y' showFormat='d/m/Y' />
+							<@inputGroupItem>
+								<@icon style='calendar' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' name='button_search' id='button_search' title='#i18n{blog.manage_blogs.search}' buttonIcon='search' />
+					</@formGroup>
+				</@fieldSet>
+			</@tform>
+		</@columns>
+		<@columns md=8>
+			<#if blog_list_filtered??>
+				<#if blog_insert_service_type=="blog_resource_insert_service">
+					<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogResourceLink.jsp' />
+				<#elseif blog_insert_service_type=="blog_url_insert_service">
+					<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogUrlLink.jsp' />
+				<#else>
+					<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogPortletLink.jsp' />
+				</#if>
+				<@tform action=formActionInsertLink name='insertBlogLink' boxed=true class='flex-fill'>
+					<@input type='hidden' name='input' value=.data_model.input! />
+					<@fieldSet legend='#i18n{blog.insertService.blog.searchResult}'>
+						<#if blog_list_filtered?size gt 0>
+							<@formGroup labelFor='blog_list_result' labelKey='#i18n{blog.insertService.blog.selectItem}' mandatory=true>
+								<@listGroup id='blog_list_result' class='overflow-auto' params='style="max-height:300px"'>
+									<#assign blog_item_id=1 />
+									<#list blog_list_filtered as blog>
+										<#if blog.docContent?size gt 0>
+											<@box>
+												<@boxHeader title=blog.name! titleLevel='h6' />
+												<@boxBody class='p-2'>
+													<@listGroup id='blog_resource_list'>
+														<#list blog.docContent as document>
+															<@listGroupItem>
+																<@radioButton name='selected_document_id'
+																	id='document_${document.id!}'
+																	labelKey='${document.textValue!}'
+																	class='form-check-input' orientation='inline'
+																	value='${document.id}'
+																	params='onclick="javascript:setDefaultBlogLinkText(`${document.textValue}`);"' />
+															</@listGroupItem>
+														</#list>
+													</@listGroup>
+												</@boxBody>
+											</@box>
+										<#else>
+											<@listGroupItem>
+												<@radioButton name='selected_blog_id'
+													id='blog_${blog.id!}_${blog_item_id}'
+													labelKey='${blog.name!} - ${blog.updateDate!}'
+													class='form-check-input' orientation='inline' value='${blog.id}'
+													params='onclick="javascript:setDefaultBlogLinkText(\'${blog.name}\');"' />
+											</@listGroupItem>
+											<#assign blog_item_id=blog_item_id+1 />
+										</#if>
+									</#list>
+								</@listGroup>
+							</@formGroup>
+							<@formGroup labelFor='custom_link_text' labelKey='#i18n{blog.insertService.blog.linkText}' mandatory=true rows=2>
+								<@input type='text' id='custom_link_text' name='custom_link_text' placeHolder='#i18n{blog.insertService.blog.linkText.placeholder}' value='' />
+							</@formGroup>
+							<@formGroup labelFor='custom_link_title' labelKey='#i18n{blog.insertService.blog.linkTitle}' rows=2>
+								<@input type='text' id='custom_link_title' name='custom_link_title' placeHolder='#i18n{blog.insertService.blog.linkTitle.placeholder}' value='' />
+							</@formGroup>
+							<@formGroup>
+								<@button type='submit' title='#i18n{blog.publication_blog.buttonValidate}' buttonIcon='check' />
+							</@formGroup>
+						<#else>
+							<@div class='card d-flex flex-fill justify-content-center align-items-center'>
+								<@empty class='d-flex justify-content-center flex-column align-items-center' subtitle='#i18n{blog.insertService.blog.relaunchSearch}' iconName='list-search' />
+							</@div>
+						</#if>
+					</@fieldSet>
+				</@tform>
+			<#else>
+				<@div class='card flex-fill justify-content-center align-items-center'>
+					<@empty class='d-flex justify-content-center flex-column align-items-center' title='#i18n{blog.insertService.blog.launchSearch}' subtitle=' ' iconName='search' />
+				</@div>
+			</#if>
+		</@columns>
+	</@row>
+</@boxBody>
+<script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
+<link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
+<script>
+	const inputLinkText = document.getElementById('custom_link_text');
+
+	// Update the value of the link's text
+	function setDefaultBlogLinkText(linkText) {
+		inputLinkText.value = linkText;
+	}
+
+	// Manage the Tags selection field
+	document.addEventListener("DOMContentLoaded", function () {
+		new SlimSelect({
+			select: '#selected_tags',
+			settings: {
+				// Below are a list of optional fields
+				// their values are the defaults
+				searchPlaceholder: '#i18n{blog.manage_blogs.search}',
+				searchText: '#i18n{blog.manage_blogs.labelNoResult}',
+				searchingText: '#i18n{blog.manage_blogs.labelSearch}...',
+				placeholderText: '#i18n{blog.manage_blogs.labelChooseValue}',
+				timeoutDelay: 200,
+				searchHighlight: true,
+				allowDeselect: true,
+			},
+		});
+	});
+</script>
