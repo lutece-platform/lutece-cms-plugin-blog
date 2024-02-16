@@ -148,4 +148,28 @@
             </rbac-resource-type-class>
         </rbac-resource-type>
     </rbac-resource-types>
+    <!-- Insert Services -->
+	<insert-services>
+		<!-- Blog's link insert service -->
+    	<insert-service>
+	        <insert-service-id>blog_insert_service</insert-service-id>
+	        <insert-service-name>blog.insertService.blog.name</insert-service-name>
+	        <insert-service-label>blog.insertService.blog.label</insert-service-label>
+	        <insert-service-bean-class>fr.paris.lutece.plugins.blog.web.insertservice.BlogUrlInsertServiceJspBean</insert-service-bean-class>
+    	</insert-service>
+    	<!-- Blog Portlet's link insert service -->
+    	<insert-service>
+	        <insert-service-id>blog_portlet_insert_service</insert-service-id>
+	        <insert-service-name>blog.insertService.portlet.name</insert-service-name>
+	        <insert-service-label>blog.insertService.portlet.label</insert-service-label>
+	        <insert-service-bean-class>fr.paris.lutece.plugins.blog.web.insertservice.BlogPortletInsertServiceJspBean</insert-service-bean-class>
+    	</insert-service>
+    	<!-- Blog Resource's link insert service -->
+    	<insert-service>
+	        <insert-service-id>blog_resource_insert_service</insert-service-id>
+	        <insert-service-name>blog.insertService.resource.name</insert-service-name>
+	        <insert-service-label>blog.insertService.resource.label</insert-service-label>
+	        <insert-service-bean-class>fr.paris.lutece.plugins.blog.web.insertservice.BlogResourceInsertServiceJspBean</insert-service-bean-class>
+    	</insert-service>
+	</insert-services>
 </plug-in>
