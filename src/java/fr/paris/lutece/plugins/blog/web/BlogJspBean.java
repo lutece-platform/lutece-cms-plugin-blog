@@ -290,7 +290,6 @@ public class BlogJspBean extends ManageBlogJspBean
         _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
         _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
-        Locale locale = getLocale( );
         // SORT
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
         String strAscSort;

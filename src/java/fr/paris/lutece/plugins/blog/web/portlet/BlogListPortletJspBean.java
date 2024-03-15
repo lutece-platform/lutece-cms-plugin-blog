@@ -51,9 +51,6 @@ import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
 import fr.paris.lutece.plugins.blog.business.BlogSerializable;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.ArrayUtils;
-
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
@@ -253,11 +250,11 @@ public class BlogListPortletJspBean extends PortletJspBean
             }
             if ( _dateUpdateBlogAfter != null )
             {
-                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, getLocale( ) ) );
             }
             if ( _dateUpdateBlogBefor != null )
             {
-                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
+                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, getLocale( ) ) );
             }
 
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
