@@ -45,6 +45,7 @@ import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 
+import java.text.Normalizer;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -137,5 +138,10 @@ public final class BlogUtils
     public static Plugin getPlugin( )
     {
         return PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
+    }
+
+    public static String removeAccents(String text) {
+        String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
+        return normalized.replaceAll("[\\p{InCombiningDiacriticalMarks}]+", "");
     }
 }
