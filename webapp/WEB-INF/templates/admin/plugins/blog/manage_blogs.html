@@ -200,4 +200,11 @@ document.addEventListener( "DOMContentLoaded", function(){
 		e.target.formAction = newUrl
 	})
 });
+  document.getElementById('unpublished').addEventListener('change', function() {
+	if (this.checked) {
+		document.getElementById('unpublished').value = 'true';
+	} else {
+		document.getElementById('unpublished').value = 'false';
+	}
+  });
 </script>

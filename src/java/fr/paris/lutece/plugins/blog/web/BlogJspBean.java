@@ -343,6 +343,10 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 filter.setIsUnpulished( _bIsUnpulished );
             }
+            else
+            {
+                filter.setIsUnpulished( false );
+            }
             if ( _dateUpdateBlogAfter != null )
             {
                 try {
