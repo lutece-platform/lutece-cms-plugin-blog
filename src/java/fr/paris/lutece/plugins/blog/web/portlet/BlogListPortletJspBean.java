@@ -307,6 +307,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         Map<String, Object> data = new HashMap<>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage);
         setSearchBlog( request, strButtonSearch, strButtonReset );
 
         List<Integer> listBlogsId = filterBlogIds( request );
@@ -321,9 +322,9 @@ public class BlogListPortletJspBean extends PortletJspBean
         LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( listBlogsId, _nItemsPerPage, getCurrentUrlFromRequest( request ),
                 AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
 
-        for ( Integer documentId : paginator.getPageItems( ) )
+        for ( Integer nBlogId : paginator.getPageItems( ) )
         {
-            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( documentId );
+            Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( nBlogId );
             if ( blog != null )
             {
                 listBlogNotPublished.add( new BlogSerializable( blog.getId( ), blog.getContentLabel( ) ) );
