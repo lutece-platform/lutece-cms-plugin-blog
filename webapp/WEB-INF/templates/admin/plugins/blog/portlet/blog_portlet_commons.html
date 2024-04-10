@@ -260,6 +260,8 @@ document.addEventListener( "DOMContentLoaded", function(){
   })
 */
   setBlogListDraggable( );
+  doUpdateBlogList(baseUrl, "", itemPerPage.value).then((data) =>  updateBlogListDraggable( data ) );
+  searchText.value = null;	
 });
 
 function setBlogListDraggable( ){
