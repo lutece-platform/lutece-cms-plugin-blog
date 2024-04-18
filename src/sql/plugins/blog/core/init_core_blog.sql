@@ -9,19 +9,24 @@ INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home
 --
 -- Data for table core_admin_right
 --
-DELETE FROM core_admin_right WHERE id_right IN ( 'BLOG_MANAGEMENT', 'BLOG_TAGS_MANAGEMENT');
+DELETE FROM core_admin_right WHERE id_right IN ( 'BLOG_MANAGEMENT', 'BLOG_TAGS_MANAGEMENT','BLOG_AVANCED_CONFIGURATION' );
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url ) VALUES
 ('BLOG_MANAGEMENT','blog.adminFeature.ManageBlogs.name',2,'jsp/admin/plugins/blog/ManageBlogs.jsp','blog.adminFeature.ManageBlogs.description',0,'blog','APPLICATIONS','ti ti-notebook','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
 ('BLOG_TAGS_MANAGEMENT','blog.adminFeature.ManageBlogsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageBlogsTags.description',0,'blog','APPLICATIONS','ti ti-tags',NULL,4);
-
+INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES
+('BLOG_AVANCED_CONFIGURATION','blog.adminFeature.AdvancedConfiguration.name',0,'jsp/admin/plugins/blog/ManageAdminDashboard.jsp','blog.adminFeature.AdvancedConfiguration.description',0,'blog','APPLICATIONS','ti ti-settings',NULL,5);
 
 --
 -- Data for table core_user_right
 --
 DELETE FROM core_user_right WHERE id_right = 'BLOG_MANAGEMENT';
+DELETE FROM core_user_right WHERE id_right = 'BLOG_AVANCED_CONFIGURATION';
 INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_MANAGEMENT',1);
+INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_AVANCED_CONFIGURATION',1);
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
+
+INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('blogAdminDashboardComponent', 1, 7);
