@@ -91,7 +91,13 @@
             <dashboard-feature-right>BLOG_MANAGEMENT</dashboard-feature-right>
         </dashboard-component>
     </dashboard-components>
-    
+    <admindashboard-components>
+    <admindashboard-component>
+        <dashboard-component-name>blogAdminDashboardComponent</dashboard-component-name>
+        <dashboard-component-class>fr.paris.lutece.plugins.blog.web.admindashboard.BlogAdminDashboardComponent
+        </dashboard-component-class>
+    </admindashboard-component>
+</admindashboard-components>
     <!-- Portlet parameters -->
     <portlets>
      <portlet>
