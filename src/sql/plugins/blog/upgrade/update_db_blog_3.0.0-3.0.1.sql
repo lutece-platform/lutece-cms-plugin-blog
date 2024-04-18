@@ -1,3 +1,13 @@
+--
+-- Table structure for table blog_admin_dashboard
+--
+DROP TABLE IF EXISTS blog_admin_dashboard;
+CREATE TABLE blog_admin_dashboard (
+                                      id_dashboard int NOT NULL,
+                                      maximum_publication_date date default '2030-01-01' NOT NULL
+);
+INSERT INTO blog_admin_dashboard (id_dashboard, maximum_publication_date) VALUES (1, '2030-01-01');
+
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES
     ('BLOG_AVANCED_CONFIGURATION','blog.adminFeature.AdvancedConfiguration.name',0,'jsp/admin/plugins/blog/ManageAdminDashboard.jsp','blog.adminFeature.AdvancedConfiguration.description',0,'blog','APPLICATIONS','ti ti-settings',NULL,5);
 

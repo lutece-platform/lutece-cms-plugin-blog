@@ -177,3 +177,12 @@ CREATE TABLE blog_rss_cf (
 	
 	PRIMARY KEY (id_rss)
 );
+
+--
+-- Table structure for table blog_admin_dashboard
+--
+DROP TABLE IF EXISTS blog_admin_dashboard;
+CREATE TABLE blog_admin_dashboard (
+                                      id_dashboard int NOT NULL,
+                                      maximum_publication_date date default '2050-01-01' NOT NULL
+);

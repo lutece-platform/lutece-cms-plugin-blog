@@ -10,12 +10,21 @@ public final class  BlogAdminDashboardHome
     private static fr.paris.lutece.portal.service.plugin.Plugin _plugin = fr.paris.lutece.portal.service.plugin.PluginService.getPlugin( "blog" );
 
     /**
-     * Private constructor - this class need not be instantiated
+     * Load the maximum publication date
+     * @return the maximum publication date
      */
-    private BlogAdminDashboardHome(  )
+    public static java.util.Date selectMaximumPublicationDate(  )
     {
-
+        return _dao.selectMaximumPublicationDate( _plugin );
     }
 
+    /**
+     * Update the maximum publication date
+     * @param date the maximum publication date
+     */
+    public static void updateMaximumPublicationDate( Date date )
+    {
+        _dao.updateMaximumPublicationDate( date, _plugin );
+    }
 
 }
