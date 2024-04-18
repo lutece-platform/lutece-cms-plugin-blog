@@ -4,13 +4,6 @@
 <script>
 var baseUrl='${webapp_url}';
 
-/* List of potential user options on editor*/
-const userEditorInline = localStorage.getItem('lutece-blog-user-editor-inline') != null ? true : false
-const userEditorMenubar = localStorage.getItem('lutece-blog-user-editor-menu') != null ? true : false
-const userEditorContextMenubar = localStorage.getItem('lutece-blog-user-editor-contextemnue') != null ? true : false
-const userEditorToolbar = localStorage.getItem('lutece-blog-user-editor-toolbar') != null ? true : false
-const userEditorQuickToolbarInsert = localStorage.getItem('lutece-blog-user-editor-quicktoolbarinsert') != null ? true : false
-const userEditorQuickToolbarSelect = localStorage.getItem('lutece-blog-user-editor-quicktoolbarselect') != null ? true : false
 
 const useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches || localStorage.getItem( 'lutece-tabler-theme' ) === 'dark';
 const isSmallScreen = window.matchMedia('(max-width: 1023.5px)').matches;
@@ -141,7 +134,7 @@ const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve
   xhr.send(formData);
 });
 
-const contentBodyConfig = {
+let contentBodyConfig = {
   selector: '.content-body',
   // skin: 'oxide-dark',
   menubar: false,
@@ -186,7 +179,7 @@ const contentBodyConfig = {
   color_map: colorMap,
   branding: false,
   promotion: false,
-  inline: userEditorInline,
+  inline: false,
   a11y_advanced_options: true,
   // Lutece optionnal document link service
   lutece_insert_service_media_type_image : '#dskey{library.insert_service_media_type_image}',
@@ -293,9 +286,31 @@ function debounce(func, wait, immediate) {
 	};
 };
 
+/* List of potential user options on editor*/
+const configTinymceArr = ['inline', 'menubar', 'contextmenu', 'toolbar', 'quickbars_insert_toolbar', 'quickbars_selection_toolbar', 'content_css'];
+const messageCustomConfigLoaded = '#i18n{blog.message.ManageBlogsEditor.customConfigLoaded}';
+/*
+    Get user custom config from local storage
+    and set it to the editor
+ */
+function getTinymceCustomConfig() {
+    for( let i = 0; i < configTinymceArr.length; i++ ){
+        const config = 'lutece-blog-user-editor-'+configTinymceArr[i];
+        let userTinymceConfig = localStorage.getItem(config);
+        if( userTinymceConfig != null ){
+            if(userTinymceConfig === "true" || userTinymceConfig === "false"){
+                userTinymceConfig = (userTinymceConfig === "true");
+            }
+            contentBodyConfig[configTinymceArr[i]] = userTinymceConfig;
+            setBlogToast( 'info' , messageCustomConfigLoaded, ""  );
+        }
+    }
+    return contentBodyConfig;
+};
 document.addEventListener( "DOMContentLoaded", function() {
-  tinymce.init( contentBodyConfig )
-	tinymce.init( contentDescConfig );
+    contentBodyConfig = getTinymceCustomConfig();
+    tinymce.init( contentBodyConfig )
+    tinymce.init( contentDescConfig );
 
   // Get the sticky element
   const stickyElement = document.getElementById('blog-toolbar');

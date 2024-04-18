@@ -1,0 +1,138 @@
+<@tabPanel id='manageEditorConfig'>
+    <#assign tabTitle>#i18n{blog.adminFeature.ManageBlogsEditor.name}</#assign>
+    <#assign saved>#i18n{blog.adminFeature.ManageBlogsEditor.saved}</#assign>
+    <#assign notSaved>#i18n{blog.adminFeature.ManageBlogsEditor.notSaved}</#assign>
+    <h1>#i18n{blog.adminFeature.ManageBlogsEditor.name}</h1>
+    <h2>#i18n{blog.adminFeature.ManageBlogsEditor.description} : </h2>
+    <a href="https://www.tiny.cloud/docs/tinymce/6/inline-editor-options/#inline" target="_blank"
+       rel="noopener noreferrer">Tinymce</a>
+    <h2>#i18n{blog.adminFeature.ManageBlogsEditor.help}</h2>
+    <button type="button" class="btn btn-danger float-end" onclick="deleteEditorConfig()">
+        #i18n{blog.adminFeature.ManageBlogsEditor.deleteConfig}
+    </button>
+    <@columns >
+        <div class="d-grid gap-4">
+            <div class="p-2 bg-light border;">
+                <label for="lutece-blog-user-editor-inline">Inline</label>
+                <@formGroup labelFor='editorInline' helpKey='ex: true '>
+                    <@input type='text' name='editorConfigInput' id='lutece-blog-user-editor-inline'  />
+                </@formGroup>
+                <@button type='button' buttonIcon='info' title='#i18n{portal.util.labelModify}' color='primary'  id='modifyEditor-inline' name='changeEditorConfig' />
+            </div>
+            <div class="p-2 bg-light border;">
+                <@formGroup labelFor='lutece-blog-user-editor-menubar' helpKey='ex: file edit view insert format tools table tc help '>
+                    <label for="lutece-blog-user-editor-menubar">Menubar</label>
+                    <@input type='text' name='editorConfigInput' id='lutece-blog-user-editor-menubar'/>
+                </@formGroup>
+                <@button type='button' buttonIcon='info' title='#i18n{portal.util.labelModify}' color='primary'  id='modifyEditor-menubar' name='changeEditorConfig' />
+            </div>
+            <div class="p-2 bg-light border;">
+                <@formGroup labelFor='lutece-blog-user-editor-contextmenu' helpKey='ex: link image table'>
+                    <label for="lutece-blog-user-editor-contextmenu">Contextmenu</label>
+                </@formGroup>
+                <@input type='text' name='editorConfigInput' id='lutece-blog-user-editor-contextmenu'  /> <@button type='button' buttonIcon='info' title='#i18n{portal.util.labelModify}' color='primary'  id='modifyEditor-contextmenu' name='changeEditorConfig' />
+            </div>
+            <div class="p-2 bg-light border;">
+                <@formGroup labelFor='lutece-blog-user-editor-toolbar' helpKey='ex: undo redo | styleselect | bold italic | link image'>
+                    <label for="lutece-blog-user-editor-toolbar">Toolbar</label>
+                </@formGroup>
+                <@input type='text' name='editorConfigInput' id='lutece-blog-user-editor-toolbar' /> <@button type='button' buttonIcon='info' title='#i18n{portal.util.labelModify}' color='primary'  id='modifyEditor-toolbar' name='changeEditorConfig' />
+            </div>
+            <div class="p-2 bg-light border;">
+                <label for="lutece-blog-user-editor-quickbars_insert_toolbar">Quickbars_insert_toolbar</label>
+                <@formGroup labelFor='lutece-blog-user-editor-quickbars_insert_toolbar' helpKey='ex: quickimage quicktable | hr pagebreak'>
+
+                    <@input type='text' name='editorConfigInput' id='lutece-blog-user-editor-quickbars_insert_toolbar' />
+                </@formGroup>
+                <@button type='button' buttonIcon='info' title='#i18n{portal.util.labelModify}' color='primary'  id='modifyEditor-quickbars_insert_toolbar' name='changeEditorConfig' />
+            </div>
+            <div class="p-2 bg-light border;">
+                <label for="lutece-blog-user-editor-quickbars_selection_toolbar">Quickbars_selection_toolbar</label>
+                <@formGroup labelFor='lutece-blog-user-editor-quickbars_selection_toolbar' helpKey='ex: bold italic | formatselect | quicklink blockquote'>
+                    <@input type='text' name='editorConfigInput' id='lutece-blog-user-editor-quickbars_selection_toolbar' />
+                </@formGroup>
+
+                <@button type='button' buttonIcon='info' title='#i18n{portal.util.labelModify}' color='primary'  id='modifyEditor-quickbars_selection_toolbar' name='changeEditorConfig' />
+            </div>
+            <div class="p-2 bg-light border;">
+                <label for="lutece-blog-user-editor-content_css">Content_css</label>
+                <@formGroup labelFor='lutece-blog-user-editor-content_css' helpKey='ex: css/theme-parisfr-editor.min.css,css/page_template_styles.css'>
+                    <@input type='text' name='editorConfigInput' id='lutece-blog-user-editor-content_css' />
+                </@formGroup>
+                <@button type='button' buttonIcon='info' title='#i18n{portal.util.labelModify}' color='primary'  id='modifyEditor-content_css' name='changeEditorConfig' />
+            </div>
+        </div>
+    </@columns>
+</@tabPanel>
+
+
+<script>
+    const saved = '${saved}';
+    const notSaved = '${notSaved}';
+
+    /*
+     * Function to get the value from the local storage and display the correct badge
+     */
+    function valueAndBadgesFromLocalStorage(button, badgeChecked, badgeTimes) {
+        const editorConfigId = 'lutece-blog-user-editor-' + button.id.split('-')[1];
+        const storageValue = localStorage.getItem(editorConfigId);
+        if (storageValue !== null && storageValue !== undefined && storageValue !== '') {
+            document.getElementById(editorConfigId).value = storageValue;
+            button.parentNode.appendChild(badgeChecked.cloneNode(true));
+        } else {
+            button.parentNode.appendChild(badgeTimes.cloneNode(true));
+        }
+    }
+
+    /*
+    * Function to add event listener to the modify buttons
+     */
+    function addEvListenerModifyButtons(button) {
+        button.addEventListener('click', function (event) {
+            const buttonEvent = event.target;
+            const editorConfigIdEvent = 'lutece-blog-user-editor-' + buttonEvent.id.split('-')[1];
+            const editorConfigValue = document.getElementById(editorConfigIdEvent).value;
+            if (editorConfigValue !== null && editorConfigValue !== undefined && editorConfigValue !== '') {
+                localStorage.setItem(editorConfigIdEvent, editorConfigValue);
+                buttonEvent.nextElementSibling.textContent = saved;
+                buttonEvent.nextElementSibling.className = 'badge bg-success';
+            } else {
+                localStorage.removeItem(editorConfigIdEvent);
+                buttonEvent.nextElementSibling.textContent = notSaved;
+                buttonEvent.nextElementSibling.className = 'badge bg-warning';
+            }
+        });
+    }
+
+    /*
+     * Onload function to add the event listeners and display the correct badges
+     */
+    window.onload = function () {
+        const badgeChecked = document.createElement('span');
+        badgeChecked.className = 'badge bg-success';
+        badgeChecked.textContent = saved;
+        const badgeTimes = document.createElement('span');
+        badgeTimes.className = 'badge bg-warning';
+        badgeTimes.textContent = notSaved;
+        for (let i = 0; i < document.getElementsByName("changeEditorConfig").length; i++) {
+            const button = document.getElementsByName("changeEditorConfig")[i];
+            valueAndBadgesFromLocalStorage(button, badgeChecked, badgeTimes);
+            addEvListenerModifyButtons(button);
+        }
+        ;
+    }
+
+    /*
+     * Function to delete the editor config from the local storage
+     */
+    function deleteEditorConfig() {
+        for (let i = 0; i < document.getElementsByName("changeEditorConfig").length; i++) {
+            const button = document.getElementsByName("changeEditorConfig")[i];
+            const editorConfigId = 'lutece-blog-user-editor-' + button.id.split('-')[1];
+            localStorage.removeItem(editorConfigId);
+            document.getElementById(editorConfigId).value = '';
+            button.nextElementSibling.textContent = notSaved;
+            button.nextElementSibling.className = 'badge bg-warning';
+        }
+    }
+</script>
