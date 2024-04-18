@@ -3,6 +3,8 @@
 <script src="themes/admin/shared/plugins/blog/js/tinymce/langs/${lang}.js"></script>
 <script>
 var baseUrl='${webapp_url}';
+var numberOfTagsAssigned ='${blogTagSize}';
+var number_mandatory_tags = '${number_mandatory_tags}';
 
 /* List of potential user options on editor*/
 const userEditorInline = localStorage.getItem('lutece-blog-user-editor-inline') != null ? true : false

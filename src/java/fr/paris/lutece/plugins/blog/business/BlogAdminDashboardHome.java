@@ -1,7 +1,6 @@
 package fr.paris.lutece.plugins.blog.business;
 
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import java.sql.Date;
 
 
 public final class  BlogAdminDashboardHome
@@ -17,5 +16,22 @@ public final class  BlogAdminDashboardHome
 
     }
 
+    /**
+     * Load the number of mandatory tags
+     * @return the number of mandatory tags
+     */
+    public static int selectNumberMandatoryTags(  )
+    {
+        return _dao.selectNumberMandatoryTags( _plugin );
+    }
+
+    /**
+     * Update the number of mandatory tags
+     * @param nNumberMandatoryTags the number of mandatory tags
+     */
+    public static void updateNumberMandatoryTags( int nNumberMandatoryTags )
+    {
+        _dao.updateNumberMandatoryTags( nNumberMandatoryTags, _plugin );
+    }
 
 }
