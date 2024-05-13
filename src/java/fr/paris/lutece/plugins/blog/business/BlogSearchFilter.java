@@ -44,7 +44,7 @@ public class BlogSearchFilter
     private String _strKeywords;
     private String [ ] _strTag;
     private String _strUser;
-    private boolean _bIsUnpulished;
+    private Boolean _bIsUnpulished;
     private Date _dateUpdateDateAfter;
     private Date _dateUpdateDateBefor;
     private String _strUserEditedBlogVersion;

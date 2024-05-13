@@ -37,14 +37,25 @@
 							<@input type='html5date' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='' formStyle='col' class='col-md-2 col-lg-1 d-flex align-items-center pt-4' labelKey='' rows=2 >
-						<@checkBox labelKey='#i18n{blog.manage_blogs.labelNotPublished}' name='unpublished' id='unpublished' value='false' checked=unpublished title='#i18n{blog.dashboard.PublishedStatus} / #i18n{blog.dashboard.UnPublishedStatus}' orientation='switch' />
+					<#if unpublished??>
+						<#assign unpublishedString = unpublished?string>
+					<#else>
+						<#assign unpublishedString = "">
+					</#if>
+					<@formGroup labelFor='search_text' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelUnPublished}' helpKey='#i18n{blog.manage_blogs.labelUnPublished.help}' rows=2>
+						<@select id='unpublished' name='unpublished' class='form-control'>
+							<@option value="" selected=(unpublishedString == '') label='#i18n{blog.manage_blogs.labelAllBlogs}'/>
+							<@option value="true" selected=(unpublishedString == 'true') label='#i18n{blog.manage_blogs.labelNotPublished}' />
+							<@option value="false" selected=(unpublishedString == 'false') label='#i18n{blog.manage_blogs.labelPublished}' />
+						</@select>
 					</@formGroup>
-					<@formGroup rows=2 formStyle='col' class='col-md-2 col-lg-1 d-flex flex-lg-column align-items-center justify-content-center pt-3'>
-						<@button type='submit' class='mb-lg-1' buttonIcon='search me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
-						<@button type='submit' color='danger' buttonIcon='x me-1' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
-					</@formGroup>				
-				</@row>	
+				</@row>
+				<@row>
+					<@formGroup rows=2 formStyle='col' class='d-flex justify-content-end'>
+					<@button type='submit' class='mb-lg-1' buttonIcon='search me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
+					<@button type='submit' class='mb-lg-1' color='danger' buttonIcon='x me-1' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
+					</@formGroup>
+				</@row>
 				</@tform>
 			</@boxBody>
 		</@box>
@@ -189,6 +200,14 @@ document.addEventListener( "DOMContentLoaded", function(){
 			timeoutDelay: 200,
 		},
 	});
+	new SlimSelect({
+		select: '#unpublished',
+		settings: {
+			// Below are a list of optional fields
+			// their values are the defaults
+			timeoutDelay: 200,
+		},
+	});
 
 	const btnReset = document.getElementById('button_reset'), btnSearch = document.getElementById('button_search')
 	if( window.location.search.match('search') === null ){
@@ -199,6 +218,17 @@ document.addEventListener( "DOMContentLoaded", function(){
 		const newUrl = e.target.formAction.replace('?search=','')
 		e.target.formAction = newUrl
 	})
+
+	const searchParams = new URLSearchParams(window.location.search);
+	const isVisitedViaBackButton = performance && performance.getEntriesByType('navigation').map(nav => nav.type).includes('back_forward');
+
+	// Check if the page was visited via back or forward button
+	if (isVisitedViaBackButton && !searchParams.has('button_search')) {
+		// Remove the search parameter and reload the page
+		const baseUrl = window.location.href.split('?')[0];
+		window.location.href = baseUrl;
+	}
+
 });
   document.getElementById('unpublished').addEventListener('change', function() {
 	if (this.checked) {
