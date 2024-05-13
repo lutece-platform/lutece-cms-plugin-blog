@@ -106,7 +106,6 @@ import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
@@ -263,7 +262,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
-    protected boolean _bIsUnpulished = false;
+    protected Boolean _bIsUnpulished;
     protected String _dateUpdateBlogAfter;
     protected String _dateUpdateBlogBefor;
     protected String _strCurrentPageIndex;
@@ -299,7 +298,7 @@ public class BlogJspBean extends ManageBlogJspBean
         List<Integer> listBlogsId = new ArrayList<>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
-        _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
+        String strUnpublished = request.getParameter(PARAMETER_UNPUBLISHED);
 
         if ( strButtonSearch != null )
         {
@@ -309,21 +308,29 @@ public class BlogJspBean extends ManageBlogJspBean
             _strTag = request.getParameterValues( PARAMETER_TAG );
             _dateUpdateBlogAfter = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
             _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
-
+            if (StringUtils.isNotBlank(strUnpublished))
+            {
+                _bIsUnpulished = Boolean.parseBoolean(strUnpublished);
+            }
+            else
+            {
+                _bIsUnpulished = null;
+            }
         }
         else
+        {
             if ( strButtonReset != null )
             {
                 _bIsChecked = false;
                 _strSearchText = null;
                 _strTag = null;
-                _bIsUnpulished = false;
                 _dateUpdateBlogAfter = null;
                 _dateUpdateBlogBefor = null;
-
+                _bIsUnpulished = null;
             }
+        }
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _bIsUnpulished
+        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _bIsUnpulished != null
                 || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
@@ -339,7 +346,7 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 filter.setUser( user.getAccessCode( ) );
             }
-            if ( _bIsUnpulished )
+            if ( _bIsUnpulished != null)
             {
                 filter.setIsUnpulished( _bIsUnpulished );
             }

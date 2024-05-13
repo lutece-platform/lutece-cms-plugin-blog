@@ -390,11 +390,14 @@ public final class BlogSearchService
             flags.add( BooleanClause.Occur.MUST );
         }
 
-        Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) ) );
-        Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
-        queries.add( termQueryIsUnpublished.toString( ) );
-        sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
-        flags.add( BooleanClause.Occur.MUST );
+        if ( filter.getIsUnpulished( ) != null )
+        {
+            Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) ) );
+            Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
+            queries.add( termQueryIsUnpublished.toString( ) );
+            sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
+            flags.add( BooleanClause.Occur.MUST );
+        }
 
         Term term = new Term( SearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );
         Query termQuery = new TermQuery( term );
