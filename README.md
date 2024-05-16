@@ -1,4 +1,3 @@
-![](https://dev.lutece.paris.fr/jenkins/buildStatus/icon?job=cms-plugin-blog-deploy)
 # Plugin blog
 
 ## Introduction
