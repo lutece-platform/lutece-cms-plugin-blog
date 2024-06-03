@@ -6,4 +6,6 @@ public class BlogConstant
     public static final String PARAMETER_BLOG = "blog";
     public static final String PARAMETER_MANDATORY_TAG_NUMBER = "updateMandatoryTagNumber";
     public static final String PARAMETER_ACTION = "action";
+    public static final String PARAMETER_MANAGE_MAX_PUBLICATION_DATE = "manageMaxPublicationDate";
+
 }
