@@ -183,6 +183,17 @@ CREATE TABLE blog_rss_cf (
 --
 DROP TABLE IF EXISTS blog_admin_dashboard;
 CREATE TABLE blog_admin_dashboard (
-    id_dashboard int NOT NULL,
-    number_mandatory_tags int default 0 NOT NULL
-    );
+                                      id_dashboard int NOT NULL,
+                                      maximum_publication_date date default '2050-01-01' NOT NULL
+);
+
+--
+-- Table structure for table blog_admin_dashboard
+--
+DROP TABLE IF EXISTS blog_admin_dashboard;
+CREATE TABLE blog_admin_dashboard (
+       id_dashboard int NOT NULL,
+       number_mandatory_tags int default 0 NOT NULL,
+       maximum_publication_date date default '2050-01-01' NOT NULL
+
+);

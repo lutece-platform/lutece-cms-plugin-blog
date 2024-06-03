@@ -19,45 +19,95 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( controllerJsp = "ManageAdminDashboard.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_AVANCED_CONFIGURATION" )
 
 public class BlogAdminDashboardComponent extends AdminDashboardComponent
+{
+    private static final long serialVersionUID = 3045411044102177294L;
+    private static final String MARK_NUMBER_MANDATORY_TAGS = "number_mandatory_tags";
+    private static final String TEMPLATE_MANDATORY_TAGS = "admin/plugins/blog/dashboard/modify_mandatory_blog_tags.html";
+    private static final String ACTION_UPDATE_MANDATORY_TAG_NUMBER = "updateMandatoryTagNumber";
+    private static final String DASHBOARD_PAGE = "jsp/admin/AdminTechnicalMenu.jsp";
+    private static final String DASHBOARD_PAGE_TAG = "?tab=modifyMandatoryBlogTagNumber";
+    private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
+    public static final String RIGHT_AVANCED_CONFIGURATION = "BLOG_AVANCED_CONFIGURATION";
+    private static final String PARAMETER_NUMBER_MANDATORY_TAGS = "numberMandatoryTag";
+    private static final String TEMPLATE_MANAGE_MAX_PUBLICATION_DATE = "admin/plugins/blog/dashboard/manage_maximum_publication_date.html";
+    private static final String PARAMETER_MAX_PUBLICATION_DATE_VALUE = "maxPublicationDate";
+    private static final String ACTION_MANAGE_MAX_PUBLICATION_DATE = "manageMaxPublicationDate";
+    private static final String DASHBOARD_PAGE_MAX_PUBLICATION_DATE = "?tab=manageMaxPublicationDate";
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDashboardData( AdminUser user, HttpServletRequest request )
+    {     String strTemplate = "";
+        Map<String, Object> model = new HashMap<>( );
+        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANDATORY_TAGS, user.getLocale( ), model );
+        strTemplate += template.getHtml( );
+        java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate( );
+        model.put( PARAMETER_MAX_PUBLICATION_DATE_VALUE, maxPublicationDate );
+        HtmlTemplate template2 = AppTemplateService.getTemplate( TEMPLATE_MANAGE_MAX_PUBLICATION_DATE, user.getLocale( ), model );
+        strTemplate += template2.getHtml( );
+        return strTemplate;
+    }
+    @Action( ACTION_UPDATE_MANDATORY_TAG_NUMBER )
+    public String updateMandatoryTagNumber( HttpServletRequest request ) throws fr.paris.lutece.portal.service.admin.AccessDeniedException
     {
-        private static final long serialVersionUID = 3045411044102177294L;
-        private static final String MARK_NUMBER_MANDATORY_TAGS = "number_mandatory_tags";
-        private static final String TEMPLATE_MANDATORY_TAGS = "admin/plugins/blog/dashboard/modify_mandatory_blog_tags.html";
-        private static final String ACTION_UPDATE_MANDATORY_TAG_NUMBER = "updateMandatoryTagNumber";
-        private static final String DASHBOARD_PAGE = "jsp/admin/AdminTechnicalMenu.jsp";
-        private static final String DASHBOARD_PAGE_TAG = "?tab=modifyMandatoryBlogTagNumber";
-        private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
-        public static final String RIGHT_AVANCED_CONFIGURATION = "BLOG_AVANCED_CONFIGURATION";
-        private static final String PARAMETER_NUMBER_MANDATORY_TAGS = "numberMandatoryTag";
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getDashboardData( AdminUser user, HttpServletRequest request )
+        AdminUser adminUser = fr.paris.lutece.portal.service.admin.AdminUserService.getAdminUser( request );
+        if ( !adminUser.checkRight( RIGHT_AVANCED_CONFIGURATION ) )
         {
-                Map<String, Object> model = new HashMap<>( );
-                model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
-                HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MANDATORY_TAGS, user.getLocale( ), model );
-
-            return template.getHtml( );
-
+            String strMessage = fr.paris.lutece.portal.service.i18n.I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            throw new fr.paris.lutece.portal.service.admin.AccessDeniedException( strMessage );
         }
-        @Action( ACTION_UPDATE_MANDATORY_TAG_NUMBER )
-        public String updateMandatoryTagNumber( HttpServletRequest request ) throws fr.paris.lutece.portal.service.admin.AccessDeniedException
+        int nNumberMandatoryTags = 0;
+        if( request.getParameter( PARAMETER_NUMBER_MANDATORY_TAGS ) != null)
         {
-            AdminUser adminUser = fr.paris.lutece.portal.service.admin.AdminUserService.getAdminUser( request );
-            if ( !adminUser.checkRight( RIGHT_AVANCED_CONFIGURATION ) )
-            {
-                String strMessage = fr.paris.lutece.portal.service.i18n.I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
-                throw new fr.paris.lutece.portal.service.admin.AccessDeniedException( strMessage );
-            }
-            int nNumberMandatoryTags = 0;
-            if( request.getParameter( PARAMETER_NUMBER_MANDATORY_TAGS ) != null)
-            {
-                nNumberMandatoryTags =  Integer.parseInt( request.getParameter( PARAMETER_NUMBER_MANDATORY_TAGS ) );
-            }
-            BlogAdminDashboardHome.updateNumberMandatoryTags( nNumberMandatoryTags );
-            String strUrl = fr.paris.lutece.portal.service.util.AppPathService.getBaseUrl( request ) + DASHBOARD_PAGE + DASHBOARD_PAGE_TAG;
-            return strUrl;
+            nNumberMandatoryTags =  Integer.parseInt( request.getParameter( PARAMETER_NUMBER_MANDATORY_TAGS ) );
         }
+        BlogAdminDashboardHome.updateNumberMandatoryTags( nNumberMandatoryTags );
+        String strUrl = fr.paris.lutece.portal.service.util.AppPathService.getBaseUrl( request ) + DASHBOARD_PAGE + DASHBOARD_PAGE_TAG;
+        return strUrl;
+    }
+
+    /**
+     * Manage the maximum publication date for a blog post
+     * @param request
+     * @return
+     * @throws fr.paris.lutece.portal.service.admin.AccessDeniedException
+     * @throws java.text.ParseException
+     */
+    @Action( ACTION_MANAGE_MAX_PUBLICATION_DATE )
+    public String manageMaxPublicationDate( HttpServletRequest request ) throws fr.paris.lutece.portal.service.admin.AccessDeniedException
+    {
+        AdminUser adminUser = fr.paris.lutece.portal.service.admin.AdminUserService.getAdminUser( request );
+        if ( !adminUser.checkRight( RIGHT_AVANCED_CONFIGURATION ) )
+        {
+            String strMessage = fr.paris.lutece.portal.service.i18n.I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            throw new fr.paris.lutece.portal.service.admin.AccessDeniedException( strMessage );
+        }
+        if( request.getParameter( PARAMETER_MAX_PUBLICATION_DATE_VALUE ) != null)
+        {
+            String strMaxPublicationDate = request.getParameter( PARAMETER_MAX_PUBLICATION_DATE_VALUE );
+
+            BlogAdminDashboardHome.updateMaximumPublicationDate( formatStringToSqlDate(strMaxPublicationDate) );
+        }
+        String strUrl = fr.paris.lutece.portal.service.util.AppPathService.getBaseUrl( request ) + DASHBOARD_PAGE + DASHBOARD_PAGE_MAX_PUBLICATION_DATE;
+        return strUrl;
+    }
+    public java.sql.Date formatStringToSqlDate(String strDate)
+    {
+        java.sql.Date sqlDate = null;
+        try
+        {
+
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.util.Date utilDate = sdf.parse(strDate);
+            sqlDate = new java.sql.Date(utilDate.getTime());
+        }
+        catch (java.text.ParseException e)
+        {
+            fr.paris.lutece.portal.service.util.AppLogService.error("Error parsing date", e);
+        }
+        return sqlDate;
+    }
 }

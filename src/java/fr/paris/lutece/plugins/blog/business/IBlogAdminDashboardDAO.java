@@ -14,4 +14,9 @@ public interface IBlogAdminDashboardDAO
     int selectNumberMandatoryTags( Plugin plugin );
 
     void updateNumberMandatoryTags( int nNumberMandatoryTags, Plugin plugin );
+
+    void updateMaximumPublicationDate( java.sql.Date date, fr.paris.lutece.portal.service.plugin.Plugin plugin );
+
+    java.util.Date selectMaximumPublicationDate( fr.paris.lutece.portal.service.plugin.Plugin plugin );
+
 }
