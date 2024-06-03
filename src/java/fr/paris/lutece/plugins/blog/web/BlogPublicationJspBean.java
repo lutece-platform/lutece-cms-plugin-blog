@@ -71,6 +71,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
 
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
@@ -101,6 +102,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     private static final String MARK_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
     private static final String MARK_PORTLET_FILTER = "portlet_filter";
     private static final String MARK_LABEL_DISPLAY_LATEST_PORTLETS = "label_display_latest_portlets";
+    private static final String MARK_MAX_PUBLICATION_DATE = "maxPublicationDate";
     public static final String DATE_END_PUBLICATION = AppPropertiesService.getProperty( "blog.date.end.publication", "2030-01-01 11:59:59" );
 
     // Properties
@@ -199,7 +201,13 @@ public class BlogPublicationJspBean extends BlogJspBean
                 ( strErrorFilter == null ) ? portletFilter : null );
         Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( _blog.getId( ), pOrder,
                 ( strErrorFilter == null ) ? portletFilter : null );
-
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);
+        if(maxPublicationDate != null)
+        {
+            model.put( MARK_MAX_PUBLICATION_DATE, maxPublicationDate );
+        }
         model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
         model.put( MARK_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
         model.put( MARK_BLOG, _blog );
@@ -233,8 +241,9 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         if ( _blogPublication.getDateEndPublishing( ) == null )
         {
-            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-            _blogPublication.setDateEndPublishing( new Date( sdf.parse( DATE_END_PUBLICATION ).getTime( ) ) );
+            java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate( );
+
+            _blogPublication.setDateEndPublishing( new java.sql.Date( maxPublicationDate.getTime( ) ) );
         }
         if ( _blogPublication.getIdPortlet( ) != 0 )
         {
@@ -295,12 +304,24 @@ public class BlogPublicationJspBean extends BlogJspBean
         if ( dateBeginPublishingStr != null && !dateBeginPublishingStr.isEmpty( ) )
         {
             parsed = sdf.parse( dateBeginPublishingStr );
-            dateBeginPublishing = new java.sql.Date( parsed.getTime( ) );
+            dateBeginPublishing = new Date( parsed.getTime( ) );
         }
+        java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate( );
         if ( dateEndPublishingStr != null && !dateEndPublishingStr.isEmpty( ) )
         {
-            parsed = sdf.parse( dateEndPublishingStr );
-            dateEndPublishing = new java.sql.Date( parsed.getTime( ) );
+            if(maxPublicationDate != null)
+            {
+              parsed = sdf.parse( dateEndPublishingStr );
+                dateEndPublishing = new Date( parsed.getTime( ) );
+                if(dateEndPublishing.after(maxPublicationDate))
+                {
+                    dateEndPublishing = new Date( maxPublicationDate.getTime( ) );
+                }
+            }
+            else {
+                parsed = sdf.parse( dateEndPublishingStr );
+                dateEndPublishing = new Date( parsed.getTime( ) );
+            }
         }
         int nBlogOrder = BlogListPortletHome.getMinDocBlogOrder( );
         nBlogOrder = nBlogOrder - 1;

@@ -63,6 +63,8 @@
 		</@columns>
 	</@row>
 	<@row>
+<#assign nowTime = .now>
+<#assign today = nowTime?date>
 		<@columns sm=12 md=6>
 		<#if document_list_portlet_list?size &gt; 0>
 			<#assign boxTitle>#i18n{blog.publication_blog.labelAvailablePortlet} #i18n{blog.publication_blog.labelAvailableDocumentListPortlet} <#if !portlet_filter?? || portlet_filter.displayLatestPortlets> ${label_display_latest_portlets} </#if></#assign>
@@ -73,7 +75,7 @@
 						<@columns sm=12 md=6 lg=3>
 							<@formGroup labelFor='dateBeginPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateBegin}' rows=2>
 								<@inputGroup>
-									<@input type='date' name='dateBeginPublishing' id='dateBeginPublishing' value='' format='d/m/Y' />
+									<@input type='date' name='dateBeginPublishing' id='dateBeginPublishing' value=today minDate=today maxDate=maxPublicationDate />
 									<@inputGroupItem>
 										<@icon style='calendar' />
 									</@inputGroupItem>
@@ -83,8 +85,12 @@
 						<@columns sm=12 md=6 lg=3>
 							<@formGroup labelFor='dateEndPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateEnd}' rows=2>
 								<@inputGroup>
-									<@input type='date' name='dateEndPublishing' id='dateEndPublishing' value='' format='d/m/Y' />
-									<@inputGroupItem>
+									<#if maxPublicationDate??>
+										<@input type='date' name='dateEndPublishing' id='dateEndPublishing' value=maxPublicationDate minDate=today maxDate=maxPublicationDate/>
+									<#else>
+										<@input type='date' name='dateEndPublishing' id='dateEndPublishing' value='' minDate=today />
+									</#if>
+                                    <@inputGroupItem>
 										<@icon style='calendar' />
 									</@inputGroupItem>
 								</@inputGroup>
