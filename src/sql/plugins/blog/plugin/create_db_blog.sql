@@ -162,7 +162,7 @@ CREATE TABLE blog_list_portlet_htmldocs (
 	status int default 0 NOT NULL,
 	document_order int default NULL,
 
-	
+
     CONSTRAINT fk_id_blog_portlet FOREIGN KEY(id_blog) references blog_blog(id_blog),
 	PRIMARY KEY (id_portlet, id_blog)
 );
@@ -177,3 +177,12 @@ CREATE TABLE blog_rss_cf (
 	
 	PRIMARY KEY (id_rss)
 );
+
+--
+-- Table structure for table blog_admin_dashboard
+--
+DROP TABLE IF EXISTS blog_admin_dashboard;
+CREATE TABLE blog_admin_dashboard (
+    id_dashboard int NOT NULL,
+    number_mandatory_tags int default 0 NOT NULL
+    );
