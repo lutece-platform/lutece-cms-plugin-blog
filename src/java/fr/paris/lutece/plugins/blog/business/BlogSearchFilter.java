@@ -51,7 +51,7 @@ public class BlogSearchFilter
 
     /**
      * Get the id of the filter
-     * 
+     *
      * @return The id of the filter
      */
     public int getIdFilter( )
@@ -61,7 +61,7 @@ public class BlogSearchFilter
 
     /**
      * Set the id of the filter
-     * 
+     *
      * @param nIdFilter
      *            The id of the filter
      */
@@ -72,7 +72,7 @@ public class BlogSearchFilter
 
     /**
      * Get the keywords of the filter
-     * 
+     *
      * @return The keywords of the filter
      */
     public String getKeywords( )
@@ -82,7 +82,7 @@ public class BlogSearchFilter
 
     /**
      * Set the keywords of the filter
-     * 
+     *
      * @param strKeywords
      *            The keywords of the filter
      */
@@ -93,7 +93,7 @@ public class BlogSearchFilter
 
     /**
      * Get the tag of the filter
-     * 
+     *
      * @return The tag of the filter
      */
     public String [ ] getTag( )
@@ -103,7 +103,7 @@ public class BlogSearchFilter
 
     /**
      * Set the strTag of the filter
-     * 
+     *
      * @param strTag
      *            The tag of the filter
      */
@@ -114,7 +114,7 @@ public class BlogSearchFilter
 
     /**
      * Sets the User
-     * 
+     *
      * @param strUser
      *            The User
      */
@@ -125,7 +125,7 @@ public class BlogSearchFilter
 
     /**
      * Returns the strUser
-     * 
+     *
      * @return The strUser
      */
     public String getUser( )
@@ -135,7 +135,7 @@ public class BlogSearchFilter
 
     /**
      * Sets the User Edited blog
-     * 
+     *
      * @param strUser
      *            The User edited Blog
      */
@@ -146,7 +146,7 @@ public class BlogSearchFilter
 
     /**
      * Returns the strUser
-     * 
+     *
      * @return The strUser
      */
     public String getUserEditedBlogVersion( )
@@ -156,10 +156,10 @@ public class BlogSearchFilter
 
     /**
      * Returns the isUnpulished
-     * 
+     *
      * @return The isUnpulished
      */
-    public boolean getIsUnpulished( )
+    public Boolean getIsUnpulished( )
     {
         return _bIsUnpulished;
     }
@@ -174,7 +174,7 @@ public class BlogSearchFilter
 
     /**
      * Returns the UpdateDateAfter
-     * 
+     *
      * @return The UpdateDateAfter
      */
     public Date getUpdateDateAfter( )
@@ -184,7 +184,7 @@ public class BlogSearchFilter
 
     /**
      * Sets the UpdateDateAfter
-     * 
+     *
      * @param dateUpdateDateAfter
      *            The UpdateDateAfter
      */
@@ -195,7 +195,7 @@ public class BlogSearchFilter
 
     /**
      * Returns the UpdateDateBefor
-     * 
+     *
      * @return The UpdateDateBefor
      */
     public Date getUpdateDateBefor( )
@@ -205,7 +205,7 @@ public class BlogSearchFilter
 
     /**
      * Sets the UpdateDateBefor
-     * 
+     *
      * @param dateUpdateDateBefor
      *            The UpdateDateBefor
      */
