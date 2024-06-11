@@ -1199,9 +1199,9 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * Added docContent to the htmlDoc content list
-     * 
+     *
      * @param request
      *            The Http request
      * @return
@@ -1292,7 +1292,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * delete docContent in the htmlDoc content list
-     * 
+     *
      * @param request
      *            The Http request
      * @return
@@ -1407,7 +1407,7 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * @param request
      * @return
      */
@@ -1452,7 +1452,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Set content of the blog
-     * 
+     *
      * @param mRequest
      * @param locale
      * @return the content of the blog
@@ -1487,7 +1487,7 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * @return
      */
     private ReferenceList getBlogFilterList( )
@@ -1501,7 +1501,7 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * @return BlogList
      */
     private ReferenceList getTageList( )
@@ -1519,7 +1519,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Check if the blog is locked
-     * 
+     *
      * @param nIdBlog
      *            The Id blog
      * @param strIdSession
@@ -1533,7 +1533,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Lock blog
-     * 
+     *
      * @param nIdBlog
      *            The Id blog
      * @param strIdSession
@@ -1549,7 +1549,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Unlock Blog
-     * 
+     *
      * @param nIdBlog
      *            The id Blog
      */
@@ -1562,7 +1562,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Unlock Blogs By Session Id
-     * 
+     *
      * @param strIdSession
      *            The Id session
      */
@@ -1574,7 +1574,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Unlock the blog if the lock clearance time has passed
-     * 
+     *
      * @param nTime
      *            the clearance time
      */

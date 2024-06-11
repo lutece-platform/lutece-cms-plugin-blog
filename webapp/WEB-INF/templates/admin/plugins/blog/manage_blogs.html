@@ -22,7 +22,7 @@
 					<@formGroup labelFor='search_text' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}'  rows=2 >
 						<@select id='tag_doc' multiple=1 name='tag_doc' class='form-control'>
 						<#list list_tag?sort as tgName>
-							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
+							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign>
 							<@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
 						</#list>
 						</@select>
@@ -92,7 +92,7 @@
 										<#if blog.editComment?? && blog.editComment?trim !=''>
 											<@p><@span class="label label-default"><@icon style='comment' /> <strong>#i18n{blog.manage_blogs.columnEditComment}:</strong> ${blog.editComment} </@span></@p>
 										</#if>
-									</@div>		
+									</@div>
 								</@div>
 							</@td>
 							<@td>${blog.creationDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userCreatorInfos.lastName!} ${blog.userCreatorInfos.firstName!}</strong></@td>
@@ -101,7 +101,7 @@
 								<#list blog.tag as tg>
 									<#list list_tag as tgName>
 										<#if tgName.code==tg.idTag?string>
-											<@tag color='info text-white mb-1'>${tgName.name!}</@tag> 
+											<@tag color='info text-white mb-1'>${tgName.name!}</@tag>
 											<#break>
 										</#if>
 									</#list>
@@ -126,9 +126,9 @@
 													<@btnGroup class='d-flex justify-content-between'>
 														<@span class='mx-2 pt-1'>${publication.portlet.name} - #i18n{blog.modify_blog.labelPage}   ${publication.portlet.pageId} </@span>
 														<@span>
-															<#if !publication.portlet.contentId??> 
+															<#if !publication.portlet.contentId??>
 																<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idBlog=${blog.id}&amp;idPortlet=${publication.idPortlet}&id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='danger' size='sm' hideTitle=['all'] buttonIcon='trash' />
-															</#if>	
+															</#if>
 															<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}" color='outline-primary' size='sm' hideTitle=['all'] buttonIcon='external-link' />
 														</@span>
 													</@btnGroup>
@@ -209,32 +209,32 @@ document.addEventListener( "DOMContentLoaded", function(){
 		},
 	});
 
-	const btnReset = document.getElementById('button_reset'), btnSearch = document.getElementById('button_search')
-	if( window.location.search.match('search') === null ){
-		btnReset.classList.add( 'd-none' )
-	} 
+	// Function to check if all input values are null or false
+	function allInputsNull() {
+		const isChecked = document.getElementById('current_user').checked;
+		const searchText = document.getElementById('search_text').value.trim();
+		const tagValue = document.getElementById('tag_doc').value;
+		const dateUpdateBlogAfter = document.getElementById('dateUpdateBlogAfter').value.trim();
+		const dateUpdateBlogBefore = document.getElementById('dateUpdateBlogBefore').value.trim();
+		const unpublishedValue = document.getElementById('unpublished').value;
 
-	btnReset.addEventListener( 'click', (e) => {
-		const newUrl = e.target.formAction.replace('?search=','')
-		e.target.formAction = newUrl
-	})
-
-	const searchParams = new URLSearchParams(window.location.search);
-	const isVisitedViaBackButton = performance && performance.getEntriesByType('navigation').map(nav => nav.type).includes('back_forward');
-
-	// Check if the page was visited via back or forward button
-	if (isVisitedViaBackButton && !searchParams.has('button_search')) {
-		// Remove the search parameter and reload the page
-		const baseUrl = window.location.href.split('?')[0];
-		window.location.href = baseUrl;
+		return !isChecked &&
+				searchText === '' &&
+				tagValue === '' &&
+				dateUpdateBlogAfter === '' &&
+				dateUpdateBlogBefore === '' &&
+				unpublishedValue === '';
 	}
+
+	// Show/hide reset button based on input values
+	const btnReset = document.getElementById('button_reset');
+	const formManage = document.getElementById('form-manage');
+
+	btnReset.classList.toggle('d-none', allInputsNull());
+
+	formManage.addEventListener('input', function() {
+		btnReset.classList.toggle('d-none', allInputsNull());
+	});
 
 });
-  document.getElementById('unpublished').addEventListener('change', function() {
-	if (this.checked) {
-		document.getElementById('unpublished').value = 'true';
-	} else {
-		document.getElementById('unpublished').value = 'false';
-	}
-  });
 </script>

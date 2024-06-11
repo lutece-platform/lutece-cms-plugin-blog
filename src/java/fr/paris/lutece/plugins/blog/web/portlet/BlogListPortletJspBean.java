@@ -161,7 +161,7 @@ public class BlogListPortletJspBean extends PortletJspBean
 
     /**
      * Return a model that contains the list and paginator infos
-     * 
+     *
      * @param request
      *            The HTTP request
      * @return The map
