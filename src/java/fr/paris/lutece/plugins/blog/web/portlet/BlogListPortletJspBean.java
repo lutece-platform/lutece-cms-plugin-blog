@@ -141,7 +141,7 @@ public class BlogListPortletJspBean extends PortletJspBean
     // Session variable to store working values
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
-    protected Boolean _bIsUnpulished = null;
+    protected int _nIsUnpublished = 0;
     protected String _dateUpdateBlogAfter;
     protected String _dateUpdateBlogBefor;
     protected boolean _bIsSorted = false;
@@ -210,7 +210,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         model.put( MARK_SEARCH_TEXT, _strSearchText );
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
-        model.put( MARK_UNPUBLISHED, _bIsUnpulished );
+        model.put( MARK_UNPUBLISHED, _nIsUnpublished );
 
         model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogListPortlet.RESOURCE_ID ) );
 
@@ -229,7 +229,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         AdminUser user = AdminUserService.getAdminUser( request );
 
         if ( StringUtils.isNotBlank( _strSearchText ) || ArrayUtils.isNotEmpty(
-                _strTag ) || _bIsChecked || _bIsUnpulished || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
+                _strTag ) || _bIsChecked || _nIsUnpublished > 0 || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
@@ -244,10 +244,9 @@ public class BlogListPortletJspBean extends PortletJspBean
             {
                 filter.setUser( user.getAccessCode( ) );
             }
-            if ( _bIsUnpulished != null)
-            {
-                filter.setIsUnpulished( _bIsUnpulished );
-            }
+
+            filter.setIsUnpulished( _nIsUnpublished );
+
             if ( _dateUpdateBlogAfter != null )
             {
                 filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, getLocale( ) ) );
@@ -287,11 +286,11 @@ public class BlogListPortletJspBean extends PortletJspBean
 
             if (StringUtils.isNotBlank(strUnpublished))
             {
-                _bIsUnpulished = Boolean.parseBoolean(strUnpublished);
+                _nIsUnpublished = Integer.parseInt( strUnpublished );
             }
             else
             {
-                _bIsUnpulished = null;
+                _nIsUnpublished = 0;
             }
             _dateUpdateBlogAfter = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
             _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
@@ -304,7 +303,7 @@ public class BlogListPortletJspBean extends PortletJspBean
                 _bIsChecked = false;
                 _strSearchText = null;
                 _strTag = null;
-                _bIsUnpulished = null;
+                _nIsUnpublished = 0;
                 _dateUpdateBlogAfter = null;
                 _dateUpdateBlogBefor = null;
 
