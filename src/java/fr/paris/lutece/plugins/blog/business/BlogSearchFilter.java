@@ -44,7 +44,7 @@ public class BlogSearchFilter
     private String _strKeywords;
     private String [ ] _strTag;
     private String _strUser;
-    private Boolean _bIsUnpulished;
+    private int _nIsUnpublished;
     private Date _dateUpdateDateAfter;
     private Date _dateUpdateDateBefor;
     private String _strUserEditedBlogVersion;
@@ -136,7 +136,7 @@ public class BlogSearchFilter
     /**
      * Sets the User Edited blog
      *
-     * @param strUser
+     * @param userEditedBlogVersion
      *            The User edited Blog
      */
     public void setUserEditedBlogVersion( String userEditedBlogVersion )
@@ -159,17 +159,17 @@ public class BlogSearchFilter
      *
      * @return The isUnpulished
      */
-    public Boolean getIsUnpulished( )
+    public int getIsUnpulished( )
     {
-        return _bIsUnpulished;
+        return _nIsUnpublished;
     }
 
     /**
      * isUnpulished
      */
-    public void setIsUnpulished( boolean isUnpulished )
+    public void setIsUnpulished( int isUnpulished )
     {
-        _bIsUnpulished = isUnpulished;
+        _nIsUnpublished = isUnpulished;
     }
 
     /**

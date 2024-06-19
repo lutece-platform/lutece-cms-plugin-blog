@@ -262,7 +262,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
-    protected Boolean _bIsUnpulished;
+    protected int _nIsUnpublished;
     protected String _dateUpdateBlogAfter;
     protected String _dateUpdateBlogBefor;
     protected String _strCurrentPageIndex;
@@ -310,11 +310,11 @@ public class BlogJspBean extends ManageBlogJspBean
             _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
             if (StringUtils.isNotBlank(strUnpublished))
             {
-                _bIsUnpulished = Boolean.parseBoolean(strUnpublished);
+                _nIsUnpublished = Integer.parseInt( strUnpublished );
             }
             else
             {
-                _bIsUnpulished = null;
+                _nIsUnpublished = 0;
             }
         }
         else
@@ -326,11 +326,11 @@ public class BlogJspBean extends ManageBlogJspBean
                 _strTag = null;
                 _dateUpdateBlogAfter = null;
                 _dateUpdateBlogBefor = null;
-                _bIsUnpulished = null;
+                _nIsUnpublished = 0;
             }
         }
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _bIsUnpulished != null
+        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _nIsUnpublished > 0
                 || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
@@ -346,10 +346,9 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 filter.setUser( user.getAccessCode( ) );
             }
-            if ( _bIsUnpulished != null)
-            {
-                filter.setIsUnpulished( _bIsUnpulished );
-            }
+
+            filter.setIsUnpulished(_nIsUnpublished);
+
             if ( _dateUpdateBlogAfter != null )
             {
                 try {
@@ -440,7 +439,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_TAG, _strTag );
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
-        model.put( MARK_UNPUBLISHED, _bIsUnpulished );
+        model.put( MARK_UNPUBLISHED, _nIsUnpublished );
         model.put( MARK_LIST_BLOG_CONTRIBUTORS, mapContributors );
         model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );

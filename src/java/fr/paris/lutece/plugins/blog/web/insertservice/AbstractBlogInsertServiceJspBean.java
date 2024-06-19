@@ -59,7 +59,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * This class provides the user interface to insert a link toward a blog post or a blog's Resource
- * 
+ *
  */
 public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspBean implements InsertServiceSelectionBean
 {
@@ -101,7 +101,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Get the HTML form where the blog to insert is selected
-     * 
+     *
      * @param request
      *            The http request
      * @return the HTML code to display
@@ -137,7 +137,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Insert the link toward the selected blog post element into the html editor
-     * 
+     *
      * @param request
      *            The http request
      * @return the link to display in the html code
@@ -156,7 +156,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Get the values used to buil the blog link (text, title...), from the submitted form
-     * 
+     *
      * @param request
      *            The http request containing the submitted parameters
      * @return a BlogLinkPOJO containing the data necessary to build a blog link
@@ -188,7 +188,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Get the values specified in the search filter and look for the blogs matching them
-     * 
+     *
      * @param request
      *            The http request containing the submitted filter values
      * @return a List of Integer corresponding to the blogs matching the search filter
@@ -205,7 +205,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
         List<Integer> blogIdsList = new ArrayList<>( );
 
         // Create a search filter to find specific blogs
-        BlogSearchFilter filter = BlogUtils.buildBlogSearchFilter( blogSearchText, _tagsArray, null, false, strPublishedDateAfter, strPublishedDateBefore, null,
+        BlogSearchFilter filter = BlogUtils.buildBlogSearchFilter( blogSearchText, _tagsArray, null, 0, strPublishedDateAfter, strPublishedDateBefore, null,
                 AdminUserService.getLocale( request ) );
 
         // Get a List of the IDs of indexed blogs that match the filters
@@ -216,7 +216,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Search for the blogs matching the user's search and reload the HTML form where the blog link to insert is selected
-     * 
+     *
      * @param request
      *            The http request
      * @return the HTML code to display the blogs that can be selected to create a link from
@@ -225,7 +225,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Create an HTML link to reach the URL of the specified blog post
-     * 
+     *
      * @param blog
      *            Blog object for which the link is created
      * @param customlinkText
@@ -240,7 +240,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Get the type of the Blog Insert Service being used
-     * 
+     *
      * @return the name of the Blog Insert Service type
      */
     protected String getInsertServiceType( )
@@ -250,7 +250,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Set the type of the Blog Insert Service being used
-     * 
+     *
      * @param strInsertServiceType
      *            The type of Insert Service used
      */
@@ -261,7 +261,7 @@ public abstract class AbstractBlogInsertServiceJspBean extends InsertServiceJspB
 
     /**
      * Set the List of Blogs found by the search
-     * 
+     *
      * @param blogsList
      *            The List of Blog objects found
      */

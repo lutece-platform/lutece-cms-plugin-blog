@@ -44,9 +44,9 @@
 					</#if>
 					<@formGroup labelFor='search_text' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelUnPublished}' helpKey='#i18n{blog.manage_blogs.labelUnPublished.help}' rows=2>
 						<@select id='unpublished' name='unpublished' class='form-control'>
-							<@option value="" selected=(unpublishedString == '') label='#i18n{blog.manage_blogs.labelAllBlogs}'/>
-							<@option value="true" selected=(unpublishedString == 'true') label='#i18n{blog.manage_blogs.labelNotPublished}' />
-							<@option value="false" selected=(unpublishedString == 'false') label='#i18n{blog.manage_blogs.labelPublished}' />
+							<@option value="0" selected=(unpublishedString == '') label='#i18n{blog.manage_blogs.labelAllBlogs}'/>
+							<@option value="1" selected=(unpublishedString == '1') label='#i18n{blog.manage_blogs.labelNotPublished}' />
+							<@option value="2" selected=(unpublishedString == '2') label='#i18n{blog.manage_blogs.labelPublished}' />
 						</@select>
 					</@formGroup>
 				</@row>
@@ -209,31 +209,30 @@ document.addEventListener( "DOMContentLoaded", function(){
 		},
 	});
 
-	// Function to check if all input values are null or false
-	function allInputsNull() {
-		const isChecked = document.getElementById('current_user').checked;
-		const searchText = document.getElementById('search_text').value.trim();
-		const tagValue = document.getElementById('tag_doc').value;
-		const dateUpdateBlogAfter = document.getElementById('dateUpdateBlogAfter').value.trim();
-		const dateUpdateBlogBefore = document.getElementById('dateUpdateBlogBefore').value.trim();
-		const unpublishedValue = document.getElementById('unpublished').value;
+	function areAllInputsEmptyOrUnchecked() {
+    const isChecked = document.getElementById('current_user').checked;
+    const searchText = document.getElementById('search_text').value.trim();
+    const tagValue = document.getElementById('tag_doc').value.trim();
+    const dateUpdateBlogAfter = document.getElementById('dateUpdateBlogAfter').value.trim();
+    const dateUpdateBlogBefore = document.getElementById('dateUpdateBlogBefore').value.trim();
+    const blogStatus = document.getElementById('blog_status').value.trim(); // Added blog_status
 
-		return !isChecked &&
-				searchText === '' &&
-				tagValue === '' &&
-				dateUpdateBlogAfter === '' &&
-				dateUpdateBlogBefore === '' &&
-				unpublishedValue === '';
+    return !isChecked &&
+           searchText === '' &&
+           tagValue === '' &&
+           dateUpdateBlogAfter === '' &&
+           dateUpdateBlogBefore === '' &&
+           blogStatus === '0'; // Adjusted to check for '0' status as well
 	}
 
 	// Show/hide reset button based on input values
 	const btnReset = document.getElementById('button_reset');
 	const formManage = document.getElementById('form-manage');
 
-	btnReset.classList.toggle('d-none', allInputsNull());
+	btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
 
 	formManage.addEventListener('input', function() {
-		btnReset.classList.toggle('d-none', allInputsNull());
+		btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
 	});
 
 });

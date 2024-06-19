@@ -390,9 +390,9 @@ public final class BlogSearchService
             flags.add( BooleanClause.Occur.MUST );
         }
 
-        if ( filter.getIsUnpulished( ) != null )
+        if ( filter.getIsUnpulished( ) > 0 )
         {
-            Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) ) );
+            Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) == 1 ) );
             Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
             queries.add( termQueryIsUnpublished.toString( ) );
             sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
