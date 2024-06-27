@@ -29,18 +29,12 @@
 					</@formGroup>
 					<@formGroup labelFor='dateUpdateBlogAfter' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'  rows=2 >
 						<@inputGroup>
-							<@input type='text' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
-							<@inputGroupItem>
-								<@icon style='calendar' />
-							</@inputGroupItem>
+							<@input type='html5date' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
 						</@inputGroup>
 					</@formGroup>
 					<@formGroup labelFor='dateUpdateBlogBefore' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2 >
 						<@inputGroup>
-							<@input type='text' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
-							<@inputGroupItem>
-								<@icon style='calendar' />
-							</@inputGroupItem>
+							<@input type='html5date' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
 						</@inputGroup>
 					</@formGroup>
 					<@formGroup labelFor='' formStyle='col' class='col-md-2 col-lg-1 d-flex align-items-center pt-4' labelKey='' rows=2 >
@@ -66,6 +60,7 @@
 						<@th>#i18n{blog.create_blog.TagsTitle}</@th>
 						<@th>#i18n{blog.publication_blog.labelPublication}</@th>
 						<@th>#i18n{portal.util.labelActions}</@th>
+						<@th>#i18n{blog.manage_blogs.labelContributors}</@th>
 					</@tr>
 					<@tableHeadBodySeparator />
 						<#list blog_list as blog>
@@ -159,7 +154,16 @@
 								</#if>
 								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default ms-1' size='' class='btn-preview'  />
 							</@td>
-						</@tr>
+                         <@td class='w-12'>
+                            <#list list_blog_contributors as blogId, contributorList>
+                               <#if blogId == blog.id>
+                                   <#list contributorList as contributorName>
+                                     ${contributorName}
+                                  </#list>
+                               </#if>
+                            </#list>
+                         </@td>
+                      </@tr>
 						<#assign idx=idx + 1/>
 					</#list>
 				</@table>
@@ -168,7 +172,6 @@
 		<@paginationAdmin paginator=paginator combo=1 />
 	</@pageColumn>
 </@pageContainer>
-<@getDateRange idField='dateUpdateBlogAfter' idEndField='dateUpdateBlogBefore' language=.lang format='' showFormat='' />
 <script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
 <link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
 <script>
@@ -197,4 +200,11 @@ document.addEventListener( "DOMContentLoaded", function(){
 		e.target.formAction = newUrl
 	})
 });
+  document.getElementById('unpublished').addEventListener('change', function() {
+	if (this.checked) {
+		document.getElementById('unpublished').value = 'true';
+	} else {
+		document.getElementById('unpublished').value = 'false';
+	}
+  });
 </script>

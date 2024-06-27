@@ -42,8 +42,9 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.plugins.blog.business.BlogPageTemplate;
 import fr.paris.lutece.plugins.blog.business.BlogPageTemplateHome;
+import fr.paris.lutece.plugins.blog.service.BlogService;
+import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.business.Blog;
-import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,8 +86,9 @@ public class BlogPortlet extends PortletHtmlContent
     public String getHtmlContent( HttpServletRequest request )
     {
         GregorianCalendar calendar = new java.util.GregorianCalendar( );
-        Blog blog = BlogHome.findByPrimaryKey( this.getContentId( ) );
-        BlogPublication docPub = BlogPublicationHome.findDocPublicationByPimaryKey( this.getId( ), this.getContentId( ) );
+        Blog blog = BlogService.getInstance( ).loadBlog( this.getContentId( ) );
+        BlogPublication docPub = PublishingService.getInstance( ).getBlogPublication( this.getId( ), this.getContentId( ) );
+
         HashMap<String, Object> model = new HashMap<>( );
         BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 

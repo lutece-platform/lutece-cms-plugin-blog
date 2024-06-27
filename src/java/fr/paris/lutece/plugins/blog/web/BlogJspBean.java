@@ -40,6 +40,8 @@ import java.io.StringWriter;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -57,6 +59,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.ArrayUtils;
@@ -196,6 +199,7 @@ public class BlogJspBean extends ManageBlogJspBean
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_BLOG = "blog.message.confirmRemoveBlog";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
+    private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
 
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "blog.model.entity.blog.attribute.";
@@ -221,12 +225,19 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_UPDATE_PRIORITY_FILE_CONTENT = "updatePriorityContent";
     private static final String ACTION_UPDATE_CONTENT_TYPE = "updateContentType";
     private static final String ACTION_DUPLICATE_BLOG = "duplicateBlog";
+    private static final String ACTION_REMOVE_HISTORY_BLOG = "removeHistoryBlog";
+    private static final String ACTION_CONFIRM_REMOVE_HISTORY_BLOG = "confirmRemoveHistoryBlog";
 
     // Infos
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
     private static final String INFO_BLOG_UPDATED = "blog.info.blog.updated";
     private static final String INFO_BLOG_REMOVED = "blog.info.blog.removed";
     private static final String BLOG_LOCKED = "blog.message.blogLocked";
+    private static final String INFO_HISTORY_BLOG_REMOVED = "blog.info.history.blog.removed";
+
+    // Errors
+    private static final String ERROR_HISTORY_BLOG_CANT_REMOVE_ORIGINAL = "blog.error.history.blog.cantRemoveOriginal";
+    private static final String ERROR_HISTORY_BLOG_NOT_REMOVED = "blog.error.history.blog.notRemoved";
 
     // Filter Marks
     protected static final String MARK_BLOG_FILTER_LIST = "blog_filter_list";
@@ -239,6 +250,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_DATE_UPDATE_BLOG_AFTER = "dateUpdateBlogAfter";
     protected static final String MARK_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
     protected static final String MARK_UNPUBLISHED = "unpublished";
+    protected static final String MARK_LIST_BLOG_CONTRIBUTORS = "list_blog_contributors";
 
     public static final String CONSTANT_DUPLICATE_BLOG_NAME = "Copie de ";
 
@@ -279,15 +291,15 @@ public class BlogJspBean extends ManageBlogJspBean
         _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
         _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
-
         // SORT
         String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
         String strAscSort;
-
+        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         AdminUser user = AdminUserService.getAdminUser( request );
         List<Integer> listBlogsId = new ArrayList<>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
+        _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
 
         if ( strButtonSearch != null )
         {
@@ -295,7 +307,6 @@ public class BlogJspBean extends ManageBlogJspBean
             _bIsChecked = request.getParameter( MARK_CURRENT_USER ) != null;
             _strSearchText = request.getParameter( PARAMETER_SEARCH_TEXT );
             _strTag = request.getParameterValues( PARAMETER_TAG );
-            _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
             _dateUpdateBlogAfter = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
             _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
 
@@ -318,7 +329,7 @@ public class BlogJspBean extends ManageBlogJspBean
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
             {
-                filter.setKeywords( _strSearchText );
+                filter.setKeywords( BlogUtils.removeAccents( _strSearchText ) );
             }
             if ( !ArrayUtils.isEmpty( _strTag ) )
             {
@@ -334,11 +345,19 @@ public class BlogJspBean extends ManageBlogJspBean
             }
             if ( _dateUpdateBlogAfter != null )
             {
-                filter.setUpdateDateAfter( DateUtil.formatDate( _dateUpdateBlogAfter, request.getLocale( ) ) );
+                try {
+                    filter.setUpdateDateAfter( isoDateFormat.parse(_dateUpdateBlogAfter)) ;
+                } catch (ParseException e) {
+                    AppLogService.error( "Bad Date Format for indexed item: " + e.getMessage( ) );
+                }
             }
             if ( _dateUpdateBlogBefor != null )
             {
-                filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, request.getLocale( ) ) );
+                try {
+                    filter.setUpdateDateBefor( isoDateFormat.parse( _dateUpdateBlogBefor ) ) ;
+                } catch ( ParseException e ) {
+                    AppLogService.error( "Bad Date Format for indexed item: " + e.getMessage( ) );
+                }
             }
 
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
@@ -353,20 +372,22 @@ public class BlogJspBean extends ManageBlogJspBean
                 AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
 
         List<Blog> listDocuments = new ArrayList<>( );
-
+        HashMap<Integer, List<String>> mapContributors = new HashMap<>( );
         for ( Integer documentId : paginator.getPageItems( ) )
         {
             Blog document = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( documentId );
 
             if ( document != null )
             {
-                if ( _mapLockBlog.containsKey( document.getId( ) )
-                        && !_mapLockBlog.get( document.getId( ) ).getSessionId( ).equals( request.getSession( ).getId( ) ) )
+                if ( _mapLockBlog.containsKey( document.getId( ) ) && !_mapLockBlog.get( document.getId( ) ).getSessionId( )
+                        .equals( request.getSession( ).getId( ) ) )
                 {
 
                     document.setLocked( true );
                 }
                 listDocuments.add( document );
+                List<String> listContributors = BlogHome.getUsersEditedBlogVersions( document.getId( ) );
+                mapContributors.put( document.getId( ), listContributors );
             }
         }
 
@@ -413,7 +434,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
         model.put( MARK_UNPUBLISHED, _bIsUnpulished );
-
+        model.put( MARK_LIST_BLOG_CONTRIBUTORS, mapContributors );
         model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
@@ -445,6 +466,109 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_ID_BLOG, nId );
 
         return getPage( PROPERTY_PAGE_TITLE_HISTORY_BLOG, TEMPLATE_HISTORY_BLOG, model );
+    }
+
+    /**
+     * Manages the removal of a blog's version from its history
+     *
+     * @param request
+     *            The Http request
+     * @return the html code for the removal's confirmation page
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_CONFIRM_REMOVE_HISTORY_BLOG )
+    public String getconfirmRemoveHistoryBlog( HttpServletRequest request ) throws AccessDeniedException
+    {
+        String strId = request.getParameter( PARAMETER_ID_BLOG );
+        int nId = Integer.parseInt( strId );
+        String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
+
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_DELETE, (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( UNAUTHORIZED );
+        }
+
+        UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_HISTORY_BLOG ) );
+        url.addParameter( PARAMETER_ID_BLOG, nId );
+        url.addParameter( PARAMETER_VERSION_BLOG, strVersion );
+
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+
+        return redirect( request, strMessageUrl );
+    }
+
+    /**
+     * Handles the removal of a blog's version
+     *
+     * @param request
+     *            The Http request
+     * @return the jsp URL to display the page to manage the blog's versions
+     */
+    @Action( ACTION_REMOVE_HISTORY_BLOG )
+    public String doRemoveHistoryBlog( HttpServletRequest request )
+    {
+        String strBlogId = request.getParameter( PARAMETER_ID_BLOG );
+        int nBlogId = Integer.parseInt( strBlogId );
+        String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
+        int nVersion = -1;
+
+        // Make sure the version number is valid, and that the original version ( 1 ) is not being removed somehow
+        if ( StringUtils.isNumeric( strVersion ) )
+        {
+            nVersion = Integer.parseInt( strVersion );
+            if ( nVersion == 1 )
+            {
+                // If a request to delete the original version was made, redirect the user and display an error message
+                addError( ERROR_HISTORY_BLOG_CANT_REMOVE_ORIGINAL, getLocale( ) );
+                return redirect( request, VIEW_HISTORY_BLOG, PARAMETER_ID_BLOG, nBlogId );
+            }
+        }
+        else
+        {
+            // In case the version number is not valid
+            addError( ERROR_HISTORY_BLOG_NOT_REMOVED, getLocale( ) );
+            AppLogService.error( "Plugin Blog: Can't delete invalid version {} for blog ID {}", strVersion, strBlogId );
+            return redirect( request, VIEW_HISTORY_BLOG, PARAMETER_ID_BLOG, nBlogId );
+        }
+
+        if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strBlogId, Blog.PERMISSION_DELETE, (User) getUser( ) ) )
+        {
+            Blog blog = BlogService.getInstance( ).loadBlog( nBlogId );
+
+            // Check if the blog's current version is the one being removed
+            if ( blog.getVersion( ) == nVersion )
+            {
+                // Check if this blog is being modified by another user
+                if ( checkLockBlog( nBlogId, request.getSession( ).getId( ) ) )
+                {
+                    // Inform the user that the blog is locked by another user and redirect to the blog's history view
+                    UrlItem url = new UrlItem( getViewFullUrl( VIEW_HISTORY_BLOG ) );
+                    url.addParameter( PARAMETER_ID_BLOG, nBlogId );
+                    String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+                    return redirect( request, strMessageUrl );
+                }
+                // Check if this blog is currently published
+                List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nBlogId );
+                if ( CollectionUtils.isNotEmpty( docPublication ) )
+                {
+                    // Inform the user that the blog is currently published and redirect to the blog's history view
+                    UrlItem url = new UrlItem( getViewFullUrl( VIEW_HISTORY_BLOG ) );
+                    url.addParameter( PARAMETER_ID_BLOG, nBlogId );
+                    String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, url.getUrl( ),
+                            AdminMessage.TYPE_STOP );
+                    return redirect( request, strMessageUrl );
+                }
+                // Delete the current version of the blog and revert to its previous version
+                BlogService.getInstance( ).revertBlogToPreviousVersion( blog );
+            }
+            else
+            {
+                // Delete an older version of the blog
+                BlogService.getInstance( ).deleteBlogVersion( nBlogId, nVersion );
+            }
+            addInfo( INFO_HISTORY_BLOG_REMOVED, getLocale( ) );
+        }
+        return redirect( request, VIEW_HISTORY_BLOG, PARAMETER_ID_BLOG, nBlogId );
     }
 
     /**
@@ -1104,7 +1228,7 @@ public class BlogJspBean extends ManageBlogJspBean
         String partAfterFirstDelimiter = firstParts [0];
         String [ ] secondParts = partAfterFirstDelimiter.split( secondDelimiter );
         // Le mimeType
-        String mimeType = secondParts [1];
+        String mimeType = secondParts[1];
         // Le fichier en base64
         String base64FileString = StringUtils.EMPTY;
         // Gestion des fichiers vides

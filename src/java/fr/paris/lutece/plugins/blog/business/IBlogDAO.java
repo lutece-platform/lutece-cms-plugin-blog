@@ -93,6 +93,18 @@ public interface IBlogDAO
      */
     void deleteVersions( int nKey, Plugin plugin );
 
+    /**
+     * Delete a blog's specific version record from the table
+     * 
+     * @param nIdBlog
+     *            The identifier of the blog to process
+     * @param nVersion
+     *            The value of the version to delete
+     * @param plugin
+     *            the Plugin
+     */
+    void deleteSpecificVersion( int nIdBlog, int nVersion, Plugin plugin );
+
     // /////////////////////////////////////////////////////////////////////////
     // Finders
 
@@ -150,6 +162,17 @@ public interface IBlogDAO
      * @return The list which contains the data of of nLimit last modified blog objects
      */
     List<Blog> selectlastModifiedBlogsList( Plugin plugin, int nLimit );
+
+    /**
+     * Load the data of nLimit last versions of a specific blog and returns them as a list
+     * 
+     * @param nId
+     *            The blog's primary key
+     * @param nLimit
+     *            Maximum amount of Blog Object versions to return
+     * @return The list which contains the data of nLimit last versions of the blog
+     */
+    List<Blog> selectLastBlogVersionsList( int nId, int nLimit, Plugin plugin );
 
     /**
      * Load the data of all the blog objects and returns them as a list
