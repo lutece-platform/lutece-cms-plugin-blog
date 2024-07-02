@@ -50,6 +50,7 @@ public class BlogFilter
     private String _dateMax;
     private int _nPortletId;
     private boolean _bOrderInPortlet;
+    private boolean _bIsArchived;
 
     /**
      * @return the _arrayTagsId
@@ -218,4 +219,22 @@ public class BlogFilter
     {
         _nPortletId = nPortletId;
     }
+
+    /**
+     * @return the _bisArchived
+     */
+    public boolean isArchived( )
+    {
+        return _bIsArchived;
+    }
+
+    /**
+     * @param bIsArchived
+     *            the _bIsArchived to set
+     */
+    public void setIsArchived( boolean bIsArchived )
+    {
+        this._bIsArchived = bIsArchived;
+    }
+
 }

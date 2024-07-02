@@ -323,4 +323,26 @@ public final class BlogHome
         return _dao.getActualVersionNumber( strUpdateDate, nId, _plugin );
     }
 
+    /**
+     * Archive a blog
+     *
+     * @param blogId
+     *         The id of the blog to archive
+     */
+    public static void updateBlogArchiveId( boolean isArchived, int blogId )
+    {
+        _dao.updateBlogArchiveId( blogId, isArchived, _plugin );
+    }
+
+    /**
+     * Select the list of blogs by archive status
+     *
+     * @param isArchived
+     *         The archive status
+     * @return The list of blogs
+     */
+    public static List<Blog> selectByArchiveStatus( boolean isArchived )
+    {
+        return _dao.selectBlogsListByArchiveStatus( isArchived, _plugin );
+    }
 }
