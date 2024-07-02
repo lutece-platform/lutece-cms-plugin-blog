@@ -63,9 +63,10 @@
 		<@messages infos=infos />
 		<@box>
 			<@boxBody>
-				<#assign idx=0 />
+					<#assign idx=0 />
 				<@table headBody=true >
 					<@tr>
+						<@th><input id="select_all_blogs_id" type="checkbox"> </input></@th>
 						<@th>#i18n{blog.manage_blogs.columnContentLabel} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" /></@th>
 						<@th>#i18n{blog.manage_blogs.columnCreationDate} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" /></@th>
 						<@th>#i18n{blog.manage_blogs.columnUpdateDate} 	 <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="updateDate" /></@th>
@@ -77,6 +78,9 @@
 					<@tableHeadBodySeparator />
 						<#list blog_list as blog>
 						<@tr>
+							<@td>
+								<@checkBox id='selected_blog_${blog.id}' name='select_blog_id' value='${blog.id}' />
+							</@td>
 							<@td>
 								<@div class='d-flex justify-content-between align-items-center mb-0 w-100'>
 									<@div class='mb-1'>
@@ -265,4 +269,36 @@ document.addEventListener( "DOMContentLoaded", function(){
 	document.getElementById('unpublished').addEventListener('change', function() {
 		btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
 	});
+
+// checkbox row
+let btnApplyActionOnSelection = document.getElementById('button_apply_selected_action')
+
+// When the "Check all" / "Uncheck all" element is clicked, check / uncheck all the blog posts' checkboxes
+document.getElementById('select_all_blogs_id').addEventListener('click', function () {
+	let selectionButton = document.getElementById('select_blog_action')
+	let checkBoxes = document.querySelectorAll('input[name="select_blog_id"]')
+
+	// Check / uncheck the available checkboxes
+	checkBoxes.forEach(function (checkBox) {
+		checkBox.checked = this.checked
+	}, this);
+});
+
+// Enable / disabled the selection of an action when a blog post's checkbox is checked
+document.querySelectorAll('input[name="select_blog_id"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
+		let selectionButton = document.getElementById('select_blog_action')
+		let selectedCheckBoxes = document.querySelectorAll('input[name="select_blog_id"]:checked')
+		if (selectedCheckBoxes.length > 0) {
+			// Enable the selection and execution of an action
+			selectionButton.removeAttribute('disabled')
+			btnApplyActionOnSelection.removeAttribute('disabled')
+		}
+		else {
+			// Disable the selection and execution of an action
+			selectionButton.setAttribute('disabled', 'disabled')
+			btnApplyActionOnSelection.setAttribute('disabled', 'disabled')
+		}
+	})
+});
 </script>
