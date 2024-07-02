@@ -52,32 +52,32 @@ public final class BlogDAO implements IBlogDAO
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_blog ) FROM blog_blog";
     private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM blog_versions";
-    private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog WHERE id_blog = ?";
-    private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url FROM blog_blog ORDER BY update_date DESC LIMIT ?";
-    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog WHERE content_label = ?";
+    private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url, is_archived FROM blog_blog WHERE id_blog = ?";
+    private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url, is_archived FROM blog_blog ORDER BY update_date DESC LIMIT ?";
+    private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived FROM blog_blog WHERE content_label = ?";
     private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions WHERE id_blog = ? AND version = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM blog_versions WHERE id_blog = ? ";
     private static final String SQL_QUERY_DELETE_SPECIFIC_VERSION = "DELETE FROM blog_versions WHERE id_blog = ? AND version = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_blog SET id_blog = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ?, url= ? WHERE id_blog = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_blog order by creation_date DESC";
-    private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_blog FROM blog_blog ORDER BY creation_date DESC";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_blog SET id_blog = ?, version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ?, url= ?, is_archived=? WHERE id_blog = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived FROM blog_blog order by creation_date DESC";
+    private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_blog FROM blog_blog WHERE !is_archived ORDER BY creation_date DESC";
     private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions where id_blog = ?";
     private static final String SQL_QUERY_SELECT_LAST_VERSIONS_BY_BLOG_ID = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions where id_blog = ? ORDER BY id_version DESC LIMIT ?";
-
+    private static final String SQL_QUERY_SELECT_BY_ARCHIVE_STATUS = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived FROM blog_blog WHERE is_archived = ?";
     private static final String SQL_QUERY_SELECTALL_USERS_EDITED_BLOG_VERSION = "SELECT distinct user_editor FROM blog_versions where id_blog = ?";
 
     private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO blog_versions ( id_version, id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_blog, a.version, a.content_label, "
             + " a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id , "
-            + " a.edit_comment , a.description, a.shareable, a.url, p.document_order FROM blog_blog a "
+            + " a.edit_comment , a.description, a.shareable, a.url, a.is_archived, p.document_order FROM blog_blog a "
             + " LEFT OUTER JOIN blog_tag_document f ON a.id_blog = f.id_blog" + " LEFT OUTER JOIN blog_list_portlet_htmldocs p ON  a.id_blog = p.id_blog";
 
-    private static final String SQL_QUERY_SELECT_BLOG_BY_ID_TAG = " SELECT b.id_blog, b.version, b.content_label, b.creation_date, b.update_date, b.html_content, b.user_editor, b.user_creator, b.attached_portlet_id, b.edit_comment, b.description, b.shareable, b.url, a.id_tag FROM blog_tag_document a Inner join blog_blog b on (b.id_blog = a.id_blog) WHERE a.id_tag = ? ORDER BY priority";
+    private static final String SQL_QUERY_SELECT_BLOG_BY_ID_TAG = " SELECT b.id_blog, b.version, b.content_label, b.creation_date, b.update_date, b.html_content, b.user_editor, b.user_creator, b.attached_portlet_id, b.edit_comment, b.description, b.shareable, b.url, b.is_archived a.id_tag FROM blog_tag_document a Inner join blog_blog b on (b.id_blog = a.id_blog) WHERE a.id_tag = ? ORDER BY priority";
 
-    private static final String SQL_QUERY_SELECT_ALL_BLOG = " SELECT DISTINCT a.id_blog, a.version, a.content_label, a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id, a.edit_comment , a.description, a.shareable, a.url FROM blog_blog a";
+    private static final String SQL_QUERY_SELECT_ALL_BLOG = " SELECT DISTINCT a.id_blog, a.version, a.content_label, a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id, a.edit_comment , a.description, a.shareable, a.url a.is_archived FROM blog_blog a";
 
     private static final String SQL_FILTER_WHERE_CLAUSE = " WHERE ";
     private static final String SQL_FILTER_AND = " AND ";
@@ -92,7 +92,7 @@ public final class BlogDAO implements IBlogDAO
     private static final String SQL_FILTER_ID_END = ") ";
     private static final String SQL_ORDER_BY_LAST_MODIFICATION = " ORDER BY a.update_date DESC ";
     private static final String SQL_ORDER_BY_ORDER_DOCUMENT = " ORDER by p.document_order ";
-
+    private static final String SQL_UPDATE_BLOG_ARCHIVE = "UPDATE blog_blog SET is_archived = ? WHERE id_blog = ? ";
     /**
      * Generates a new primary key
      * 
@@ -160,6 +160,7 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setString( nIndex++, blog.getDescription( ) );
             daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
             daoUtil.setString( nIndex++, blog.getUrl( ) );
+            daoUtil.setBoolean( nIndex, false );
 
             daoUtil.executeUpdate( );
         }
@@ -225,6 +226,7 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
 
             }
 
@@ -262,6 +264,7 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
 
             }
         }
@@ -368,6 +371,7 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setString( nIndex++, blog.getDescription( ) );
             daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
             daoUtil.setString( nIndex++, blog.getUrl( ) );
+            daoUtil.setInt( nIndex++, blog.isArchived( )?1:0 );
 
             daoUtil.setInt( nIndex, blog.getId( ) );
 
@@ -404,10 +408,48 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
 
                 blogList.add( blog );
             }
 
+        }
+        return blogList;
+    }
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<Blog> selectBlogsListByArchiveStatus(boolean isArchived, Plugin plugin )
+    {
+        List<Blog> blogList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ARCHIVE_STATUS, plugin ) )
+        {
+            daoUtil.setBoolean( 1, isArchived );
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                Blog blog = new Blog( );
+                int nIndex = 1;
+
+                blog.setId( daoUtil.getInt( nIndex++ ) );
+                blog.setVersion( daoUtil.getInt( nIndex++ ) );
+                blog.setContentLabel( daoUtil.getString( nIndex++ ) );
+                blog.setCreationDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setUpdateDate( daoUtil.getTimestamp( nIndex++ ) );
+                blog.setHtmlContent( daoUtil.getString( nIndex++ ) );
+                blog.setUser( daoUtil.getString( nIndex++ ) );
+                blog.setUserCreator( daoUtil.getString( nIndex++ ) );
+                blog.setAttachedPortletId( daoUtil.getInt( nIndex++ ) );
+                blog.setEditComment( daoUtil.getString( nIndex++ ) );
+                blog.setDescription( daoUtil.getString( nIndex++ ) );
+                blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
+
+                blogList.add( blog );
+            }
         }
         return blogList;
     }
@@ -442,6 +484,7 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
 
                 blogList.add( blog );
             }
@@ -480,7 +523,6 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
-
                 blogVersionsList.add( blog );
             }
         }
@@ -578,6 +620,7 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
 
                 if ( filter.getLoadBinaries( ) )
                 {
@@ -659,6 +702,14 @@ public final class BlogDAO implements IBlogDAO
         {
             sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY )
                     .append( "a.id_blog NOT IN (SELECT DISTINCT id_blog FROM blogs_tag_document) " );
+        }
+        if ( filter.isArchived( ) )
+        {
+            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( "a.is_archived = 1 " );
+        }
+        else
+        {
+            sbWhere.append( ( sbWhere.length( ) != 0 ) ? SQL_FILTER_AND : StringUtils.EMPTY ).append( "a.is_archived != 1 " );
         }
         if ( filter.getPortletId( ) != 0 )
         {
@@ -765,6 +816,7 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
                 listBlog.add( blog );
 
             }
@@ -803,6 +855,7 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex ) );
 
                 listDocuments.add( blog );
             }
@@ -847,5 +900,21 @@ public final class BlogDAO implements IBlogDAO
             }
         }
         return blogList;
+    }
+
+    /**
+     * Update the blog archive
+     * @param nIdBlog The blog id
+     *
+     **/
+    @Override
+    public void updateBlogArchiveId( int nIdBlog, boolean bArchive, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_UPDATE_BLOG_ARCHIVE, plugin ) )
+        {
+            daoUtil.setBoolean( 1, bArchive );
+            daoUtil.setInt( 2, nIdBlog );
+            daoUtil.executeUpdate( );
+        }
     }
 }

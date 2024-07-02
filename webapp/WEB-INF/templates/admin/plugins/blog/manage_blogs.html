@@ -47,6 +47,7 @@
 							<@option value="0" selected=(unpublishedString == '') label='#i18n{blog.manage_blogs.labelAllBlogs}'/>
 							<@option value="1" selected=(unpublishedString == '1') label='#i18n{blog.manage_blogs.labelNotPublished}' />
 							<@option value="2" selected=(unpublishedString == '2') label='#i18n{blog.manage_blogs.labelPublished}' />
+							<@option value="3" selected=(unpublishedString == '3') label='#i18n{blog.manage_blogs.labelArchived}'  />
 						</@select>
 					</@formGroup>
 				</@row>
@@ -160,6 +161,15 @@
 									</@aButton>
 								</#if>
 								</@btnGroup>
+								<#if permission_manage_archive_blog>
+									<#if permission_manage_archive_blog>
+										<#if status_filter == 3>
+										<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=updateArchiveMultipleBlogs&amp;to_archive=false&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
+										<#else>
+										<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=updateArchiveMultipleBlogs&amp;to_archive=true&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
+										</#if>
+									   </#if>
+								</#if>
 								<#if permission_manage_delete_blog>
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='danger' />
 								</#if>
@@ -208,6 +218,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 			timeoutDelay: 200,
 		},
 	});
+});
 
 	// Check if all inputs are empty or unchecked
 
@@ -218,15 +229,6 @@ document.addEventListener( "DOMContentLoaded", function(){
 		const dateUpdateBlogAfter = document.getElementById('dateUpdateBlogAfter').value.trim();
 		const dateUpdateBlogBefore = document.getElementById('dateUpdateBlogBefore').value.trim();
 		const blogStatus = document.getElementById('unpublished').value;
-// Debug output
-		console.log({
-			isChecked,
-			searchText,
-			tagValue,
-			dateUpdateBlogAfter,
-			dateUpdateBlogBefore,
-			blogStatus
-		});
 		return !isChecked &&
 			   (searchText === '' || searchText === null) &&
 			  	!tagValue &&
@@ -253,5 +255,4 @@ document.addEventListener( "DOMContentLoaded", function(){
 	document.getElementById('unpublished').addEventListener('change', function() {
 		btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
 	});
-});
 </script>

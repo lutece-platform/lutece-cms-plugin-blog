@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.web;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,10 +44,13 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import fr.paris.lutece.util.date.DateUtil;
+
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,6 +74,8 @@ import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
 import org.outerj.daisy.diff.html.TextNodeComparator;
 import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
 import org.xml.sax.InputSource;
+import java.text.MessageFormat;
+
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.blog.business.Blog;
@@ -87,11 +93,13 @@ import fr.paris.lutece.plugins.blog.service.BlogServiceSession;
 import fr.paris.lutece.plugins.blog.service.BlogSessionListner;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
 import fr.paris.lutece.plugins.blog.utils.BlogLock;
+import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -112,7 +120,7 @@ import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
-import fr.paris.lutece.portal.service.i18n.I18nService;
+import static fr.paris.lutece.plugins.blog.web.adminDashboard.BlogAdminDashboardJspBean.RIGHT_AVANCED_CONFIGURATION;
 
 /**
  * This class provides the user interface to manage Blog features ( manage, create, modify, remove )
@@ -161,6 +169,10 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_TYPE_ID = "idType";
     protected static final String PARAMETER_CONTENT_ID = "idContent";
     protected static final String PARAMETER_CONTENT_ACTION = "contentAction";
+    protected static final String PARAMETER_INFO_MESSAGE = "info_message";
+    protected static final String PARAMETER_TO_ARCHIVE = "to_archive";
+
+    protected static final String PARAMETER_SELECTED_BLOGS = "select_blog_id";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
@@ -170,6 +182,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String PROPERTY_PAGE_TITLE_PREVIEW_BLOG = "blog.preview_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_DIFF_BLOG = "blog.diff_blog.pageTitle";
     protected static final String PROPERTY_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
+    protected static final String PROPERTY_BLOG_ARCHIVE = "blog.manage_blog_archives.labelActionArchive";
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
@@ -194,7 +207,9 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_PERMISSION_MODIFY_BLOG = "permission_manage_modify_blog";
     protected static final String MARK_PERMISSION_PUBLISH_BLOG = "permission_manage_publish_blog";
     protected static final String MARK_PERMISSION_DELETE_BLOG = "permission_manage_delete_blog";
+    protected static final String MARK_PERMISSION_ARCHIVE_BLOG = "permission_manage_archive_blog";
     private static final String MARK_NUMBER_MANDATORY_TAGS = "number_mandatory_tags";
+    private static final String MARK_STATUS_FILTER = "status_filter";
 
     private static final String JSP_MANAGE_BLOGS = "jsp/admin/plugins/blog/ManageBlogs.jsp";
 
@@ -202,7 +217,9 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String MESSAGE_CONFIRM_REMOVE_BLOG = "blog.message.confirmRemoveBlog";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
     private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
+    private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
 
+    protected static final String MARK_BLOG_ACTION_LIST = "selection_action_list";
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "blog.model.entity.blog.attribute.";
 
@@ -229,6 +246,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_DUPLICATE_BLOG = "duplicateBlog";
     private static final String ACTION_REMOVE_HISTORY_BLOG = "removeHistoryBlog";
     private static final String ACTION_CONFIRM_REMOVE_HISTORY_BLOG = "confirmRemoveHistoryBlog";
+    private static final String ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS = "updateArchiveMultipleBlogs";
 
     // Infos
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
@@ -276,6 +294,9 @@ public class BlogJspBean extends ManageBlogJspBean
     protected String _strSortedAttributeName;
     protected Boolean _bIsAscSort;
     protected String [ ] _strTag;
+    private ReferenceList _listBlogActionsList;
+    private List<Integer> _listSelectedBlogIds = new ArrayList<>( );
+
 
     // Session variable to store working values
     private final BlogServiceSession _blogServiceSession = BlogServiceSession.getInstance( );
@@ -303,6 +324,8 @@ public class BlogJspBean extends ManageBlogJspBean
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
         String strUnpublished = request.getParameter(PARAMETER_UNPUBLISHED);
+
+
 
         if ( strButtonSearch != null )
         {
@@ -333,7 +356,6 @@ public class BlogJspBean extends ManageBlogJspBean
                 _nIsUnpublished = 0;
             }
         }
-
         if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _nIsUnpublished > 0
                 || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
         {
@@ -350,7 +372,14 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 filter.setUser( user.getAccessCode( ) );
             }
-
+            if(_nIsUnpublished == 3)
+            {
+                filter.setIsArchived(true);
+            }
+            else
+            {
+                filter.setIsArchived( false );
+            }
             filter.setIsUnpulished(_nIsUnpublished);
 
             if ( _dateUpdateBlogAfter != null )
@@ -430,8 +459,12 @@ public class BlogJspBean extends ManageBlogJspBean
                 (User) getUser( ) );
         boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH,
                 (User) getUser( ) );
+        boolean bPermissionArchive = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE,
+                (User) getUser( ) );
 
         Map<String, Object> model = new HashMap<>( );
+        model.put( MARK_STATUS_FILTER, _nIsUnpublished );
+        model.put( MARK_BLOG_ACTION_LIST, _listBlogActionsList );
         model.put( MARK_BLOG_LIST, listDocuments );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_BLOG_FILTER_LIST, getBlogFilterList( ) );
@@ -449,6 +482,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
         model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionPublish );
+        model.put( MARK_PERMISSION_ARCHIVE_BLOG, bPermissionArchive );
         model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
 
 
@@ -640,6 +674,7 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setUserCreator( AdminUserService.getAdminUser( request ).getAccessCode( ) );
             _blog.setVersion( 1 );
             _blog.setAttachedPortletId( 0 );
+            _blog.setArchived( false );
             populate( _blog, request );
 
             // Check constraints
@@ -1548,9 +1583,117 @@ public class BlogJspBean extends ManageBlogJspBean
      *            The Id session
      * @return return true if the blog is locked else false
      */
-    private boolean checkLockBlog( int nIdBlog, String strIdSession )
+    private static boolean checkLockBlog( int nIdBlog, String strIdSession )
     {
         return _mapLockBlog.get( nIdBlog ) != null && !_mapLockBlog.get( nIdBlog ).getSessionId( ).equals( strIdSession );
+    }
+
+
+
+    /**
+     * Handles the manual archiving of multiple blog posts
+     *
+     * @param request
+     *            The Http request
+     * @return the jsp URL to display the main blog posts' management view
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS )
+    public String doArchiveMultipleBlog( HttpServletRequest request ) throws AccessDeniedException
+    {
+        User user = AdminUserService.getAdminUser( request );
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE, user ) )
+        {
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            throw new AccessDeniedException( strMessage );
+        }
+        // Get a List of the selected posts' IDs, from the current session
+        _listSelectedBlogIds = getSelectedBlogPostsIds( request );
+
+        // Check if any of the selected post is being modified by another user
+        if ( checkLockMultipleBlogs( request.getSession( ).getId( ) ) )
+        {
+            UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strMessageUrl );
+        }
+        // Archive the selected blog posts
+        Boolean bArchive = Boolean.parseBoolean( request.getParameter( PARAMETER_TO_ARCHIVE ) );
+        updateArchiveMultipleBlogs( _listSelectedBlogIds, bArchive );
+        return redirectView( request, VIEW_MANAGE_BLOGS );
+    }
+
+
+
+    /**
+     * Get the IDs of the blog posts selected by the user
+     *
+     * @param request
+     *            The Http request
+     * @return a List of the selected IDs, or an empty List if no element was selected
+     */
+    private List<Integer> getSelectedBlogPostsIds( HttpServletRequest request )
+    {
+        // Retrieve an array containing the selected blog post IDs from the request
+        String [ ] listSelectedBlogPosts = request.getParameterValues( PARAMETER_SELECTED_BLOGS );
+        if ( ArrayUtils.isNotEmpty( listSelectedBlogPosts ) )
+        {
+            // Convert the value of the IDs from strings to integers and put them in a List
+            return Arrays.stream( listSelectedBlogPosts ).map( Integer::parseInt ).collect( Collectors.toList( ) );
+        }
+        return Collections.emptyList( );
+    }
+
+
+    /**
+     * Check if the given blogs are locked
+     *            The IDs of the blogs to check
+     * @param strIdSession
+     *            The ID of the session
+     * @return true if one of the blogs is locked
+     */
+    private synchronized boolean checkLockMultipleBlogs( String strIdSession )
+    {
+        if(_listBlogActionsList == null || CollectionUtils.isEmpty( _listSelectedBlogIds ))
+        {
+            return false;
+        }
+        for ( int blogId : _listSelectedBlogIds )
+        {
+            // If one of the blogs is locked, return true
+            if ( checkLockBlog( blogId, strIdSession ) )
+            {
+                return true;
+            }
+        }
+        // None of the blogs is locked
+        return false;
+    }
+
+    private void updateArchiveMultipleBlogs( List<Integer> listBlogIds, boolean bArchive )
+    {
+        if( listBlogIds == null )
+        {
+            return;
+        }
+        for ( int i = 0; i < listBlogIds.size( ); i++ )
+        {
+            Integer blogId = listBlogIds.get( i );
+            BlogHome.updateBlogArchiveId(bArchive, blogId);
+            Blog blog = BlogHome.findByPrimaryKey( blogId );
+            BlogSearchService.getInstance( ).updateDocument( blog );
+            BlogSearchService.getInstance( ).updateDocument( blog );
+            if( bArchive )
+            {
+                BlogPublicationHome.getDocPublicationByIdDoc( blogId );
+
+                BlogPublicationHome.getDocPublicationByIdDoc( blogId );
+                if ( BlogPublicationHome.getDocPublicationByIdDoc( blogId ) != null && BlogPublicationHome.getDocPublicationByIdDoc( blogId ).size( ) > 0 )
+                {
+                    BlogPublicationHome.removeByBlogId( blogId );
+                }
+            }
+        }
     }
 
     /**

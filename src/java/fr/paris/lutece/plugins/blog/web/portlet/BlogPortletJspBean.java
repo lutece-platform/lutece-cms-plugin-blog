@@ -93,7 +93,7 @@ public class BlogPortletJspBean extends PortletJspBean
     {
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-        List<Blog> listBlog = BlogHome.getBlogsList( );
+        List<Blog> listBlog = BlogHome.selectByArchiveStatus(false);
         HashMap<String, Object> model = new HashMap<>( );
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );

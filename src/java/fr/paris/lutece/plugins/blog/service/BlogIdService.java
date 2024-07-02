@@ -53,6 +53,7 @@ public class BlogIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_MODIFY = "blog.rbac.blog.permission.modify";
     private static final String PROPERTY_LABEL_DELETE = "blog.rbac.blog.permission.delete";
     private static final String PROPERTY_LABEL_PUBLISH = "blog.rbac.blog.permission.publish";
+    private static final String PROPERTY_LABEL_ARCHIVE = "blog.rbac.blog.permission.archive";
 
     @Override
     public void register( )
@@ -87,6 +88,11 @@ public class BlogIdService extends ResourceIdService
         p = new Permission( );
         p.setPermissionKey( Blog.PERMISSION_PUBLISH );
         p.setPermissionTitleKey( PROPERTY_LABEL_PUBLISH );
+        rt.registerPermission( p );
+
+        p = new Permission( );
+        p.setPermissionKey( Blog.PERMISSION_ARCHIVE);
+        p.setPermissionTitleKey( PROPERTY_LABEL_ARCHIVE );
         rt.registerPermission( p );
 
         // for all permissions

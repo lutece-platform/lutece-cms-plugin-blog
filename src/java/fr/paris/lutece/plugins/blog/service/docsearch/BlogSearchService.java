@@ -46,6 +46,7 @@ import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.plugins.blog.business.Blog;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -266,6 +267,22 @@ public final class BlogSearchService
 
         return sbLogs.toString( );
     }
+    public void updateDocument ( Blog blog) {
+        try ( IndexWriter writer = new IndexWriter( FSDirectory.open( Paths.get( _strIndex ) ), new IndexWriterConfig( _analyzer ) ) )
+        {
+            IndexWriterConfig conf = new IndexWriterConfig( _analyzer );
+            LogMergePolicy mergePolicy = new LogDocMergePolicy( );
+            mergePolicy.setMergeFactor( _nWriterMergeFactor );
+            conf.setMergePolicy( mergePolicy );
+            conf.setOpenMode( OpenMode.CREATE_OR_APPEND );
+            _indexer.updateDocument( writer, blog );
+        }
+        catch( Exception e )
+        {
+            AppLogService.error( "Indexing error : " + e.getMessage( ), e );
+        }
+
+    }
 
     /**
      * Get search results
@@ -390,13 +407,22 @@ public final class BlogSearchService
             flags.add( BooleanClause.Occur.MUST );
         }
 
-        if ( filter.getIsUnpulished( ) > 0 )
-        {
-            Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) == 1 ) );
-            Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
-            queries.add( termQueryIsUnpublished.toString( ) );
-            sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
+            Term termIsArchived = new Term( BlogSearchItem.FIELD_ARCHIVED, filter.getIsArchived() ? "true" : "false" );
+            Query termQueryIsArchived = new TermQuery( termIsArchived );
+            queries.add( termQueryIsArchived.toString( ) );
+            sectors.add( BlogSearchItem.FIELD_ARCHIVED );
             flags.add( BooleanClause.Occur.MUST );
+
+        if ( !filter.getIsArchived( ))
+        {
+            if ( filter.getIsUnpulished( ) > 0 )
+            {
+                Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) == 1 ) );
+                Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
+                queries.add( termQueryIsUnpublished.toString( ) );
+                sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
+                flags.add( BooleanClause.Occur.MUST );
+            }
         }
 
         Term term = new Term( SearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );

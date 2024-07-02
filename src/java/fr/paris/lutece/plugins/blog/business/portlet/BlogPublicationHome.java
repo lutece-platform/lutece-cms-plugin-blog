@@ -163,6 +163,18 @@ public class BlogPublicationHome
         _dao.remove( nIdDoc, nIdPortlet, _plugin );
 
     }
+    /**
+     * Delete the BlogPublication by the blog id
+     *
+     * @param nIdDoc
+     *            The Blog id
+     */
+    public static void removeByBlogId( int nIdDoc )
+    {
+        _dao.deleteBlogsId( nIdDoc, _plugin );
+
+    }
+
 
     /**
      * Load all BlogPublication
@@ -237,4 +249,5 @@ public class BlogPublicationHome
     {
         return _dao.countPublicationByIdBlogAndDate( nIdBlog, date, _plugin );
     }
+
 }
