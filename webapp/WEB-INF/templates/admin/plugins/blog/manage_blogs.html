@@ -63,10 +63,32 @@
 		<@messages infos=infos />
 		<@box>
 			<@boxBody>
+				<@tform id='form_checkbox_action' name='form_checkbox_action' method='post' class='p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+				<@input type='hidden' id='action' name='action' value='form_checkbox_action' />
 					<#assign idx=0 />
+					<#if permission_manage_archive_blog || permission_manage_delete_blog>
+						<@div class='d-flex flex-row'>
+							<@inputGroup class='p-2'>
+								<@select id='select_blog_action' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' class='p-2'>
+									<#if permission_manage_archive_blog>
+										<option value=1 >#i18n{blog.manage_blogs.labelUnarchive}</option>
+										<option value=0 selected>#i18n{blog.manage_blogs.labelArchive}</option>
+									</#if>
+									<#if permission_manage_delete_blog>
+										<option value=2>#i18n{blog.manage_blogs.delete}</option>
+									</#if>
+								</@select>
+								<@inputGroupItem type='btn'>
+									<@button type='submit' id='button_apply_selected_action' name='button_apply_selected_action' title='#i18n{blog.manage_blogs.applyToSelection}' buttonIcon='check' hideTitle=['all'] disabled=true />
+								</@inputGroupItem>
+							</@inputGroup>
+						</@div>
+					</#if>
 				<@table headBody=true >
 					<@tr>
-						<@th><input id="select_all_blogs_id" type="checkbox"> </input></@th>
+						<#if permission_manage_archive_blog || permission_manage_delete_blog>
+							<@th><@checkBox name='select_all_blogs_id' id='select_all_blogs_id' /></@th>
+						</#if>
 						<@th>#i18n{blog.manage_blogs.columnContentLabel} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" /></@th>
 						<@th>#i18n{blog.manage_blogs.columnCreationDate} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" /></@th>
 						<@th>#i18n{blog.manage_blogs.columnUpdateDate} 	 <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="updateDate" /></@th>
@@ -78,9 +100,11 @@
 					<@tableHeadBodySeparator />
 						<#list blog_list as blog>
 						<@tr>
-							<@td>
-								<@checkBox id='selected_blog_${blog.id}' name='select_blog_id' value='${blog.id}' />
-							</@td>
+							<#if permission_manage_archive_blog || permission_manage_delete_blog>
+								<@td>
+									<@checkBox id='selected_blog_${blog.id}' name='select_blog_id' value='${blog.id}' />
+								</@td>
+							</#if>
 							<@td>
 								<@div class='d-flex justify-content-between align-items-center mb-0 w-100'>
 									<@div class='mb-1'>
@@ -202,6 +226,7 @@
 						<#assign idx=idx + 1/>
 					</#list>
 				</@table>
+				</@tform>
 			</@boxBody>
 		</@box>
 		<@paginationAdmin paginator=paginator combo=1 />
@@ -275,30 +300,35 @@ let btnApplyActionOnSelection = document.getElementById('button_apply_selected_a
 
 // When the "Check all" / "Uncheck all" element is clicked, check / uncheck all the blog posts' checkboxes
 document.getElementById('select_all_blogs_id').addEventListener('click', function () {
-	let selectionButton = document.getElementById('select_blog_action')
-	let checkBoxes = document.querySelectorAll('input[name="select_blog_id"]')
+	var selectionButton = document.getElementById('select_blog_action')
+	var checkBoxes = document.querySelectorAll('input[name="select_blog_id"]')
 
 	// Check / uncheck the available checkboxes
 	checkBoxes.forEach(function (checkBox) {
 		checkBox.checked = this.checked
 	}, this);
+	manageActionButtonVisibility();
 });
 
 // Enable / disabled the selection of an action when a blog post's checkbox is checked
 document.querySelectorAll('input[name="select_blog_id"]').forEach(function (checkbox) {
 	checkbox.addEventListener('change', function () {
-		let selectionButton = document.getElementById('select_blog_action')
-		let selectedCheckBoxes = document.querySelectorAll('input[name="select_blog_id"]:checked')
+		manageActionButtonVisibility();
+	})
+});
+
+	function manageActionButtonVisibility() {
+		var selectionButton = document.getElementById('select_blog_action');
+		var selectedCheckBoxes = document.querySelectorAll('input[name="select_blog_id"]:checked');
 		if (selectedCheckBoxes.length > 0) {
 			// Enable the selection and execution of an action
-			selectionButton.removeAttribute('disabled')
-			btnApplyActionOnSelection.removeAttribute('disabled')
+			selectionButton.removeAttribute('disabled');
+			btnApplyActionOnSelection.removeAttribute('disabled');
 		}
 		else {
 			// Disable the selection and execution of an action
-			selectionButton.setAttribute('disabled', 'disabled')
-			btnApplyActionOnSelection.setAttribute('disabled', 'disabled')
+			selectionButton.setAttribute('disabled', 'disabled');
+			btnApplyActionOnSelection.setAttribute('disabled', 'disabled');
 		}
-	})
-});
+	}
 </script>
