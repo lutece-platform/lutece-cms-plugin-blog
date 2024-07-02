@@ -66,10 +66,15 @@
 				<@tform id='form_checkbox_action' name='form_checkbox_action' method='post' class='p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
 				<@input type='hidden' id='action' name='action' value='form_checkbox_action' />
 					<#assign idx=0 />
+                    <#if info_message?? && info_message?trim !=''>
+                        <@initToast>
+                            <@addToast content=info_message class='text-bg-info border-0' />
+                        </@initToast>
+                    </#if>
 					<#if permission_manage_archive_blog || permission_manage_delete_blog>
 						<@div class='d-flex flex-row'>
 							<@inputGroup class='p-2'>
-								<@select id='select_blog_action' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' class='p-2'>
+								<@select id='select_blog_action' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' class='p-2' disabled=true>
 									<#if permission_manage_archive_blog>
 										<option value=1 >#i18n{blog.manage_blogs.labelUnarchive}</option>
 										<option value=0 selected>#i18n{blog.manage_blogs.labelArchive}</option>
@@ -202,10 +207,10 @@
 								</#if>
 								</@btnGroup>
 								<#if permission_manage_archive_blog>
-									<#if blog.isArchived() >
-										<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=updateArchiveMultipleBlogs&amp;to_archive=true&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
+                                    <#if blog.isArchived() >
+                                        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=1&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
 									<#else>
-										<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=updateArchiveMultipleBlogs&amp;to_archive=false&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
+                                        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=0&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
 									</#if>
 								</#if>
 								<#if permission_manage_delete_blog>
