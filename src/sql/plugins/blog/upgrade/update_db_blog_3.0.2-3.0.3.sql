@@ -8,6 +8,7 @@ INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_ord
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.number_mandatory_tags', '0');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');
+
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.editor', 'tinymce5');
 
 -- add a version to blogs that does not have one
@@ -17,3 +18,7 @@ INSERT INTO blog_versions (id_version,id_blog,version,content_label,creation_dat
     WHERE a.version = 1
 ON DUPLICATE KEY UPDATE id_version=id_version;
 
+--
+-- Add new column blog_archive to blog_blog
+--
+ALTER TABLE blog_blog ADD COLUMN is_archived boolean DEFAULT false;
