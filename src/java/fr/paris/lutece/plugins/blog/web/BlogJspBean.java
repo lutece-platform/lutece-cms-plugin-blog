@@ -171,6 +171,9 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_TO_ARCHIVE = "to_archive";
 
     protected static final String PARAMETER_SELECTED_BLOGS = "select_blog_id";
+    protected static final String PARAMETER_SELECTED_BLOG_ACTION = "select_blog_action";
+    protected static final String PARAMETER_SELECTED_BLOG_IDS_LIST = "selected_blogs_list";
+
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
@@ -245,7 +248,8 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_REMOVE_HISTORY_BLOG = "removeHistoryBlog";
     private static final String ACTION_CONFIRM_REMOVE_HISTORY_BLOG = "confirmRemoveHistoryBlog";
     private static final String ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS = "updateArchiveMultipleBlogs";
-
+    private static final String ACTION_REMOVE_MULTIPLE_BLOGS = "removeMultipleBlogs";
+    private static final String ACTION_EXECUTE_SELECTED_ACTION = "form_checkbox_action";
     // Infos
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
     private static final String INFO_BLOG_UPDATED = "blog.info.blog.updated";
@@ -258,6 +262,8 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ERROR_HISTORY_BLOG_NOT_REMOVED = "blog.error.history.blog.notRemoved";
     private static final String MESSAGE_ERROR_MANDATORY_TAGS = "blog.message.errorMandatoryTags";
 
+    private static final String ERROR_ACTION_EXECUTION_FAILED = "blog.message.error.action.executionFailed";
+    private static final String ERROR_ACTION_NOT_FOUND = "blog.message.error.action.notFound";
     // Filter Marks
     protected static final String MARK_BLOG_FILTER_LIST = "blog_filter_list";
     protected static final String MARK_BLOG_FILTER_NAME = "Nom";
@@ -1669,7 +1675,55 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
 
+    /**
+     * Handles the manual delete of multiple blog posts
+     *
+     * @param request
+     *            The Http request
+     * @return the jsp URL to display the main blog posts' management view
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_REMOVE_MULTIPLE_BLOGS )
+    public String doRemoveMultipleBlog( HttpServletRequest request ) throws AccessDeniedException
+    {
+        User user = AdminUserService.getAdminUser( request );
+        AdminUser adminUser = AdminUserService.getAdminUser( request );
 
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, user ) && !adminUser.isAdmin( ) )
+        {
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, getLocale( ) );
+            throw new AccessDeniedException( strMessage );
+        }
+        // Get a List of the selected posts' IDs, from the current session
+        _listSelectedBlogIds = getSelectedBlogPostsIds( request );
+
+        // Check if any of the selected post is being modified by another user
+        if ( checkLockMultipleBlogs( request.getSession( ).getId( ) ) )
+        {
+            UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strMessageUrl );
+        }
+        removeMultipleBlogs( _listSelectedBlogIds );
+        return redirectView( request, VIEW_MANAGE_BLOGS );
+    }
+    private void removeMultipleBlogs( List<Integer> listBlogIds )
+    {
+        if( listBlogIds == null )
+        {
+            return;
+        }
+        for ( int blogId : listBlogIds )
+        {
+            BlogPublicationHome.getDocPublicationByIdDoc( blogId );
+            if ( BlogPublicationHome.getDocPublicationByIdDoc( blogId ) != null && BlogPublicationHome.getDocPublicationByIdDoc( blogId ).size( ) > 0 )
+            {
+                BlogPublicationHome.removeByBlogId( blogId );
+            }
+            BlogHome.removeVersions( blogId );
+            BlogHome.remove( blogId );
+        }
+    }
     /**
      * Handles the manual archiving of multiple blog posts
      *
@@ -1684,9 +1738,10 @@ public class BlogJspBean extends ManageBlogJspBean
         User user = AdminUserService.getAdminUser( request );
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE, user ) )
         {
-            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, getLocale( ) );
             throw new AccessDeniedException( strMessage );
         }
+
         // Get a List of the selected posts' IDs, from the current session
         _listSelectedBlogIds = getSelectedBlogPostsIds( request );
 
@@ -1698,11 +1753,89 @@ public class BlogJspBean extends ManageBlogJspBean
             return redirect( request, strMessageUrl );
         }
         // Archive the selected blog posts
-        Boolean bArchive = Boolean.parseBoolean( request.getParameter( PARAMETER_TO_ARCHIVE ) );
+        if( request.getParameter( PARAMETER_TO_ARCHIVE ) != null)
+        {
+            Boolean bArchive = Boolean.parseBoolean( request.getParameter( PARAMETER_TO_ARCHIVE ) );
+            updateArchiveMultipleBlogs( _listSelectedBlogIds, bArchive );
+        } else
+        {
+        Boolean bArchive = Boolean.parseBoolean( request.getAttribute( PARAMETER_TO_ARCHIVE ).toString( ) );
         updateArchiveMultipleBlogs( _listSelectedBlogIds, bArchive );
+        request.removeAttribute( PARAMETER_TO_ARCHIVE );
+        }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
 
+    /**
+     * Process a specific action on a selection of multiple blog post elements
+     *
+     * @param request
+     *            The Http request
+     * @return the URL to redirect to once the action is executed
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_EXECUTE_SELECTED_ACTION )
+    public String doExecuteSelectedAction( HttpServletRequest request ) throws AccessDeniedException
+    {
+        Locale locale = getLocale( );
+
+        // Get the selected action
+        int selectedActionId = getSelectedAction( request );
+        // Get the IDs of the blog posts selected for the action
+        _listSelectedBlogIds = getSelectedBlogPostsIds( request );
+
+        // Check if the content retrieved is null. Redirect and display an error if it is the case
+        if ( selectedActionId == -1 || CollectionUtils.isEmpty( _listSelectedBlogIds ) )
+        {
+            addError( ERROR_ACTION_EXECUTION_FAILED, locale );
+            return redirectView( request, VIEW_MANAGE_BLOGS );
+        }
+
+        // Save the list of selected blogs in the current session's attributes
+        request.getSession( ).setAttribute( PARAMETER_SELECTED_BLOG_IDS_LIST, _listSelectedBlogIds );
+
+        // Execute the action selected by the user
+        if ( selectedActionId == 0 )
+        {
+            // add parameter to the request to_archive=true
+            request.setAttribute( PARAMETER_TO_ARCHIVE, Boolean.TRUE.toString( ) );
+            return doArchiveMultipleBlog( request );
+        }
+        else if ( selectedActionId == 1 )
+        {
+            // add parameter to the request to_archive=false
+            request.setAttribute( PARAMETER_TO_ARCHIVE, Boolean.FALSE.toString( ) );
+            return doArchiveMultipleBlog( request );
+        }
+        else if ( selectedActionId == 2 )
+            {
+                return doRemoveMultipleBlog( request );
+            }
+            else
+            {
+                addError( ERROR_ACTION_NOT_FOUND, locale );
+                return redirectView( request, VIEW_MANAGE_BLOGS );
+            }
+    }
+
+    /**
+     * Get the value of the action selected by the user
+     *
+     * @param request
+     *            The Http request
+     * @return the ID of the selected action, or -1 if the value couldn't be parsed properly
+     *
+     */
+    private int getSelectedAction( HttpServletRequest request )
+    {
+        // Retrieve the value of the selected action from the request
+        String strSelectedActionId = request.getParameter( PARAMETER_SELECTED_BLOG_ACTION );
+        if ( StringUtils.isNumeric( strSelectedActionId ) )
+        {
+            return Integer.parseInt( strSelectedActionId );
+        }
+        return -1;
+    }
 
 
     /**
