@@ -26,6 +26,7 @@ edit_comment varchar(255) default '' NOT NULL,
 description long varchar,
 shareable int default 0 NOT NULL,
 url varchar(255) default '',
+is_archived boolean default false,
 
 PRIMARY KEY (id_blog)
 );
@@ -115,6 +116,7 @@ CONSTRAINT fk_blog FOREIGN KEY(id_blog) references blog_blog (id_blog),
 CONSTRAINT fk_id_tag FOREIGN KEY(id_tag) references blog_tag(id_tag),
 PRIMARY KEY (id_tag, id_blog)
 );
+
 
 /*==============================================================*/
 /* Table structure for table blog_indexer_action				*/

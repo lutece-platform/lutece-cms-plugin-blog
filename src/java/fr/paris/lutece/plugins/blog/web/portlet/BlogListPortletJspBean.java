@@ -190,7 +190,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         {
             Blog blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( documentId );
 
-            if ( blog != null )
+            if ( blog != null && !blog.isArchived())
             {
                 listBlog.add( blog );
             }
@@ -255,6 +255,7 @@ public class BlogListPortletJspBean extends PortletJspBean
             {
                 filter.setUpdateDateBefor( DateUtil.formatDate( _dateUpdateBlogBefor, getLocale( ) ) );
             }
+            filter.setIsArchived( false );
 
             BlogSearchService.getInstance( ).getSearchResults( filter, listBlogsId );
 

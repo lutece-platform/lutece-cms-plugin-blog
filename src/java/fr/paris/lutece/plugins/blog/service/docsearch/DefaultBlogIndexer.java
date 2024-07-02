@@ -45,6 +45,7 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -114,6 +115,22 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
                 indexWriter.addDocument( doc );
             }
         }
+    }
+
+    /**
+     * Update isArchived field in the index
+     */
+@Override
+    public void updateDocument( IndexWriter indexWriter, Blog blog ) throws IOException
+    {
+        Term term = new Term( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( blog.getId( ) ) );
+        Term [ ] terms = {
+                term
+        };
+
+        indexWriter.deleteDocuments( terms );
+        Document doc = getDocument( blog );
+        indexWriter.addDocument( doc );
     }
 
     /**
@@ -223,7 +240,8 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         boolean isPublished = blog.getBlogPublication( ).stream( )
                 .anyMatch( publication -> today.after( publication.getDateBeginPublishing( ) ) && today.before( publication.getDateEndPublishing( ) ) );
         doc.add( new TextField( BlogSearchItem.FIELD_UNPUBLISHED, ( isPublished ) ? "false" : "true", Field.Store.YES ) );
-
+       // add isArchived field
+        doc.add( new TextField( BlogSearchItem.FIELD_ARCHIVED, blog.isArchived( ) ? "true" : "false", Field.Store.YES ) );
         // Add the uid as a field, so that index can be incrementally maintained.
         // This field is not stored with question/answer, it is indexed, but it is not
         // tokenized prior to indexing.
