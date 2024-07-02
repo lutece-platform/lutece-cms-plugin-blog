@@ -186,9 +186,6 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PROPERTY_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
     protected static final String PROPERTY_BLOG_ARCHIVE = "blog.manage_blog_archives.labelActionArchive";
 
-    // Properties
-    private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
-
     // Markers
     protected static final String MARK_BLOG_LIST = "blog_list";
     protected static final String MARK_BLOG_VERSION_LIST = "blog_version_list";
@@ -216,12 +213,22 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String JSP_MANAGE_BLOGS = "jsp/admin/plugins/blog/ManageBlogs.jsp";
 
     // Properties
+    private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
     private static final String MESSAGE_CONFIRM_REMOVE_BLOG = "blog.message.confirmRemoveBlog";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
     private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
     private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
+    private static final String MESSAGE_CONFIRM_ARCHIVE_BLOG = "blog.message.confirmArchiveBlog";
+    private static final String MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmArchiveMultipleBlogs";
+    private static final String MESSAGE_CONFIRM_UNARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmUnarchiveMultipleBlogs";
+    private static final String MESSAGE_CONFIRM_UNARCHIVE_BLOG= "blog.message.confirmUnarchiveBlog";
+    private static final String MESSAGE_CONFIRM_REMOVE_MULTIPE_BLOGS = "blog.message.confirmRemoveMultipleBlogs";
 
     protected static final String MARK_BLOG_ACTION_LIST = "selection_action_list";
+    private static final String INFO_BLOG_UNARCHIVED = "blog.info.blog.blogUnarchived";
+    private static final String INFO_MULTIPLE_BLOGS_UNARCHIVED = "blog.info.blog.multipleBlogsUnarchived";
+    private static final String INFO_BLOG_ARCHIVED = "blog.info.blog.blogArchived";
+    private static final String INFO_MULTIPLE_BLOGS_ARCHIVED = "blog.info.blog.multipleBlogsArchived";
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "blog.model.entity.blog.attribute.";
 
@@ -251,6 +258,11 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS = "updateArchiveMultipleBlogs";
     private static final String ACTION_REMOVE_MULTIPLE_BLOGS = "removeMultipleBlogs";
     private static final String ACTION_EXECUTE_SELECTED_ACTION = "form_checkbox_action";
+    private static final String ACTION_CONFIRM_ARCHIVE_BLOG = "confirmArchiveBlog";
+    private static final String ACTION_ARCHIVE_BLOG = "archiveBlog";
+    private static final String ACTION_CONFIRM_ARCHIVE_BLOGS = "confirmArchiveBlogs";
+    private static final String ACTION_CONFIRM_UNARCHIVE_BLOGS = "confirmUnarchiveBlogs";
+
     // Infos
     private static final String INFO_BLOG_CREATED = "blog.info.blog.created";
     private static final String INFO_BLOG_UPDATED = "blog.info.blog.updated";
@@ -465,9 +477,20 @@ public class BlogJspBean extends ManageBlogJspBean
         boolean bPermissionArchive = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE,
                 (User) getUser( ) );
 
+        HttpSession session = request.getSession();
+
         Map<String, Object> model = new HashMap<>( );
+        if( session.getAttribute(PARAMETER_INFO_MESSAGE  ) != null )
+        {
+            Locale locale = request.getLocale( );
+            String messageKey = request.getSession().getAttribute(PARAMETER_INFO_MESSAGE).toString();
+            model.put( PARAMETER_INFO_MESSAGE, I18nService.getLocalizedString( messageKey, locale ) );
+            session.removeAttribute(PARAMETER_INFO_MESSAGE);
+        } else {
+            model.put( PARAMETER_INFO_MESSAGE, null );
+        }
+
         model.put( MARK_STATUS_FILTER, _nIsUnpublished );
-        model.put( MARK_BLOG_ACTION_LIST, _listBlogActionsList );
         model.put( MARK_BLOG_LIST, listDocuments );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_BLOG_FILTER_LIST, getBlogFilterList( ) );
@@ -1643,6 +1666,94 @@ public class BlogJspBean extends ManageBlogJspBean
         }
     }
     /**
+     * Display the confirmation message before one or multiple selected blog posts are removed
+     *
+     * @param request
+     *            The Http request
+     * @return the html code to confirm the action
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_CONFIRM_ARCHIVE_BLOGS )
+    public String getconfirmArchiveBlogs( HttpServletRequest request ) throws AccessDeniedException
+    {
+        // Check if the user has the permission to archive a blog
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( UNAUTHORIZED );
+        }
+
+        // Check if one of the blog selected is currently locked. Display a message and redirect the user if it's the case
+        if ( checkLockMultipleBlogs( request.getSession( ).getId( ) ) )
+        {
+            UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strMessageUrl );
+        }
+
+        UrlItem url = new UrlItem( getActionUrl( ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS ) );
+        url.addParameter( PARAMETER_SELECTED_BLOGS, _listSelectedBlogIds.stream( ).map( String::valueOf ).collect( Collectors.joining( "," ) ) );
+        url.addParameter( PARAMETER_TO_ARCHIVE, String.valueOf( true ));
+        // Check if there's 1 or multiple posts being archived, to adapt the content of the displayed message
+        String confirmationMessage = _listSelectedBlogIds.size( ) > 1 ? MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS : MESSAGE_CONFIRM_ARCHIVE_BLOG;
+        if( _listSelectedBlogIds.size( ) > 1 )
+        {
+            Object [ ] messageArgs = {
+                    _listSelectedBlogIds.size( )
+            };
+            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, messageArgs, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+        }
+        else
+        {
+            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+        }
+    }
+    /**
+     * Display the confirmation message before one or multiple selected blog posts are archived
+     *
+     * @param request
+     *            The Http request
+     * @return the html code to confirm the action
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_CONFIRM_UNARCHIVE_BLOGS )
+    public String getconfirmUnarchiveBlogs( HttpServletRequest request ) throws AccessDeniedException
+    {
+        // Check if the user has the permission to archive a blog
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE,
+                (User) getUser( ) ) )
+        {
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            throw new AccessDeniedException( strMessage );
+        }
+
+        // Check if one of the blog selected is currently locked. Display a message and redirect the user if it's the case
+        if ( checkLockMultipleBlogs( request.getSession( ).getId( ) ) )
+        {
+            UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strMessageUrl );
+        }
+
+        UrlItem url = new UrlItem( getActionUrl( ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS ) );
+        url.addParameter( PARAMETER_SELECTED_BLOGS, _listSelectedBlogIds.stream( ).map( String::valueOf ).collect( Collectors.joining( "," ) ) );
+        url.addParameter( PARAMETER_TO_ARCHIVE, String.valueOf( false ));
+        // Check if there's 1 or multiple posts being archived, to adapt the content of the displayed message
+        String confirmationMessage = _listSelectedBlogIds.size( ) > 1 ? MESSAGE_CONFIRM_UNARCHIVE_MULTIPLE_BLOGS : MESSAGE_CONFIRM_UNARCHIVE_BLOG;
+        if( _listSelectedBlogIds.size( ) > 1 )
+        {
+            Object [ ] messageArgs = {
+                    _listSelectedBlogIds.size( )
+            };
+            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, messageArgs, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+        }
+        else
+        {
+            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
+        }
+    }
+
+    /**
      * Handles the manual archiving of multiple blog posts
      *
      * @param request
@@ -1660,7 +1771,7 @@ public class BlogJspBean extends ManageBlogJspBean
             throw new AccessDeniedException( strMessage );
         }
         // Get a List of the selected posts' IDs, from the current session
-        _listSelectedBlogIds = getSelectedBlogPostsIds( request );
+        _listSelectedBlogIds = (List<Integer>) request.getSession( ).getAttribute( PARAMETER_SELECTED_BLOG_IDS_LIST );
 
         // Check if any of the selected post is being modified by another user
         if ( checkLockMultipleBlogs( request.getSession( ).getId( ) ) )
@@ -1670,17 +1781,43 @@ public class BlogJspBean extends ManageBlogJspBean
             return redirect( request, strMessageUrl );
         }
         // Archive the selected blog posts
-        if( request.getParameter( PARAMETER_TO_ARCHIVE ) != null)
-        {
-            Boolean bArchive = Boolean.parseBoolean( request.getParameter( PARAMETER_TO_ARCHIVE ) );
-            updateArchiveMultipleBlogs( _listSelectedBlogIds, bArchive );
-        } else
-        {
-        Boolean bArchive = Boolean.parseBoolean( request.getAttribute( PARAMETER_TO_ARCHIVE ).toString( ) );
+        Boolean bArchive = Boolean.parseBoolean( request.getParameter( PARAMETER_TO_ARCHIVE ) );
         updateArchiveMultipleBlogs( _listSelectedBlogIds, bArchive );
-        request.removeAttribute( PARAMETER_TO_ARCHIVE );
-        }
+        HttpSession session = request.getSession();
+        session.setAttribute( PARAMETER_INFO_MESSAGE, getArchivedResultMessageKey( bArchive, _listSelectedBlogIds ) );
         return redirectView( request, VIEW_MANAGE_BLOGS );
+    }
+
+    /**
+     * Get the key of the message to display after the archiving of multiple blog posts
+     * @param toArchived
+     * @param listBlogIds
+     * @return the key of the message to display
+     */
+    private String getArchivedResultMessageKey(Boolean toArchived, List<Integer> listBlogIds)
+    {
+        if(toArchived)
+        {
+            if(listBlogIds.size() == 1)
+            {
+                return INFO_BLOG_ARCHIVED;
+            }
+            else
+            {
+                return INFO_MULTIPLE_BLOGS_ARCHIVED;
+            }
+        }
+        else
+        {
+            if(listBlogIds.size() == 1)
+            {
+                return INFO_BLOG_UNARCHIVED;
+            }
+            else
+            {
+                return INFO_MULTIPLE_BLOGS_UNARCHIVED;
+            }
+        }
     }
 
     /**
@@ -1714,15 +1851,11 @@ public class BlogJspBean extends ManageBlogJspBean
         // Execute the action selected by the user
         if ( selectedActionId == 0 )
         {
-            // add parameter to the request to_archive=true
-            request.setAttribute( PARAMETER_TO_ARCHIVE, Boolean.TRUE.toString( ) );
-            return doArchiveMultipleBlog( request );
+            return getconfirmArchiveBlogs( request );
         }
         else if ( selectedActionId == 1 )
         {
-            // add parameter to the request to_archive=false
-            request.setAttribute( PARAMETER_TO_ARCHIVE, Boolean.FALSE.toString( ) );
-            return doArchiveMultipleBlog( request );
+            return getconfirmUnarchiveBlogs( request );
         }
         else if ( selectedActionId == 2 )
             {
