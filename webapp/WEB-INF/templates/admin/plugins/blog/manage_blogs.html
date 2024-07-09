@@ -198,9 +198,9 @@
 								<#if permission_manage_archive_blog>
 									<#if permission_manage_archive_blog>
 										<#if status_filter == 3>
-											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=1&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
+											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=1&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
 										<#else>
-											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=0&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
+											<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=0&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
 										</#if>
 									</#if>
 								</#if>
