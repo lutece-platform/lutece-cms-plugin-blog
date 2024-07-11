@@ -115,6 +115,7 @@ import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
+import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
 import static fr.paris.lutece.plugins.blog.web.adminDashboard.BlogAdminDashboardJspBean.RIGHT_AVANCED_CONFIGURATION;
 
 /**
@@ -501,7 +502,9 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
         model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionPublish );
         model.put( MARK_PERMISSION_ARCHIVE_BLOG, bPermissionArchive );
-        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard) );
 
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_BLOG, TEMPLATE_MANAGE_BLOGS, model );
@@ -658,10 +661,10 @@ public class BlogJspBean extends ManageBlogJspBean
 
         String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
         Map<String, Object> model = getModel( );
-
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
                 (User) getUser( ) );
-        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
+ String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard ) );
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
@@ -701,7 +704,9 @@ public class BlogJspBean extends ManageBlogJspBean
                 return redirectView( request, VIEW_CREATE_BLOG );
             }
             // Check if the number of mandatory tags is respected
-            int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags( );
+     String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard);
             if (nNumberMandatoryTags  > _blog.getTag( ).size( ) )
             {
                 String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));
@@ -1054,14 +1059,15 @@ public class BlogJspBean extends ManageBlogJspBean
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
                 (User) getUser( ) );
-
+ String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
+        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard) );
 
         ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), Blog.PROPERTY_RESOURCE_TYPE );
 
@@ -1116,7 +1122,9 @@ public class BlogJspBean extends ManageBlogJspBean
                 return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
             }
             // Check if the number of mandatory tags is respected
-            int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags( );
+     String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard);
             if (nNumberMandatoryTags > _blog.getTag( ).size( ) )
             {
                 String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));

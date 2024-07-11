@@ -72,6 +72,7 @@ import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
+import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
 
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
@@ -241,7 +242,9 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         if ( _blogPublication.getDateEndPublishing( ) == null )
         {
-            java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate( );
+            String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+            int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+            java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);
 
             _blogPublication.setDateEndPublishing( new java.sql.Date( maxPublicationDate.getTime( ) ) );
         }
@@ -306,7 +309,9 @@ public class BlogPublicationJspBean extends BlogJspBean
             parsed = sdf.parse( dateBeginPublishingStr );
             dateBeginPublishing = new Date( parsed.getTime( ) );
         }
-        java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate( );
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);
         if ( dateEndPublishingStr != null && !dateEndPublishingStr.isEmpty( ) )
         {
             if(maxPublicationDate != null)

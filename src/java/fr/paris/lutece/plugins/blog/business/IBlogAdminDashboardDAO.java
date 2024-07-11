@@ -2,7 +2,6 @@ package fr.paris.lutece.plugins.blog.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import java.sql.Date;
-import fr.paris.lutece.portal.service.plugin.Plugin;
 
 public interface IBlogAdminDashboardDAO
 {
@@ -13,12 +12,12 @@ public interface IBlogAdminDashboardDAO
      *            the plugin
      * @return the number of mandatory tags
      */
-    int selectNumberMandatoryTags( Plugin plugin );
+    int selectNumberMandatoryTags(int idDashboard, Plugin plugin );
 
-    void updateNumberMandatoryTags( int nNumberMandatoryTags, Plugin plugin );
+    void updateNumberMandatoryTags(int idDashboard, int nNumberMandatoryTags, Plugin plugin );
 
-    void updateMaximumPublicationDate( Date date, Plugin plugin );
+    void updateMaximumPublicationDate(int idDashboard, Date date, Plugin plugin );
 
-    java.util.Date selectMaximumPublicationDate( Plugin plugin );
+    java.util.Date selectMaximumPublicationDate(int idDashboard, Plugin plugin );
 
 }

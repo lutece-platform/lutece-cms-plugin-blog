@@ -1,3 +1,61 @@
+<@tabPanel id='modifyMandatoryBlogTagNumber'>
+    <h1>#i18n{blog.adminFeature.AdvancedConfigurationTags.name}</h1>
+    <@columns sm=12 md=6>
+        <@tform action="jsp/admin/plugins/blog/ManageAdminDashboard.jsp" method="post" name="form_updateMandatoryTagNumber" id="form_updateMandatoryTagNumber">
+            <@input type="hidden" name="action" value="updateMandatoryTagNumber" />
+            <label for="mandatoryTag">#i18n{blog.adminFeature.AdvancedConfigurationTags.description}</label>
+            <input type="checkbox" class="checkbox" id="mandatoryTag" checked>
+            <label for="numberMandatoryTag"> Nombre de tags minimum à associer à un billet de blog</label>
+            <@formGroup  helpKey='#i18n{blog.adminFeature.AdvancedConfigurationTags.help}' labelFor='numberMandatoryTag'>
+                <@input type="number" name="numberMandatoryTag" id="numberMandatoryTag"  value="${number_mandatory_tags}" min=1 />
+            </@formGroup>
+            <@formGroup rows=2>
+                <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary'  />
+            </@formGroup>
+        </@tform>
+    </@columns>
+</@tabPanel>
+<script>
+    let mandatoryTagNumber = document.getElementById('numberMandatoryTag');
+    let mandatoryTag = document.getElementById('mandatoryTag');
+    document.addEventListener('DOMContentLoaded', function () {
+        const numberMandatoryTags = "${number_mandatory_tags}";
+        if (parseInt(numberMandatoryTags) === 0) {
+            mandatoryTagNumber.disabled = true;
+            mandatoryTag.checked = false;
+        } else {
+            mandatoryTagNumber.disabled = false;
+            mandatoryTagNumber.value = numberMandatoryTags;
+            mandatoryTag.checked = "checked";
+        }
+    });
+    mandatoryTag.addEventListener('change', function () {
+        if (this.checked) {
+            mandatoryTagNumber.disabled = false;
+            mandatoryTagNumber.value = 1;
+        } else {
+            mandatoryTagNumber.disabled = true;
+            mandatoryTagNumber.value = 0;
+        }
+    });
+</script>
+
+<@tabPanel id='manageMaxPublicationDate'>
+    <#assign tabTitle>#i18n{blog.adminFeature.ManageMaxPublicationDate.name}</#assign>
+    <h1>#i18n{blog.adminFeature.ManageMaxPublicationDate.name}</h1>
+    <@columns sm=12 md=6>
+        <@tform action="jsp/admin/plugins/blog/ManageAdminDashboard.jsp" method="post" name="form_manageMaxPublicationDate" id="form_manageMaxPublicationDate">
+            <@input type="hidden" name="action" value="manageMaxPublicationDate" />
+            <@formGroup  helpKey='#i18n{blog.adminFeature.manageMaxPublicationDate.help}' labelFor='numberMandatoryTag'>
+                <@input type="date" name="maxPublicationDate" id="maxPublicationDate"  value="${maxPublicationDate}"/>
+            </@formGroup>
+            <@formGroup rows=2>
+                <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary'  />
+            </@formGroup>
+        </@tform>
+    </@columns>
+</@tabPanel>
+
 <@tabPanel id='manageEditorConfig'>
     <#assign tabTitle>#i18n{blog.adminFeature.ManageBlogsEditor.name}</#assign>
     <#assign saved>#i18n{blog.adminFeature.ManageBlogsEditor.saved}</#assign>

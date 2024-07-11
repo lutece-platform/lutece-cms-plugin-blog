@@ -4,22 +4,12 @@
 <%@ page import="static fr.paris.lutece.plugins.blog.web.utils.BlogConstant.PARAMETER_ACTION" %>
 <%@ page import="static fr.paris.lutece.plugins.blog.web.utils.BlogConstant.PARAMETER_MANDATORY_TAG_NUMBER" %>
 <%@ page import="static fr.paris.lutece.plugins.blog.web.utils.BlogConstant.PARAMETER_ACTION" %>
-
 <jsp:useBean id="manageAdminDashboard" scope="session" class="fr.paris.lutece.plugins.blog.web.adminDashboard.BlogAdminDashboardJspBean" />
-<%
-    if(PARAMETER_MANDATORY_TAG_NUMBER.equals(request.getParameter(PARAMETER_ACTION))) {
-        response.sendRedirect( manageAdminDashboard.updateMandatoryTagNumber(request) );
-    }
-    else if (PARAMETER_MANAGE_MAX_PUBLICATION_DATE.equals(request.getParameter(PARAMETER_ACTION)))
-    {
-        response.sendRedirect( manageAdminDashboard.manageMaxPublicationDate(request) );
-    }
-    else if(PARAMETER_BLOG.equals(request.getParameter(PARAMETER_PLUGIN_NAME)))
-        {
-            response.sendRedirect( manageAdminDashboard.getDashboardPage(request) );
-        }
-        else
-        {
-            response.sendRedirect( manageAdminDashboard.getDashboardPage(request) );
-        }
-%>
+<% String strContent = manageAdminDashboard.processController ( request , response ); %>
+
+<%@ page errorPage="../../ErrorPage.jsp" %>
+<jsp:include page="../../AdminHeader.jsp" />
+
+<%= strContent %>
+
+<%@ include file="../../AdminFooter.jsp" %>
