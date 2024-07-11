@@ -43,6 +43,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,6 +93,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -112,6 +114,8 @@ import fr.paris.lutece.util.json.JsonUtil;
 import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
+import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
+import static fr.paris.lutece.plugins.blog.web.adminDashboard.BlogAdminDashboardJspBean.RIGHT_AVANCED_CONFIGURATION;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 
 /**
@@ -170,10 +174,6 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String PROPERTY_PAGE_TITLE_PREVIEW_BLOG = "blog.preview_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_DIFF_BLOG = "blog.diff_blog.pageTitle";
     protected static final String PROPERTY_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
-
-    // Properties
-    private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
-
     // Markers
     protected static final String MARK_BLOG_LIST = "blog_list";
     protected static final String MARK_BLOG_VERSION_LIST = "blog_version_list";
@@ -199,10 +199,10 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String JSP_MANAGE_BLOGS = "jsp/admin/plugins/blog/ManageBlogs.jsp";
 
     // Properties
+    private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
     private static final String MESSAGE_CONFIRM_REMOVE_BLOG = "blog.message.confirmRemoveBlog";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
     private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
-
     // Validations
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "blog.model.entity.blog.attribute.";
 
@@ -241,7 +241,6 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ERROR_HISTORY_BLOG_CANT_REMOVE_ORIGINAL = "blog.error.history.blog.cantRemoveOriginal";
     private static final String ERROR_HISTORY_BLOG_NOT_REMOVED = "blog.error.history.blog.notRemoved";
     private static final String MESSAGE_ERROR_MANDATORY_TAGS = "blog.message.errorMandatoryTags";
-
     // Filter Marks
     protected static final String MARK_BLOG_FILTER_LIST = "blog_filter_list";
     protected static final String MARK_BLOG_FILTER_NAME = "Nom";
@@ -276,6 +275,8 @@ public class BlogJspBean extends ManageBlogJspBean
     protected String _strSortedAttributeName;
     protected Boolean _bIsAscSort;
     protected String [ ] _strTag;
+    private List<Integer> _listSelectedBlogIds = new ArrayList<>( );
+
 
     // Session variable to store working values
     private final BlogServiceSession _blogServiceSession = BlogServiceSession.getInstance( );
@@ -303,6 +304,8 @@ public class BlogJspBean extends ManageBlogJspBean
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
         String strUnpublished = request.getParameter(PARAMETER_UNPUBLISHED);
+
+
 
         if ( strButtonSearch != null )
         {
@@ -333,7 +336,6 @@ public class BlogJspBean extends ManageBlogJspBean
                 _nIsUnpublished = 0;
             }
         }
-
         if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _nIsUnpublished > 0
                 || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
         {
@@ -350,7 +352,6 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 filter.setUser( user.getAccessCode( ) );
             }
-
             filter.setIsUnpulished(_nIsUnpublished);
 
             if ( _dateUpdateBlogAfter != null )
@@ -377,7 +378,6 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             listBlogsId = BlogHome.getIdBlogsList( );
         }
-
         LocalizedPaginator<Integer> paginator = new LocalizedPaginator<>( (List<Integer>) listBlogsId, _nItemsPerPage, getHomeUrl( request ),
                 AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
 
@@ -430,7 +430,6 @@ public class BlogJspBean extends ManageBlogJspBean
                 (User) getUser( ) );
         boolean bPermissionPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH,
                 (User) getUser( ) );
-
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_BLOG_LIST, listDocuments );
         model.put( MARK_PAGINATOR, paginator );
@@ -449,7 +448,9 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
         model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionPublish );
-        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard) );
 
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_BLOG, TEMPLATE_MANAGE_BLOGS, model );
@@ -609,7 +610,8 @@ public class BlogJspBean extends ManageBlogJspBean
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
                 (User) getUser( ) );
-        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard ) );
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
@@ -648,7 +650,9 @@ public class BlogJspBean extends ManageBlogJspBean
                 return redirectView( request, VIEW_CREATE_BLOG );
             }
             // Check if the number of mandatory tags is respected
-            int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags( );
+            String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+            int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+            int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard);
             if (nNumberMandatoryTags  > _blog.getTag( ).size( ) )
             {
                 String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));
@@ -902,7 +906,6 @@ public class BlogJspBean extends ManageBlogJspBean
 
             ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
 
-            addInfo( INFO_BLOG_REMOVED, getLocale( ) );
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
@@ -1000,14 +1003,15 @@ public class BlogJspBean extends ManageBlogJspBean
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
                 (User) getUser( ) );
-
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags( ) );
+        model.put( MARK_NUMBER_MANDATORY_TAGS, BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard) );
 
         ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), Blog.PROPERTY_RESOURCE_TYPE );
 
@@ -1062,7 +1066,9 @@ public class BlogJspBean extends ManageBlogJspBean
                 return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
             }
             // Check if the number of mandatory tags is respected
-            int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags( );
+            String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+            int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+            int nNumberMandatoryTags = BlogAdminDashboardHome.selectNumberMandatoryTags(idDashboard);
             if (nNumberMandatoryTags > _blog.getTag( ).size( ) )
             {
                 String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));
@@ -1548,7 +1554,7 @@ public class BlogJspBean extends ManageBlogJspBean
      *            The Id session
      * @return return true if the blog is locked else false
      */
-    private boolean checkLockBlog( int nIdBlog, String strIdSession )
+    private static boolean checkLockBlog( int nIdBlog, String strIdSession )
     {
         return _mapLockBlog.get( nIdBlog ) != null && !_mapLockBlog.get( nIdBlog ).getSessionId( ).equals( strIdSession );
     }
