@@ -475,7 +475,7 @@ public class BlogJspBean extends ManageBlogJspBean
         Map<String, Object> model = new HashMap<>( );
         if( session.getAttribute(PARAMETER_INFO_MESSAGE  ) != null )
         {
-            Locale locale = request.getLocale( );
+            Locale locale = getLocale( );
             String messageKey = request.getSession().getAttribute(PARAMETER_INFO_MESSAGE).toString();
             model.put( PARAMETER_INFO_MESSAGE, I18nService.getLocalizedString( messageKey, locale ) );
             session.removeAttribute(PARAMETER_INFO_MESSAGE);
@@ -1633,7 +1633,7 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, user )
                 &&  !adminUser.checkRight( RIGHT_AVANCED_CONFIGURATION ) )
         {
-            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, getLocale( ) );
             throw new AccessDeniedException( strMessage );
         }
 
@@ -1679,7 +1679,7 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, user )
                 &&  !adminUser.checkRight( RIGHT_AVANCED_CONFIGURATION ) )
         {
-            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, getLocale( ) );
             throw new AccessDeniedException( strMessage );
         }
         // Get a List of the selected posts' IDs, from the current session
@@ -1781,7 +1781,7 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE,
                 (User) getUser( ) ) )
         {
-            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, getLocale( ) );
             throw new AccessDeniedException( strMessage );
         }
 
@@ -1825,7 +1825,7 @@ public class BlogJspBean extends ManageBlogJspBean
         User user = AdminUserService.getAdminUser( request );
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE, user ) )
         {
-            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, getLocale( ) );
             throw new AccessDeniedException( strMessage );
         }
         // Get a List of the selected posts' IDs, from the current session
@@ -1905,7 +1905,7 @@ public class BlogJspBean extends ManageBlogJspBean
     @Action( ACTION_EXECUTE_SELECTED_ACTION )
     public String doExecuteSelectedAction( HttpServletRequest request ) throws AccessDeniedException
     {
-        Locale locale = request.getLocale( );
+        Locale locale = getLocale( );
 
         // Get the selected action
         int selectedActionId = getSelectedAction( request );
