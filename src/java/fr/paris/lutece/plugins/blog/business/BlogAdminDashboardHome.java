@@ -15,34 +15,34 @@ public final class  BlogAdminDashboardHome
      * Load the maximum publication date
      * @return the maximum publication date
      */
-    public static java.util.Date selectMaximumPublicationDate(  )
+    public static java.util.Date selectMaximumPublicationDate( int idDashboard )
     {
-        return _dao.selectMaximumPublicationDate( _plugin );
+        return _dao.selectMaximumPublicationDate(idDashboard, _plugin );
     }
     /**
      * Update the maximum publication date
      * @param date the maximum publication date
      */
-    public static void updateMaximumPublicationDate( Date date )
+    public static void updateMaximumPublicationDate( int idDashboard, Date date )
     {
-        _dao.updateMaximumPublicationDate( date, _plugin );
+        _dao.updateMaximumPublicationDate(idDashboard, date, _plugin );
     }
     /**
      * Load the number of mandatory tags
      * @return the number of mandatory tags
      */
-    public static int selectNumberMandatoryTags(  )
+    public static int selectNumberMandatoryTags(  int idDashboard )
     {
-        return _dao.selectNumberMandatoryTags( _plugin );
+        return _dao.selectNumberMandatoryTags(idDashboard, _plugin );
     }
 
     /**
      * Update the number of mandatory tags
      * @param nNumberMandatoryTags the number of mandatory tags
      */
-    public static void updateNumberMandatoryTags( int nNumberMandatoryTags )
+    public static void updateNumberMandatoryTags(int idDashboard, int nNumberMandatoryTags )
     {
-        _dao.updateNumberMandatoryTags( nNumberMandatoryTags, _plugin );
+        _dao.updateNumberMandatoryTags(idDashboard, nNumberMandatoryTags, _plugin );
     }
 
 }

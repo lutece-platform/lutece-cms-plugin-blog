@@ -38,6 +38,15 @@
             <feature-group>CONTENT</feature-group>
             <feature-icon-url/>
 		</admin-feature>
+        <admin-feature>
+            <feature-id>BLOG_ADVANCED_CONFIGURATION</feature-id>
+            <feature-title>blog.adminFeature.AdvancedConfiguration.name</feature-title>
+            <feature-description>blog.adminFeature.AdvancedConfiguration.description</feature-description>
+            <feature-level>1</feature-level>
+            <feature-url>jsp/admin/plugins/blog/ManageAdminDashboard.jsp</feature-url>
+            <feature-group>CONTENT</feature-group>
+            <feature-icon-url/>
+        </admin-feature>
     </admin-features>    
 
     <!-- Specific plugin CSS stylesheet -->
