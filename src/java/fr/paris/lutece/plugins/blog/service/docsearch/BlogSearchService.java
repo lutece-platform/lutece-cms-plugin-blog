@@ -136,7 +136,7 @@ public final class BlogSearchService
 
     /**
      * Get the HelpdeskSearchService instance
-     * 
+     *
      * @return The {@link BlogSearchService}
      */
     public static BlogSearchService getInstance( )
@@ -150,7 +150,7 @@ public final class BlogSearchService
 
     /**
      * Return search results
-     * 
+     *
      * @param filter
      *            The search filter
      * @param listIdBlog
@@ -186,7 +186,7 @@ public final class BlogSearchService
 
     /**
      * Process indexing
-     * 
+     *
      * @param bCreate
      *            true for start full indexing false for begin incremental indexing
      * @return the log
@@ -269,7 +269,7 @@ public final class BlogSearchService
 
     /**
      * Get search results
-     * 
+     *
      * @param filter
      *            The filter
      * @param listSearchResult
@@ -390,11 +390,14 @@ public final class BlogSearchService
             flags.add( BooleanClause.Occur.MUST );
         }
 
-        Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) ) );
-        Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
-        queries.add( termQueryIsUnpublished.toString( ) );
-        sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
-        flags.add( BooleanClause.Occur.MUST );
+        if ( filter.getIsUnpulished( ) > 0 )
+        {
+            Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) == 1 ) );
+            Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
+            queries.add( termQueryIsUnpublished.toString( ) );
+            sectors.add( BlogSearchItem.FIELD_UNPUBLISHED );
+            flags.add( BooleanClause.Occur.MUST );
+        }
 
         Term term = new Term( SearchItem.FIELD_TYPE, BlogPlugin.PLUGIN_NAME );
         Query termQuery = new TermQuery( term );
@@ -408,7 +411,7 @@ public final class BlogSearchService
 
     /**
      * Add Indexer Action to perform on a record
-     * 
+     *
      * @param nIdBlog
      *            Blog id
      * @param nIdTask
@@ -424,7 +427,7 @@ public final class BlogSearchService
 
     /**
      * Remove a Indexer Action
-     * 
+     *
      * @param nIdAction
      *            the key of the action to remove
      */
@@ -435,7 +438,7 @@ public final class BlogSearchService
 
     /**
      * return a list of IndexerAction by task key
-     * 
+     *
      * @param nIdTask
      *            the task key
      * @return a list of IndexerAction
@@ -450,7 +453,7 @@ public final class BlogSearchService
 
     /**
      * Convert the SearchItem list on SearchResult list
-     * 
+     *
      * @param listSource
      *            The source list
      * @param listSearchResult

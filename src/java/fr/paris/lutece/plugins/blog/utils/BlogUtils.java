@@ -89,7 +89,7 @@ public final class BlogUtils
 
     /**
      * Builds a query with filters placed in parameters
-     * 
+     *
      * @param strSelect
      *            the select of the query
      * @param listStrFilter
@@ -149,7 +149,7 @@ public final class BlogUtils
 
     /**
      * Create a Blog search filter with specific values. The unnecessary parameters can be replaced by null values
-     * 
+     *
      * @param searchKeyword
      *            Keywords to search for in the blog posts
      * @param searchTagsArray
@@ -157,7 +157,7 @@ public final class BlogUtils
      * @param user
      *            Filter by the user who created the blog
      * @param isUnpublished
-     *            Search for blogs currently unpublished. Set to 'null' to retrieve all blogs, whether published or not
+     *            Search for blogs currently unpublished. Set to '0' to retrieve all blogs, '1' published, '2' unpublished
      * @param strDateUpdateBlogAfter
      *            Filter by blogs updated after a specific date
      * @param strDateUpdateBlogBefore
@@ -168,7 +168,7 @@ public final class BlogUtils
      *            The Locale to use for the dates' format
      * @return the BlogSearchFilter objects created with the given parameters
      */
-    public static BlogSearchFilter buildBlogSearchFilter( String searchKeyword, String [ ] searchTagsArray, AdminUser user, Boolean isUnpublished,
+    public static BlogSearchFilter buildBlogSearchFilter( String searchKeyword, String [ ] searchTagsArray, AdminUser user, int isUnpublished,
             String strDateUpdateBlogAfter, String strDateUpdateBlogBefore, String userEditor, Locale locale )
     {
         BlogSearchFilter filter = new BlogSearchFilter( );
@@ -185,7 +185,7 @@ public final class BlogUtils
         {
             filter.setUser( user.getAccessCode( ) );
         }
-        if ( isUnpublished != null )
+        if ( isUnpublished > 0 )
         {
             filter.setIsUnpulished( isUnpublished );
         }
@@ -206,10 +206,10 @@ public final class BlogUtils
 
     /**
      * Create an HTML link to reach the specified URL
-     * 
+     *
      * @param customLinkUrl
      *            URL of the link
-     * @param customlinkText
+     * @param customLinkText
      *            Text to display in the link
      * @param customLinkTitle
      *            Title of the link

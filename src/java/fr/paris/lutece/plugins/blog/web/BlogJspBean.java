@@ -106,7 +106,6 @@ import fr.paris.lutece.portal.web.resource.ExtendableResourcePluginActionManager
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.json.JsonResponse;
 import fr.paris.lutece.util.json.JsonUtil;
@@ -263,7 +262,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;
-    protected boolean _bIsUnpulished = false;
+    protected int _nIsUnpublished;
     protected String _dateUpdateBlogAfter;
     protected String _dateUpdateBlogBefor;
     protected String _strCurrentPageIndex;
@@ -299,7 +298,7 @@ public class BlogJspBean extends ManageBlogJspBean
         List<Integer> listBlogsId = new ArrayList<>( );
         String strButtonSearch = request.getParameter( PARAMETER_BUTTON_SEARCH );
         String strButtonReset = request.getParameter( PARAMETER_BUTTON_RESET );
-        _bIsUnpulished = request.getParameter( PARAMETER_UNPUBLISHED ) != null;
+        String strUnpublished = request.getParameter(PARAMETER_UNPUBLISHED);
 
         if ( strButtonSearch != null )
         {
@@ -309,21 +308,29 @@ public class BlogJspBean extends ManageBlogJspBean
             _strTag = request.getParameterValues( PARAMETER_TAG );
             _dateUpdateBlogAfter = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_AFTER );
             _dateUpdateBlogBefor = request.getParameter( PARAMETER_DATE_UPDATE_BLOG_BEFOR );
-
+            if (StringUtils.isNotBlank(strUnpublished))
+            {
+                _nIsUnpublished = Integer.parseInt( strUnpublished );
+            }
+            else
+            {
+                _nIsUnpublished = 0;
+            }
         }
         else
+        {
             if ( strButtonReset != null )
             {
                 _bIsChecked = false;
                 _strSearchText = null;
                 _strTag = null;
-                _bIsUnpulished = false;
                 _dateUpdateBlogAfter = null;
                 _dateUpdateBlogBefor = null;
-
+                _nIsUnpublished = 0;
             }
+        }
 
-        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _bIsUnpulished
+        if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _nIsUnpublished > 0
                 || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
@@ -339,10 +346,9 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 filter.setUser( user.getAccessCode( ) );
             }
-            if ( _bIsUnpulished )
-            {
-                filter.setIsUnpulished( _bIsUnpulished );
-            }
+
+            filter.setIsUnpulished(_nIsUnpublished);
+
             if ( _dateUpdateBlogAfter != null )
             {
                 try {
@@ -433,7 +439,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_TAG, _strTag );
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
-        model.put( MARK_UNPUBLISHED, _bIsUnpulished );
+        model.put( MARK_UNPUBLISHED, _nIsUnpublished );
         model.put( MARK_LIST_BLOG_CONTRIBUTORS, mapContributors );
         model.put( MARK_PERMISSION_CREATE_BLOG, bPermissionCreate );
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
@@ -1192,9 +1198,9 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * Added docContent to the htmlDoc content list
-     * 
+     *
      * @param request
      *            The Http request
      * @return
@@ -1285,7 +1291,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * delete docContent in the htmlDoc content list
-     * 
+     *
      * @param request
      *            The Http request
      * @return
@@ -1400,7 +1406,7 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * @param request
      * @return
      */
@@ -1445,7 +1451,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Set content of the blog
-     * 
+     *
      * @param mRequest
      * @param locale
      * @return the content of the blog
@@ -1480,7 +1486,7 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * @return
      */
     private ReferenceList getBlogFilterList( )
@@ -1494,7 +1500,7 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
-     * 
+     *
      * @return BlogList
      */
     private ReferenceList getTageList( )
@@ -1512,7 +1518,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Check if the blog is locked
-     * 
+     *
      * @param nIdBlog
      *            The Id blog
      * @param strIdSession
@@ -1526,7 +1532,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Lock blog
-     * 
+     *
      * @param nIdBlog
      *            The Id blog
      * @param strIdSession
@@ -1542,7 +1548,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Unlock Blog
-     * 
+     *
      * @param nIdBlog
      *            The id Blog
      */
@@ -1555,7 +1561,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Unlock Blogs By Session Id
-     * 
+     *
      * @param strIdSession
      *            The Id session
      */
@@ -1567,7 +1573,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     /**
      * Unlock the blog if the lock clearance time has passed
-     * 
+     *
      * @param nTime
      *            the clearance time
      */
