@@ -152,6 +152,8 @@ public interface IBlogDAO
      */
     List<Blog> selectBlogsList( Plugin plugin );
 
+    List<Blog> selectBlogsListByArchiveStatus( boolean isArchived, Plugin plugin );
+
     /**
      * Load the data of nLimit last modified blog objects and returns them as a list
      * 
@@ -231,4 +233,5 @@ public interface IBlogDAO
 
     List<Blog> selectWithoutBinaries( Plugin plugin );
 
+    void updateBlogArchiveId( int nIdBlog, boolean bArchive, Plugin plugin );
 }

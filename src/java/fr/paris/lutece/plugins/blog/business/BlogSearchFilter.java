@@ -48,6 +48,7 @@ public class BlogSearchFilter
     private Date _dateUpdateDateAfter;
     private Date _dateUpdateDateBefor;
     private String _strUserEditedBlogVersion;
+    private Boolean _bIsArchived;
 
     /**
      * Get the id of the filter
@@ -214,4 +215,24 @@ public class BlogSearchFilter
         _dateUpdateDateBefor = dateUpdateDateBefor;
     }
 
+    /**
+     * Returns the isArchived
+     *
+     * @return The isArchived
+     */
+    public Boolean getIsArchived( )
+    {
+        return _bIsArchived;
+    }
+
+    /**
+     * Sets the isArchived
+     *
+     * @param isArchived
+     *            The isArchived
+     */
+    public void setIsArchived( Boolean isArchived )
+    {
+        _bIsArchived = isArchived;
+    }
 }

@@ -63,6 +63,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public static final String PERMISSION_MODIFY = "MODIFY";
     public static final String PERMISSION_DELETE = "DELETE";
     public static final String PERMISSION_PUBLISH = "PUBLISH";
+    public static final String PERMISSION_ARCHIVE = "ARCHIVE";
 
     // Variables declarations
     private int _nId;
@@ -108,6 +109,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     private List<Tag> _tag = new ArrayList<>( );
 
     private List<BlogPublication> _blogPublication = new ArrayList<>( );
+    private boolean _bIsArchived;
 
     /**
      * Returns the Id
@@ -638,4 +640,22 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
         return AdminUserHome.findUserByLogin( _strUserCreator );
     }
 
+
+    /**
+     *@return the boolean value of the blog is archived
+     */
+    public boolean isArchived( )
+    {
+
+        return _bIsArchived;
+    }
+
+    /**
+     *set the blog is archived
+     * @param bIsArchived
+     */
+    public void setArchived( boolean bIsArchived )
+    {
+        _bIsArchived = bIsArchived;
+    }
 }

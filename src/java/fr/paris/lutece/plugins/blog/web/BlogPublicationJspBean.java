@@ -71,6 +71,8 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
+import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
 
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
@@ -233,8 +235,11 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         if ( _blogPublication.getDateEndPublishing( ) == null )
         {
-            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-            _blogPublication.setDateEndPublishing( new Date( sdf.parse( DATE_END_PUBLICATION ).getTime( ) ) );
+            String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+            int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+            java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);
+
+            _blogPublication.setDateEndPublishing( new java.sql.Date( maxPublicationDate.getTime( ) ) );
         }
         if ( _blogPublication.getIdPortlet( ) != 0 )
         {
@@ -295,12 +300,26 @@ public class BlogPublicationJspBean extends BlogJspBean
         if ( dateBeginPublishingStr != null && !dateBeginPublishingStr.isEmpty( ) )
         {
             parsed = sdf.parse( dateBeginPublishingStr );
-            dateBeginPublishing = new java.sql.Date( parsed.getTime( ) );
+            dateBeginPublishing = new Date( parsed.getTime( ) );
         }
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        java.util.Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);
         if ( dateEndPublishingStr != null && !dateEndPublishingStr.isEmpty( ) )
         {
-            parsed = sdf.parse( dateEndPublishingStr );
-            dateEndPublishing = new java.sql.Date( parsed.getTime( ) );
+            if(maxPublicationDate != null)
+            {
+              parsed = sdf.parse( dateEndPublishingStr );
+                dateEndPublishing = new Date( parsed.getTime( ) );
+                if(dateEndPublishing.after(maxPublicationDate))
+                {
+                    dateEndPublishing = new Date( maxPublicationDate.getTime( ) );
+                }
+            }
+            else {
+                parsed = sdf.parse( dateEndPublishingStr );
+                dateEndPublishing = new Date( parsed.getTime( ) );
+            }
         }
         int nBlogOrder = BlogListPortletHome.getMinDocBlogOrder( );
         nBlogOrder = nBlogOrder - 1;
