@@ -46,7 +46,11 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.business.user.AdminUser;
-
+import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
+import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -181,9 +185,17 @@ public class BlogPortletJspBean extends PortletJspBean
         portlet.setPortletName( request.getParameter( PARAMETER_PORTLET_NAME ) );
 
         // Creates the portlet
-        BlogPortletHome.getInstance( ).create( portlet );
+        Portlet newPortlet = BlogPortletHome.getInstance( ).create( portlet );
         blog.setAttachedPortletId( portlet.getId( ) );
         BlogHome.update( blog );
+        BlogPublication blogPublication =   BlogPublicationHome.findDocPublicationByPimaryKey( newPortlet.getId(), portlet.getContentId( ) );
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);
+        blogPublication.setDateEndPublishing( (java.sql.Date) maxPublicationDate );
+        portlet.setBlogPublication(blogPublication  );
+        // updates the portlet
+        portlet.update( );
         int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( blog.getId( ), new Date( ) );
         // First publication of this blog -> indexing needed
         if ( nbPublication == 1 )
@@ -226,8 +238,12 @@ public class BlogPortletJspBean extends PortletJspBean
         blog.setUpdateDate( getSqlDate( ) );
         blog.setVersion( blog.getVersion( ) + 1 );
         BlogHome.addNewVersion( blog );
-
-        portlet.setBlogPublication( BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, portlet.getContentId( ) ) );
+        String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
+        int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
+        Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);
+        BlogPublication blogPublication =   BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, portlet.getContentId( ) );
+        blogPublication.setDateEndPublishing( (java.sql.Date) maxPublicationDate );
+        portlet.setBlogPublication(blogPublication  );
         // updates the portlet
         portlet.update( );
 
