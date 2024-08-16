@@ -155,7 +155,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_PRIORITY = "tag_priority";
     protected static final String PARAMETER_TAG_ACTION = "tagAction";
     protected static final String PARAMETER_ACTION_BUTTON = "button";
-    protected static final String PARAMETER_APPLY = "apply";
+    protected static final String PARAMETER_UPDATE = "update";
     protected static final String PARAMETER_TYPE_ID = "idType";
     protected static final String PARAMETER_CONTENT_ID = "idContent";
     protected static final String PARAMETER_CONTENT_ACTION = "contentAction";
@@ -250,6 +250,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_DATE_UPDATE_BLOG_BEFOR = "dateUpdateBlogBefor";
     protected static final String MARK_UNPUBLISHED = "unpublished";
     protected static final String MARK_LIST_BLOG_CONTRIBUTORS = "list_blog_contributors";
+    protected static final String MARK_ACTUAL_BLOG_VERSION = "actual_blog_version";
 
     public static final String CONSTANT_DUPLICATE_BLOG_NAME = "Copie de ";
 
@@ -645,7 +646,7 @@ public class BlogJspBean extends ManageBlogJspBean
             BlogService.getInstance( ).createBlog( _blog, _blog.getDocContent( ) );
             _blogServiceSession.removeBlogFromSession( request.getSession( ), _blog.getId( ) );
 
-            if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
+            if ( strAction != null && strAction.equals( PARAMETER_UPDATE ) )
             {
 
                 return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
@@ -941,22 +942,29 @@ public class BlogJspBean extends ManageBlogJspBean
         String strResetVersion = request.getParameter( PARAMETER_VERSION_BLOG );
         String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
         String sessionId = request.getSession( ).getId( );
+        Map<String, Object> model = getModel( );
 
         int nVersion = -1;
         if ( strResetVersion != null )
         {
             nVersion = Integer.parseInt( strResetVersion );
-        }
-
-        if ( strResetVersion != null )
-        {
-
             _blog = BlogHome.findVersion( nId, nVersion );
             _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
         }
         else
         {
-            _blog = BlogService.getInstance( ).loadBlog( nId );
+            Blog actualBlog = BlogService.getInstance( ).loadBlog( nId );
+            Blog lastVersion = BlogHome.getLastBlogVersionsList( nId, 1 ).get( 0 );
+
+            // compare if content title, description or content are differents from the last version and actual version (the version that visitors could see if the blog is published)
+            if ( !actualBlog.getContentLabel( ).equals( lastVersion.getContentLabel( ) ) || !actualBlog.getDescription( ).equals( lastVersion.getDescription( ) ) )
+            {
+                // get the actual version number that visitors could see so that the user can choose to reset to this version
+               Timestamp actualVersionUpdateDate = actualBlog.getUpdateDate();
+               int actualVersion = BlogHome.getActualVersionNumber( actualVersionUpdateDate,nId );
+               model.put( MARK_ACTUAL_BLOG_VERSION, actualVersion );
+            }
+          _blog = lastVersion;
             _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
 
         }
@@ -982,13 +990,15 @@ public class BlogJspBean extends ManageBlogJspBean
 
         _blog.getTag( ).sort( ( tg1, tg2 ) -> tg1.getPriority( ) - tg2.getPriority( ) );
         _blog.getDocContent( ).sort( ( dc1, dc2 ) -> dc1.getPriority( ) - dc2.getPriority( ) );
-        Map<String, Object> model = getModel( );
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
+                (User) getUser( ) );
+        boolean bPermissionToPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH,
                 (User) getUser( ) );
 
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
+        model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionToPublish );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
@@ -1046,23 +1056,25 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
             }
-
-            if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
+            if ( strAction != null && strAction.equals( PARAMETER_UPDATE ) && RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_PUBLISH, (User) getUser( ) ) )
             {
-                BlogService.getInstance( ).updateBlogWithoutVersion( _blog, _blog.getDocContent( ) );
+                _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
+                BlogHome.update( _blog );
+                BlogService.getInstance( ).updateBlog( _blog, _blog.getDocContent( ) );
                 _blogServiceSession.removeBlogFromSession( request.getSession( ), nId );
                 unLockBlog( nId );
-
-                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
-
+                addInfo( INFO_BLOG_UPDATED, getLocale( ) );
             }
             else
             {
                 _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
                 BlogService.getInstance( ).updateBlog( _blog, _blog.getDocContent( ) );
+                _blog = latestVersionBlog;
+                _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
+                BlogHome.update( _blog );
                 _blogServiceSession.removeBlogFromSession( request.getSession( ), nId );
                 unLockBlog( nId );
-                addInfo( INFO_BLOG_UPDATED, getLocale( ) );
+                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
             }
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );

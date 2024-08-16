@@ -231,4 +231,5 @@ public interface IBlogDAO
 
     List<Blog> selectWithoutBinaries( Plugin plugin );
 
+    int getActualVersionNumber( java.sql.Timestamp strUpdateDate, int nId, fr.paris.lutece.portal.service.plugin.Plugin plugin );
 }

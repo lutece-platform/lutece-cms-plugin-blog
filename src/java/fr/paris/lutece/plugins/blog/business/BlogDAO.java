@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.blog.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Timestamp;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -78,7 +79,7 @@ public final class BlogDAO implements IBlogDAO
     private static final String SQL_QUERY_SELECT_BLOG_BY_ID_TAG = " SELECT b.id_blog, b.version, b.content_label, b.creation_date, b.update_date, b.html_content, b.user_editor, b.user_creator, b.attached_portlet_id, b.edit_comment, b.description, b.shareable, b.url, a.id_tag FROM blog_tag_document a Inner join blog_blog b on (b.id_blog = a.id_blog) WHERE a.id_tag = ? ORDER BY priority";
 
     private static final String SQL_QUERY_SELECT_ALL_BLOG = " SELECT DISTINCT a.id_blog, a.version, a.content_label, a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id, a.edit_comment , a.description, a.shareable, a.url FROM blog_blog a";
-
+    private static final String SQL_QUERY_SELECT_VERSION_NUMBER_BY_BLOG_ID_AND_CREATION_DATE = "SELECT version FROM blog_versions WHERE id_blog = ? ORDER BY ABS(TIMESTAMPDIFF(SECOND, update_date, ?)) LIMIT 1;";
     private static final String SQL_FILTER_WHERE_CLAUSE = " WHERE ";
     private static final String SQL_FILTER_AND = " AND ";
     private static final String SQL_FILTER_TAGS_BEGIN = " (";
@@ -95,9 +96,9 @@ public final class BlogDAO implements IBlogDAO
 
     /**
      * Generates a new primary key
-     * 
+     *
      * @param plugin
-     *            The Plugin
+     *         The Plugin
      * @return The new primary key
      */
     public int newPrimaryKey( Plugin plugin )
@@ -116,7 +117,7 @@ public final class BlogDAO implements IBlogDAO
 
     /**
      * Generates a new primary key
-     * 
+     *
      * @param plugin
      *            The Plugin
      * @return The new primary key
@@ -596,7 +597,7 @@ public final class BlogDAO implements IBlogDAO
 
     /**
      * Return a dao initialized with the specified filter
-     * 
+     *
      * @param strQuerySelect
      *            the query
      * @param filter
@@ -847,5 +848,32 @@ public final class BlogDAO implements IBlogDAO
             }
         }
         return blogList;
+    }
+
+    /**
+     * Returns the actual version number of a blog It get the version number witch has is the closest to the update date
+     *
+     * @param strUpdateDate
+     *         the update date
+     * @param nId
+     *         the blog id
+     * @return the version number
+     */
+    @Override
+    public int getActualVersionNumber( Timestamp strUpdateDate, int nId, Plugin plugin )
+    {
+        int nVersion = 0;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_VERSION_NUMBER_BY_BLOG_ID_AND_CREATION_DATE, plugin ) )
+        {
+            daoUtil.setInt( 1, nId );
+            daoUtil.setTimestamp( 2, strUpdateDate );
+            daoUtil.executeQuery( );
+
+            if ( daoUtil.next( ) )
+            {
+                nVersion = daoUtil.getInt( 1 );
+            }
+            return nVersion;
+        }
     }
 }
