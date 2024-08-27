@@ -85,8 +85,12 @@
 										<@p class='mt-2'>
 										<small>
 											#i18n{blog.manage_blogs.labelCreate} #i18n{blog.manage_blogs.labelBy}
-											<strong>${blog.userCreatorInfos.lastName!}</strong>
-											<strong> ${blog.userCreatorInfos.firstName!}</strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}
+											<#if blog.userCreatorInfos??>
+												<strong>${blog.userCreatorInfos.lastName!}</strong>
+												<strong> ${blog.userCreatorInfos.firstName!}</strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}
+											<#else>
+												<strong> #i18n{blog.manage_blogs.unknownUser} </strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}
+											</#if>
 										</small>
 										</@p>
 										<#if blog.editComment?? && blog.editComment?trim !=''>
@@ -95,8 +99,16 @@
 									</@div>
 								</@div>
 							</@td>
-							<@td>${blog.creationDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userCreatorInfos.lastName!} ${blog.userCreatorInfos.firstName!}</strong></@td>
-							<@td>${blog.updateDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userInfos.lastName!} ${blog.userInfos.firstName!}</strong></@td>
+							<#if blog.userCreatorInfos??>
+								<@td>${blog.creationDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userCreatorInfos.lastName!} ${blog.userCreatorInfos.firstName!}</strong></@td>
+							<#else>
+								<@td>${blog.creationDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong> #i18n{blog.manage_blogs.unknownUser} </strong></@td>
+							</#if>
+							<#if blog.userInfos??>
+								<@td>${blog.updateDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userInfos.lastName!} ${blog.userInfos.firstName!}</strong></@td>
+							<#else>
+								<@td>${blog.updateDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong> #i18n{blog.manage_blogs.unknownUser} </strong></@td>
+							</#if>
 							<@td>
 								<#list blog.tag as tg>
 									<#list list_tag as tgName>
