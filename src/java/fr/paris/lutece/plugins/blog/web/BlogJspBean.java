@@ -603,7 +603,15 @@ public class BlogJspBean extends ManageBlogJspBean
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
                 (User) getUser( ) );
-
+        // get the docContent from the session
+        AdminUser user = AdminUserService.getAdminUser( request );
+       List<DocContent> listDocContent = _blogServiceSession.getDocContentFromSession(request.getSession(), user);
+        // remove remaining files (docContent) from the session
+        for ( int i = 0; i < listDocContent.size(); i++ )
+        {
+                listDocContent.remove( i );
+        }
+        _blogServiceSession.removeDocContentFromSession( request.getSession( ), user );
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
@@ -627,6 +635,9 @@ public class BlogJspBean extends ManageBlogJspBean
 
         if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_CREATE, (User) getUser( ) ) )
         {
+            // get the docContent from the session
+            AdminUser user = AdminUserService.getAdminUser( request );
+            List<DocContent> listDocContent = _blogServiceSession.getDocContentFromSession(request.getSession(), user);
             String strAction = request.getParameter( PARAMETER_ACTION_BUTTON );
             _blog.setCreationDate( getSqlDate( ) );
             _blog.setUpdateDate( getSqlDate( ) );
@@ -634,6 +645,7 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setUserCreator( AdminUserService.getAdminUser( request ).getAccessCode( ) );
             _blog.setVersion( 1 );
             _blog.setAttachedPortletId( 0 );
+            _blog.setDocContent( listDocContent );
             populate( _blog, request );
 
             // Check constraints
@@ -641,9 +653,8 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 return redirectView( request, VIEW_CREATE_BLOG );
             }
-
             BlogService.getInstance( ).createBlog( _blog, _blog.getDocContent( ) );
-            _blogServiceSession.removeBlogFromSession( request.getSession( ), _blog.getId( ) );
+            _blogServiceSession.removeDocContentFromSession( request.getSession( ), user );
 
             if ( strAction != null && strAction.equals( PARAMETER_APPLY ) )
             {
@@ -1208,23 +1219,28 @@ public class BlogJspBean extends ManageBlogJspBean
     @Action( ACTION_ADD_FILE_CONTENT )
     public String addContent( HttpServletRequest request )
     {
-
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        String nIdSession = request.getSession( ).getId( );
-        _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
-
-        if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
+        int nIdBlog = 0;
+        if( request.getParameter( PARAMETER_ID_BLOG ) != null && !request.getParameter( PARAMETER_ID_BLOG ).equals( "0" ) )
         {
-
-            lockBlog( nIdBlog, request.getSession( ).getId( ) );
+            nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         }
-        else
-            if ( _blog.getId( ) != 0 )
+        if( nIdBlog != 0 )
+        {
+            String nIdSession = request.getSession( ).getId( );
+            _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
+
+            if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+                lockBlog( nIdBlog, request.getSession( ).getId( ) );
             }
+            else
+                if ( _blog.getId( ) != 0 )
+                {
 
+                    return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+                }
+        }
         /* Gestion du mimeType */
         String result = request.getParameter( "fileContent" );
         String firstDelimiter = "[;]";
@@ -1278,12 +1294,33 @@ public class BlogJspBean extends ManageBlogJspBean
             contType.setIdContentType( Integer.parseInt( strFileType ) );
             docContent.setContentType( contType );
         }
-        docContent.setPriority( _blog.getDocContent( ).size( ) + 1 );
-        _blog.addContent( docContent );
-        DocContentHome.create( docContent );
-        String [ ] results = {
-                strFileName, String.valueOf( docContent.getId( ) )
-        };
+        String[] results;
+        if( nIdBlog != 0 )
+        {
+            docContent.setPriority( _blog.getDocContent( ).size( ) + 1 );
+            _blog.addContent( docContent );
+            DocContentHome.create( docContent );
+            results = new String [ ] {
+                    strFileName, String.valueOf( docContent.getId( ) )
+            };
+        }
+        else {
+            // save the docContent in the session
+            User user = AdminUserService.getAdminUser( request );
+            int _nDocContentInSession = 1;
+            if( _blogServiceSession.getDocContentFromSession( request.getSession( ), user ) != null && !_blogServiceSession.getDocContentFromSession( request.getSession( ), user ).isEmpty( ) )
+            {
+                _nDocContentInSession = _blogServiceSession.getDocContentFromSession( request.getSession( ), user ).size( ) + 1;
+            }
+            DocContentHome.create( docContent );
+            _blog.addContent( docContent );
+            docContent.setPriority( _nDocContentInSession );
+            _blogServiceSession.saveBlogInSession( request.getSession( ), docContent, user );
+            results = new String [ ] {
+                    strFileName, String.valueOf( docContent.getId() )
+            };
+
+        }
 
         return JsonUtil.buildJsonResponse( new JsonResponse( results ) );
 
@@ -1301,36 +1338,50 @@ public class BlogJspBean extends ManageBlogJspBean
     {
 
         int nIdDoc = Integer.parseInt( request.getParameter( PARAMETER_CONTENT_ID ) );
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        int nIdBlog = 0;
         String nIdSession = request.getSession( ).getId( );
-        _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
-
-        if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
+        if( request.getParameter( PARAMETER_ID_BLOG ) != null && !request.getParameter( PARAMETER_ID_BLOG ).equals( "0" ) )
         {
+            nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        }
+        if( nIdBlog != 0 )
+        {
+            _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
 
-            lockBlog( nIdBlog, request.getSession( ).getId( ) );
+            if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
+            {
+
+                lockBlog( nIdBlog, request.getSession( ).getId( ) );
+            }
+            else
+                if ( _blog.getId( ) != 0 )
+                {
+
+                    return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+                }
+
+            DocContent docCont = _blog.getDocContent( ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
+            List<DocContent> listDocs = _blog.getDocContent( ).stream( ).map( ( DocContent dc ) -> {
+                if ( ( dc.getPriority( ) > docCont.getPriority( ) ) && ( docCont.getId( ) != dc.getId( ) ) )
+                {
+
+                    dc.setPriority( dc.getPriority( ) - 1 );
+                }
+                return dc;
+            } ).collect( Collectors.toList( ) );
+
+            _blog.setDocContent( listDocs );
+            _blog.deleteDocContent( nIdDoc );
+            DocContentHome.removeInBlogById( nIdDoc );
         }
         else
-            if ( _blog.getId( ) != 0 )
-            {
-
-                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
-            }
-
-        DocContent docCont = _blog.getDocContent( ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
-        List<DocContent> listDocs = _blog.getDocContent( ).stream( ).map( ( DocContent dc ) -> {
-            if ( ( dc.getPriority( ) > docCont.getPriority( ) ) && ( docCont.getId( ) != dc.getId( ) ) )
-            {
-
-                dc.setPriority( dc.getPriority( ) - 1 );
-            }
-            return dc;
-        } ).collect( Collectors.toList( ) );
-
-        _blog.setDocContent( listDocs );
-        _blog.deleteDocContent( nIdDoc );
-        DocContentHome.removeInBlogById( nIdDoc );
-
+        {
+            // remove the docContent in the session
+            User user = AdminUserService.getAdminUser( request );
+            DocContent docContent = _blogServiceSession.getDocContentFromSession( request.getSession( ), user ).stream( ).filter( dc -> dc.getId( ) == nIdDoc ).collect( Collectors.toList( ) ).get( 0 );
+            _blogServiceSession.removeDocContentFromSession( request.getSession( ), docContent, user );
+            DocContentHome.removeById( nIdDoc );
+        }
         return JsonUtil.buildJsonResponse( new JsonResponse( nIdDoc ) );
 
     }
@@ -1351,21 +1402,32 @@ public class BlogJspBean extends ManageBlogJspBean
 
         String strIdDocContent = request.getParameter( PARAMETER_CONTENT_ID );
         String strAction = request.getParameter( PARAMETER_CONTENT_ACTION );
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        int nIdBlog = 0;
         String nIdSession = request.getSession( ).getId( );
-        _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
-        if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
+        if( request.getParameter( PARAMETER_ID_BLOG ) != null && !request.getParameter( PARAMETER_ID_BLOG ).equals( "0" ) )
         {
-
-            lockBlog( nIdBlog, request.getSession( ).getId( ) );
+            nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         }
-        else
-            if ( _blog.getId( ) != 0 )
+        if( nIdBlog != 0 )
+        {
+            _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
+            if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
             {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+                lockBlog( nIdBlog, request.getSession( ).getId( ) );
             }
+            else
+                if ( _blog.getId( ) != 0 )
+                {
 
+                    return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+                }
+        }
+        else
+        {
+            List<DocContent> listDocContent = _blogServiceSession.getDocContentFromSession( request.getSession( ), AdminUserService.getAdminUser( request ) );
+            _blog.setDocContent( listDocContent );
+        }
         for ( DocContent dc : _blog.getDocContent( ) )
         {
             if ( dc.getId( ) == Integer.parseInt( strIdDocContent ) )
@@ -1394,7 +1456,10 @@ public class BlogJspBean extends ManageBlogJspBean
                 }
         }
         docCont.setPriority( nPriorityToSet );
-
+        if( nIdBlog == 0 )
+        {
+            _blogServiceSession.saveBlogInSession( request.getSession( ), docCont, AdminUserService.getAdminUser( request ) );
+        }
         if ( docContMove != null )
         {
 

@@ -37,6 +37,12 @@ import javax.servlet.http.HttpSession;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import  fr.paris.lutece.plugins.blog.business.DocContent;
+import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.plugins.blog.business.DocContentHome;
+import java.util.List;
+import  java.util.Enumeration;
+import java.util.HashMap;
 
 /**
  * This Service manages document actions (create, move, delete, validate ...) and notify listeners.
@@ -46,6 +52,8 @@ public class BlogServiceSession
 
     private static BlogServiceSession _singleton = new BlogServiceSession( );
     private static final String SESSION_BLOG = "blog.serviceblog";
+    private static final String SESSION_KEY_ID_DOCCONTENT = "docContentId";
+    private static final String SESSION_KEY_PRIORITY_DOCCONTENT = "docContentPriority";
 
     /**
      * Get the unique instance of the service
@@ -177,4 +185,109 @@ public class BlogServiceSession
         }
     }
 
-}
+    /**
+     * Save docContent in session when the user is in the process of creating a new blog
+     *
+     * @param session
+     *            The session
+     */
+    public void saveBlogInSession( HttpSession session, DocContent docContent, User user)
+    {
+        HashMap<String, Integer> mapDocContentKeys = new HashMap<>( );
+        mapDocContentKeys.put( SESSION_KEY_ID_DOCCONTENT, docContent.getId( ) );
+        mapDocContentKeys.put( SESSION_KEY_PRIORITY_DOCCONTENT, docContent.getPriority( ) );
+
+        session.setAttribute( user.getAccessCode( ) + "-" + user.getEmail() + "-" + docContent.getTextValue( ),  mapDocContentKeys);
+    }
+    /**
+     * Get the current list of docContent form from the session that contains the user's access code
+     *
+     * @param session
+     *            The session of the user
+     * @return The docContent form
+     */
+    public List<DocContent> getDocContentFromSession( HttpSession session, User user )
+    {
+        String strAccessCode = user.getAccessCode( );
+        String strEmail = user.getEmail( );
+        List<DocContent> listDocContent = new java.util.ArrayList<>( );
+        try
+        {
+          Enumeration<String> e = session.getAttributeNames( );
+            while ( e.hasMoreElements( ) )
+            {
+                String strAttributeName = e.nextElement( );
+                if ( strAttributeName.startsWith( strAccessCode + "-" + strEmail ) )
+                {
+                    if( session.getAttribute( strAttributeName ) instanceof HashMap)
+                    {
+                        HashMap<String, Integer> mapDocContentKeys = (HashMap) session.getAttribute( strAttributeName );
+                        // Get the docContent from the database
+                        DocContent docContent = DocContentHome.getDocsContent( mapDocContentKeys.get( SESSION_KEY_ID_DOCCONTENT ) );
+                        docContent.setPriority( mapDocContentKeys.get( SESSION_KEY_PRIORITY_DOCCONTENT ) );
+                        listDocContent.add( docContent );
+
+                    }
+                    }
+            }
+            listDocContent.sort( ( d1, d2 ) -> d1.getPriority( ) );
+            return listDocContent;
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+        }
+        return null;
+    }
+
+    /**
+     * Remove any docContent form responses stored in the session of the user
+     *
+     * @param session
+     *            The session
+     */
+    public void removeDocContentFromSession( HttpSession session, User user )
+    {
+        String strAccessCode = user.getAccessCode( );
+        String strEmail = user.getEmail( );
+        try
+        {
+            Enumeration<String> e = session.getAttributeNames( );
+            while ( e.hasMoreElements( ) )
+            {
+                String strAttributeName = e.nextElement( );
+                if ( strAttributeName.startsWith( strAccessCode + "-" + strEmail ) )
+                {
+                    session.removeAttribute( strAttributeName );
+                }
+            }
+
+        }
+        catch( IllegalStateException e )
+        {
+
+            AppLogService.error( e.getMessage( ), e );
+            BlogSessionListner.remove( session.getId( ) );
+        }
+    }
+
+    /**
+     * Remove a docContent form response stored in the session of the user
+     *
+     * @param session
+     *           The session
+     * @param docContent
+     *          The docContent to remove
+     * @param user
+     *         The user
+     */
+    public void removeDocContentFromSession( HttpSession session, DocContent docContent, User user )
+    {
+        session.removeAttribute( user.getAccessCode( ) + "-" + user.getEmail() + "-" + docContent.getTextValue( ) );
+    }
+
+
+    }

@@ -160,4 +160,12 @@ public final class DocContentHome
     {
         return _dao.loadListContentType( _plugin );
     }
+
+    /**
+     * remove all docContents in the database that are not linked to any blog
+     */
+    public static void removeDocContentsNotLinked( )
+    {
+        _dao.deleteByNotInBlog( _plugin );
+    }
 }

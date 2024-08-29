@@ -142,4 +142,12 @@ public interface IDocContentDAO
      *            the plugin
      */
     void deleteInBlogById( int nDocumentId, Plugin plugin );
+
+    /**
+     * Remove orphans doc contents
+     *
+     * @param plugin
+     *            the plugin
+     */
+    void deleteByNotInBlog( fr.paris.lutece.portal.service.plugin.Plugin plugin );
 }
