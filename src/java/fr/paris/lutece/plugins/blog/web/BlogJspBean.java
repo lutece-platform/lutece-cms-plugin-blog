@@ -214,7 +214,9 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
     private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
     private static final String MESSAGE_CONFIRM_ARCHIVE_BLOG = "blog.message.confirmArchiveBlog";
+    private static final String MESSAGE_CONFIRM_ARCHIVE_BLOG_PUBLISHED = "blog.message.confirmArchiveBlogPublished";
     private static final String MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmArchiveMultipleBlogs";
+    private static final String MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_PUBLISHED_BLOGS ="blog.message.confirmArchiveMultipleBlogsPublished";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
     private static final String MESSAGE_CONFIRM_UNARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmUnarchiveMultipleBlogs";
     private static final String MESSAGE_CONFIRM_UNARCHIVE_BLOG= "blog.message.confirmUnarchiveBlog";
@@ -1754,17 +1756,43 @@ public class BlogJspBean extends ManageBlogJspBean
         url.addParameter( PARAMETER_SELECTED_BLOGS, _listSelectedBlogIds.stream( ).map( String::valueOf ).collect( Collectors.joining( "," ) ) );
         url.addParameter( PARAMETER_TO_ARCHIVE, String.valueOf( true ));
         // Check if there's 1 or multiple posts being archived, to adapt the content of the displayed message
-        String confirmationMessage = _listSelectedBlogIds.size( ) > 1 ? MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS : MESSAGE_CONFIRM_ARCHIVE_BLOG;
         if( _listSelectedBlogIds.size( ) > 1 )
         {
-            Object [ ] messageArgs = {
-                    _listSelectedBlogIds.size( )
-            };
-            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, messageArgs, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+            int numberPublishedBlogs = 0;
+            for ( int i = 0; i < _listSelectedBlogIds.size(); i++ )
+            {
+                // check if published
+                if ( CollectionUtils.isNotEmpty( BlogPublicationHome.getDocPublicationByIdDoc( _listSelectedBlogIds.get( i ) ) ) )
+                {
+                    numberPublishedBlogs++;
+                }
+            }
+            if( numberPublishedBlogs > 0 )
+            {
+                Object [ ] messageArgs = {
+                        _listSelectedBlogIds.size( ),
+                        numberPublishedBlogs
+                };
+                return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_PUBLISHED_BLOGS, messageArgs, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+            }
+            else
+            {
+                Object [ ] messageArgs = {
+                        _listSelectedBlogIds.size( )
+                };
+                return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS, messageArgs, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+            }
         }
         else
         {
-            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+            if( CollectionUtils.isNotEmpty( BlogPublicationHome.getDocPublicationByIdDoc( _listSelectedBlogIds.get( 0 ) ) ) )
+            {
+                return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_ARCHIVE_BLOG_PUBLISHED, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+            }
+            else
+            {
+                return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_ARCHIVE_BLOG, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+            }
         }
     }
     /**
