@@ -152,21 +152,33 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	btnDown.classList.add( 'btn','btn-none', 'btn-down' ,'text-primary');
 	btnDown.setAttribute('type', 'button' );
 	btnDown.setAttribute('title', 'Down' );
-	btnDown.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId})` );
+	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
+		btnDown.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId})` );
+	} else {
+		btnDown.setAttribute('onclick', `doUpdatePriorityContentBis( ${idFile}, 'moveDown')` );
+	}
 	let iconDown = btnDown.appendChild( document.createElement( 'i' ) );
 	iconDown.classList.add( 'ti','ti-arrow-down');
 	let btnUp = div.appendChild( document.createElement( 'button' ) );
 	btnUp.classList.add( 'btn', 'btn-none', 'btn-up', 'text-primary');
 	btnUp.setAttribute('type', 'button' );
-	btnUp.setAttribute('title', 'Down' );
-	btnUp.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveUp'), ${blogId})` );
+	btnUp.setAttribute('title', 'Up' );
+	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
+		btnUp.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveUp'), ${blogId})` );
+	} else {
+		btnUp.setAttribute('onclick', `doUpdatePriorityContentBis( ${idFile}, 'moveUp')` );
+	}
 	let iconUp = btnUp.appendChild( document.createElement( 'i' ) );
 	iconUp.classList.add( 'ti','ti-arrow-up');
 	let btnRm = div.appendChild( document.createElement( 'button' ) );
 	btnRm.classList.add( 'btn', 'btn-none', 'text-danger');
 	btnRm.setAttribute('id', idFile );
 	btnRm.setAttribute('type', 'button' );
-	btnRm.setAttribute('onclick', `deleteFileContent( ${idFile}, ${blogId})` );
+	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
+		btnRm.setAttribute('onclick', `deleteFileContent( ${idFile}, ${blogId})` );
+	} else {
+		btnRm.setAttribute('onclick', `deleteFileContent( ${idFile})` );
+	}
 	let iconRm = btnRm.appendChild( document.createElement( 'i' ) );
 	iconRm.classList.add( 'ti','ti-x');
 	document.querySelector( '#content-list' ).appendChild( li );
@@ -216,7 +228,9 @@ async function doAddContent( fileName, fileInfo, result, fileType, idBlog ){
 	formData.append( 'fileContent', result );
 	formData.append( 'fileName', fileName );
 	formData.append( 'fileType', fileType );
-	formData.append( 'id', idBlog );
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		formData.append( 'id', idBlog );
+	}
 
 	// Make a POST request with the FormData object
 	const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent`, {
@@ -246,7 +260,13 @@ function doInsertContent( idContent, titleContent, typeContent ) {
 }
 
 async function doDeleteContent( idContent, idBlog ) {
-	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&idContent=${idContent}&id=${idBlog}` );
+	 let response;
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&idContent=${idContent}&id=${idBlog}`);
+	}
+	else {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&idContent=${idContent}`);
+	}
 	if ( !response.ok ) {
 		setBlogToast( typeDanger , labelError, response.status )	
 	} else {
@@ -262,11 +282,21 @@ async function doDeleteContent( idContent, idBlog ) {
 }
  
 async function doUpdateContentType( idContent, idTypeContent, idBlog ) {
-	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
+	let response;
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: { idType:idTypeContent, idContent:idContent, id:idBlog },
+		headers: {'Content-Type': 'application/json'},
+		body: {idType: idTypeContent, idContent: idContent, id: idBlog},
 	});
+    }
+	else {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
+		method: 'POST',
+		headers: {'Content-Type': 'application/json'},
+		body: {idType: idTypeContent, idContent: idContent},
+	});
+	}
 	if (!response.ok) {
 		setBlogToast( typeDanger , labelError, response.statusText )	
 	} else {
@@ -302,5 +332,32 @@ async function doUpdatePriorityContent( idContent, action, idBlog ){
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
 	  }
+	}
+}
+/*
+ * Duplicate of the function doUpdatePriorityContent without the idBlog parameter
+ * Due to a parsing error in createBlog when calling the function, the idBlog parameter is not passed
+ */
+async function doUpdatePriorityContentBis( idContent, action ){
+	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoUpdatePriorityContent.jsp?contentAction=${action}&idContent=${idContent}` );
+	if ( !response.ok ) {
+		setBlogToast( typeDanger , labelError, response.status )
+	} else {
+		const data = await response.json();
+		if ( data.status == 'OK' ){
+			if ( data.status == 'OK' ){
+				if(data.result == "BLOG_LOCKED"){
+					setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked )
+				}else if( action == "moveUp" ){
+					document.querySelector( `#doc_${idContent}`).after( document.querySelector( `#doc_${data.result}` ) );
+				} else if( action == "moveDown" ){
+					document.querySelector( `#doc_${data.result}` ).after( document.querySelector( `#doc_${idContent}` ) );
+				}
+			} else {
+				setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )
+			}
+		}	else {
+			setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )
+		}
 	}
 }
