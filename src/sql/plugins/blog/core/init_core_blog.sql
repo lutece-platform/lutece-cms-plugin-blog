@@ -25,3 +25,11 @@ INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_MANAGEMENT',1);
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
+
+--
+-- Set blog resources management rights for admin account
+--
+INSERT INTO core_admin_role (role_key, role_description) VALUES('blog_resources', 'Blog resources administrator');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('blog_resources','TAG','*','*'),
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('blog_resources','BLOG','*','*');
+INSERT INTO core_user_role (role_key, id_user) VALUES('blog_resources', 1);
