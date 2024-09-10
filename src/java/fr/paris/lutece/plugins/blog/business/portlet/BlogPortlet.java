@@ -46,6 +46,7 @@ import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.portal.business.portlet.Portlet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -123,6 +124,14 @@ public class BlogPortlet extends PortletHtmlContent
     {
         BlogPortletHome.getInstance( ).update( this );
     }
+    /**
+     * Updates the current instance of the blogsPortlet object
+     */
+    public void update( Portlet portlet )
+    {
+        BlogPortletHome.getInstance( ).update( portlet );
+    }
+
 
     /**
      * Removes the current instance of the blogsPortlet object

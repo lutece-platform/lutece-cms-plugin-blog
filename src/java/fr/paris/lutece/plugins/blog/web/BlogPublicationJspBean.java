@@ -73,6 +73,10 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
 import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
+import fr.paris.lutece.util.json.JsonResponse;
+import fr.paris.lutece.util.json.JsonUtil;
+import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.BlogHome;
 
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
@@ -116,6 +120,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     // Actions
     private static final String ACTION_PUBLISHE_DOCUMENT = "publishDocument";
     private static final String ACTION_UNPUBLISHE_DOCUMENT = "unPublishDocument";
+    private static final String ACTION_CHANGE_PUBLICATION_DATE = "updatePublicationDate";
 
     // Infos
 
@@ -138,7 +143,10 @@ public class BlogPublicationJspBean extends BlogJspBean
 
     // Session variable to store working values
     protected BlogPublication _blogPublication;
-
+    /**
+     * Json response
+     */
+    private static final String RESPONSE_SUCCESS = "SUCCESS";
     /**
      * Build the Manage View
      * 
@@ -154,14 +162,9 @@ public class BlogPublicationJspBean extends BlogJspBean
                 String.valueOf( PortletFilter.PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY )
         };
         String strErrorFilter = null;
-        _blogPublication = ( _blogPublication != null ) ? _blogPublication : new BlogPublication( );
 
-        if ( _blog == null || ( _blog.getId( ) != nId ) )
-        {
+        _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( nId );
 
-            _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( nId );
-
-        }
         PortletOrder pOrder = new PortletOrder( );
         String strOrderPortlet = request.getParameter( PARAMETER_ORDER_PORTLET );
         boolean bIsDisplayPortlets = ( ( request.getParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS ) == null )
@@ -281,6 +284,48 @@ public class BlogPublicationJspBean extends BlogJspBean
     }
 
     /**
+     *
+     * Update the publication date of a document in the portlet
+     * @param request
+     *           The request
+     *
+     * @return view manage blog publication
+     * @throws ParseException
+     */
+    @Action( ACTION_CHANGE_PUBLICATION_DATE )
+    public String doChangePublicationDate( HttpServletRequest request ) throws ParseException
+    {
+        Date dateBeginPublishing = null;
+        Date dateEndPublishing = null;
+        String dateBeginPublishingStr = request.getParameter( PARAMETER_PUBLISHED_DATE );
+        String dateEndPublishingStr = request.getParameter( PARAMETER_UNPUBLISHED_DATE );
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
+        java.util.Date parsed;
+        if ( dateBeginPublishingStr != null && !dateBeginPublishingStr.isEmpty( ) )
+        {
+            parsed = sdf.parse( dateBeginPublishingStr );
+            dateBeginPublishing = new Date( parsed.getTime( ) );
+        }
+        if ( dateEndPublishingStr != null && !dateEndPublishingStr.isEmpty( ) )
+        {
+            parsed = sdf.parse( dateEndPublishingStr );
+            dateEndPublishing = new Date( parsed.getTime( ) );
+        }
+        BlogPublication _blogPublication = BlogPublicationHome.findDocPublicationByPimaryKey( Integer.parseInt( request.getParameter( PARAMETER_PORTLET_ID ) ),
+                Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) ) );
+        _blogPublication.setDateBeginPublishing( dateBeginPublishing );
+        _blogPublication.setDateEndPublishing( dateEndPublishing );
+        BlogPublicationHome.remove( _blogPublication.getIdBlog( ), _blogPublication.getIdPortlet( ) );
+        BlogPublicationHome.create( _blogPublication );
+        // update indexer
+        Blog blog = BlogHome.findByPrimaryKey( _blogPublication.getIdBlog( ) );
+        BlogService.getInstance( ).fireUpdateBlogEvent( blog.getId( ) );
+
+
+        return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_SUCCESS ) );
+    }
+
+    /**
      * Populate BlogPublication object
      * 
      * @param blogPublication
@@ -300,7 +345,6 @@ public class BlogPublicationJspBean extends BlogJspBean
         String dateEndPublishingStr = request.getParameter( PARAMETER_UNPUBLISHED_DATE );
         java.sql.Date dateBeginPublishing = null;
         java.sql.Date dateEndPublishing = null;
-
         SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy" );
         java.util.Date parsed;
 
