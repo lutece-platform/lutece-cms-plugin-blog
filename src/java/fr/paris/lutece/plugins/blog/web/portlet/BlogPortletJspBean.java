@@ -51,6 +51,8 @@ import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -79,7 +81,7 @@ public class BlogPortletJspBean extends PortletJspBean
     public static final String PARAMETER_PORTLET_NAME = "portlet_name";
     public static final String PARAMETER_HTMLDOC_SELECTED = "blog_selected";
     private static final String PARAMETER_PAGE_TEMPLATE_CODE = "page_template_code";
-
+    private static final String MESSAGE_ERROR_NO_BLOG_SELECTED = "blog.message.error.noBlogSelected";
     public static final String TEMPLATE_MODIFY_PORTLET = "admin/portlet/modify_portlet.html";
 
     /**
@@ -144,31 +146,18 @@ public class BlogPortletJspBean extends PortletJspBean
     public String doCreate( HttpServletRequest request )
     {
         BlogPortlet portlet = new BlogPortlet( );
-        AdminUser user = AdminUserService.getAdminUser( request );
         String strSelectedBlog = request.getParameter( PARAMETER_HTMLDOC_SELECTED );
         String strTemplateCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
 
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         int nPageId = Integer.parseInt( strPageId );
-        Blog blog = new Blog( );
         if ( strSelectedBlog == null || StringUtils.isEmpty( strSelectedBlog ) || !StringUtils.isNumeric( strSelectedBlog ) )
         {
-            blog.setContentLabel( request.getParameter( PARAMETER_PORTLET_NAME ) );
-            blog.setVersion( 1 );
-            blog.setCreationDate( getSqlDate( ) );
-            blog.setUpdateDate( getSqlDate( ) );
-            blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
-            // TODO error validation on edit comment length
-            blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
-            blog.setUser( user.getAccessCode( ) );
-            blog.setUserCreator( user.getAccessCode( ) );
-            BlogHome.addInitialVersion( blog );
+             AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_BLOG_SELECTED, AdminMessage.TYPE_STOP );
+            return getPageUrl( nPageId );
         }
-        else
-        {
-            blog = BlogHome.findByPrimaryKey( Integer.parseInt( strSelectedBlog ) );
-        }
+        Blog blog = BlogHome.findByPrimaryKey( Integer.parseInt( strSelectedBlog ) );
         int nContentId = blog.getId( );
 
         // get portlet common attributes
@@ -187,7 +176,6 @@ public class BlogPortletJspBean extends PortletJspBean
         // Creates the portlet
         Portlet newPortlet = BlogPortletHome.getInstance( ).create( portlet );
         blog.setAttachedPortletId( portlet.getId( ) );
-        BlogHome.update( blog );
         BlogPublication blogPublication =   BlogPublicationHome.findDocPublicationByPimaryKey( newPortlet.getId(), portlet.getContentId( ) );
         String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
         int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
@@ -196,12 +184,8 @@ public class BlogPortletJspBean extends PortletJspBean
         portlet.setBlogPublication(blogPublication  );
         // updates the portlet
         portlet.update( );
-        int nbPublication = BlogPublicationHome.countPublicationByIdBlogAndDate( blog.getId( ), new Date( ) );
         // First publication of this blog -> indexing needed
-        if ( nbPublication == 1 )
-        {
-            BlogService.getInstance( ).fireCreateBlogEvent( blog.getId( ) );
-        }
+        BlogService.getInstance( ).fireUpdateBlogEvent( blog.getId( ) );
 
         // Displays the page with the new Portlet
         return getPageUrl( nPageId );
@@ -232,12 +216,6 @@ public class BlogPortletJspBean extends PortletJspBean
             return strErrorUrl;
         }
         portlet.setPageTemplateDocument( Integer.parseInt( strDocumentTypeCode ) );
-        // updates the blog
-        blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
-        blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
-        blog.setUpdateDate( getSqlDate( ) );
-        blog.setVersion( blog.getVersion( ) + 1 );
-        BlogHome.addNewVersion( blog );
         String idDashboardStr = AppPropertiesService.getProperty(BlogConstant.PROPERTY_ADVANCED_MAIN_DASHBOARD_ID);
         int idDashboard = (idDashboardStr != null) ? Integer.parseInt(idDashboardStr) : 1;
         Date maxPublicationDate =  BlogAdminDashboardHome.selectMaximumPublicationDate(idDashboard);

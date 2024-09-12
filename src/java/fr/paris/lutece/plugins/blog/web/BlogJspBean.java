@@ -116,6 +116,7 @@ import fr.paris.lutece.util.sort.AttributeComparator;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.plugins.blog.business.BlogAdminDashboardHome;
 import fr.paris.lutece.plugins.blog.web.utils.BlogConstant;
+import fr.paris.lutece.plugins.blog.service.BlogService;
 import static fr.paris.lutece.plugins.blog.web.adminDashboard.BlogAdminDashboardJspBean.RIGHT_AVANCED_CONFIGURATION;
 
 /**
@@ -2052,7 +2053,7 @@ public class BlogJspBean extends ManageBlogJspBean
             if( bArchive )
             {
                 BlogPublicationHome.getDocPublicationByIdDoc( blogId );
-
+                BlogService.getInstance( ).fireDeleteBlogEvent( blogId );
                 BlogPublicationHome.getDocPublicationByIdDoc( blogId );
                 if ( BlogPublicationHome.getDocPublicationByIdDoc( blogId ) != null && BlogPublicationHome.getDocPublicationByIdDoc( blogId ).size( ) > 0 )
                 {

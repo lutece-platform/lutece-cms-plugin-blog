@@ -254,7 +254,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         if ( _blogPublication.getIdPortlet( ) != 0 )
         {
 
-            BlogPublicationHome.create( _blogPublication );
+            BlogPublicationHome.update( _blogPublication );
 
             _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdBlog( ) );
         }
