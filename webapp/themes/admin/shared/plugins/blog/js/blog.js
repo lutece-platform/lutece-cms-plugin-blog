@@ -318,7 +318,6 @@ async function doUpdatePriorityContent( idContent, action, idBlog ){
 	} else {
 		const data = await response.json();
 		if ( data.status == 'OK' ){
-			if ( data.status == 'OK' ){
 				if(data.result == "BLOG_LOCKED"){
 					setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked )	
 				}else if( action == "moveUp" ){
@@ -326,12 +325,11 @@ async function doUpdatePriorityContent( idContent, action, idBlog ){
 				} else if( action == "moveDown" ){
 					document.querySelector( `#doc_${data.result}` ).after( document.querySelector( `#doc_${idContent}` ) );
 				}
-			} else {
-				setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
-			}
-	  }	else {
+	    }
+		else
+		{
 		setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
-	  }
+		}
 	}
 }
 /*
@@ -345,7 +343,6 @@ async function doUpdatePriorityContentBis( idContent, action ){
 	} else {
 		const data = await response.json();
 		if ( data.status == 'OK' ){
-			if ( data.status == 'OK' ){
 				if(data.result == "BLOG_LOCKED"){
 					setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked )
 				}else if( action == "moveUp" ){
@@ -353,10 +350,9 @@ async function doUpdatePriorityContentBis( idContent, action ){
 				} else if( action == "moveDown" ){
 					document.querySelector( `#doc_${data.result}` ).after( document.querySelector( `#doc_${idContent}` ) );
 				}
-			} else {
-				setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )
-			}
-		}	else {
+		  }
+		else
+		{
 			setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )
 		}
 	}
