@@ -236,6 +236,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     @Action( ACTION_PUBLISHE_DOCUMENT )
     public String doPublishDocument( HttpServletRequest request ) throws ParseException
     {
+        _blogPublication = new BlogPublication( );
         populateBlogPublication( _blogPublication, request );
 
         if ( _blogPublication.getDateBeginPublishing( ) == null )
@@ -253,9 +254,22 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         if ( _blogPublication.getIdPortlet( ) != 0 )
         {
-
-            BlogPublicationHome.update( _blogPublication );
-
+          // check if the document is already published
+            BlogPublication _blogPublicationExist = BlogPublicationHome.findDocPublicationByPimaryKey( _blogPublication.getIdPortlet( ), _blogPublication.getIdBlog( ) );
+            if(_blogPublicationExist != null)
+            {
+                _blogPublicationExist.setDateBeginPublishing( _blogPublication.getDateBeginPublishing( ) );
+                _blogPublicationExist.setDateEndPublishing( _blogPublication.getDateEndPublishing( ) );
+                BlogPublicationHome.remove( _blogPublicationExist.getIdBlog( ), _blogPublicationExist.getIdPortlet( ) );
+                BlogPublicationHome.create( _blogPublicationExist );
+            }
+            else
+            {
+                BlogPublicationHome.create( _blogPublication );
+            }
+            // update indexer
+            Blog blog = BlogHome.findByPrimaryKey( _blogPublication.getIdBlog( ) );
+            BlogService.getInstance( ).fireUpdateBlogEvent( blog.getId( ) );
             _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdBlog( ) );
         }
 
@@ -395,7 +409,6 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         int nBlogOrder = BlogListPortletHome.getMinDocBlogOrder( );
         nBlogOrder = nBlogOrder - 1;
-
         htmldocPublication.setIdBlog( nIdDoc );
         htmldocPublication.setIdPortlet( nIdPortlet );
         htmldocPublication.setDateBeginPublishing( dateBeginPublishing );
