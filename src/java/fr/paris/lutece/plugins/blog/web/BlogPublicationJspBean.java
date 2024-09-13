@@ -345,9 +345,30 @@ public class BlogPublicationJspBean extends BlogJspBean
         String dateEndPublishingStr = request.getParameter( PARAMETER_UNPUBLISHED_DATE );
         java.sql.Date dateBeginPublishing = null;
         java.sql.Date dateEndPublishing = null;
-        SimpleDateFormat sdf = new SimpleDateFormat( "dd/MM/yyyy" );
-        java.util.Date parsed;
+        SimpleDateFormat sdf;
+        // check format date
+        if(
+                ( dateBeginPublishingStr != null )
+                        && ( dateBeginPublishingStr.length( ) == 10 )
+                        && ( dateBeginPublishingStr.charAt( 4 ) == '-' )
+                        && ( dateBeginPublishingStr.charAt( 7 ) == '-' ) )
+        {
+            sdf = new SimpleDateFormat( "yyyy-MM-dd" );
 
+        }
+        else if(
+                ( dateBeginPublishingStr != null )
+                        && ( dateBeginPublishingStr.length( ) == 19 )
+                        && ( dateBeginPublishingStr.charAt( 4 ) == '-' )
+                        && ( dateBeginPublishingStr.charAt( 16 ) == ':' ) )
+        {
+            sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        }
+        else
+        {
+            sdf = new SimpleDateFormat( "dd/MM/yyyy" );
+        }
+        java.util.Date parsed;
         if ( dateBeginPublishingStr != null && !dateBeginPublishingStr.isEmpty( ) )
         {
             parsed = sdf.parse( dateBeginPublishingStr );
