@@ -58,7 +58,6 @@ public final class DocContentDAO implements IDocContentDAO
 
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY = "SELECT id_type, type_label FROM blog_content_type WHERE id_type = ? ";
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE = "SELECT id_type, type_label FROM blog_content_type ";
-    private static final String SQL_QUERY_DELETE_BY_NOT_IN_BLOG = "DELETE FROM blog_content WHERE id_document NOT IN ( SELECT id_document FROM blog_blog_content )";
     /**
      * Generates a new primary key
      * 
@@ -291,16 +290,4 @@ public final class DocContentDAO implements IDocContentDAO
         return listcontentType;
     }
 
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public void deleteByNotInBlog( Plugin plugin )
-    {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_NOT_IN_BLOG, plugin ) )
-        {
-            daoUtil.executeUpdate( );
-            daoUtil.free( );
-        }
-    }
 }

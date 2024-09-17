@@ -81,12 +81,6 @@
 			<daemon-description>blog.daemon.unlockedBlogDaemon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.blog.service.UnlockedBlogDaemon</daemon-class>
 	    </daemon>
-        <daemon>
-            <daemon-id>removeDocContentsDaemon</daemon-id>
-            <daemon-name>blog.daemon.removeDocContentsDaemon.name</daemon-name>
-            <daemon-description>blog.daemon.removeDocContentsDaemon.description</daemon-description>
-            <daemon-class>fr.paris.lutece.plugins.blog.service.RemoveDocContentsDaemon</daemon-class>
-        </daemon>
     </daemons>
     
     <!-- Dashboard components -->
