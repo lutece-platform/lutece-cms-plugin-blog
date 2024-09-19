@@ -53,7 +53,7 @@
 		<@columns sm=3 class='d-inline-flex'>
 			<@formGroup labelKey='#i18n{blog.manage_blogs.labelSearch}' labelClass='invisible' rows=2>
 			<@button type='submit' title='#i18n{blog.manage_blogs.search}' name='view_manageBlogsPublication' id='view_manageBlogsPublication'  buttonIcon='search' />
-			<#if !portlet_filter?? || portlet_filter.displayLatestPortlets >
+			<#if !portlet_filter?? >
 				<@input type='hidden' name='is_display_latest_portlets' value='false' />
 			<#else>
 				<@button type='submit' color='danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
@@ -65,7 +65,7 @@
 	<@row>
 		<@columns sm=12 md=6>
 		<#if document_list_portlet_list?size &gt; 0>
-			<#assign boxTitle>#i18n{blog.publication_blog.labelAvailablePortlet} #i18n{blog.publication_blog.labelAvailableDocumentListPortlet} <#if !portlet_filter?? || portlet_filter.displayLatestPortlets> ${label_display_latest_portlets} </#if></#assign>
+			<#assign boxTitle>#i18n{blog.publication_blog.labelAvailablePortlet} #i18n{blog.publication_blog.labelAvailableDocumentListPortlet}</#assign>
 			<@box>
 				<@boxHeader title=boxTitle />
 				<@boxBody>
@@ -122,6 +122,22 @@
 					<@formGroup rows=2 class='mt-5'>
 						<@button type='submit' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' title='#i18n{blog.publication_blog.buttonPublish}' />
 					</@formGroup>
+					<@row>
+						<@columns sm=4 offsetSm=8>
+							<@formGroup labelFor='${paginator.itemsPerPageParameterName!}' labelKey='#i18n{blog.portlet.blog.lableNbPost!}' rows=2>
+								<@inputGroup>
+									<@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='w-25' params='data-max-item="${paginator.itemsCount}"'>
+									<#list [ "10" , "20" , "50" , "100" ] as nb>
+										<@option value=nb?string label=nb?string  selected=(nb?string == paginator.itemsPerPage?string) />
+									</#list>
+								</@select>
+									<@inputGroupItem type=''>
+										<@button type='button' id='refresh-listPortlet' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' class='btn-target' name='refresh' value='refresh' hideTitle=['all']/>
+									</@inputGroupItem>
+								</@inputGroup>
+							</@formGroup>
+						</@columns>
+					</@row>
 				</@boxBody>
 			</@box>
 		<#else>
@@ -155,6 +171,15 @@
 </@tform>
 </@pageColumn>
 </@pageContainer>
+<script type="module">
+	const refresh = document.getElementById('refresh-listPortlet');
+	refresh.addEventListener( 'click',  (e) => {
+		const itemPerPage = document.getElementById('items_per_page').value;
+		const blogid = '${blog.id}';
+		const url = 'jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id='+blogid+'&items_per_page='+itemPerPage
+		window.location.replace( url )
+	});
+</script>
 <script type="module">
 import LuteceSearchList from './themes/shared/modules/luteceSearchList.js';
 
