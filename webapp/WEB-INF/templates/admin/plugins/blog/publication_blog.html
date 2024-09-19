@@ -112,10 +112,6 @@
 								<@listGroupItem class='d-flex justify-content-between vh-50' params='data-portlet="${portlet.code!}"'>
 									<@span class='searchable mx-2 pt-1'>${portlet.code!}</@span>
 									<@span class='searchable mx-2 pt-1 ps-2 w-50'>${portlet.name!}</@span>
-									<@btnGroup>
-										<@icon style='user mt-2' /> 
-										<@span class='searchable mx-2 pt-1'>${blog.userCreator}</@span>
-									</@btnGroup>
 									<@button type='submit' class='invisible' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' title='#i18n{blog.publication_blog.buttonPublish}' />
 								</@listGroupItem>
 							</#list>
