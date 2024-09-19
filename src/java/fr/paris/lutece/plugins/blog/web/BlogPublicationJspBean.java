@@ -71,6 +71,8 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.util.html.AbstractPaginator;
+import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
@@ -87,7 +89,6 @@ public class BlogPublicationJspBean extends BlogJspBean
 
     // Properties
     private static final String PROPERTY_PAGE_TITLE_PUBLICATION_HTMLDOC = "blog.publication_blogpageTitle";
-    private static final String PROPERTY_DISPLAY_LATEST_PORTLETS = "blog.manage_document_publishing.labelDisplayLatestPortlets";
 
     // Markers
     public static final String MARK_PORTLET_LIST = "portlet_list";
@@ -100,7 +101,6 @@ public class BlogPublicationJspBean extends BlogJspBean
     private static final String MARK_DOCUMENT_PORTLET_LIST = "document_portlet_list";
     private static final String MARK_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
     private static final String MARK_PORTLET_FILTER = "portlet_filter";
-    private static final String MARK_LABEL_DISPLAY_LATEST_PORTLETS = "label_display_latest_portlets";
     public static final String DATE_END_PUBLICATION = AppPropertiesService.getProperty( "blog.date.end.publication", "2030-01-01 11:59:59" );
 
     // Properties
@@ -126,6 +126,9 @@ public class BlogPublicationJspBean extends BlogJspBean
     private static final String PARAMETER_ORDER_PORTLET_ASC = "order_portlet_asc";
     private static final String PARAMETER_PORTLET_FILTER_TYPE = "portlet_filter_type";
     private static final String PARAMETER_PORTLET_FILTER_VALUE = "portlet_filter_value";
+    private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
+    private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
+    private static final String PARAMETER_PAGE_INDEX = "page_index";
 
     private static final String PARAMETER_IS_DISPLAY_LATEST_PORTLETS = "is_display_latest_portlets";
 
@@ -147,9 +150,6 @@ public class BlogPublicationJspBean extends BlogJspBean
     public String getManageBlogPublication( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        Object [ ] messageNumberOfMaxLatestPortletsDisplay = {
-                String.valueOf( PortletFilter.PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY )
-        };
         String strErrorFilter = null;
         _blogPublication = ( _blogPublication != null ) ? _blogPublication : new BlogPublication( );
 
@@ -199,18 +199,15 @@ public class BlogPublicationJspBean extends BlogJspBean
                 ( strErrorFilter == null ) ? portletFilter : null );
         Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( _blog.getId( ), pOrder,
                 ( strErrorFilter == null ) ? portletFilter : null );
-
+        // PAGINATOR
+        java.util.List<ReferenceItem> listDocumentPortletsRef = new ArrayList<>( listDocumentListPortlets );
+        model = getPaginatedListModel( request, MARK_DOCUMENT_LIST_PORTLET_LIST, listDocumentPortletsRef, getHomeUrl( request ), model );
         model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
-        model.put( MARK_DOCUMENT_LIST_PORTLET_LIST, listDocumentListPortlets );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_PORTLET_LIST, PublishingService.getInstance( ).getBlogsPortletstoPublish( ) );
-
         model.put( MARK_ORDER_PORTLET, nOrderPortlet );
         model.put( MARK_ORDER_PORTLET_ASC, nOrderPortletAsc );
         model.put( MARK_PORTLET_FILTER, portletFilter );
-        model.put( MARK_LABEL_DISPLAY_LATEST_PORTLETS,
-                I18nService.getLocalizedString( PROPERTY_DISPLAY_LATEST_PORTLETS, messageNumberOfMaxLatestPortletsDisplay, getLocale( ) ) );
-
         return getPage( PROPERTY_PAGE_TITLE_PUBLICATION_HTMLDOC, TEMPLATE_PUBLICATION_HTMLDOC, model );
     }
 
@@ -429,11 +426,6 @@ public class BlogPublicationJspBean extends BlogJspBean
 
                 listFilteredPortlets.add( item );
 
-                if ( ( ( pFilter == null ) || pFilter.isDisplayLatestPortlets( ) )
-                        && ( listFilteredPortlets.size( ) >= PortletFilter.PROPERTY_NUMBER_OF_MAX_LATEST_PORTLETS_DISPLAY ) )
-                {
-                    break;
-                }
             }
         }
 
@@ -475,6 +467,64 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
 
         return filterByWorkgroup( listPortlets, pFilter );
+    }
+
+    /**
+     * Return a model that contains the list and paginator infos
+     *
+     * @param request
+     *            The HTTP request
+     * @param strBookmark
+     *            The bookmark
+     * @param list
+     *            The list of item
+     * @param strManageJsp
+     *            The JSP
+     * @return The model
+     */
+    protected Map<String, Object> getPaginatedListModel( HttpServletRequest request, String strBookmark, java.util.List list, String strManageJsp, Map<String, Object> model)
+    {
+        _strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        int defaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE, 50 );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, defaultItemsPerPage );
+
+        fr.paris.lutece.util.url.UrlItem url = new fr.paris.lutece.util.url.UrlItem( strManageJsp );
+        String strUrl = url.getUrl( );
+
+        // SORT
+        String strSortedAttributeName = request.getParameter( MARK_SORTED_ATTRIBUTE );
+
+        if ( strSortedAttributeName != null || _bIsSorted )
+        {
+            if ( strSortedAttributeName == null )
+            {
+                strSortedAttributeName = _strSortedAttributeName;
+            }
+            String strAscSort = request.getParameter( MARK_ASC_SORT );
+
+            boolean bIsAscSort = Boolean.parseBoolean( strAscSort );
+            if ( strAscSort == null )
+            {
+                bIsAscSort = _bIsAscSort;
+            }
+
+            java.util.Collections.sort( list, new fr.paris.lutece.util.sort.AttributeComparator( strSortedAttributeName, bIsAscSort ) );
+
+            _bIsSorted = true;
+
+            _strSortedAttributeName = strSortedAttributeName;
+            _bIsAscSort = bIsAscSort;
+        }
+
+        // PAGINATOR
+        LocalizedPaginator paginator = new LocalizedPaginator( list, _nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
+
+
+        model.put( MARK_NB_ITEMS_PER_PAGE, _nItemsPerPage );
+        model.put( MARK_PAGINATOR, paginator );
+        model.put( strBookmark, paginator.getPageItems( ) );
+
+        return model;
     }
 
 }
