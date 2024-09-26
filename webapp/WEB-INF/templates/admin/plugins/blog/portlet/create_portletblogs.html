@@ -59,7 +59,7 @@ new LuteceSearchList( searchInput, searchElementList, {
 	highlight: true,
 	hideClass: 'd-none'
 });
-
+let alreadySubmitted = false;
 document.addEventListener('DOMContentLoaded', (event) => {
 	const form = document.getElementById( 'form-portlet' )
 	const tpl = document.getElementById( 'page_template_code' )
@@ -75,7 +75,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		})
 	});
 
-	form.addEventListener( 'submit', ( e ) => { 
+	form.addEventListener( 'submit', ( e ) => {
+		if( alreadySubmitted ) {
+			e.preventDefault();
+			return;
+		}
+		alreadySubmitted = true;
 		if( blog.value === '0' ){
 			e.preventDefault();
 			tpl.classList.add('is-invalid')
