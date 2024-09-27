@@ -20,8 +20,6 @@
 				<@listGroupItem class='d-flex justify-content-between vh-50' params='data-post="${blog.id} ${blog.contentLabel}" data-blog="${blog.id}"'>
 					<@span class='searchable mx-2 pt-1'>${blog.id}</@span>
 					<@span class='searchable mx-2 pt-1 w-50'>${blog.contentLabel}</@span>
-					<@span class='searchable mx-2 pt-1'><@icon style='user' /> ${blog.userCreator}</@span>
-					<@span class='searchable mx-2 pt-1 w-25'><@icon style='calendar-plus' /> ${blog.creationDate?string.short} <@icon style='calendar-cog ms-4' /> ${blog.updateDate?string.short}</@span>
 				</@listGroupItem>
 			</#list>
 		</@listGroup>
