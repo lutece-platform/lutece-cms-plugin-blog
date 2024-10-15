@@ -255,7 +255,7 @@ public class BlogPublicationJspBean extends BlogJspBean
     @Action( ACTION_UNPUBLISHE_DOCUMENT )
     public String doUnPublishDocument( HttpServletRequest request )
     {
-
+        _blogPublication = new BlogPublication( );
         populate( _blogPublication, request );
 
         BlogPublicationHome.remove( _blogPublication.getIdBlog( ), _blogPublication.getIdPortlet( ) );
