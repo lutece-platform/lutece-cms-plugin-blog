@@ -2,7 +2,7 @@
 <@input type="hidden" id="id" name="id" value="0" />
 <@input type="hidden" id="action" name="action" value="createBlog" />
 <@row>
-	<@columns sm=4 offsetSm=8 class='mb-3'>
+	<@columns sm=4 class='mb-3'>
 		<@tform>
 			<@formGroup labelFor='search_post' labelKey='#i18n{portal.system.manage_plugins.buttonFilter}' hideLabel=['all'] formStyle='inline'>
 				<@inputGroup>
@@ -14,12 +14,14 @@
 	</@columns>
 </@row>
 <@row>
-	<@columns sm=12>
+	<@columns sm=7>
 		<@listGroup params='style="height:40vh;overflow-y: auto"'>
 			<#list blog_list?sort_by('updateDate')?reverse as blog>
 				<@listGroupItem class='d-flex justify-content-between vh-50' params='data-post="${blog.id} ${blog.contentLabel}" data-blog="${blog.id}"'>
 					<@span class='searchable mx-2 pt-1'>${blog.id}</@span>
 					<@span class='searchable mx-2 pt-1 w-50'>${blog.contentLabel}</@span>
+					<@span class='searchable mx-2 pt-1'><@icon style='user' /> ${blog.userCreator}</@span>
+					<@span class='searchable mx-2 pt-1 w-25'><@icon style='calendar-plus' /> ${blog.creationDate?string.short} <@icon style='calendar-cog ms-4' /> ${blog.updateDate?string.short}</@span>
 				</@listGroupItem>
 			</#list>
 		</@listGroup>
@@ -29,20 +31,25 @@
 				<@option value=blog.id label='${blog.contentLabel} - ${blog.id}' />
 			</#list>
 		</@select>
+
+	</@columns>
+	<@columns sm=5>
 		<@row class='mt-2'>
-			<@columns sm=4>
-				<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2 >
-					<@select id='page_template_code' name='page_template_code'>
-					<#list pages_list as key, value >
-						<@option value=key label=value />
-					</#list>
-					</@select>
-					<@span class='invalid-feedback'>Vous devez sélectionner un billet</@span>
-				</@formGroup>
-			</@columns>
-			<@columns sm=3>
+			<@columns >
 				<@formGroup labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' labelClass='invisible' rows=2 >
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?plugin_name=blog' title='#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}' color='link' buttonIcon='external-link' target='_blank' />
+				</@formGroup>
+			</@columns>
+		</@row>
+		<@row>
+			<@columns>
+				<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2 >
+					<@select id='page_template_code' name='page_template_code'>
+						<#list pages_list as key, value >
+							<@option value=key label=value />
+						</#list>
+					</@select>
+					<@span class='invalid-feedback'>Vous devez sélectionner un billet</@span>
 				</@formGroup>
 			</@columns>
 		</@row>
