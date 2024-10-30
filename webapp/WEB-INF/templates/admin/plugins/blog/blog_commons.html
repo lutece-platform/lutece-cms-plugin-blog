@@ -397,9 +397,11 @@ document.addEventListener( "DOMContentLoaded", function(){
     });
 
     const btnCreateTag = document.querySelector( "#createTag" )
-    btnCreateTag.addEventListener( 'click', event => {
-      createTag( idBlog );
-    });
+    if (btnCreateTag){
+        btnCreateTag.addEventListener( 'click', event => {
+            createTag( idBlog );
+        });
+    }
 
     const btnAddFiles = document.querySelector("#btn-add-files")
     btnAddFiles.addEventListener( 'click', event => {
