@@ -43,6 +43,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
@@ -101,7 +102,6 @@ public class BlogPublicationJspBean extends BlogJspBean
     private static final String MARK_DOCUMENT_PORTLET_LIST = "document_portlet_list";
     private static final String MARK_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
     private static final String MARK_PORTLET_FILTER = "portlet_filter";
-    public static final String DATE_END_PUBLICATION = AppPropertiesService.getProperty( "blog.date.end.publication", "2030-01-01 11:59:59" );
 
     // Properties
 
@@ -230,8 +230,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
         if ( _blogPublication.getDateEndPublishing( ) == null )
         {
-            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-            _blogPublication.setDateEndPublishing( new Date( sdf.parse( DATE_END_PUBLICATION ).getTime( ) ) );
+            _blogPublication.setDateEndPublishing(BlogParameterService.getInstance().getDefaultDateEndPublishing());
         }
         if ( _blogPublication.getIdPortlet( ) != 0 )
         {

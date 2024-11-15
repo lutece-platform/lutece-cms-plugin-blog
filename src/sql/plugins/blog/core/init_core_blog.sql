@@ -27,6 +27,7 @@ INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_para
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');
 
 --
 -- Set blog resources management rights for admin account

@@ -62,7 +62,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
             + "LEFT JOIN blog_list_portlet_htmldocs c ON b.id_portlet = c.id_portlet AND c.id_blog= ? "
             + "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet " + "INNER JOIN core_page f ON a.id_page = f.id_page WHERE c.id_portlet IS NULL ";
     // Category
-    private static final String SQL_QUERY_INSERT_BLOGS_PORTLET = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order ) VALUES ( ? , ?, ?, ? )";
+    private static final String SQL_QUERY_INSERT_BLOGS_PORTLET = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_end_publishing ) VALUES ( ? , ?, ?, ?, ? )";
     private static final String SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_begin_publishing, date_end_publishing) VALUES ( ? , ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_DELETE_BLOGS_PORTLET = " DELETE FROM blog_list_portlet_htmldocs WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_blog, document_order, date_begin_publishing, date_end_publishing, status FROM blog_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
@@ -113,6 +113,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
                     daoUtil.setInt( 2, docPub.getIdBlog( ) );
                     daoUtil.setInt( 3, 1 );
                     daoUtil.setInt( 4, docPub.getBlogOrder( ) );
+                    daoUtil.setDate( 5, docPub.getDateEndPublishing( ) );
                     daoUtil.executeUpdate( );
                 }
 
