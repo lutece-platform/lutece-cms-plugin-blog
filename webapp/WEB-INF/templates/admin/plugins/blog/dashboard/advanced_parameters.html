@@ -21,6 +21,14 @@
         </@columns>
     </@row>
 
+    <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.default_date_end_publishing}' labelFor='default_date_end_publishing' mandatory=true>
+        <@inputGroup>
+        <@input type='date' name='default_date_end_publishing' id='default_date_end_publishing' value='${default_date_end_publishing!}' language=.lang format='Y-m-d' />
+            <@inputGroupItem>
+                <@icon style='calendar' />
+            </@inputGroupItem>
+        </@inputGroup>
+    </@formGroup>
     <@formGroup>
         <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary' />
     </@formGroup>

@@ -41,6 +41,7 @@ public class BlogAdminDashboardComponent extends AdminDashboardComponent
 
         BlogParameterService blogParameterService = BlogParameterService.getInstance();
         model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, blogParameterService.getNumberMandatoryTags());
+        model.put(BlogParameterService.MARK_DEFAULT_DATE_END_PUBLISHING, blogParameterService.getDefaultDateEndPublishing());
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DASHBOARD, user.getLocale( ), model );
 

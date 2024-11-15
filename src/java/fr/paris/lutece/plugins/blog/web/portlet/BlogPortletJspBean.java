@@ -38,7 +38,9 @@ import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
+import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
+import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.web.portlet.PortletJspBean;
@@ -179,6 +181,10 @@ public class BlogPortletJspBean extends PortletJspBean
         portlet.setPageId( nPageId );
         portlet.setContentId( nContentId );
         portlet.setPortletName( request.getParameter( PARAMETER_PORTLET_NAME ) );
+
+        BlogPublication doc = new BlogPublication( );
+        doc.setDateEndPublishing(BlogParameterService.getInstance().getDefaultDateEndPublishing());
+        portlet.setBlogPublication(doc);
 
         // Creates the portlet
         BlogPortletHome.getInstance( ).create( portlet );

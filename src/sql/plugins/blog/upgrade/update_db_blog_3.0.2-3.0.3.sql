@@ -7,3 +7,4 @@ INSERT INTO core_user_right (id_right,id_user) VALUES ('MANAGE_ADVANCED_PARAMETE
 INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('blogAdminDashboardComponent', 1, 7);
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.number_mandatory_tags', '0');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');

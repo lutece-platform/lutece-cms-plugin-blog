@@ -42,6 +42,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -543,8 +544,7 @@ public class BlogListPortletJspBean extends PortletJspBean
         if ( doc == null )
         {
             doc = new BlogPublication( );
-            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-            doc.setDateEndPublishing( new Date( sdf.parse( BlogPublicationJspBean.DATE_END_PUBLICATION ).getTime( ) ) );
+            doc.setDateEndPublishing(BlogParameterService.getInstance().getDefaultDateEndPublishing());
             doc.setIdBlog( nIdDocument );
         }
         if ( strAction != null && !strAction.isEmpty( ) && strAction.equals( PARAMETER_ACTION_PORTLET_ADD ) )
