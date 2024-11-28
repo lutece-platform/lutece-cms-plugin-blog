@@ -1,5 +1,6 @@
 package fr.paris.lutece.plugins.blog.web.admindashboard;
 
+import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
@@ -28,9 +29,12 @@ public class BlogAdminDashboardJspBean extends MVCAdminJspBean
         }
         if ( !RBACService.isAuthorized( AdminUser.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, AdminUserResourceIdService.PERMISSION_MANAGE_ADVANCED_PARAMETERS,
                 getUser( ) ) )
-         {
-             throw new AccessDeniedException( UNAUTHORIZED );
-         }
+        {
+            throw new AccessDeniedException( UNAUTHORIZED );
+        }
+
+        BlogParameterService blogParameterService = BlogParameterService.getInstance();
+        blogParameterService.updateNumberMandatoryTags(request.getParameter( BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS ) );
 
         return getAdminDashboardsUrl( request, BlogAdminDashboardComponent.ANCHOR_ADMIN_DASHBOARDS );
     }

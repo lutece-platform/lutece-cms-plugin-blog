@@ -17,6 +17,14 @@
 	margin-bottom: 1rem;
 }
 
+#notEnoughTagsAlert.alert {
+    margin-bottom: 0px;
+}
+
+.blog-hidealert {
+    display: none !important;
+}
+
 /* #blog-toolbar.toolbar-small {
     display: flex;
     flex-direction: column;

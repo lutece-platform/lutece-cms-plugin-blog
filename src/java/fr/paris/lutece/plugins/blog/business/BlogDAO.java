@@ -844,6 +844,8 @@ public final class BlogDAO implements IBlogDAO
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
 
+                blog.setTag( TagHome.getTagListByDoc( blog.getId( ) ) );
+
                 blogList.add( blog );
             }
         }

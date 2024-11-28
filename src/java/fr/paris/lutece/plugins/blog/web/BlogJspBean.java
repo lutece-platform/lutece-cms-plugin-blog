@@ -59,7 +59,9 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.plugins.blog.utils.BlogUtils;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.ArrayUtils;
@@ -237,6 +239,7 @@ public class BlogJspBean extends ManageBlogJspBean
     // Errors
     private static final String ERROR_HISTORY_BLOG_CANT_REMOVE_ORIGINAL = "blog.error.history.blog.cantRemoveOriginal";
     private static final String ERROR_HISTORY_BLOG_NOT_REMOVED = "blog.error.history.blog.notRemoved";
+    private static final String MESSAGE_ERROR_MANDATORY_TAGS = "blog.message.errorMandatoryTags";
 
     // Filter Marks
     protected static final String MARK_BLOG_FILTER_LIST = "blog_filter_list";
@@ -446,6 +449,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_PERMISSION_MODIFY_BLOG, bPermissionModify );
         model.put( MARK_PERMISSION_DELETE_BLOG, bPermissionDelete );
         model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionPublish );
+        model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, BlogParameterService.getInstance().getNumberMandatoryTags() );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_BLOG, TEMPLATE_MANAGE_BLOGS, model );
     }
@@ -613,6 +617,8 @@ public class BlogJspBean extends ManageBlogJspBean
                 listDocContent.remove( i );
         }
         _blogServiceSession.removeDocContentFromSession( request.getSession( ), user );
+
+        model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, BlogParameterService.getInstance().getNumberMandatoryTags() );
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
@@ -654,6 +660,15 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 return redirectView( request, VIEW_CREATE_BLOG );
             }
+            // Check if the number of mandatory tags is respected
+            int nNumberMandatoryTags = BlogParameterService.getInstance().getNumberMandatoryTags();
+            if (nNumberMandatoryTags  > _blog.getTag( ).size( ) )
+            {
+                String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));
+                addError( strMessage, getLocale( ) );
+                return redirectView( request, VIEW_CREATE_BLOG );
+            }
+
             BlogService.getInstance( ).createBlog( _blog, _blog.getDocContent( ) );
             _blogServiceSession.removeDocContentFromSession( request.getSession( ), user );
 
@@ -1014,6 +1029,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_LIST_TAG, getTageList( ) );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+        model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, BlogParameterService.getInstance().getNumberMandatoryTags() );
 
         ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), Blog.PROPERTY_RESOURCE_TYPE );
 
@@ -1067,6 +1083,16 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
             }
+
+            // Check if the number of mandatory tags is respected
+            int nNumberMandatoryTags = BlogParameterService.getInstance().getNumberMandatoryTags();
+            if (nNumberMandatoryTags > _blog.getTag( ).size( ) )
+            {
+                String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));
+                addError( strMessage, getLocale( ) );
+                return redirectView( request, VIEW_CREATE_BLOG );
+            }
+
             if ( strAction != null && strAction.equals( PARAMETER_UPDATE ) && RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_PUBLISH, (User) getUser( ) ) )
             {
                 _blog.setVersion( latestVersionBlog.getVersion( ) + 1 );
