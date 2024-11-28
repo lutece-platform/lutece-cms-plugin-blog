@@ -36,6 +36,8 @@ async function doAddTag( idTag, tgName, blogId ) {
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
 				setListTag(  idTag, tgName, blogId  )
+                numberOfTagsAssigned++;
+                refreshMandatoryTagInfo(numberOfTagsAssigned);
 		  	}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagNotSet )	
@@ -54,6 +56,8 @@ async function doDeleteTag( idTag, tgName, blogId ){
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
 				document.querySelector( `#tag_${idTag}`).remove();
+                numberOfTagsAssigned--;
+                refreshMandatoryTagInfo(numberOfTagsAssigned);
 			}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagDeletion )	
@@ -79,6 +83,47 @@ async function doUpdatePriorityTag( idTag, action, blogId ){
 		setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
 	  }
 	}
+}
+
+
+async function refreshMandatoryTagInfo( numberOfTagsAssign )
+{
+
+    const elemEnoughTagsInfo = document.getElementById('enoughTagsInfo');
+
+    if( number_mandatory_tags > numberOfTagsAssigned ) {
+        if( document.getElementById('action_modifyblog') != null ){
+            document.getElementById('action_modifyblog').disabled = true;
+            document.getElementById('apply_modifyblog').disabled = true;
+        }
+        if( document.getElementById('action_createBlog') != null ){
+            document.getElementById('action_createBlog').disabled = true;
+            document.getElementById('toolbar-collapse').disabled = true;
+        }
+        document.getElementById('notEnoughTagsAlert').classList.remove('blog-hidealert');
+        if(elemEnoughTagsInfo!=null)
+        {
+            elemEnoughTagsInfo.classList.add('alert-warning');
+            elemEnoughTagsInfo.classList.remove('alert-info');
+        }
+    }
+
+    if( numberOfTagsAssign >= number_mandatory_tags ) {
+        if( document.getElementById('action_modifyblog') != null ){
+            document.getElementById('action_modifyblog').disabled = false;
+            document.getElementById('apply_modifyblog').disabled = false;
+        }
+        if( document.getElementById('action_createBlog') != null ){
+            document.getElementById('action_createBlog').disabled = false;
+            document.getElementById('toolbar-collapse').disabled = false;
+        }
+        document.getElementById('notEnoughTagsAlert').classList.add('blog-hidealert');
+        if(elemEnoughTagsInfo!=null)
+        {
+            elemEnoughTagsInfo.classList.remove('alert-warning');
+            elemEnoughTagsInfo.classList.add('alert-info');
+        }
+    }
 }
 
 function setListTag( idTag, tgName, blogId ){

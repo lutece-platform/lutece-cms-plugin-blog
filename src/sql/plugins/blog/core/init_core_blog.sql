@@ -23,6 +23,7 @@ DELETE FROM core_user_right WHERE id_right = 'MANAGE_ADVANCED_PARAMETERS';
 INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_MANAGEMENT',1);
 INSERT INTO core_user_right (id_right,id_user) VALUES ('MANAGE_ADVANCED_PARAMETERS',1);
 
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.number_mandatory_tags', '0');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');

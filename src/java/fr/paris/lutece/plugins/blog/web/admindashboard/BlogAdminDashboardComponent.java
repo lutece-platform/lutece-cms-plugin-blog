@@ -2,6 +2,7 @@ package fr.paris.lutece.plugins.blog.web.admindashboard;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.dashboard.admin.AdminDashboardComponent;
@@ -37,6 +38,10 @@ public class BlogAdminDashboardComponent extends AdminDashboardComponent
         Map<String, Object> model = new HashMap<>( );
         model.put( SecurityTokenService.PARAMETER_TOKEN,
                 SecurityTokenService.getInstance( ).getToken( request, AdminDashboardJspBean.TEMPLATE_MANAGE_DASHBOARDS ) );
+
+        BlogParameterService blogParameterService = BlogParameterService.getInstance();
+        model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, blogParameterService.getNumberMandatoryTags());
+
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DASHBOARD, user.getLocale( ), model );
 
         return template.getHtml( );
