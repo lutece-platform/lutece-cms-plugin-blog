@@ -8,3 +8,11 @@ INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_ord
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.number_mandatory_tags', '0');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');
+
+-- add a version to blogs that does not have one
+INSERT INTO blog_versions (id_version,id_blog,version,content_label,creation_date,update_date,html_content,user_editor,user_creator,attached_portlet_id,edit_comment,description,shareable,url)
+    SELECT a.id_blog, a.id_blog, 1, a.content_label, a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id, a.edit_comment , a.description, a.shareable, a.url
+    FROM blog_blog a
+    WHERE a.version = 1
+ON DUPLICATE KEY UPDATE id_version=id_version;
+
