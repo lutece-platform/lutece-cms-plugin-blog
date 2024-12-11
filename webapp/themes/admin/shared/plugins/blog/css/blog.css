@@ -9,12 +9,17 @@
     top: .15rem;
     right: 0;
     z-index: 300;
+    pointer-events: none;
 }
 
 #blog-toolbar{
 	display: flex;
 	justify-content: end;
 	margin-bottom: 1rem;
+}
+
+#blog-toolbar > * {
+    pointer-events: auto;
 }
 
 #notEnoughTagsAlert.alert {
