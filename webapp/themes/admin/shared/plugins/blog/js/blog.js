@@ -2,29 +2,6 @@ const typeWarning = 'warning'
 const typeDanger = 'danger'
 let defaultImgFileType='file-x'
 
-async function createTag( blogId ){
-	const tgName = document.querySelector('#tag_name').value;
-	if( tgName != null && tgName !='' ){
-		const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoCreateTag.jsp?createTagByAjax=createTagByAjax&name=${tgName}&id=${blogId}` );
-		if (!response.ok) {
-			setBlogToast( typeDanger , labelError, response.statusText )	
-		} else {
-			const data = await response.json();
-			if ( data.status == 'OK' ){
-				if( data.result == "BLOG_LOCKED" ){
-					setBlogToast( typeWarning ,  labelWarning, msgErrorTagExist )	
-				} else if( data.result != 'TAG_EXIST'){
-					doAddTag( data.result, tgName, blogId )
-				} else {
-					setBlogToast( typeWarning , labelWarning, msgErrorTagExist )	
-				}
-			}
-		}
-	} else {
-		setBlogToast( typeWarning , labelWarning, msgErrorTagTitleNotEmpty )
-	}
-}
-
 async function doAddTag( idTag, tgName, blogId ) {
 	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc=${idTag}&tag_name=${tgName}&id=${blogId}` );
 	if ( !response.ok ) {
@@ -35,6 +12,8 @@ async function doAddTag( idTag, tgName, blogId ) {
 			if(data.result == "BLOG_LOCKED"){
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
+			    blog_tag.push( idTag );
+			    refreshListTag();
 				setListTag(  idTag, tgName, blogId  )
                 numberOfTagsAssigned++;
 				if( parseInt( numberMandatoryTags ) > 0 ){
@@ -57,6 +36,8 @@ async function doDeleteTag( idTag, tgName, blogId ){
 			if(data.result == "BLOG_LOCKED"){
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
+			    blog_tag = blog_tag.filter(id => id != idTag)
+                refreshListTag();
 				document.querySelector( `#tag_${idTag}`).remove();
                 numberOfTagsAssigned--;
 				if( parseInt( numberMandatoryTags ) > 0 ){
@@ -397,4 +378,23 @@ async function doUpdatePriorityContentBis( idContent, action ){
 			setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )
 		}
 	}
+}
+
+/*
+ * Refresh the list of available tag to add
+ */
+async function refreshListTag()
+{
+    const tagSelect = document.getElementById('tag_doc');
+    tagSelect.textContent = '';
+
+    for (const tag of all_tag) {
+    	if( blog_tag.indexOf(tag[0]) === -1 )
+    	{
+    	    const opt = document.createElement('option');
+    	    opt.value = tag[0];
+    	    opt.innerHTML = tag[1];
+    	    tagSelect.appendChild(opt);
+    	}
+    }
 }

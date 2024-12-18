@@ -42,16 +42,6 @@
                                     </@listGroupItem>
                                 </#list>
                             </@listGroup>
-                            <#if permission_manage_create_tag>
-                                <@formGroup labelFor='tag_name' labelKey='#i18n{blog.create_tag.title}' class='mt-3' rows=2>
-                                    <@inputGroup>
-                                        <@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.create_tag.title}' />
-                                        <@inputGroupItem type='btn'>
-                                            <@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.title}' buttonIcon='plus' hideTitle=['all'] size='' />
-                                        </@inputGroupItem>
-                                    </@inputGroup>
-                                </@formGroup>
-                            </#if>
                         </@boxBody>
                     </@box>
                     <@box>
