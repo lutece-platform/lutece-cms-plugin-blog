@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +64,7 @@ import javax.xml.transform.stream.StreamResult;
 import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.util.ReferenceItem;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.ArrayUtils;
@@ -190,6 +192,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String MARK_SEARCH_TEXT = "search_text";
     protected static final String MARK_DIFF = "blog_diff";
     protected static final String MARK_BLOG2 = "blog2";
+    protected static final String MARK_LIST_ALLTAG = "list_alltag";
     protected static final String MARK_LIST_TAG = "list_tag";
     protected static final String MARK_LIST_IMAGE_TYPE = "image_type";
     protected static final String MARK_SORTED_ATTRIBUTE = "sorted_attribute_name";
@@ -676,11 +679,18 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         _blogServiceSession.removeDocContentFromSession( request.getSession( ), user );
 
+        ReferenceList allTag = TagHome.getTagsReferenceList( );
+        allTag.sort( Comparator.comparing(ReferenceItem::getName , String.CASE_INSENSITIVE_ORDER ) );
+
+        ReferenceList tagList = getTageList( );
+        tagList.sort( Comparator.comparing(ReferenceItem::getName , String.CASE_INSENSITIVE_ORDER ) );
+
         model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, BlogParameterService.getInstance().getNumberMandatoryTags() );
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_BLOG, _blog );
-        model.put( MARK_LIST_TAG, getTageList( ) );
+        model.put( MARK_LIST_ALLTAG , allTag );
+        model.put( MARK_LIST_TAG, tagList );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
 
@@ -1083,11 +1093,18 @@ public class BlogJspBean extends ManageBlogJspBean
         boolean bPermissionToPublish = RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_PUBLISH,
                 (User) getUser( ) );
 
+        ReferenceList allTag = TagHome.getTagsReferenceList( );
+        allTag.sort( Comparator.comparing(ReferenceItem::getName , String.CASE_INSENSITIVE_ORDER ) );
+
+        ReferenceList tagList = getTageList( );
+        tagList.sort( Comparator.comparing(ReferenceItem::getName , String.CASE_INSENSITIVE_ORDER ) );
+
         model.put( MARK_LIST_IMAGE_TYPE, DocContentHome.getListContentType( ) );
         model.put( MARK_PERMISSION_CREATE_TAG, bPermissionCreate );
         model.put( MARK_PERMISSION_PUBLISH_BLOG, bPermissionToPublish );
         model.put( MARK_BLOG, _blog );
-        model.put( MARK_LIST_TAG, getTageList( ) );
+        model.put( MARK_LIST_ALLTAG , allTag );
+        model.put( MARK_LIST_TAG, tagList );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, BlogParameterService.getInstance().getNumberMandatoryTags() );

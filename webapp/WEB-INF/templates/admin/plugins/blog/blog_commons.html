@@ -16,6 +16,9 @@
 var numberOfTagsAssigned = '${blogTagSize}';
 var numberMandatoryTags = '${number_mandatory_tags}';
 
+var all_tag = [<#list list_alltag as tag>['${tag.code}','${tag.name?js_string}' ],</#list>];
+var blog_tag = [<#list blog.tag as tag>'${tag.idTag}',</#list>];
+
 var msgErrorTagExist = '#i18n{blog.message.errorTagExist}'
 var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
 var msgErrorTagDeletion = '#i18n{blog.message.errorTagDeletion}' 
@@ -106,7 +109,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     });
   })
   var number_mandatory_tags=<#if requiredTags gt 0>${requiredTags}<#else>0</#if>
-  
+
   <@charcounter />
 });
 </script>
