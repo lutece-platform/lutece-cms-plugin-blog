@@ -48,8 +48,6 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import fr.paris.lutece.util.date.DateUtil;
-
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,8 +73,6 @@ import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
 import org.outerj.daisy.diff.html.TextNodeComparator;
 import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
 import org.xml.sax.InputSource;
-import java.text.MessageFormat;
-
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.blog.business.Blog;
@@ -94,7 +90,6 @@ import fr.paris.lutece.plugins.blog.service.BlogServiceSession;
 import fr.paris.lutece.plugins.blog.service.BlogSessionListner;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
 import fr.paris.lutece.plugins.blog.utils.BlogLock;
-import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -183,7 +178,6 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String PROPERTY_PAGE_TITLE_PREVIEW_BLOG = "blog.preview_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_DIFF_BLOG = "blog.diff_blog.pageTitle";
     protected static final String PROPERTY_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
-    protected static final String PROPERTY_BLOG_ARCHIVE = "blog.manage_blog_archives.labelActionArchive";
 
     // Markers
     protected static final String MARK_BLOG_LIST = "blog_list";
@@ -214,7 +208,7 @@ public class BlogJspBean extends ManageBlogJspBean
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
     private static final String MESSAGE_CONFIRM_REMOVE_BLOG = "blog.message.confirmRemoveBlog";
-    private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
+    private static final String MESSAGE_ERROR_DOCUMENT_IS_ACTIVE = "blog.message.errorDocumentIsActive";
     private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
     private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
     private static final String MESSAGE_CONFIRM_ARCHIVE_BLOG = "blog.message.confirmArchiveBlog";
@@ -223,7 +217,6 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String MESSAGE_CONFIRM_UNARCHIVE_BLOG= "blog.message.confirmUnarchiveBlog";
     private static final String MESSAGE_CONFIRM_REMOVE_MULTIPE_BLOGS = "blog.message.confirmRemoveMultipleBlogs";
 
-    protected static final String MARK_BLOG_ACTION_LIST = "selection_action_list";
     private static final String INFO_BLOG_UNARCHIVED = "blog.info.blog.blogUnarchived";
     private static final String INFO_MULTIPLE_BLOGS_UNARCHIVED = "blog.info.blog.multipleBlogsUnarchived";
     private static final String INFO_BLOG_ARCHIVED = "blog.info.blog.blogArchived";
@@ -257,8 +250,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS = "updateArchiveMultipleBlogs";
     private static final String ACTION_REMOVE_MULTIPLE_BLOGS = "removeMultipleBlogs";
     private static final String ACTION_EXECUTE_SELECTED_ACTION = "form_checkbox_action";
-    private static final String ACTION_CONFIRM_ARCHIVE_BLOG = "confirmArchiveBlog";
-    private static final String ACTION_ARCHIVE_BLOG = "archiveBlog";
+    private static final String ACTION_CONFIRM_REMOVE_MULTIPLE_BLOGS = "confirmRemoveMultipleBlogs";
     private static final String ACTION_CONFIRM_ARCHIVE_BLOGS = "confirmArchiveBlogs";
     private static final String ACTION_CONFIRM_UNARCHIVE_BLOGS = "confirmUnarchiveBlogs";
 
@@ -268,6 +260,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String INFO_BLOG_REMOVED = "blog.info.blog.removed";
     private static final String BLOG_LOCKED = "blog.message.blogLocked";
     private static final String INFO_HISTORY_BLOG_REMOVED = "blog.info.history.blog.removed";
+    private static final String INFO_MULTIPLE_BLOGS_REMOVED = "blog.info.blog.multipleBlogsRemoved";
 
     // Errors
     private static final String ERROR_HISTORY_BLOG_CANT_REMOVE_ORIGINAL = "blog.error.history.blog.cantRemoveOriginal";
@@ -311,7 +304,6 @@ public class BlogJspBean extends ManageBlogJspBean
     protected String _strSortedAttributeName;
     protected Boolean _bIsAscSort;
     protected String [ ] _strTag;
-    private ReferenceList _listBlogActionsList;
     private List<Integer> _listSelectedBlogIds = new ArrayList<>( );
 
 
@@ -623,12 +615,12 @@ public class BlogJspBean extends ManageBlogJspBean
                 }
                 // Check if this blog is currently published
                 List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nBlogId );
-                if ( CollectionUtils.isNotEmpty( docPublication ) )
+                if ( CollectionUtils.isNotEmpty( docPublication ) || BlogHome.findByPrimaryKey( nBlogId ).isArchived() )
                 {
                     // Inform the user that the blog is currently published and redirect to the blog's history view
                     UrlItem url = new UrlItem( getViewFullUrl( VIEW_HISTORY_BLOG ) );
                     url.addParameter( PARAMETER_ID_BLOG, nBlogId );
-                    String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, url.getUrl( ),
+                    String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_ACTIVE, url.getUrl( ),
                             AdminMessage.TYPE_STOP );
                     return redirect( request, strMessageUrl );
                 }
@@ -967,9 +959,9 @@ public class BlogJspBean extends ManageBlogJspBean
 
             List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
 
-            if ( CollectionUtils.isNotEmpty( docPublication ) )
+            if ( CollectionUtils.isNotEmpty( docPublication ) || BlogHome.findByPrimaryKey( nId ).isArchived() )
             {
-                String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, AdminMessage.TYPE_STOP );
+                String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_ACTIVE, AdminMessage.TYPE_STOP );
 
                 return redirect( request, strMessageUrl );
             }
@@ -979,7 +971,8 @@ public class BlogJspBean extends ManageBlogJspBean
 
             ExtendableResourceRemovalListenerService.doRemoveResourceExtentions( Blog.PROPERTY_RESOURCE_TYPE, String.valueOf( nId ) );
 
-            addInfo( INFO_BLOG_REMOVED, getLocale( ) );
+            HttpSession session = request.getSession();
+            session.setAttribute( PARAMETER_INFO_MESSAGE,  INFO_BLOG_REMOVED);
         }
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
@@ -1699,6 +1692,51 @@ public class BlogJspBean extends ManageBlogJspBean
 
 
     /**
+     * Display the confirmation message before one or multiple selected blog posts are deleted
+     *
+     * @param request
+     *            The Http request
+     * @return the html code to confirm the action
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_CONFIRM_REMOVE_MULTIPLE_BLOGS )
+    public String getConfirmRemoveMultipleBlogs( HttpServletRequest request ) throws AccessDeniedException
+    {
+        // Check if the user has the permission to archive a blog
+        AdminUser adminUser = AdminUserService.getAdminUser( request );
+        User user = AdminUserService.getAdminUser( request );
+        if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, user ) )
+        {
+            String strMessage = I18nService.getLocalizedString( ACCESS_DENIED_MESSAGE, request.getLocale( ) );
+            throw new AccessDeniedException( strMessage );
+        }
+
+        // Check if one of the blog selected is currently locked. Display a message and redirect the user if it's the case
+        if ( checkLockMultipleBlogs( request.getSession( ).getId( ) ) )
+        {
+            UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+            String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strMessageUrl );
+        }
+
+        UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_MULTIPLE_BLOGS ) );
+        url.addParameter( PARAMETER_SELECTED_BLOGS, _listSelectedBlogIds.stream( ).map( String::valueOf ).collect( Collectors.joining( "," ) ) );
+        // Check if there's 1 or multiple posts to be removed, to adapt the content of the displayed message
+        String confirmationMessage = _listSelectedBlogIds.size( ) > 1 ? MESSAGE_CONFIRM_REMOVE_MULTIPE_BLOGS : MESSAGE_CONFIRM_REMOVE_BLOG;
+        if( _listSelectedBlogIds.size( ) > 1 )
+        {
+            Object [ ] messageArgs = {
+                    _listSelectedBlogIds.size( )
+            };
+            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, messageArgs, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+        }
+        else
+        {
+            return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
+        }
+    }
+
+    /**
      * Handles the manual delete of multiple blog posts
      *
      * @param request
@@ -1718,7 +1756,7 @@ public class BlogJspBean extends ManageBlogJspBean
             throw new AccessDeniedException( strMessage );
         }
         // Get a List of the selected posts' IDs, from the current session
-        _listSelectedBlogIds = getSelectedBlogPostsIds( request );
+        _listSelectedBlogIds = (List<Integer>) request.getSession( ).getAttribute( PARAMETER_SELECTED_BLOG_IDS_LIST );
 
         // Check if any of the selected post is being modified by another user
         if ( checkLockMultipleBlogs( request.getSession( ).getId( ) ) )
@@ -1727,7 +1765,18 @@ public class BlogJspBean extends ManageBlogJspBean
             String strMessageUrl = AdminMessageService.getMessageUrl( request, BLOG_LOCKED, url.getUrl( ), AdminMessage.TYPE_STOP );
             return redirect( request, strMessageUrl );
         }
+        for ( int docPublicationId : _listSelectedBlogIds )
+        {
+            if ( CollectionUtils.isNotEmpty( BlogPublicationHome.getDocPublicationByIdDoc( docPublicationId ) ) )
+            {
+                String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_ACTIVE, AdminMessage.TYPE_STOP );
+
+                return redirect( request, strMessageUrl );
+            }
+        }
         removeMultipleBlogs( _listSelectedBlogIds );
+        HttpSession session = request.getSession();
+        session.setAttribute( PARAMETER_INFO_MESSAGE,  getRemovedResultMessageKey( _listSelectedBlogIds ));
         return redirectView( request, VIEW_MANAGE_BLOGS );
     }
     private void removeMultipleBlogs( List<Integer> listBlogIds )
@@ -1902,6 +1951,22 @@ public class BlogJspBean extends ManageBlogJspBean
             }
         }
     }
+    /**
+     * Get the key of the message to display after the removing of multiple blog posts
+     * @param listBlogIds
+     * @return the key of the message to display
+     */
+    private String getRemovedResultMessageKey(List<Integer> listBlogIds)
+    {
+        if(listBlogIds.size() == 1)
+        {
+            return INFO_BLOG_REMOVED;
+        }
+        else
+        {
+            return INFO_MULTIPLE_BLOGS_REMOVED;
+        }
+    };
 
     /**
      * Process a specific action on a selection of multiple blog post elements
@@ -1942,7 +2007,7 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         else if ( selectedActionId == 2 )
             {
-                return doRemoveMultipleBlog( request );
+                return getConfirmRemoveMultipleBlogs( request );
             }
             else
             {
@@ -2000,7 +2065,7 @@ public class BlogJspBean extends ManageBlogJspBean
      */
     private synchronized boolean checkLockMultipleBlogs( String strIdSession )
     {
-        if(_listBlogActionsList == null || CollectionUtils.isEmpty( _listSelectedBlogIds ))
+        if( CollectionUtils.isEmpty( _listSelectedBlogIds ))
         {
             return false;
         }
