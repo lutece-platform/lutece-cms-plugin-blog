@@ -213,6 +213,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
     private static final String MESSAGE_CONFIRM_ARCHIVE_BLOG = "blog.message.confirmArchiveBlog";
     private static final String MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmArchiveMultipleBlogs";
+    private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
     private static final String MESSAGE_CONFIRM_UNARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmUnarchiveMultipleBlogs";
     private static final String MESSAGE_CONFIRM_UNARCHIVE_BLOG= "blog.message.confirmUnarchiveBlog";
     private static final String MESSAGE_CONFIRM_REMOVE_MULTIPE_BLOGS = "blog.message.confirmRemoveMultipleBlogs";
@@ -620,7 +621,7 @@ public class BlogJspBean extends ManageBlogJspBean
                     // Inform the user that the blog is currently published and redirect to the blog's history view
                     UrlItem url = new UrlItem( getViewFullUrl( VIEW_HISTORY_BLOG ) );
                     url.addParameter( PARAMETER_ID_BLOG, nBlogId );
-                    String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_ACTIVE, url.getUrl( ),
+                    String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED, url.getUrl( ),
                             AdminMessage.TYPE_STOP );
                     return redirect( request, strMessageUrl );
                 }
@@ -959,9 +960,10 @@ public class BlogJspBean extends ManageBlogJspBean
 
             List<BlogPublication> docPublication = BlogPublicationHome.getDocPublicationByIdDoc( nId );
 
-            if ( CollectionUtils.isNotEmpty( docPublication ) || BlogHome.findByPrimaryKey( nId ).isArchived() )
+            if ( CollectionUtils.isNotEmpty( docPublication ) || !BlogHome.findByPrimaryKey( nId ).isArchived( ) )
             {
-                String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_ACTIVE, AdminMessage.TYPE_STOP );
+                UrlItem url = new UrlItem( getActionUrl( VIEW_MANAGE_BLOGS ) );
+                String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_ACTIVE, url.getUrl( ), AdminMessage.TYPE_STOP );
 
                 return redirect( request, strMessageUrl );
             }
@@ -1767,7 +1769,8 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         for ( int docPublicationId : _listSelectedBlogIds )
         {
-            if ( CollectionUtils.isNotEmpty( BlogPublicationHome.getDocPublicationByIdDoc( docPublicationId ) ) )
+            if ( CollectionUtils.isNotEmpty( BlogPublicationHome.getDocPublicationByIdDoc( docPublicationId ) ) || !BlogHome.findByPrimaryKey(
+                    docPublicationId ).isArchived( ) )
             {
                 String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DOCUMENT_IS_ACTIVE, AdminMessage.TYPE_STOP );
 
