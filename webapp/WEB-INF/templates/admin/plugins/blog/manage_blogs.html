@@ -79,7 +79,7 @@
 										<option value=1 >#i18n{blog.manage_blogs.labelUnarchive}</option>
 										<option value=0 selected>#i18n{blog.manage_blogs.labelArchive}</option>
 									</#if>
-									<#if permission_manage_delete_blog>
+									<#if permission_manage_delete_blog && status_filter == 3>
 										<option value=2>#i18n{blog.manage_blogs.delete}</option>
 									</#if>
 								</@select>
@@ -213,7 +213,7 @@
                                         <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=0&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
 									</#if>
 								</#if>
-								<#if permission_manage_delete_blog>
+								<#if permission_manage_delete_blog && status_filter == 3>
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='danger' />
 								</#if>
 								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default ms-1' size='' class='btn-preview'  />
@@ -302,6 +302,8 @@ document.addEventListener( "DOMContentLoaded", function(){
 
 // checkbox row
 let btnApplyActionOnSelection = document.getElementById('button_apply_selected_action')
+
+window.addEventListener("load", ( ) => manageActionButtonVisibility( ) );
 
 // When the "Check all" / "Uncheck all" element is clicked, check / uncheck all the blog posts' checkboxes
 document.getElementById('select_all_blogs_id').addEventListener('click', function () {
