@@ -212,7 +212,9 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String MESSAGE_CONFIRM_REMOVE_HISTORY_BLOG = "blog.message.confirmRemoveHistoryBlog";
     private static final String ACCESS_DENIED_MESSAGE = "portal.message.user.accessDenied";
     private static final String MESSAGE_CONFIRM_ARCHIVE_BLOG = "blog.message.confirmArchiveBlog";
+    private static final String MESSAGE_CONFIRM_ARCHIVE_PUBLISHED_BLOG = "blog.message.confirmArchivePublishedBlog";
     private static final String MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmArchiveMultipleBlogs";
+    private static final String MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_PUBLISHED_BLOGS = "blog.message.confirmArchiveMultiplePublishedBlogs";
     private static final String MESSAGE_ERROR_DOCUMENT_IS_PUBLISHED = "blog.message.errorDocumentIsPublished";
     private static final String MESSAGE_CONFIRM_UNARCHIVE_MULTIPLE_BLOGS = "blog.message.confirmUnarchiveMultipleBlogs";
     private static final String MESSAGE_CONFIRM_UNARCHIVE_BLOG= "blog.message.confirmUnarchiveBlog";
@@ -1790,7 +1792,6 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         for ( int blogId : listBlogIds )
         {
-            BlogPublicationHome.getDocPublicationByIdDoc( blogId );
             if ( BlogPublicationHome.getDocPublicationByIdDoc( blogId ) != null && BlogPublicationHome.getDocPublicationByIdDoc( blogId ).size( ) > 0 )
             {
                 BlogPublicationHome.removeByBlogId( blogId );
@@ -1808,7 +1809,7 @@ public class BlogJspBean extends ManageBlogJspBean
      * @throws AccessDeniedException
      */
     @Action( ACTION_CONFIRM_ARCHIVE_BLOGS )
-    public String getconfirmArchiveBlogs( HttpServletRequest request ) throws AccessDeniedException
+    public String getConfirmArchiveBlogs( HttpServletRequest request ) throws AccessDeniedException
     {
         // Check if the user has the permission to archive a blog
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE,
@@ -1828,10 +1829,23 @@ public class BlogJspBean extends ManageBlogJspBean
         UrlItem url = new UrlItem( getActionUrl( ACTION_UPDATE_ARCHIVE_MULTIPLE_BLOGS ) );
         url.addParameter( PARAMETER_SELECTED_BLOGS, _listSelectedBlogIds.stream( ).map( String::valueOf ).collect( Collectors.joining( "," ) ) );
         url.addParameter( PARAMETER_TO_ARCHIVE, String.valueOf( true ));
-        // Check if there's 1 or multiple posts being archived, to adapt the content of the displayed message
-        String confirmationMessage = _listSelectedBlogIds.size( ) > 1 ? MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS : MESSAGE_CONFIRM_ARCHIVE_BLOG;
-        if( _listSelectedBlogIds.size( ) > 1 )
+        String confirmationMessage;
+        Boolean publishedBlog = false;
+
+        // Check if there is published blogs
+        for ( int blogId : _listSelectedBlogIds )
         {
+            if ( BlogPublicationHome.getDocPublicationByIdDoc( blogId ) != null && !BlogPublicationHome.getDocPublicationByIdDoc( blogId ).isEmpty( ) )
+            {
+                publishedBlog = true;
+                break;
+            }
+        }
+
+        if ( _listSelectedBlogIds.size( ) > 1 )
+        {
+            confirmationMessage = publishedBlog ? MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_PUBLISHED_BLOGS : MESSAGE_CONFIRM_ARCHIVE_MULTIPLE_BLOGS;
+
             Object [ ] messageArgs = {
                     _listSelectedBlogIds.size( )
             };
@@ -1839,6 +1853,7 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         else
         {
+            confirmationMessage = publishedBlog ? MESSAGE_CONFIRM_ARCHIVE_PUBLISHED_BLOG : MESSAGE_CONFIRM_ARCHIVE_BLOG;
             return redirect( request, AdminMessageService.getMessageUrl( request, confirmationMessage, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ));
         }
     }
@@ -1851,7 +1866,7 @@ public class BlogJspBean extends ManageBlogJspBean
      * @throws AccessDeniedException
      */
     @Action( ACTION_CONFIRM_UNARCHIVE_BLOGS )
-    public String getconfirmUnarchiveBlogs( HttpServletRequest request ) throws AccessDeniedException
+    public String getConfirmUnarchiveBlogs( HttpServletRequest request ) throws AccessDeniedException
     {
         // Check if the user has the permission to archive a blog
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_ARCHIVE,
@@ -2002,11 +2017,11 @@ public class BlogJspBean extends ManageBlogJspBean
         // Execute the action selected by the user
         if ( selectedActionId == 0 )
         {
-            return getconfirmArchiveBlogs( request );
+            return getConfirmArchiveBlogs( request );
         }
         else if ( selectedActionId == 1 )
         {
-            return getconfirmUnarchiveBlogs( request );
+            return getConfirmUnarchiveBlogs( request );
         }
         else if ( selectedActionId == 2 )
             {

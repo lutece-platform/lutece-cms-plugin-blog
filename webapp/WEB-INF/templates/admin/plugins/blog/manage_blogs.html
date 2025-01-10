@@ -71,13 +71,16 @@
                             <@addToast content=info_message class='text-bg-info border-0' />
                         </@initToast>
                     </#if>
-					<#if permission_manage_archive_blog || permission_manage_delete_blog>
+					<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3>
 						<@div class='d-flex flex-row'>
 							<@inputGroup class='p-2'>
 								<@select id='select_blog_action' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' class='p-2' disabled=true>
 									<#if permission_manage_archive_blog>
-										<option value=1 >#i18n{blog.manage_blogs.labelUnarchive}</option>
-										<option value=0 selected>#i18n{blog.manage_blogs.labelArchive}</option>
+										<#if status_filter == 3>
+											<option value=1 >#i18n{blog.manage_blogs.labelUnarchive}</option>
+										<#else>
+											<option value=0 selected>#i18n{blog.manage_blogs.labelArchive}</option>
+										</#if>
 									</#if>
 									<#if permission_manage_delete_blog && status_filter == 3>
 										<option value=2>#i18n{blog.manage_blogs.delete}</option>
@@ -91,7 +94,7 @@
 					</#if>
 				<@table headBody=true >
 					<@tr>
-						<#if permission_manage_archive_blog || permission_manage_delete_blog>
+						<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3>
 							<@th><@checkBox name='select_all_blogs_id' id='select_all_blogs_id' /></@th>
 						</#if>
 						<@th>#i18n{blog.manage_blogs.columnContentLabel} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" /></@th>
@@ -105,7 +108,7 @@
 					<@tableHeadBodySeparator />
 						<#list blog_list as blog>
 						<@tr>
-							<#if permission_manage_archive_blog || permission_manage_delete_blog>
+							<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3>
 								<@td>
 									<@checkBox id='selected_blog_${blog.id}' name='select_blog_id' value='${blog.id}' />
 								</@td>
@@ -154,7 +157,7 @@
 								</#list>
 							</@td>
 							<@td>
-							<#if permission_manage_publish_blog>
+							<#if permission_manage_publish_blog && status_filter != 3>
 								<#assign btnColor><#if blog.blogPublication?size = 0>default<#else>primary</#if></#assign>
 								<#assign btnTitle><#if blog.blogPublication?size==0>#i18n{blog.manage_blogs.labelPublished}<#else>#i18n{blog.manage_blogs.managePublication}</#if></#assign>
 								<@btnGroup params='aria-label="Manage"'>
