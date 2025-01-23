@@ -13,6 +13,7 @@
 <@tform class='position-relative' name='modify_blog' id='form-editor' enctype='multipart/form-data' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
   <@input type='hidden' id='id' name='id' value=blog.id />
   <@input type='hidden' id='action' name='action' value='modifyBlog' />
+  <#if number_mandatory_tags gt 0><@input type='hidden' id='tag_required' name='tag_required' value=number_mandatory_tags /></#if>
   <@row id='blog-toolbar-wrapper'>
     <@columns>
       <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>

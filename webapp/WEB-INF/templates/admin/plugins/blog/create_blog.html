@@ -14,6 +14,7 @@
     <@input type='hidden' id='id' name='id' value='0' />
     <@input type='hidden' id='action' name='action' value='createBlog' />
     <@input type='hidden' id='tag_remove' name='tag_remove' value='' />
+    <#if number_mandatory_tags gt 0><@input type='hidden' id='tag_required' name='tag_required' value=number_mandatory_tags /></#if>
     <@row id='blog-toolbar-wrapper'>
         <@columns>
             <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>

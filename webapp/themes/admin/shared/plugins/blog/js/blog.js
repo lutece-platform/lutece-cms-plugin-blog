@@ -1,7 +1,8 @@
 const typeWarning = 'warning'
 const typeDanger = 'danger'
 let defaultImgFileType='file-x'
-let numberOfTagsAssigned=0;
+let numberOfTagsAssigned=0
+const numTagRequired=document.getElementById('tag_required') != null ? document.getElementById('tag_required').value : 0;
 
 async function createTag( blogId ){
 	const tgName = document.querySelector('#tag_name').value;
@@ -38,7 +39,9 @@ async function doAddTag( idTag, tgName, blogId ) {
 			} else {
 				setListTag(  idTag, tgName, blogId  )
                 numberOfTagsAssigned++;
-                refreshMandatoryTagInfo(numberOfTagsAssigned);
+				if( numTagRequired > 0 ){
+                	refreshMandatoryTagInfo (numberOfTagsAssigned, numTagRequired );
+				}
 		  	}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagNotSet )	
@@ -58,7 +61,9 @@ async function doDeleteTag( idTag, tgName, blogId ){
 			} else {
 				document.querySelector( `#tag_${idTag}`).remove();
                 numberOfTagsAssigned--;
-                refreshMandatoryTagInfo(numberOfTagsAssigned);
+				if( numTagRequired > 0 ){
+					refreshMandatoryTagInfo( numberOfTagsAssigned, numTagRequired );
+				}
 			}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagDeletion )	
@@ -86,13 +91,9 @@ async function doUpdatePriorityTag( idTag, action, blogId ){
 	}
 }
 
-
-async function refreshMandatoryTagInfo( numberOfTagsAssign )
-{
-
+function refreshMandatoryTagInfo( numberOfTagsAssign, numTagRequired ){
     const elemEnoughTagsInfo = document.getElementById('enoughTagsInfo');
-
-    if( number_mandatory_tags > numberOfTagsAssigned ) {
+    if( numTagRequired > numberOfTagsAssigned ) {
         if( document.getElementById('action_modifyblog') != null ){
             document.getElementById('action_modifyblog').disabled = true;
             document.getElementById('apply_modifyblog').disabled = true;
@@ -102,14 +103,13 @@ async function refreshMandatoryTagInfo( numberOfTagsAssign )
             document.getElementById('toolbar-collapse').disabled = true;
         }
         document.getElementById('notEnoughTagsAlert').classList.remove('blog-hidealert');
-        if(elemEnoughTagsInfo!=null)
-        {
+        if(elemEnoughTagsInfo!=null)        {
             elemEnoughTagsInfo.classList.add('alert-warning');
             elemEnoughTagsInfo.classList.remove('alert-info');
         }
     }
 
-    if( numberOfTagsAssign >= number_mandatory_tags ) {
+    if( numberOfTagsAssign >= numTagRequired ) {
         if( document.getElementById('action_modifyblog') != null ){
             document.getElementById('action_modifyblog').disabled = false;
             document.getElementById('apply_modifyblog').disabled = false;
