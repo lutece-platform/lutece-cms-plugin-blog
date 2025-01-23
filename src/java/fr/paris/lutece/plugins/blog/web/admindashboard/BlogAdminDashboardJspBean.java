@@ -36,6 +36,7 @@ public class BlogAdminDashboardJspBean extends MVCAdminJspBean
         BlogParameterService blogParameterService = BlogParameterService.getInstance();
         blogParameterService.updateNumberMandatoryTags(request.getParameter( BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS ) );
         blogParameterService.updateDefaultDateEndPublishing(request.getParameter( BlogParameterService.MARK_DEFAULT_DATE_END_PUBLISHING ) );
+        blogParameterService.updateDefaultEditor(request.getParameter( BlogParameterService.MARK_DEFAULT_EDITOR ) );
 
         return getAdminDashboardsUrl( request, BlogAdminDashboardComponent.ANCHOR_ADMIN_DASHBOARDS );
     }

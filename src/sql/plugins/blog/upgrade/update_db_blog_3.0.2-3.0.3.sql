@@ -4,10 +4,11 @@ INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permiss
 INSERT INTO core_user_role (role_key, id_user) VALUES('blog_resources', 1);
 
 INSERT INTO core_user_right (id_right,id_user) VALUES ('MANAGE_ADVANCED_PARAMETERS',1);
-INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('blogAdminDashboardComponent', 1, 7);
+INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_order,dashboard_state ) VALUES('blogAdminDashboardComponent', 1, 7, 0);
 
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.number_mandatory_tags', '0');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.editor', 'tinymce5');
 
 -- add a version to blogs that does not have one
 INSERT INTO blog_versions (id_version,id_blog,version,content_label,creation_date,update_date,html_content,user_editor,user_creator,attached_portlet_id,edit_comment,description,shareable,url)

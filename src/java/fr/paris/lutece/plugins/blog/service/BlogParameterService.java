@@ -2,6 +2,7 @@ package fr.paris.lutece.plugins.blog.service;
 
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.util.AppLogService;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
@@ -17,9 +18,12 @@ public class BlogParameterService
 
     public static final String DSKEY_DEFAULT_NUMBER_MANDATORY_TAGS = "blog.advanced_parameters.number_mandatory_tags";
     public static final String DSKEY_DEFAULT_DATE_END_PUBLISHING = "blog.advanced_parameters.default_date_end_publishing";
+    public static final String DSKEY_DEFAULT_EDITOR = "blog.advanced_parameters.editor";
     public static final String MARK_DEFAULT_NUMBER_MANDATORY_TAGS = "number_mandatory_tags";
     public static final String MARK_DEFAULT_DATE_END_PUBLISHING = "default_date_end_publishing";
-
+    public static final String MARK_DEFAULT_EDITOR = "default_editor";
+    public static final String DSKEY_DEFAULT_EDITOR_BACK_OFFICE = "core.backOffice.defaultEditor";
+    
     private static final String FIELD_DATEFORMAT = "yyyy-MM-dd";
     private static final String DB_DATEFORMAT = "dd/MM/yyyy";
 
@@ -101,11 +105,11 @@ public class BlogParameterService
             }
         }
     }
-
+    
     /**
-     * Get String default end publishing date
+     * Get String default editor
      *
-     * @return default end publishing date
+     * @return default editor
      */
     public java.sql.Date getDefaultDateEndPublishing()
     {
@@ -118,6 +122,43 @@ public class BlogParameterService
         {
             return null;
         }
+    }
+   
+    /**
+     * Update default editor
+     *
+     * @param strValue editor name
+     */
+    public void updateDefaultEditor(String strValue)
+    {
+        try
+        {
+            DatastoreService.setDataValue( DSKEY_DEFAULT_EDITOR, strValue );
+        }
+        catch (Exception e)
+        {
+            AppLogService.error("Error updating editor config", e );
+        }
+    }
+
+     /**
+     * Get String default editor name
+     *
+     * @return default editor name for plugin
+     */
+    public String getDefaultBlogEditor()
+    {
+        String strDefaultEditor = DatastoreService.getDataValue( DSKEY_DEFAULT_EDITOR_BACK_OFFICE, "" );
+        String strBlogDefaultEditor = DatastoreService.getDataValue( DSKEY_DEFAULT_EDITOR, "" );
+        if (StringUtils.isNotBlank( strBlogDefaultEditor ))
+        {
+            return strBlogDefaultEditor;
+        }
+        else
+        {
+            return strDefaultEditor;
+        }
+             
     }
 
 }

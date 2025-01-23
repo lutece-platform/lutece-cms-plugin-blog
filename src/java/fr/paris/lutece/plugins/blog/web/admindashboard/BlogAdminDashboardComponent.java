@@ -5,7 +5,9 @@ import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.dashboard.admin.AdminDashboardComponent;
+import fr.paris.lutece.portal.service.editor.RichTextEditorService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
@@ -22,7 +24,8 @@ public class BlogAdminDashboardComponent extends AdminDashboardComponent
 {
     public static final String ANCHOR_ADMIN_DASHBOARDS = "blogAdminDashboard";
     private static final String TEMPLATE_ADMIN_DASHBOARD = "admin/plugins/blog/dashboard/blog_adminDashboard.html";
-
+    private static final String MARK_LIST_EDITORS_BACK_OFFICE = "listEditorsBackOffice";
+    
     /**
      * {@inheritDoc}
      */
@@ -42,6 +45,8 @@ public class BlogAdminDashboardComponent extends AdminDashboardComponent
         BlogParameterService blogParameterService = BlogParameterService.getInstance();
         model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, blogParameterService.getNumberMandatoryTags());
         model.put(BlogParameterService.MARK_DEFAULT_DATE_END_PUBLISHING, blogParameterService.getDefaultDateEndPublishing());
+        model.put( MARK_LIST_EDITORS_BACK_OFFICE, RichTextEditorService.getListEditorsForBackOffice( AdminUserService.getLocale( request ) ) );
+        model.put(BlogParameterService.MARK_DEFAULT_EDITOR, blogParameterService.getDefaultBlogEditor());
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DASHBOARD, user.getLocale( ), model );
 

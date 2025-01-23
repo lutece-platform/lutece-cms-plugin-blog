@@ -1,10 +1,9 @@
 <@tform method='post' name='blog_advanced_parameters' action='jsp/admin/plugins/blog/admindashboard/DoModifyAdvancedParameters.jsp' boxed=true>
     <@input type='hidden' name='token' value='${token}' />
-
     <@row>
-        <@columns md=6>
+        <@columns md=3>
             <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag}' labelFor='mandatory_tag' formClass='inline' labelClass='col-lg-12'>
-                <#if number_mandatory_tags &gt; 0>
+                <#if number_mandatory_tags gt 0>
                     <#assign tagMandatory=true>
                 <#else>
                     <#assign tagMandatory=false>
@@ -12,59 +11,75 @@
                 <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag.checkbox}' name='mandatory_tag' id='mandatory_tag' checked=tagMandatory />
             </@formGroup>
         </@columns>
-        <@columns md=6>
+        <@columns md=9>
             <@div id='sec_number_mandatory_tags'>
                 <@formGroup labelFor='number_mandatory_tags' labelKey='#i18n{blog.advanced_parameters.blog.number_mandatory_tags}' formClass='inline' labelClass='col-lg-12' >
-                    <@input type='number' min=0 max=10 name='number_mandatory_tags' id='number_mandatory_tags' value='${number_mandatory_tags!""}' />
+                <@row>
+                    <@columns md=1>
+                        <@input type='number' min=0 max=10 name='number_mandatory_tags' id='number_mandatory_tags' value='${number_mandatory_tags!""}' />
+                    </@columns>
+                </@row>
                 </@formGroup>
             </@div>
         </@columns>
     </@row>
-
     <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.default_date_end_publishing}' labelFor='default_date_end_publishing' mandatory=true>
-        <@inputGroup>
-        <@input type='date' name='default_date_end_publishing' id='default_date_end_publishing' value='${default_date_end_publishing!}' language=.lang format='Y-m-d' />
-            <@inputGroupItem>
-                <@icon style='calendar' />
-            </@inputGroupItem>
-        </@inputGroup>
+    <@row>
+        <@columns md=2>
+            <@inputGroup>
+            <@input type='date' name='default_date_end_publishing' id='default_date_end_publishing' value='${default_date_end_publishing!}' language=.lang format='Y-m-d' />
+                <@inputGroupItem>
+                    <@icon style='calendar' />
+                </@inputGroupItem>
+            </@inputGroup>
+        </@columns>
+    </@row>
     </@formGroup>
-    <@formGroup>
-        <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary' />
+    <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.editor}' labelFor='editor'>
+    <@row>
+        <@columns md=2>
+            <#if !default_editor??><#assign default_editor = ""></#if>
+            <@select name='default_editor' items=listEditorsBackOffice default_value=default_editor />
+        </@columns>
+    </@row>
     </@formGroup>
+    <@row>
+       <@columns>
+            <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary' />
+        </@columns>
+    </@row>
 </@tform>
-
 <script>
-    let numberMandatoryTags = document.getElementById('number_mandatory_tags');
-    let mandatoryTag = document.getElementById('mandatory_tag');
-    let secNumberMandatoryTags = document.getElementById('sec_number_mandatory_tags');
+let numberMandatoryTags = document.getElementById('number_mandatory_tags');
+let mandatoryTag = document.getElementById('mandatory_tag');
+let secNumberMandatoryTags = document.getElementById('sec_number_mandatory_tags');
 
-    let numberMandatoryTagsSave = ${number_mandatory_tags};
+let numberMandatoryTagsSave = ${number_mandatory_tags};
 
-    document.addEventListener('DOMContentLoaded', function () {
-        if(numberMandatoryTagsSave == 0) {
-            numberMandatoryTags.min=0
-            secNumberMandatoryTags.style.display = 'none';
-        }
-    });
+document.addEventListener('DOMContentLoaded', function () {
+if(numberMandatoryTagsSave == 0) {
+    numberMandatoryTags.min=0
+    secNumberMandatoryTags.style.display = 'none';
+}
+});
 
-    mandatoryTag.addEventListener('change', function () {
-        if (this.checked) {
-            secNumberMandatoryTags.style.display = '';
-            numberMandatoryTags.min=1
-            if(numberMandatoryTagsSave == 0)
-            {
-                numberMandatoryTags.value = 1;
-            }
-            else
-            {
-                numberMandatoryTags.value = numberMandatoryTagsSave;
-            }
-        } else {
-            numberMandatoryTagsSave = numberMandatoryTags.value;
-            secNumberMandatoryTags.style.display = 'none';
-            numberMandatoryTags.min=0
-            numberMandatoryTags.value = 0;
-        }
-    });
+mandatoryTag.addEventListener('change', function () {
+if (this.checked) {
+    secNumberMandatoryTags.style.display = '';
+    numberMandatoryTags.min=1
+    if(numberMandatoryTagsSave == 0)
+    {
+        numberMandatoryTags.value = 1;
+    }
+    else
+    {
+        numberMandatoryTags.value = numberMandatoryTagsSave;
+    }
+} else {
+    numberMandatoryTagsSave = numberMandatoryTags.value;
+    secNumberMandatoryTags.style.display = 'none';
+    numberMandatoryTags.min=0
+    numberMandatoryTags.value = 0;
+}
+});
 </script>
