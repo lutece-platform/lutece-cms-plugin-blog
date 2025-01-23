@@ -1,5 +1,4 @@
 <#include "blog_commons.html" />
-
 <#if blog.tag?? && blog.tag?size &gt; 0>
   <#assign blogTagSize=blog.tag?size />
 <#else>
@@ -10,7 +9,6 @@
 <#else>
   <#assign notEnoughTags=false />
 </#if>
-
 <@messages errors=errors />
 <@tform class='position-relative' name='modify_blog' id='form-editor' enctype='multipart/form-data' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
   <@input type='hidden' id='id' name='id' value=blog.id />
@@ -167,8 +165,8 @@
   ${extendableResourceActionsHtml!}
 </@div>
 </#if>
-<@blogEditor />
-<@blogScriptInit />
+<@initEditor />
+<@blogJSInit />
 <script>
 <@charcounter />
 </script>

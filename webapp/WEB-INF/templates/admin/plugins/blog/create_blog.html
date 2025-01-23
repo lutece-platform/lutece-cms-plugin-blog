@@ -9,7 +9,6 @@
 <#else>
   <#assign notEnoughTags=false />
 </#if>
-
 <@messages errors=errors />
 <@tform name='create_blog' class='position-relative'  id='form-editor' enctype='multipart/form-data' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
     <@input type='hidden' id='id' name='id' value='0' />
