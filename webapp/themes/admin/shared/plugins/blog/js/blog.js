@@ -1,6 +1,7 @@
 const typeWarning = 'warning'
 const typeDanger = 'danger'
 let defaultImgFileType='file-x'
+let numberOfTagsAssigned=0;
 
 async function createTag( blogId ){
 	const tgName = document.querySelector('#tag_name').value;
