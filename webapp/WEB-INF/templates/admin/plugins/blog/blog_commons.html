@@ -7,11 +7,18 @@
   <#assign coreEditorFile=.get_optional_template('/admin/util/editor/editor_${textEditorName}.html')>
   <#if coreEditorFile.exists><@coreEditorFile.include /></#if>
 </#if>
-<#macro blogJSInit >
+<#macro blogJSInit requiredTags=0>
 <@initToast id='blogToastContainer' showAll=false >
 <@addToast id='blogToast' content='to change' />
 </@initToast>
+<script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
 <script>
+var numberOfTagsAssigned = '${blogTagSize}';
+var numberMandatoryTags = '${number_mandatory_tags}';
+
+var all_tag = [<#list list_alltag as tag>['${tag.code}','${tag.name?js_string}' ],</#list>]; 
+var blog_tag = [<#list blog.tag as tag>'${tag.idTag}',</#list>];
+
 var msgErrorTagExist = '#i18n{blog.message.errorTagExist}' 
 var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
 var msgErrorTagDeletion = '#i18n{blog.message.errorTagDeletion}' 
@@ -99,9 +106,12 @@ document.addEventListener( "DOMContentLoaded", function(){
       document.querySelector('#attachment').click();
     });
   })
+  var number_mandatory_tags=<#if requiredTags gt 0>${requiredTags}<#else>0</#if>
+  
+  <@charcounter />
 });
 </script>
-<script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
+
 </#macro>
 <#function getFileExtension fileName>
 <#local lastDotIndex = fileName?last_index_of(".")>

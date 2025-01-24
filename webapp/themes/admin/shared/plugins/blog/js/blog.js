@@ -1,8 +1,6 @@
 const typeWarning = 'warning'
 const typeDanger = 'danger'
 let defaultImgFileType='file-x'
-let numberOfTagsAssigned=0
-const numTagRequired=document.getElementById('tag_required') != null ? document.getElementById('tag_required').value : 0;
 
 async function createTag( blogId ){
 	const tgName = document.querySelector('#tag_name').value;
@@ -39,8 +37,8 @@ async function doAddTag( idTag, tgName, blogId ) {
 			} else {
 				setListTag(  idTag, tgName, blogId  )
                 numberOfTagsAssigned++;
-				if( numTagRequired > 0 ){
-                	refreshMandatoryTagInfo (numberOfTagsAssigned, numTagRequired );
+				if( parseInt( numberMandatoryTags ) > 0 ){
+                	refreshMandatoryTagInfo( );
 				}
 		  	}
 	  }	else {
@@ -61,8 +59,8 @@ async function doDeleteTag( idTag, tgName, blogId ){
 			} else {
 				document.querySelector( `#tag_${idTag}`).remove();
                 numberOfTagsAssigned--;
-				if( numTagRequired > 0 ){
-					refreshMandatoryTagInfo( numberOfTagsAssigned, numTagRequired );
+				if( parseInt( numberMandatoryTags ) > 0 ){
+					refreshMandatoryTagInfo( );
 				}
 			}
 	  }	else {
@@ -91,40 +89,20 @@ async function doUpdatePriorityTag( idTag, action, blogId ){
 	}
 }
 
-function refreshMandatoryTagInfo( numberOfTagsAssign, numTagRequired ){
-    const elemEnoughTagsInfo = document.getElementById('enoughTagsInfo');
-    if( numTagRequired > numberOfTagsAssigned ) {
-        if( document.getElementById('action_modifyblog') != null ){
-            document.getElementById('action_modifyblog').disabled = true;
-            document.getElementById('apply_modifyblog').disabled = true;
-        }
-        if( document.getElementById('action_createBlog') != null ){
-            document.getElementById('action_createBlog').disabled = true;
-            document.getElementById('toolbar-collapse').disabled = true;
-        }
-        document.getElementById('notEnoughTagsAlert').classList.remove('blog-hidealert');
-        if(elemEnoughTagsInfo!=null)        {
-            elemEnoughTagsInfo.classList.add('alert-warning');
-            elemEnoughTagsInfo.classList.remove('alert-info');
-        }
-    }
-
-    if( numberOfTagsAssign >= numTagRequired ) {
-        if( document.getElementById('action_modifyblog') != null ){
-            document.getElementById('action_modifyblog').disabled = false;
-            document.getElementById('apply_modifyblog').disabled = false;
-        }
-        if( document.getElementById('action_createBlog') != null ){
-            document.getElementById('action_createBlog').disabled = false;
-            document.getElementById('toolbar-collapse').disabled = false;
-        }
-        document.getElementById('notEnoughTagsAlert').classList.add('blog-hidealert');
-        if(elemEnoughTagsInfo!=null)
-        {
-            elemEnoughTagsInfo.classList.remove('alert-warning');
-            elemEnoughTagsInfo.classList.add('alert-info');
-        }
-    }
+function refreshMandatoryTagInfo( ){
+    const alertRequiredTags = document.getElementById('required-tag');
+	const actionBtn = document.querySelectorAll('#blog-toolbar .btn.action');
+	if( actionBtn.length > 0 ){
+		actionBtn.forEach( ( btn ) => {
+			if( numberOfTagsAssigned <= ( parseInt( numberMandatoryTags ) - 1 )  ) {
+				btn.disabled = true;
+				alertRequiredTags.classList.remove('visually-hidden');
+			} else {
+				alertRequiredTags.classList.add('visually-hidden');
+				btn.disabled = false;
+			}
+   	 	});
+	}
 }
 
 function setListTag( idTag, tgName, blogId ){

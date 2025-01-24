@@ -1,35 +1,19 @@
-<#include "blog_commons.html" />
-<#if blog.tag?? && blog.tag?size &gt; 0>
-  <#assign blogTagSize=blog.tag?size />
-<#else>
-  <#assign blogTagSize=0 />
-</#if>
-<#if number_mandatory_tags &gt; blogTagSize>
-  <#assign notEnoughTags=true />
-<#else>
-  <#assign notEnoughTags=false />
-</#if>
+<#include 'blog_commons.html' />
+<#assign blogTagSize=0 />
+<#if blog.tag?? && blog.tag?size gt 0><#assign blogTagSize=blog.tag?size /></#if>
 <@messages errors=errors />
 <@tform class='position-relative' name='modify_blog' id='form-editor' enctype='multipart/form-data' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
   <@input type='hidden' id='id' name='id' value=blog.id />
   <@input type='hidden' id='action' name='action' value='modifyBlog' />
-  <#if number_mandatory_tags gt 0><@input type='hidden' id='tag_required' name='tag_required' value=number_mandatory_tags /></#if>
   <@row id='blog-toolbar-wrapper'>
     <@columns>
       <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>
-        <#if notEnoughTags>
-          <@alert id='notEnoughTagsAlert' color='warning'>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}</@alert>
-          <#if permission_manage_publish_blog?? && permission_manage_publish_blog>
-            <@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='update' id='action_modifyblog'  name='button' hideTitle=['xs','sm'] disabled=true />
-          </#if>
-          <@button class='me-1' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='modify' id='action_modifyblog' id='apply_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] disabled=true />
-        <#else>
-          <@alert id='notEnoughTagsAlert' color='warning' class='blog-hidealert'>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}</@alert>
-          <#if permission_manage_publish_blog?? && permission_manage_publish_blog>
-            <@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='update' id='action_modifyblog' name='button' hideTitle=['xs','sm'] />
-          </#if>
-          <@button class='me-1' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='modify' id='action_modifyblog' id='apply_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] />
+        <#assign alertClass>mb-0 me-2<#if number_mandatory_tags gte blogTagSize> visually-hidden</#if></#assign>
+        <@alert id='required-tag' color='warning' class=alertClass>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}  </@alert>
+        <#if permission_manage_publish_blog?? && permission_manage_publish_blog>
+            <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='update' id='action_modifyblog'  name='button' hideTitle=['xs','sm'] disabled=(number_mandatory_tags gt blogTagSize) />
         </#if>
+        <@button class='me-1 action' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='modify' id='action_modifyblog' id='apply_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] disabled=(number_mandatory_tags gt blogTagSize) />
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['xs','sm'] size='' />
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' hideTitle=['xs','sm'] size='' />
         <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions]' hideTitle=['xs','sm', 'md'] buttonIcon='history' size='' />
@@ -168,6 +152,3 @@
 </#if>
 <@initEditor />
 <@blogJSInit />
-<script>
-<@charcounter />
-</script>
