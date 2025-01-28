@@ -92,17 +92,34 @@ async function doUpdatePriorityTag( idTag, action, blogId ){
 function refreshMandatoryTagInfo( ){
     const alertRequiredTags = document.getElementById('required-tag');
 	const actionBtn = document.querySelectorAll('#blog-toolbar .btn.action');
+	const elemEnoughTagsInfo = document.getElementById('enoughTagsInfo');
+
 	if( actionBtn.length > 0 ){
 		actionBtn.forEach( ( btn ) => {
 			if( numberOfTagsAssigned <= ( parseInt( numberMandatoryTags ) - 1 )  ) {
 				btn.disabled = true;
-				alertRequiredTags.classList.remove('visually-hidden');
 			} else {
-				alertRequiredTags.classList.add('visually-hidden');
 				btn.disabled = false;
 			}
    	 	});
 	}
+
+    if( numberOfTagsAssigned <= ( parseInt( numberMandatoryTags ) - 1 )  ) {
+        alertRequiredTags.classList.remove('visually-hidden');
+        if(elemEnoughTagsInfo!=null)
+        {
+            elemEnoughTagsInfo.classList.add('alert-warning');
+            elemEnoughTagsInfo.classList.remove('alert-info');
+        }
+    } else {
+        alertRequiredTags.classList.add('visually-hidden');
+        if(elemEnoughTagsInfo!=null)
+        {
+            elemEnoughTagsInfo.classList.remove('alert-warning');
+            elemEnoughTagsInfo.classList.add('alert-info');
+        }
+    }
+
 }
 
 function setListTag( idTag, tgName, blogId ){

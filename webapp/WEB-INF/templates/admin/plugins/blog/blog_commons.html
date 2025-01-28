@@ -16,10 +16,7 @@
 var numberOfTagsAssigned = '${blogTagSize}';
 var numberMandatoryTags = '${number_mandatory_tags}';
 
-var all_tag = [<#list list_alltag as tag>['${tag.code}','${tag.name?js_string}' ],</#list>]; 
-var blog_tag = [<#list blog.tag as tag>'${tag.idTag}',</#list>];
-
-var msgErrorTagExist = '#i18n{blog.message.errorTagExist}' 
+var msgErrorTagExist = '#i18n{blog.message.errorTagExist}'
 var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
 var msgErrorTagDeletion = '#i18n{blog.message.errorTagDeletion}' 
 var msgErrorTagTitleNotEmpty = '#i18n{blog.message.errorTagTitleNotEmpty}'
@@ -47,6 +44,8 @@ document.addEventListener( "DOMContentLoaded", function(){
   dLabel=document.querySelector('#div_content_label') , iLabel=document.querySelector('#content_label'),
   dDesc=document.querySelector('#div_description') , iDesc=document.querySelector('#description'),
   dHtml=document.querySelector('#div_html_content') , iHtml=document.querySelector('#html_content');
+
+  refreshMandatoryTagInfo( );
 
   formEditor.addEventListener( "submit", event => {
     const t = dLabel.textContent.replace('\n','').replace('#i18n{blog.message.default.blogTitle}','').trim();
