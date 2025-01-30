@@ -9,21 +9,17 @@
     <@row id='blog-toolbar-wrapper'>
         <@columns>
             <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>
-            <#if number_mandatory_tags gte blogTagSize>
-                <@alert id='required-tag' color='warning' class='mb-0 me-2'>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}  </@alert>
-            </#if>
-            <#-- <@button class='me-1' color='default' size='sm' buttonIcon='arrow-right' title='#i18n{portal.util.labelModify}' value='' id='toolbar-collapse' hideTitle=['all'] disabled=(number_mandatory_tags gt blogTagSize) /> -->
-            <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.create_blog.labelCreate}' id='action_createBlog' name='action_createBlog' hideTitle=['xs','sm'] disabled=(number_mandatory_tags gt blogTagSize) />
+            <@alert id='required-tag' color='warning' class='mb-0 me-2'>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}  </@alert>
+            <#-- <@button class='me-1' color='default' size='sm' buttonIcon='arrow-right' title='#i18n{portal.util.labelModify}' value='' id='toolbar-collapse' hideTitle=['all'] /> -->
+            <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.create_blog.labelCreate}' id='action_createBlog' name='action_createBlog' hideTitle=['xs','sm'] />
                 <@offcanvas id='blog-properties' title='#i18n{blog.create_blog.labelProperties}' btnTitle='#i18n{blog.create_blog.labelProperties}' position='end' btnIcon='cog me-2' btnClass='me-1' >
                     <@box>
                         <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
                             <@icon style='tags' />
                         </@boxHeader>
                         <@boxBody>
-                            <#if number_mandatory_tags &gt; 0 && blogTagSize &gt; number_mandatory_tags-1>
+                            <#if number_mandatory_tags &gt; 0 >
                                 <@alert id='enoughTagsInfo' color='info'>#i18n{blog.mandatoryTags.minimum.number}: ${number_mandatory_tags}</@alert>
-                            <#elseif number_mandatory_tags &gt; 0 && number_mandatory_tags &gt; blogTagSize>
-                                <@alert id='enoughTagsInfo' color='warning'>#i18n{blog.mandatoryTags.minimum.number}: ${number_mandatory_tags}</@alert>
                             </#if>
                             <@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
                                 <@inputGroup>
