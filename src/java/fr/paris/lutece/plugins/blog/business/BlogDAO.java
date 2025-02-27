@@ -621,7 +621,7 @@ public final class BlogDAO implements IBlogDAO
                 blog.setEditComment( daoUtil.getString( nIndex++ ) );
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
-                blog.setUrl( daoUtil.getString( nIndex ) );
+                blog.setUrl( daoUtil.getString( nIndex++ ) );
                 blog.setArchived( daoUtil.getBoolean( nIndex ) );
 
                 if ( filter.getLoadBinaries( ) )
