@@ -1,11 +1,23 @@
-<#assign textEditorDefaultName = "fr.paris.lutece.portal.service.editor.RichTextEditorBackOfficeMethod"?new()() >
-<#assign textEditorName><#if !dskey('blog.advanced_parameters.editor')?starts_with('DS')>${dskey('blog.advanced_parameters.editor')}<#else>${textEditorDefaultName}</#if></#assign>
+<#assign textEditorCoreName = "fr.paris.lutece.portal.service.editor.RichTextEditorBackOfficeMethod"?new()() >
+<#assign textEditorBlogName><#if !dskey('blog.advanced_parameters.editor')?starts_with('DS') || dskey('blog.advanced_parameters.editor')?starts_with('DS') !=''>${dskey('blog.advanced_parameters.editor')}</#if></#assign>
+<#assign textEditorName><#if textEditorBlogName !=''>${textEditorBlogName}<#else>${textEditorCoreName!}</#if></#assign>
 <#assign blogEditorFile=.get_optional_template('blog_${textEditorName}.html')>
-<#if blogEditorFile.exists>
-  <@blogEditorFile.include />
+<#if textEditorName?trim !=''>
+  <#if blogEditorFile.exists>
+    <@blogEditorFile.include />
+  <#else>
+      <#assign coreEditorFile=.get_optional_template('/admin/util/editor/editor_${textEditorName}.html')>
+      <#if coreEditorFile.exists><@coreEditorFile.include /></#if>
+  </#if>
 <#else>
-  <#assign coreEditorFile=.get_optional_template('/admin/util/editor/editor_${textEditorName}.html')>
-  <#if coreEditorFile.exists><@coreEditorFile.include /></#if>
+    <#macro initEditor >
+    <!-- AUCUN EDITEUR DANS LES PARAMETRES -->
+    <@row>
+      <@columns>
+        <@callOut color='warning  w-25 mx-auto' titleLevel='h3' callOutIcon='alert-triangle' title='Aucun editeur disponible !'  />
+      </@columns>
+    </@row>
+    </#macro>
 </#if>
 <#macro blogJSInit requiredTags=0>
 <@initToast id='blogToastContainer' showAll=false >
