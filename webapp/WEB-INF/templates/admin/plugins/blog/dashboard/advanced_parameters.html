@@ -1,28 +1,32 @@
 <@tform method='post' name='blog_advanced_parameters' action='jsp/admin/plugins/blog/admindashboard/DoModifyAdvancedParameters.jsp' boxed=true>
     <@input type='hidden' name='token' value='${token}' />
+    <@box title='#i18n{blog.advanced_parameters.blog.mandatory_tag}'>
     <@row>
         <@columns md=3>
-            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag}' labelFor='mandatory_tag' formClass='inline' labelClass='col-lg-12'>
+            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag}' labelFor='mandatory_tag' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
                 <#if number_mandatory_tags gt 0>
                     <#assign tagMandatory=true>
                 <#else>
                     <#assign tagMandatory=false>
                 </#if>
-                <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag.checkbox}' name='mandatory_tag' id='mandatory_tag' checked=tagMandatory />
+                <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag.checkbox}' orientation='switch' name='mandatory_tag' id='mandatory_tag' checked=tagMandatory />
             </@formGroup>
-        </@columns>
-        <@columns md=9>
-            <@div id='sec_number_mandatory_tags'>
-                <@formGroup labelFor='number_mandatory_tags' labelKey='#i18n{blog.advanced_parameters.blog.number_mandatory_tags}' formClass='inline' labelClass='col-lg-12' >
+            </@columns>
+            <@columns>
+            <@formGroup labelFor='number_mandatory_tags' id='sec_number_mandatory_tags' labelKey='#i18n{blog.advanced_parameters.blog.number_mandatory_tags}' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
                 <@row>
-                    <@columns md=1>
-                        <@input type='number' min=0 max=10 name='number_mandatory_tags' id='number_mandatory_tags' value='${number_mandatory_tags!""}' />
+                    <@columns>
+                        <@inputGroup>
+                            <@input params='style="flex-basis:60px;flex-grow:0;"' type='number' min=0 max=10 name='number_mandatory_tags' id='number_mandatory_tags' value='${number_mandatory_tags!""}' />
+                            <@inputGroupItem>#i18n{blog.advanced_parameters.blog.number_mandatory_tags}</@inputGroupItem>
+                        </@inputGroup>
                     </@columns>
                 </@row>
-                </@formGroup>
-            </@div>
+            </@formGroup>
         </@columns>
     </@row>
+    </@box>
+    <@box title='#i18n{blog.advanced_parameters.blog.default_date_end_publishing.title}'>
     <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.default_date_end_publishing}' labelFor='default_date_end_publishing' mandatory=true>
     <@row>
         <@columns md=2>
@@ -35,6 +39,8 @@
         </@columns>
     </@row>
     </@formGroup>
+    </@box>
+    <@box title='#i18n{blog.advanced_parameters.blog.editor.title}'>
     <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.editor}' labelFor='editor'>
     <@row>
         <@columns md=2>
@@ -48,6 +54,7 @@
             <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary' />
         </@columns>
     </@row>
+    </@box>
 </@tform>
 <script>
 let numberMandatoryTags = document.getElementById('number_mandatory_tags');
