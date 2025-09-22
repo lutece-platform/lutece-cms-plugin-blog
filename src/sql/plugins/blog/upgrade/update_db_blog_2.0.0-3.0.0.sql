@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset blog:update_db_blog_2.0.0-3.0.0.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 UPDATE core_admin_right SET icon_url='ti ti-tags' WHERE  id_right='BLOG_TAGS_MANAGEMENT';
 UPDATE core_admin_right SET icon_url='ti ti-notebook' WHERE  id_right='BLOG_MANAGEMENT';
 UPDATE core_portlet_type SET icon_name='list-details' WHERE  id_portlet_type='BLOG_LIST_PORTLET';

@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset blog:create_db_blog.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Structure for table blog_content_type
 --
