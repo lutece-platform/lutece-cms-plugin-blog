@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset blog:init_db_blog_sample.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 INSERT INTO blog_page_template(id_page_template_document, page_template_path, picture_path, description, portlet_type)
 values(1,'skin/plugins/blog/portlet/default_portlet_blog.html','no picture','Post template', 'BLOG_PORTLET');
 

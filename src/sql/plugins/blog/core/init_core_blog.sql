@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset blog:init_core_blog.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Dumping data for table core_portlet_type
 --

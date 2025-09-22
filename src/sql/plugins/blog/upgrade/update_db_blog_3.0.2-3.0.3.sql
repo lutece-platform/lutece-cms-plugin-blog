@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset blog:update_db_blog_3.0.2-3.0.3.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 INSERT INTO core_admin_role (role_key, role_description) VALUES('blog_resources', 'Blog resources administrator');
 INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('blog_resources','TAG','*','*');
 INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('blog_resources','BLOG','*','*');
