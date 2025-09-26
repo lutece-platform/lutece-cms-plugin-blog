@@ -53,7 +53,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO blog_portlet ( id_portlet, name, content_id, id_page_template_document ) VALUES ( ?, ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_portlet WHERE id_portlet = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE blog_portlet SET id_portlet = ?, name = ?, content_id = ?, id_page_template_document=? WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_INSERT_BLOGS_PORTLET = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order ) VALUES ( ? , ?, ?, ? )";
+    private static final String SQL_QUERY_INSERT_BLOGS_PORTLET = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_end_publishing ) VALUES ( ? , ?, ?, ?, ? )";
     private static final String SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_begin_publishing, date_end_publishing) VALUES ( ? , ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_SELECT_PORTLET_BY_TYPE = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " + "FROM blog_portlet b "
             + "LEFT JOIN blog_list_portlet_htmldocs c ON b.id_portlet = c.id_portlet " + "INNER JOIN core_portlet a ON b.id_portlet = a.id_portlet "
@@ -165,6 +165,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
             daoUtil.setInt( 2, p.getContentId( ) );
             daoUtil.setInt( 3, 1 );
             daoUtil.setInt( 4, 0 );
+            daoUtil.setDate( 5, p.getBlogPublication( ).getDateEndPublishing( ) );
             daoUtil.executeUpdate( );
         }
     }

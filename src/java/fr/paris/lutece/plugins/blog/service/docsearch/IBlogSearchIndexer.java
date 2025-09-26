@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.blog.service.docsearch;
 
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-
+import fr.paris.lutece.plugins.blog.business.Blog;
 import org.apache.lucene.index.IndexWriter;
 
 import java.io.IOException;
@@ -46,6 +46,8 @@ import java.io.IOException;
  */
 public interface IBlogSearchIndexer
 {
+    void updateDocument( IndexWriter indexWriter, Blog blog ) throws IOException;
+
     /**
      * add to the index writer the document associate to the key specified in parameter
      * 

@@ -58,7 +58,6 @@ public final class DocContentDAO implements IDocContentDAO
 
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY = "SELECT id_type, type_label FROM blog_content_type WHERE id_type = ? ";
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE = "SELECT id_type, type_label FROM blog_content_type ";
-
     /**
      * Generates a new primary key
      * 
@@ -290,4 +289,5 @@ public final class DocContentDAO implements IDocContentDAO
         }
         return listcontentType;
     }
+
 }

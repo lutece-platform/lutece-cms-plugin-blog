@@ -2,29 +2,6 @@ const typeWarning = 'warning'
 const typeDanger = 'danger'
 let defaultImgFileType='file-x'
 
-async function createTag( blogId ){
-	const tgName = document.querySelector('#tag_name').value;
-	if( tgName != null && tgName !='' ){
-		const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoCreateTag.jsp?createTagByAjax=createTagByAjax&name=${tgName}&id=${blogId}` );
-		if (!response.ok) {
-			setBlogToast( typeDanger , labelError, response.statusText )	
-		} else {
-			const data = await response.json();
-			if ( data.status == 'OK' ){
-				if( data.result == "BLOG_LOCKED" ){
-					setBlogToast( typeWarning ,  labelWarning, msgErrorTagExist )	
-				} else if( data.result != 'TAG_EXIST'){
-					doAddTag( data.result, tgName, blogId )
-				} else {
-					setBlogToast( typeWarning , labelWarning, msgErrorTagExist )	
-				}
-			}
-		}
-	} else {
-		setBlogToast( typeWarning , labelWarning, msgErrorTagTitleNotEmpty )
-	}
-}
-
 async function doAddTag( idTag, tgName, blogId ) {
 	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc=${idTag}&tag_name=${tgName}&id=${blogId}` );
 	if ( !response.ok ) {
@@ -35,7 +12,13 @@ async function doAddTag( idTag, tgName, blogId ) {
 			if(data.result == "BLOG_LOCKED"){
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
+			    blog_tag.push( idTag );
+			    refreshListTag();
 				setListTag(  idTag, tgName, blogId  )
+                numberOfTagsAssigned++;
+				if( parseInt( numberMandatoryTags ) > 0 ){
+                	refreshMandatoryTagInfo( );
+				}
 		  	}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagNotSet )	
@@ -53,7 +36,13 @@ async function doDeleteTag( idTag, tgName, blogId ){
 			if(data.result == "BLOG_LOCKED"){
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
+			    blog_tag = blog_tag.filter(id => id != idTag)
+                refreshListTag();
 				document.querySelector( `#tag_${idTag}`).remove();
+                numberOfTagsAssigned--;
+				if( parseInt( numberMandatoryTags ) > 0 ){
+					refreshMandatoryTagInfo( );
+				}
 			}
 	  }	else {
 		setBlogToast( typeDanger , labelError, msgErrorTagDeletion )	
@@ -79,6 +68,39 @@ async function doUpdatePriorityTag( idTag, action, blogId ){
 		setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
 	  }
 	}
+}
+
+function refreshMandatoryTagInfo( ){
+    const alertRequiredTags = document.getElementById('required-tag');
+	const actionBtn = document.querySelectorAll('#blog-toolbar .btn.action');
+	const elemEnoughTagsInfo = document.getElementById('enoughTagsInfo');
+
+	if( actionBtn.length > 0 ){
+		actionBtn.forEach( ( btn ) => {
+			if( numberOfTagsAssigned <= ( parseInt( numberMandatoryTags ) - 1 )  ) {
+				btn.disabled = true;
+			} else {
+				btn.disabled = false;
+			}
+   	 	});
+	}
+
+    if( numberOfTagsAssigned <= ( parseInt( numberMandatoryTags ) - 1 )  ) {
+        alertRequiredTags.classList.remove('visually-hidden');
+        if(elemEnoughTagsInfo!=null)
+        {
+            elemEnoughTagsInfo.classList.add('alert-warning');
+            elemEnoughTagsInfo.classList.remove('alert-info');
+        }
+    } else {
+        alertRequiredTags.classList.add('visually-hidden');
+        if(elemEnoughTagsInfo!=null)
+        {
+            elemEnoughTagsInfo.classList.remove('alert-warning');
+            elemEnoughTagsInfo.classList.add('alert-info');
+        }
+    }
+
 }
 
 function setListTag( idTag, tgName, blogId ){
@@ -152,21 +174,33 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	btnDown.classList.add( 'btn','btn-none', 'btn-down' ,'text-primary');
 	btnDown.setAttribute('type', 'button' );
 	btnDown.setAttribute('title', 'Down' );
-	btnDown.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId})` );
+	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
+		btnDown.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId})` );
+	} else {
+		btnDown.setAttribute('onclick', `doUpdatePriorityContentBis( ${idFile}, 'moveDown')` );
+	}
 	let iconDown = btnDown.appendChild( document.createElement( 'i' ) );
 	iconDown.classList.add( 'ti','ti-arrow-down');
 	let btnUp = div.appendChild( document.createElement( 'button' ) );
 	btnUp.classList.add( 'btn', 'btn-none', 'btn-up', 'text-primary');
 	btnUp.setAttribute('type', 'button' );
-	btnUp.setAttribute('title', 'Down' );
-	btnUp.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveUp'), ${blogId})` );
+	btnUp.setAttribute('title', 'Up' );
+	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
+		btnUp.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveUp'), ${blogId})` );
+	} else {
+		btnUp.setAttribute('onclick', `doUpdatePriorityContentBis( ${idFile}, 'moveUp')` );
+	}
 	let iconUp = btnUp.appendChild( document.createElement( 'i' ) );
 	iconUp.classList.add( 'ti','ti-arrow-up');
 	let btnRm = div.appendChild( document.createElement( 'button' ) );
 	btnRm.classList.add( 'btn', 'btn-none', 'text-danger');
 	btnRm.setAttribute('id', idFile );
 	btnRm.setAttribute('type', 'button' );
-	btnRm.setAttribute('onclick', `deleteFileContent( ${idFile}, ${blogId})` );
+	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
+		btnRm.setAttribute('onclick', `deleteFileContent( ${idFile}, ${blogId})` );
+	} else {
+		btnRm.setAttribute('onclick', `deleteFileContent( ${idFile})` );
+	}
 	let iconRm = btnRm.appendChild( document.createElement( 'i' ) );
 	iconRm.classList.add( 'ti','ti-x');
 	document.querySelector( '#content-list' ).appendChild( li );
@@ -216,7 +250,9 @@ async function doAddContent( fileName, fileInfo, result, fileType, idBlog ){
 	formData.append( 'fileContent', result );
 	formData.append( 'fileName', fileName );
 	formData.append( 'fileType', fileType );
-	formData.append( 'id', idBlog );
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		formData.append( 'id', idBlog );
+	}
 
 	// Make a POST request with the FormData object
 	const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent`, {
@@ -246,7 +282,13 @@ function doInsertContent( idContent, titleContent, typeContent ) {
 }
 
 async function doDeleteContent( idContent, idBlog ) {
-	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&idContent=${idContent}&id=${idBlog}` );
+	 let response;
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&idContent=${idContent}&id=${idBlog}`);
+	}
+	else {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoDeleteImage.jsp?action=removeContent&idContent=${idContent}`);
+	}
 	if ( !response.ok ) {
 		setBlogToast( typeDanger , labelError, response.status )	
 	} else {
@@ -262,11 +304,21 @@ async function doDeleteContent( idContent, idBlog ) {
 }
  
 async function doUpdateContentType( idContent, idTypeContent, idBlog ) {
-	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
+	let response;
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: { idType:idTypeContent, idContent:idContent, id:idBlog },
+		headers: {'Content-Type': 'application/json'},
+		body: {idType: idTypeContent, idContent: idContent, id: idBlog},
 	});
+    }
+	else {
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
+		method: 'POST',
+		headers: {'Content-Type': 'application/json'},
+		body: {idType: idTypeContent, idContent: idContent},
+	});
+	}
 	if (!response.ok) {
 		setBlogToast( typeDanger , labelError, response.statusText )	
 	} else {
@@ -288,7 +340,6 @@ async function doUpdatePriorityContent( idContent, action, idBlog ){
 	} else {
 		const data = await response.json();
 		if ( data.status == 'OK' ){
-			if ( data.status == 'OK' ){
 				if(data.result == "BLOG_LOCKED"){
 					setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked )	
 				}else if( action == "moveUp" ){
@@ -296,11 +347,54 @@ async function doUpdatePriorityContent( idContent, action, idBlog ){
 				} else if( action == "moveDown" ){
 					document.querySelector( `#doc_${data.result}` ).after( document.querySelector( `#doc_${idContent}` ) );
 				}
-			} else {
-				setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
-			}
-	  }	else {
+	    }
+		else
+		{
 		setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
-	  }
+		}
 	}
+}
+/*
+ * Duplicate of the function doUpdatePriorityContent without the idBlog parameter
+ * Due to a parsing error in createBlog when calling the function, the idBlog parameter is not passed
+ */
+async function doUpdatePriorityContentBis( idContent, action ){
+	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoUpdatePriorityContent.jsp?contentAction=${action}&idContent=${idContent}` );
+	if ( !response.ok ) {
+		setBlogToast( typeDanger , labelError, response.status )
+	} else {
+		const data = await response.json();
+		if ( data.status == 'OK' ){
+				if(data.result == "BLOG_LOCKED"){
+					setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked )
+				}else if( action == "moveUp" ){
+					document.querySelector( `#doc_${idContent}`).after( document.querySelector( `#doc_${data.result}` ) );
+				} else if( action == "moveDown" ){
+					document.querySelector( `#doc_${data.result}` ).after( document.querySelector( `#doc_${idContent}` ) );
+				}
+		  }
+		else
+		{
+			setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )
+		}
+	}
+}
+
+/*
+ * Refresh the list of available tag to add
+ */
+async function refreshListTag()
+{
+    const tagSelect = document.getElementById('tag_doc');
+    tagSelect.textContent = '';
+
+    for (const tag of all_tag) {
+    	if( blog_tag.indexOf(tag[0]) === -1 )
+    	{
+    	    const opt = document.createElement('option');
+    	    opt.value = tag[0];
+    	    opt.innerHTML = tag[1];
+    	    tagSelect.appendChild(opt);
+    	}
+    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><plug-in>
     <name>blog</name>
     <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
-    <version>3.0.2</version>
+    <version>3.0.3-SNAPSHOT</version>
     <documentation/>
     <installation/>
     <changes/>
@@ -80,8 +80,8 @@
 			<daemon-name>blog.daemon.unlockedBlogDaemon.name</daemon-name>
 			<daemon-description>blog.daemon.unlockedBlogDaemon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.blog.service.UnlockedBlogDaemon</daemon-class>
-	    </daemon>          
-	</daemons>
+	    </daemon>
+    </daemons>
     
     <!-- Dashboard components -->
     <dashboard-components>
@@ -91,7 +91,13 @@
             <dashboard-feature-right>BLOG_MANAGEMENT</dashboard-feature-right>
         </dashboard-component>
     </dashboard-components>
-    
+    <admindashboard-components>
+    <admindashboard-component>
+        <dashboard-component-name>blogAdminDashboardComponent</dashboard-component-name>
+        <dashboard-component-class>fr.paris.lutece.plugins.blog.web.admindashboard.BlogAdminDashboardComponent
+        </dashboard-component-class>
+    </admindashboard-component>
+</admindashboard-components>
     <!-- Portlet parameters -->
     <portlets>
      <portlet>

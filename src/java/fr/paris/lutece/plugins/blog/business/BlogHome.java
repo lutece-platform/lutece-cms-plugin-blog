@@ -34,7 +34,7 @@
 package fr.paris.lutece.plugins.blog.business;
 
 import java.util.List;
-
+import java.sql.Timestamp;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -263,7 +263,6 @@ public final class BlogHome
 
         return blog;
     }
-
     /**
      * Adds a new version of an Blog
      *
@@ -273,7 +272,6 @@ public final class BlogHome
      */
     public static Blog addNewVersion( Blog blog )
     {
-        BlogHome.update( blog );
         BlogHome.createVersion( blog );
 
         return blog;
@@ -313,4 +311,38 @@ public final class BlogHome
         return _dao.selectWithoutBinaries( _plugin );
     }
 
+    /**
+     * Returns the actual version number of a blog
+     * It get the version number witch has is the closest to the update date
+     * @param strUpdateDate the update date
+     * @param nId the blog id
+     * @return the version number
+     */
+    public static int getActualVersionNumber( Timestamp strUpdateDate, int nId )
+    {
+        return _dao.getActualVersionNumber( strUpdateDate, nId, _plugin );
+    }
+
+    /**
+     * Archive a blog
+     *
+     * @param blogId
+     *         The id of the blog to archive
+     */
+    public static void updateBlogArchiveId( boolean isArchived, int blogId )
+    {
+        _dao.updateBlogArchiveId( blogId, isArchived, _plugin );
+    }
+
+    /**
+     * Select the list of blogs by archive status
+     *
+     * @param isArchived
+     *         The archive status
+     * @return The list of blogs
+     */
+    public static List<Blog> selectByArchiveStatus( boolean isArchived )
+    {
+        return _dao.selectBlogsListByArchiveStatus( isArchived, _plugin );
+    }
 }

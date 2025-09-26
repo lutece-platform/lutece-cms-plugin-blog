@@ -160,4 +160,5 @@ public final class DocContentHome
     {
         return _dao.loadListContentType( _plugin );
     }
+
 }

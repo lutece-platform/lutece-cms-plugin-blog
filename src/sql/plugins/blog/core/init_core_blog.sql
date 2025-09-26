@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset blog:init_core_blog.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Dumping data for table core_portlet_type
 --
@@ -15,13 +18,27 @@ INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
 ('BLOG_TAGS_MANAGEMENT','blog.adminFeature.ManageBlogsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageBlogsTags.description',0,'blog','APPLICATIONS','ti ti-tags',NULL,4);
 
-
 --
 -- Data for table core_user_right
 --
 DELETE FROM core_user_right WHERE id_right = 'BLOG_MANAGEMENT';
+DELETE FROM core_user_right WHERE id_right = 'MANAGE_ADVANCED_PARAMETERS';
 INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_MANAGEMENT',1);
+INSERT INTO core_user_right (id_right,id_user) VALUES ('MANAGE_ADVANCED_PARAMETERS',1);
 
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.number_mandatory_tags', '0');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.editor', 'tinymce5');
+
+--
+-- Set blog resources management rights for admin account
+--
+INSERT INTO core_admin_role (role_key, role_description) VALUES('blog_resources', 'Blog resources administrator');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('blog_resources','TAG','*','*');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('blog_resources','BLOG','*','*');
+INSERT INTO core_user_role (role_key, id_user) VALUES('blog_resources', 1);
+
+INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('blogAdminDashboardComponent', 1, 7);

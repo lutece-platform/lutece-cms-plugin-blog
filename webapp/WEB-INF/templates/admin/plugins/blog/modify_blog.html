@@ -1,4 +1,6 @@
-<#include "blog_commons.html" />
+<#include 'blog_commons.html' />
+<#assign blogTagSize=0 />
+<#if blog.tag?? && blog.tag?size gt 0><#assign blogTagSize=blog.tag?size /></#if>
 <@messages errors=errors />
 <@tform class='position-relative' name='modify_blog' id='form-editor' enctype='multipart/form-data' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
   <@input type='hidden' id='id' name='id' value=blog.id />
@@ -6,17 +8,27 @@
   <@row id='blog-toolbar-wrapper'>
     <@columns>
       <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>
-        <@button class='me-1' type='submit' size='' buttonIcon='check me-2' title='#i18n{portal.util.labelModify}' value='modify' id='action_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] />
-        <@button class='me-1' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.create_blog.labelApply}' value='apply' name='button' hideTitle=['xs','sm'] />
+        <#assign alertClass>mb-0 me-2<#if number_mandatory_tags gte blogTagSize> visually-hidden</#if></#assign>
+        <@alert id='required-tag' color='warning' class=alertClass>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}  </@alert>
+        <#if permission_manage_publish_blog?? && permission_manage_publish_blog>
+            <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='update' id='action_modifyblog'  name='button' hideTitle=['xs','sm'] />
+        </#if>
+        <@button class='me-1 action' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='modify' id='action_modifyblog' id='apply_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] />
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['xs','sm'] size='' />
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' hideTitle=['xs','sm'] size='' />
         <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions]' hideTitle=['xs','sm', 'md'] buttonIcon='history' size='' />
+        <#if actual_blog_version?? >
+          <@aButton class='btn-notif me-1' color='danger' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${actual_blog_version}' title='#i18n{blog.modify_blog.returnToActualVersion}' hideTitle=['xs','sm', 'md'] buttonIcon='history' size='' />
+        </#if>
         <@offcanvas id='blog-properties' title='#i18n{blog.modify_blog.labelProperties}' btnTitle='#i18n{blog.modify_blog.labelProperties}' position='end' btnIcon='cog me-2'>
           <@box class='mt-3'>
             <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
               <@link href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blog' title='#i18n{blog.manage_tags.columnTagLabel}' target='_blank'><@icon style='tags' /></@link>
             </@boxHeader>
             <@boxBody>
+              <#if number_mandatory_tags &gt; 0 >
+                <@alert id='enoughTagsInfo' color='info'>#i18n{blog.mandatoryTags.minimum.number}: ${number_mandatory_tags}</@alert>
+              </#if>
               <@formGroup labelFor='addTag' labelKey='#i18n{blog.manage_tags.buttonAdd}' rows=2>
                 <@inputGroup>
                   <@select name='tag_doc' default_value='' items=list_tag size='' />
@@ -38,16 +50,6 @@
                   </@listGroupItem>
               </#list>
               </@listGroup>
-              <#if permission_manage_create_tag>
-                <@formGroup labelFor='tag_name' labelKey='#i18n{blog.create_tag.title}' class='mt-3' rows=2>
-                  <@inputGroup>
-                    <@input type='text' id='tag_name' name='tag_name' value='' placeHolder='#i18n{blog.create_tag.title}' />
-                    <@inputGroupItem type='btn'>
-                      <@button type='button' value='createTag' id='createTag' name='createTag' title='#i18n{blog.create_tag.title}' buttonIcon='plus' hideTitle=['all'] size='' />
-                    </@inputGroupItem>
-                  </@inputGroup>
-                </@formGroup>
-              </#if>  
             </@boxBody>
           </@box>
           <@box>
@@ -136,8 +138,5 @@
   ${extendableResourceActionsHtml!}
 </@div>
 </#if>
-<@blogEditor />
-<@blogScriptInit />
-<script>
-<@charcounter />
-</script>
+<@initEditor />
+<@blogJSInit />

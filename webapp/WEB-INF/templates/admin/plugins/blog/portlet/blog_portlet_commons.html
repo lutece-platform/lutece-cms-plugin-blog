@@ -126,6 +126,20 @@
 <link rel="stylesheet" href="themes/admin/shared/plugins/blog/css/blog.min.css" />
 <link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
 <script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
+<script>
+  let alreadySubmitted = false;
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const form = document.getElementById('form-portlet');
+
+    form.addEventListener('submit', (e) => {
+      if (alreadySubmitted) {
+        e.preventDefault();
+        return;
+      }
+      alreadySubmitted = true;
+    });
+  });
+</script>
 <script type="module">
 import {
     LuteceDraggable

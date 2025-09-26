@@ -83,4 +83,9 @@ public class BlogSearchItem extends SearchItem
      */
     public static final String FIELD_USERS_EDITED_BLOG = "usersEditedBlog";
 
+    /*
+     * Blog is archived
+     */
+    public static final String FIELD_ARCHIVED = "archived";
+
 }
