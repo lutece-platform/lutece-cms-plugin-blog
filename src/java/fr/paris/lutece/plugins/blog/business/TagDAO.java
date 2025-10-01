@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +48,7 @@ public final class TagDAO implements ITagDAO
 {
 
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_tag ) FROM blog_tag";
-    private static final String SQL_QUERY_INSERT_TAG = "INSERT INTO blog_tag ( id_tag, name ) VALUES ( ? , ? )";
+    private static final String SQL_QUERY_INSERT_TAG = "INSERT INTO blog_tag ( name ) VALUES ( ? )";
     private static final String SQL_QUERY_SELECT_TAG = "SELECT  id_tag, name FROM blog_tag WHERE id_tag = ? ";
     private static final String SQL_QUERY_SELECT_ALL_TAG = "SELECT  id_tag, name FROM blog_tag ";
     private static final String SQL_QUERY_SELECT_TAG_BY_NAME = "SELECT  id_tag, name FROM blog_tag WHERE name = ? ";
@@ -62,41 +62,20 @@ public final class TagDAO implements ITagDAO
     private static final String SQL_QUERY_DELETE_BY_DOC = "DELETE FROM blog_tag_document WHERE id_blog = ? ";
 
     /**
-     * Generates a new primary key
-     * 
-     * @param plugin
-     *            The Plugin
-     * @return The new primary key
-     */
-    public int newPrimaryKey( Plugin plugin )
-    {
-        int nKey = 1;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
-        {
-            daoUtil.executeQuery( );
-
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        return nKey;
-    }
-
-    /**
      * {@inheritDoc }
      */
     @Override
     public void insert( Tag tag, Plugin plugin )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_TAG, Statement.RETURN_GENERATED_KEYS, plugin ) )
         {
-            tag.setIdTag( newPrimaryKey( plugin ) );
-
-            daoUtil.setInt( 1, tag.getIdTag( ) );
-            daoUtil.setString( 2, tag.getName( ) );
+            daoUtil.setString( 1, tag.getName( ) );
 
             daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                tag.setIdTag( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
     }
 
@@ -106,6 +85,7 @@ public final class TagDAO implements ITagDAO
     @Override
     public Tag load( int idTag, Plugin plugin )
     {
+        Tag tag = null;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG, plugin ) )
         {
             daoUtil.setInt( 1, idTag );
@@ -113,17 +93,13 @@ public final class TagDAO implements ITagDAO
 
             if ( daoUtil.next( ) )
             {
-                Tag tag = new Tag( );
+                tag = new Tag( );
 
                 tag.setIdTag( daoUtil.getInt( 1 ) );
                 tag.setName( daoUtil.getString( 2 ) );
-
-                daoUtil.free( );
-
-                return tag;
             }
         }
-        return null;
+        return tag;
     }
 
     /**
@@ -304,6 +280,7 @@ public final class TagDAO implements ITagDAO
     @Override
     public Tag loadByName( String strName, Plugin plugin )
     {
+        Tag tag = null;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_TAG_BY_NAME, plugin ) )
         {
             daoUtil.setString( 1, strName );
@@ -311,16 +288,12 @@ public final class TagDAO implements ITagDAO
 
             if ( daoUtil.next( ) )
             {
-                Tag tag = new Tag( );
+                tag = new Tag( );
 
                 tag.setIdTag( daoUtil.getInt( 1 ) );
                 tag.setName( daoUtil.getString( 2 ) );
-
-                daoUtil.free( );
-
-                return tag;
             }
         }
-        return null;
+        return tag;
     }
 }

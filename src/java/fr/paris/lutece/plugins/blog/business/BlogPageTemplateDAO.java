@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.blog.business;
 
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +45,8 @@ import java.util.List;
 public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = " SELECT max( id_page_template_document ) FROM blog_page_template";
     private static final String SQL_QUERY_SELECT = " SELECT id_page_template_document, description, page_template_path, picture_path FROM blog_page_template WHERE id_page_template_document = ?";
-    private static final String SQL_QUERY_INSERT = " INSERT INTO blog_page_template ( id_page_template_document, description, page_template_path, picture_path ) VALUES ( ?, ?, ?, ? )";
+    private static final String SQL_QUERY_INSERT = " INSERT INTO blog_page_template ( description, page_template_path, picture_path ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = " DELETE FROM blog_page_template WHERE id_page_template_document = ?";
     private static final String SQL_QUERY_UPDATE = " UPDATE blog_page_template SET id_page_template_document = ?, description = ?, page_template_path = ?, picture_path = ? "
             + " WHERE id_page_template_document = ?";
@@ -54,25 +54,6 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
 
     // /////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data
-
-    /**
-     * Generates a new primary key
-     * 
-     * @return The new primary key
-     */
-    int newPrimaryKey( )
-    {
-        int nKey = 1;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK ) )
-        {
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        return nKey;
-    }
 
     /**
      * Insert a new record in the table.
@@ -83,16 +64,18 @@ public final class BlogPageTemplateDAO implements IBlogPageTemplateDAO
     @Override
     public synchronized void insert( BlogPageTemplate blogPageTemplate )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS ) )
         {
-            blogPageTemplate.setId( newPrimaryKey( ) );
-
-            daoUtil.setInt( 1, blogPageTemplate.getId( ) );
-            daoUtil.setString( 2, blogPageTemplate.getDescription( ) );
-            daoUtil.setString( 3, blogPageTemplate.getFile( ) );
-            daoUtil.setString( 4, blogPageTemplate.getPicture( ) );
+            daoUtil.setString( 1, blogPageTemplate.getDescription( ) );
+            daoUtil.setString( 2, blogPageTemplate.getFile( ) );
+            daoUtil.setString( 3, blogPageTemplate.getPicture( ) );
 
             daoUtil.executeUpdate( );
+
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+            	blogPageTemplate.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
     }
 
