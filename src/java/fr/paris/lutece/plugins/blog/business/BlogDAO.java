@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.blog.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -51,13 +52,11 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class BlogDAO implements IBlogDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_blog ) FROM blog_blog";
-    private static final String SQL_QUERY_NEW_PK_VERSION = "SELECT max( id_version ) FROM blog_versions";
     private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url, is_archived FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url, is_archived FROM blog_blog ORDER BY update_date DESC LIMIT ?";
     private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived FROM blog_blog WHERE content_label = ?";
     private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions WHERE id_blog = ? AND version = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM blog_versions WHERE id_blog = ? ";
     private static final String SQL_QUERY_DELETE_SPECIFIC_VERSION = "DELETE FROM blog_versions WHERE id_blog = ? AND version = ? ";
@@ -69,7 +68,7 @@ public final class BlogDAO implements IBlogDAO
     private static final String SQL_QUERY_SELECT_BY_ARCHIVE_STATUS = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived FROM blog_blog WHERE is_archived = ?";
     private static final String SQL_QUERY_SELECTALL_USERS_EDITED_BLOG_VERSION = "SELECT distinct user_editor FROM blog_versions where id_blog = ?";
 
-    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO blog_versions ( id_version, id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT_VERSION = "INSERT INTO blog_versions ( id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
 
     private static final String SQL_QUERY_SELECT_BY_FILTER = " SELECT DISTINCT a.id_blog, a.version, a.content_label, "
             + " a.creation_date, a.update_date, a.html_content, a.user_editor, a.user_creator , a.attached_portlet_id , "
@@ -95,48 +94,6 @@ public final class BlogDAO implements IBlogDAO
     private static final String SQL_ORDER_BY_LAST_MODIFICATION = " ORDER BY a.update_date DESC ";
     private static final String SQL_ORDER_BY_ORDER_DOCUMENT = " ORDER by p.document_order ";
     private static final String SQL_UPDATE_BLOG_ARCHIVE = "UPDATE blog_blog SET is_archived = ? WHERE id_blog = ? ";
-    /**
-     * Generates a new primary key
-     *
-     * @param plugin
-     *         The Plugin
-     * @return The new primary key
-     */
-    public int newPrimaryKey( Plugin plugin )
-    {
-        int nKey = 1;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
-        {
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        return nKey;
-    }
-
-    /**
-     * Generates a new primary key
-     *
-     * @param plugin
-     *            The Plugin
-     * @return The new primary key
-     */
-    public int newVersionPrimaryKey( Plugin plugin )
-    {
-        int nKey = 1;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK_VERSION, plugin ) )
-        {
-            daoUtil.executeQuery( );
-
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        return nKey;
-    }
 
     /**
      * {@inheritDoc }
@@ -144,12 +101,10 @@ public final class BlogDAO implements IBlogDAO
     @Override
     public void insert( Blog blog, Plugin plugin )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS, plugin ) )
         {
-            blog.setId( newPrimaryKey( plugin ) );
             int nIndex = 1;
 
-            daoUtil.setInt( nIndex++, blog.getId( ) );
             daoUtil.setInt( nIndex++, blog.getVersion( ) );
             daoUtil.setString( nIndex++, blog.getContentLabel( ) );
             daoUtil.setTimestamp( nIndex++, blog.getCreationDate( ) );
@@ -165,6 +120,10 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setBoolean( nIndex, false );
 
             daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                blog.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
     }
 
@@ -176,10 +135,8 @@ public final class BlogDAO implements IBlogDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_VERSION, plugin ) )
         {
-            int nVersion = newVersionPrimaryKey( plugin );
             int nIndex = 1;
 
-            daoUtil.setInt( nIndex++, nVersion );
             daoUtil.setInt( nIndex++, blog.getId( ) );
             daoUtil.setInt( nIndex++, blog.getVersion( ) );
             daoUtil.setString( nIndex++, blog.getContentLabel( ) );
@@ -633,8 +590,6 @@ public final class BlogDAO implements IBlogDAO
 
                 listDocuments.add( blog );
             }
-
-            daoUtil.free( );
         }
         return listDocuments;
     }

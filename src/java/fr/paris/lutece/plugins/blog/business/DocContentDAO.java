@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +47,7 @@ public final class DocContentDAO implements IDocContentDAO
 {
 
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_document ) FROM blog_content";
-    private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_document, id_type, text_value , binary_value, mime_type ) VALUES ( ?, ? , ? , ?, ? )";
+    private static final String SQL_QUERY_INSERT_CONTENT = "INSERT INTO blog_content ( id_type, text_value , binary_value, mime_type ) VALUES ( ? , ? , ?, ? )";
     private static final String SQL_QUERY_INSERT_CONTENT_IN_BLOG = "INSERT INTO blog_blog_content ( id_blog, id_document, priority ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_SELECT_CONTENT = "SELECT a.id_document, id_type, text_value , binary_value, mime_type, b.priority FROM blog_content a , blog_blog_content b WHERE b.id_blog = ?  AND a.id_document = b.id_document";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog_content WHERE id_blog = ?  ;";
@@ -58,29 +58,6 @@ public final class DocContentDAO implements IDocContentDAO
 
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE_BY_PRIMARY_KEY = "SELECT id_type, type_label FROM blog_content_type WHERE id_type = ? ";
     private static final String SQL_QUERY_SELECT_CONTENT_TYPE = "SELECT id_type, type_label FROM blog_content_type ";
-    /**
-     * Generates a new primary key
-     * 
-     * @param plugin
-     *            The Plugin
-     * @return The new primary key
-     */
-    public int newPrimaryKey( Plugin plugin )
-    {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
-        {
-            daoUtil.executeQuery( );
-            int nKey = 1;
-
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-
-            daoUtil.free( );
-            return nKey;
-        }
-    }
 
     /**
      * {@inheritDoc }
@@ -88,18 +65,19 @@ public final class DocContentDAO implements IDocContentDAO
     @Override
     public void insertDocContent( DocContent docContent, Plugin plugin )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT, Statement.RETURN_GENERATED_KEYS, plugin ) )
         {
-            docContent.setId( newPrimaryKey( plugin ) );
-
-            daoUtil.setInt( 1, docContent.getId( ) );
-            daoUtil.setInt( 2, docContent.getContentType( ).getIdContentType( ) );
-            daoUtil.setString( 3, docContent.getTextValue( ) );
-            daoUtil.setBytes( 4, docContent.getBinaryValue( ) );
-            daoUtil.setString( 5, docContent.getValueContentType( ) );
+            daoUtil.setInt( 1, docContent.getContentType( ).getIdContentType( ) );
+            daoUtil.setString( 2, docContent.getTextValue( ) );
+            daoUtil.setBytes( 3, docContent.getBinaryValue( ) );
+            daoUtil.setString( 4, docContent.getValueContentType( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
+
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                docContent.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
     }
 
@@ -108,13 +86,11 @@ public final class DocContentDAO implements IDocContentDAO
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_CONTENT_IN_BLOG, plugin ) )
         {
-
             daoUtil.setInt( 1, nIdBlog );
             daoUtil.setInt( 2, nIdDocument );
             daoUtil.setInt( 3, nPriority );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -143,7 +119,6 @@ public final class DocContentDAO implements IDocContentDAO
 
                 listDoc.add( docContent );
             }
-            daoUtil.free( );
         }
         return listDoc;
     }
@@ -171,7 +146,6 @@ public final class DocContentDAO implements IDocContentDAO
                 docContent.setValueContentType( daoUtil.getString( 5 ) );
 
             }
-            daoUtil.free( );
         }
         return docContent;
     }
@@ -187,7 +161,6 @@ public final class DocContentDAO implements IDocContentDAO
             daoUtil.setInt( 1, nBlogId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -202,7 +175,6 @@ public final class DocContentDAO implements IDocContentDAO
             daoUtil.setInt( 1, nDocumentId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -214,7 +186,6 @@ public final class DocContentDAO implements IDocContentDAO
             daoUtil.setInt( 1, nDocumentId );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -234,7 +205,6 @@ public final class DocContentDAO implements IDocContentDAO
             daoUtil.setInt( 5, docContent.getId( ) );
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -256,12 +226,9 @@ public final class DocContentDAO implements IDocContentDAO
 
                 contentType.setIdContentType( daoUtil.getInt( 1 ) );
                 contentType.setLabel( daoUtil.getString( 2 ) );
-
             }
-            daoUtil.free( );
-
-            return contentType;
         }
+        return contentType;
     }
 
     /**
@@ -283,9 +250,7 @@ public final class DocContentDAO implements IDocContentDAO
                 contentType.setIdContentType( daoUtil.getInt( 1 ) );
                 contentType.setLabel( daoUtil.getString( 2 ) );
                 listcontentType.add( contentType );
-
             }
-            daoUtil.free( );
         }
         return listcontentType;
     }

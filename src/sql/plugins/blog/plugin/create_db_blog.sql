@@ -16,7 +16,7 @@ CREATE TABLE blog_content_type (
 --
 DROP TABLE IF EXISTS blog_blog;
 CREATE TABLE blog_blog (
-id_blog int NOT NULL,
+id_blog int AUTO_INCREMENT,
 version int default '0' NOT NULL,
 content_label varchar(255) default '' NOT NULL,
 creation_date datetime NOT NULL,
@@ -39,7 +39,7 @@ DROP TABLE IF EXISTS blog_content;
 -- Structure for table blog_content
 --
 CREATE TABLE blog_content (
-	id_document int default 0 NOT NULL,
+	id_document int AUTO_INCREMENT,
 	id_type int default 0 NOT NULL,
 	text_value long varchar,
 	mime_type varchar(255) default NULL,
@@ -79,7 +79,7 @@ PRIMARY KEY (id_portlet)
 --
 DROP TABLE IF EXISTS blog_versions;
 CREATE TABLE blog_versions (
-id_version int NOT NULL,
+id_version int AUTO_INCREMENT,
 id_blog int NOT NULL,
 version int default '0' NOT NULL,
 content_label varchar(255) default '' NOT NULL,
@@ -102,7 +102,7 @@ PRIMARY KEY (id_version)
 --
 DROP TABLE IF EXISTS blog_tag;
 CREATE TABLE blog_tag (
-id_tag int NOT NULL,
+id_tag int AUTO_INCREMENT,
 name varchar(50) NOT NULL,
 PRIMARY KEY (id_tag)
 );
@@ -126,7 +126,7 @@ PRIMARY KEY (id_tag, id_blog)
 /*==============================================================*/
 DROP TABLE IF EXISTS blog_indexer_action;
 CREATE TABLE blog_indexer_action (
-  id_action INT NOT NULL,
+  id_action INT AUTO_INCREMENT,
   id_blog INT DEFAULT 0 NOT NULL,
   id_task INT DEFAULT 0 NOT NULL ,
   PRIMARY KEY (id_action)
@@ -138,7 +138,7 @@ CREATE INDEX blog_id_indexer_task ON blog_indexer_action (id_task);
 --
 DROP TABLE IF EXISTS blog_page_template;
 CREATE TABLE blog_page_template (
-	id_page_template_document int default 0 NOT NULL,
+	id_page_template_document int AUTO_INCREMENT,
 	page_template_path varchar(255) default NULL,
 	picture_path varchar(255) default NULL,
 	description varchar(255) default NULL,

@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,9 +47,8 @@ import java.util.List;
 public final class IndexerActionDAO implements IIndexerActionDAO
 {
     // Constants
-    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_action ) FROM blog_indexer_action";
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_action,id_blog,id_task" + " FROM blog_indexer_action WHERE id_action = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_indexer_action( id_action,id_blog,id_task)" + " VALUES(?,?,?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_indexer_action( id_blog,id_task) VALUES(?,?)";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_indexer_action WHERE id_action = ? ";
     private static final String SQL_QUERY_SELECT = "SELECT id_action,id_blog,id_task" + " FROM blog_indexer_action  ";
     private static final String SQL_FILTER_ID_TASK = " id_task = ? ";
@@ -58,36 +58,18 @@ public final class IndexerActionDAO implements IIndexerActionDAO
      * {@inheritDoc}
      */
     @Override
-    public int newPrimaryKey( Plugin plugin )
-    {
-        int nKey = 1;
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin ) )
-        {
-            daoUtil.executeQuery( );
-
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        return nKey;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public synchronized void insert( IndexerAction indexerAction, Plugin plugin )
     {
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS, plugin ) )
         {
-            daoUtil.setInt( 2, indexerAction.getIdBlog( ) );
-            daoUtil.setInt( 3, indexerAction.getIdTask( ) );
-
-            indexerAction.setIdAction( newPrimaryKey( plugin ) );
-            daoUtil.setInt( 1, indexerAction.getIdAction( ) );
+            daoUtil.setInt( 1, indexerAction.getIdBlog( ) );
+            daoUtil.setInt( 2, indexerAction.getIdTask( ) );
 
             daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+            	indexerAction.setIdAction( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
     }
 
