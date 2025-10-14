@@ -202,7 +202,7 @@
 									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' buttonIcon='git-compare' hideTitle=['all'] />
 								</#if>
 								<#if blog.version &gt; 1>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='notif position-relative overflow-visible' title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions=Versions}' buttonIcon='history' hideTitle=['all']size=''>
+									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='notif position-relative overflow-visible' title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions}' buttonIcon='history' hideTitle=['all']size=''>
 										<@span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
 											${blog.version}
 										</@span>

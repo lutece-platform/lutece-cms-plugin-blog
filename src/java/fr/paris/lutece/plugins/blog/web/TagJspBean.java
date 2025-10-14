@@ -38,7 +38,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -62,6 +64,8 @@ import fr.paris.lutece.util.url.UrlItem;
 /**
  * This class provides the user interface to manage Blog features ( manage, create, modify, remove )
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
 public class TagJspBean extends ManageBlogJspBean
 {

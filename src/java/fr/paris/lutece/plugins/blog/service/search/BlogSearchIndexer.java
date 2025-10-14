@@ -140,7 +140,7 @@ public class BlogSearchIndexer implements SearchIndexer
         }
         catch( NumberFormatException ne )
         {
-            AppLogService.error( strDocumentId + " not parseable to an int", ne );
+            AppLogService.error( "{} not parseable to an int", strDocumentId, ne );
 
             return new ArrayList<>( 0 );
         }

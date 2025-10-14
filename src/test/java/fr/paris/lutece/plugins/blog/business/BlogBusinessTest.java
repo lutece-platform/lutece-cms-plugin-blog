@@ -39,26 +39,29 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 import java.sql.Timestamp;
 
+import org.junit.jupiter.api.Test;
+
 public class BlogBusinessTest extends LuteceTestCase
 {
-    private final static int VERSION1 = 1;
-    private final static int VERSION2 = 2;
-    private final static String CONTENTLABEL1 = "ContentLabel1";
-    private final static String CONTENTLABEL2 = "ContentLabel2";
-    private final static Timestamp CREATIONDATE1 = new Timestamp( 1000000l );
-    private final static Timestamp CREATIONDATE2 = new Timestamp( 2000000l );
-    private final static Timestamp UPDATEDATE1 = new Timestamp( 1000000l );
-    private final static Timestamp UPDATEDATE2 = new Timestamp( 2000000l );
-    private final static String HTMLCONTENT1 = "HtmlContent1";
-    private final static String HTMLCONTENT2 = "HtmlContent2";
-    private final static String USER1 = "User1";
-    private final static String USER2 = "User2";
-    private final static String USER3 = "User3";
-    private final static String USER4 = "User4";
-    private final static String EDITCOMMENT1 = "EditComment1";
-    private final static String EDITCOMMENT2 = "EditComment2";
+    private static final int VERSION1 = 1;
+    private static final int VERSION2 = 2;
+    private static final String CONTENTLABEL1 = "ContentLabel1";
+    private static final String CONTENTLABEL2 = "ContentLabel2";
+    private static final Timestamp CREATIONDATE1 = new Timestamp( 1000000l );
+    private static final Timestamp CREATIONDATE2 = new Timestamp( 2000000l );
+    private static final Timestamp UPDATEDATE1 = new Timestamp( 1000000l );
+    private static final Timestamp UPDATEDATE2 = new Timestamp( 2000000l );
+    private static final String HTMLCONTENT1 = "HtmlContent1";
+    private static final String HTMLCONTENT2 = "HtmlContent2";
+    private static final String USER1 = "User1";
+    private static final String USER2 = "User2";
+    private static final String USER3 = "User3";
+    private static final String USER4 = "User4";
+    private static final String EDITCOMMENT1 = "EditComment1";
+    private static final String EDITCOMMENT2 = "EditComment2";
 
-    public void testBusiness( )
+    @Test
+    void testBusiness( )
     {
         // Initialize an object
         Blog blog = new Blog( );

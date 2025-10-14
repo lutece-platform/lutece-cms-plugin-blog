@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.blog.service.docsearch;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,17 +44,10 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import org.jsoup.Jsoup;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
@@ -67,13 +59,15 @@ import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.search.SearchItem;
-import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import jakarta.enterprise.context.ApplicationScoped;
+
 import org.apache.lucene.document.Document;
 
 /**
  * DefaultAnnounceIndexer
  */
+@ApplicationScoped
 public class DefaultBlogIndexer implements IBlogSearchIndexer
 {
     private static final String PROPERTY_INDEXER_NAME = "blog.indexer.name";
@@ -250,19 +244,7 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
 
         String strContentToIndex = getContentToIndex( blog );
         // NOUVEAU
-        ContentHandler handler = new BodyContentHandler( -1 );
-        Metadata metadata = new Metadata( );
-
-        try
-        {
-            new HtmlParser( ).parse( new ByteArrayInputStream( strContentToIndex.getBytes( ) ), handler, metadata, new ParseContext( ) );
-        }
-        catch( TikaException | SAXException e )
-        {
-            throw new AppException( "Error during blog parsing. blog Id: " + blog.getId( ), e );
-        }
-
-        String strContent = handler.toString( );
+        String strContent  = Jsoup.parse( strContentToIndex ).text( );
 
         // Add the tag-stripped contents as a Reader-valued Text field so it will
         // get tokenized and indexed.

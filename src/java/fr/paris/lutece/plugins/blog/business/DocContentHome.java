@@ -37,7 +37,7 @@ import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods (create, find, ...) for Blog objects
@@ -45,7 +45,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class DocContentHome
 {
     // Static variable pointed at the DAO instance
-    private static DocContentDAO _dao = SpringContextService.getBean( "blog.docContentDAO" );
+    private static IDocContentDAO _dao = CDI.current( ).select( IDocContentDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( "blog" );
 
     /**

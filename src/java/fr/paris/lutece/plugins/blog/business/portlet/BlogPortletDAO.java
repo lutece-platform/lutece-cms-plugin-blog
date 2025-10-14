@@ -40,10 +40,12 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * this class provides Data Access methods for BlogsPortlet objects
  */
+@ApplicationScoped
 public final class BlogPortletDAO implements IBlogPortletDAO
 {
     // Constants

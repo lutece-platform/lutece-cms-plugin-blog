@@ -37,8 +37,8 @@ import java.util.List;
 import java.sql.Timestamp;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods (create, find, ...) for Blog objects
@@ -46,7 +46,7 @@ import fr.paris.lutece.util.ReferenceList;
 public final class BlogHome
 {
     // Static variable pointed at the DAO instance
-    private static IBlogDAO _dao = SpringContextService.getBean( "blog.blogDAO" );
+    private static IBlogDAO _dao = CDI.current( ).select( IBlogDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( "blog" );
 
     /**

@@ -38,6 +38,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +49,7 @@ import java.util.Map;
 /**
  * This class provides Data Access methods for BlogsListPortlet objects
  */
+@ApplicationScoped
 public final class BlogListPortletDAO implements IBlogListPortletDAO
 {
 

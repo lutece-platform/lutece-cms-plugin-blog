@@ -41,18 +41,23 @@ import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class manages Blogs page.
  *
  */
+@RequestScoped
+@Named( "blog.xpage.blog" )
 @Controller( xpageName = BlogApp.XPAGE_NAME, pageTitleI18nKey = BlogApp.MESSAGE_PAGE_TITLE, pagePathI18nKey = BlogApp.MESSAGE_PATH )
 public class BlogApp extends MVCApplication
 {
@@ -87,6 +92,9 @@ public class BlogApp extends MVCApplication
     // Views
     private static final String VIEW_DETAILS = "documentDetails";
     protected static final String MARK_LIST_TAG = "list_tag";
+    
+    @Inject
+    private Models model;
 
     /**
      * Gets the BLOG details view
@@ -141,7 +149,7 @@ public class BlogApp extends MVCApplication
         {
             blog = BlogService.getInstance( ).loadBlog( nId );
         }
-        Map<String, Object> model = getModel( );
+
         model.put( MARK_BLOG, blog );
         model.put( MARK_LIST_DOC, listBlogs );
         model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );

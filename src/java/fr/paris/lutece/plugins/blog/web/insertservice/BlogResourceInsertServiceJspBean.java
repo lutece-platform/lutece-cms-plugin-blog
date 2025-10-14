@@ -36,9 +36,11 @@ package fr.paris.lutece.plugins.blog.web.insertservice;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.insertservice.BlogLinkPOJO;
@@ -46,6 +48,8 @@ import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.util.url.UrlItem;
 
+@SessionScoped
+@Named
 public class BlogResourceInsertServiceJspBean extends AbstractBlogInsertServiceJspBean
 {
     private static final long serialVersionUID = 6107987688167050292L;

@@ -1,9 +1,7 @@
 <%@ page errorPage="../ErrorPage.jsp" %>
 
-<jsp:useBean id="blogAdminDashboard" scope="session" class="fr.paris.lutece.plugins.blog.web.admindashboard.BlogAdminDashboardJspBean" />
+<%@page import="fr.paris.lutece.plugins.blog.web.admindashboard.BlogAdminDashboardJspBean"%>
 
-<%
-	blogAdminDashboard.init( request, "CORE_USERS_MANAGEMENT" ) ;
-	response.sendRedirect( blogAdminDashboard.doModifyBlogAdvancedParameters( request ) );
-%>
+${ blogAdminDashboardJspBean.init( pageContext.request, "CORE_USERS_MANAGEMENT" ) }
+${ pageContext.response.sendRedirect( blogAdminDashboardJspBean.doModifyBlogAdvancedParameters( pageContext.request ) ) }
 

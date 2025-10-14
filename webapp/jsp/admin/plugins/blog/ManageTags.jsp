@@ -1,9 +1,9 @@
-<jsp:useBean id="managetags" scope="session" class="fr.paris.lutece.plugins.blog.web.TagJspBean" />
-<% String strContent = managetags.processController ( request , response ); %>
-
 <%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', tagJspBean.processController( pageContext.request , pageContext.response ) ) }
+
 <jsp:include page="../../AdminHeader.jsp" />
 
-<%= strContent %>
+${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

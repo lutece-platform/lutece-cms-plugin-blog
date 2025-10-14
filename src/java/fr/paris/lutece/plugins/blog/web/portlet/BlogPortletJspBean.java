@@ -48,8 +48,9 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.business.user.AdminUser;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,6 +61,8 @@ import java.util.List;
 /**
  * This class provides the user interface to manage BlogsPortlet features
  */
+@RequestScoped
+@Named
 public class BlogPortletJspBean extends PortletJspBean
 {
 
