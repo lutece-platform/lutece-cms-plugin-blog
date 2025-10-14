@@ -45,10 +45,12 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This class provides Data Access methods for Blog objects
  */
+@ApplicationScoped
 public final class BlogDAO implements IBlogDAO
 {
     // Constants
@@ -709,7 +711,7 @@ public final class BlogDAO implements IBlogDAO
             strSQL += SQL_ORDER_BY_LAST_MODIFICATION;
         }
 
-        AppLogService.debug( "Sql query filter : " + strSQL );
+        AppLogService.debug( "Sql query filter : {}", strSQL );
 
         DAOUtil daoUtil = new DAOUtil( strSQL );
         int nIndex = 1;
@@ -721,7 +723,7 @@ public final class BlogDAO implements IBlogDAO
                 if ( nCategoryId > 0 )
                 {
                     daoUtil.setInt( nIndex, nCategoryId );
-                    AppLogService.debug( "Param" + nIndex + " (getTagsId) = " + nCategoryId );
+                    AppLogService.debug( "Param {} (getTagsId) = {}", nIndex, nCategoryId );
                     nIndex++;
                 }
             }
@@ -732,7 +734,7 @@ public final class BlogDAO implements IBlogDAO
             for ( int nId : filter.getIds( ) )
             {
                 daoUtil.setInt( nIndex, nId );
-                AppLogService.debug( "Param" + nIndex + " (getIds) = " + nId );
+                AppLogService.debug( "Param{} (getIds) = {}",nIndex, nId );
                 nIndex++;
             }
         }

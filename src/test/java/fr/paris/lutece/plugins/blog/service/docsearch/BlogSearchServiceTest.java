@@ -40,8 +40,10 @@ import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
 import fr.paris.lutece.test.LuteceTestCase;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * BlogSearchService Test
@@ -50,18 +52,16 @@ public class BlogSearchServiceTest extends LuteceTestCase
 {
     private int _nIdBlog;
 
-    @Override
-    protected void setUp( ) throws Exception
+    @BeforeEach
+    protected void createBlog( ) throws Exception
     {
-        super.setUp( );
-        Blog blog = TestUtils.createTestArticle( );
+        Blog blog = TestUtils.createTestBlog( );
         _nIdBlog = blog.getId( );
     }
 
-    @Override
-    protected void tearDown( ) throws Exception
+    @AfterEach
+    protected void removeBlog( ) throws Exception
     {
-        super.tearDown( );
         BlogHome.remove( _nIdBlog );
     }
 
@@ -69,7 +69,7 @@ public class BlogSearchServiceTest extends LuteceTestCase
      * Test of processIndexing method, of class BlogSearchService.
      */
     @Test
-    public void testProcessIndexing( )
+    void testProcessIndexing( )
     {
         System.out.println( "processIndexing" );
         boolean bCreate = true;

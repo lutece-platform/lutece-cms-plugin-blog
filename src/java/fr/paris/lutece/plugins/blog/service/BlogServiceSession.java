@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.service;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.portal.service.util.AppLogService;

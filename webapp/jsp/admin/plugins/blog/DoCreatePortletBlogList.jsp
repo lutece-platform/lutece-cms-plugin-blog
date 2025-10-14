@@ -1,8 +1,6 @@
 <%@ page errorPage="../../ErrorPage.jsp" %>
 
-<jsp:useBean id="HtmldocsPortletList" scope="session" class="fr.paris.lutece.plugins.blog.web.portlet.BlogListPortletJspBean" />
+<%@page import="fr.paris.lutece.plugins.blog.web.portlet.BlogListPortletJspBean"%>
 
-<%
-HtmldocsPortletList.init( request, HtmldocsPortletList.RIGHT_MANAGE_ADMIN_SITE ); 
-response.sendRedirect(HtmldocsPortletList.doCreate( request ));
-%>
+${ blogListPortletJspBean.init( pageContext.request, BlogListPortletJspBean.RIGHT_MANAGE_ADMIN_SITE ) }
+${ pageContext.response.sendRedirect( blogListPortletJspBean.doCreate( pageContext.request )) }

@@ -1,9 +1,9 @@
-<jsp:useBean id="managehtmldocsHtmlDoc" scope="session" class="fr.paris.lutece.plugins.blog.web.BlogJspBean" />
-<% String strContent = managehtmldocsHtmlDoc.processController ( request , response ); %>
-
 <%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', blogJspBean.processController( pageContext.request , pageContext.response ) ) }
+
 <jsp:include page="../../AdminHeader.jsp" />
 
-<%= strContent %>
+${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

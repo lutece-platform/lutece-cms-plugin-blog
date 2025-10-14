@@ -47,7 +47,7 @@ import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class represents business objects BlogsPortlet

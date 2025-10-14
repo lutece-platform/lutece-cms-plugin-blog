@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.blog.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogFilter;
@@ -50,9 +50,11 @@ import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
 import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.business.event.ResourceEvent;
-import fr.paris.lutece.portal.service.event.ResourceEventManager;
+import fr.paris.lutece.portal.service.event.EventAction;
+import fr.paris.lutece.portal.service.event.Type.TypeQualifier;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.util.sql.TransactionManager;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This Service manages document actions (create, update, delete, validate ...) .
@@ -505,28 +507,28 @@ public class BlogService
 
     public void fireCreateBlogEvent( int blogId )
     {
-        ResourceEvent formResponseEvent = new ResourceEvent( );
-        formResponseEvent.setIdResource( String.valueOf( blogId ) );
-        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
-        ResourceEventManager.fireAddedResource( formResponseEvent );
+        ResourceEvent resourceEvent = new ResourceEvent( );
+        resourceEvent.setIdResource( String.valueOf( blogId ) );
+        resourceEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( ResourceEvent.class, new TypeQualifier( EventAction.CREATE ) ).fireAsync( resourceEvent );
         BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_CREATE );
     }
 
     public void fireUpdateBlogEvent( int blogId )
     {
-        ResourceEvent formResponseEvent = new ResourceEvent( );
-        formResponseEvent.setIdResource( String.valueOf( blogId ) );
-        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
-        ResourceEventManager.fireUpdatedResource( formResponseEvent );
+        ResourceEvent resourceEvent = new ResourceEvent( );
+        resourceEvent.setIdResource( String.valueOf( blogId ) );
+        resourceEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( ResourceEvent.class, new TypeQualifier( EventAction.UPDATE ) ).fireAsync( resourceEvent );
         BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY );
     }
 
     public void fireDeleteBlogEvent( int blogId )
     {
-        ResourceEvent formResponseEvent = new ResourceEvent( );
-        formResponseEvent.setIdResource( String.valueOf( blogId ) );
-        formResponseEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
-        ResourceEventManager.fireDeletedResource( formResponseEvent );
+        ResourceEvent resourceEvent = new ResourceEvent( );
+        resourceEvent.setIdResource( String.valueOf( blogId ) );
+        resourceEvent.setTypeResource( BlogUtils.CONSTANT_TYPE_RESOURCE );
+        CDI.current( ).getBeanManager( ).getEvent( ).select( ResourceEvent.class, new TypeQualifier( EventAction.REMOVE ) ).fireAsync( resourceEvent );
         BlogSearchService.getInstance( ).addIndexerAction( blogId, IndexerAction.TASK_MODIFY );
     }
 }

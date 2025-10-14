@@ -41,11 +41,10 @@ import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.portal.service.search.LuceneSearchEngine;
 import fr.paris.lutece.portal.service.search.SearchItem;
 import fr.paris.lutece.portal.service.search.SearchResult;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import jakarta.enterprise.inject.spi.CDI;
 import fr.paris.lutece.plugins.blog.business.Blog;
 
 import org.apache.commons.lang3.StringUtils;
@@ -63,6 +62,7 @@ import org.apache.lucene.store.FSDirectory;
 
 import java.nio.file.Paths;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,11 +104,11 @@ public final class BlogSearchService
     private int _nWriterMergeFactor;
 
     /**
-     * Creates a new instance of DirectorySearchService
+     * Creates a new instance of BlogSearchService
      */
     private BlogSearchService( )
     {
-        _strIndex = AppPathService.getPath( PATH_INDEX );
+        _strIndex = AppPropertiesService.getProperty( PATH_INDEX );
         if ( _strIndex == null )
         {
             throw new AppException( "Index path not defined. Property : blog.internalIndexer.lucene.indexPath in blogs.properties" );
@@ -123,13 +123,13 @@ public final class BlogSearchService
             throw new AppException( "Analyser class name not found in blogs.properties", null );
         }
 
-        _indexer = SpringContextService.getBean( "blog.blogIndexer" );
+        _indexer = CDI.current( ).select( IBlogSearchIndexer.class ).get( );
 
         try
         {
-            _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).newInstance( );
+            _analyzer = (Analyzer) Class.forName( strAnalyserClassName ).getDeclaredConstructor().newInstance( );
         }
-        catch( ClassNotFoundException | IllegalAccessException | InstantiationException e )
+        catch( ClassNotFoundException | IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e )
         {
             throw new AppException( "Failed to load Lucene Analyzer class", e );
         }
@@ -248,7 +248,7 @@ public final class BlogSearchService
             sbLogs.append( "\n with message: " );
             sbLogs.append( e.getMessage( ) );
             sbLogs.append( "\r\n" );
-            AppLogService.error( "Indexing error : " + e.getMessage( ), e );
+            AppLogService.error( "Indexing error : {}", e.getMessage( ), e );
         }
         finally
         {
@@ -279,7 +279,7 @@ public final class BlogSearchService
         }
         catch( Exception e )
         {
-            AppLogService.error( "Indexing error : " + e.getMessage( ), e );
+            AppLogService.error( "Indexing error : {}", e.getMessage( ), e );
         }
 
     }
@@ -407,15 +407,15 @@ public final class BlogSearchService
             flags.add( BooleanClause.Occur.MUST );
         }
 
-            Term termIsArchived = new Term( BlogSearchItem.FIELD_ARCHIVED, filter.getIsArchived() ? "true" : "false" );
+        if ( filter.getIsArchived( ) != null )
+        {
+        	Term termIsArchived = new Term( BlogSearchItem.FIELD_ARCHIVED, filter.getIsArchived() ? "true" : "false" );
             Query termQueryIsArchived = new TermQuery( termIsArchived );
             queries.add( termQueryIsArchived.toString( ) );
             sectors.add( BlogSearchItem.FIELD_ARCHIVED );
             flags.add( BooleanClause.Occur.MUST );
 
-        if ( !filter.getIsArchived( ))
-        {
-            if ( filter.getIsUnpulished( ) > 0 )
+            if ( !filter.getIsArchived( ) && filter.getIsUnpulished( ) > 0 )
             {
                 Term termIsUnpublished = new Term( BlogSearchItem.FIELD_UNPUBLISHED, String.valueOf( filter.getIsUnpulished( ) == 1 ) );
                 Query termQueryIsUnpublished = new TermQuery( termIsUnpublished );
@@ -498,7 +498,7 @@ public final class BlogSearchService
             }
             catch( ParseException e )
             {
-                AppLogService.error( "Bad Date Format for indexed item \"" + item.getTitle( ) + "\" : " + e.getMessage( ) );
+                AppLogService.error( "Bad Date Format for indexed item \" {} \" : {}", item.getTitle( ), e.getMessage( ) );
             }
 
             result.setUrl( item.getUrl( ) );
