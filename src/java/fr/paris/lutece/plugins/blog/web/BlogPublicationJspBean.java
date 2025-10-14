@@ -41,7 +41,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import org.apache.commons.lang3.StringUtils;
@@ -78,6 +81,8 @@ import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 /**
  * This class provides the user interface to manage HtmlDoc features ( manage, create, modify, remove )
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManagePublicationBlogs.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
 public class BlogPublicationJspBean extends BlogJspBean
 {
@@ -138,6 +143,9 @@ public class BlogPublicationJspBean extends BlogJspBean
 
     // Session variable to store working values
     protected BlogPublication _blogPublication;
+    
+    @Inject
+    private PortletService _portletService;
 
     /**
      * Build the Manage View
@@ -414,7 +422,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         {
             Portlet portlet = PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode( ) ) );
 
-            if ( ( portlet != null ) && PortletService.getInstance( ).isAuthorized( portlet, getUser( ) ) )
+            if ( ( portlet != null ) && _portletService.isAuthorized( portlet, getUser( ) ) )
             {
                 Map<String, Object> subModel = new HashMap<>( );
                 subModel.put( MARK_LIST_PAGE, PortalService.getPagePath( PortletHome.findByPrimaryKey( Integer.parseInt( item.getCode( ) ) ).getPageId( ) ) );

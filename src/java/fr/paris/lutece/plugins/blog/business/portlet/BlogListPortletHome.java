@@ -39,8 +39,8 @@ import java.util.Map;
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceItem;
+import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * This class provides instances management methods for BlogsListPortlet objects
@@ -50,7 +50,7 @@ public class BlogListPortletHome extends PortletHome
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants
     // Static variable pointed at the DAO instance
-    private static IBlogListPortletDAO _dao = SpringContextService.getBean( "blog.blogsListPortletDAO" );
+    private static IBlogListPortletDAO _dao = CDI.current( ).select( IBlogListPortletDAO.class ).get( );
 
     /* This class implements the Singleton design pattern. */
     private static BlogListPortletHome _singleton = null;

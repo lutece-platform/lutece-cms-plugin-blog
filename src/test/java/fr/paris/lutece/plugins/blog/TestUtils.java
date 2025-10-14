@@ -43,12 +43,9 @@ import java.util.Date;
  */
 public class TestUtils
 {
-    private static final int BLOG_ID = 10000;
-
-    public static Blog createTestArticle( )
+    public static Blog createTestBlog( )
     {
         Blog blog = new Blog( );
-        blog.setId( BLOG_ID );
         blog.setContentLabel( "Content label" );
         blog.setDescription( "Description" );
         blog.setHtmlContent( "HTML content" );
@@ -58,7 +55,6 @@ public class TestUtils
         blog.setUserCreator( "First author" );
         blog.setEditComment( "Comment" );
         return BlogHome.create( blog );
-
     }
 
 }

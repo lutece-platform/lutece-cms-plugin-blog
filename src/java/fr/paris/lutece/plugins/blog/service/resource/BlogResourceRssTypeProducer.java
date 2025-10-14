@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2021, City of Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,29 +31,32 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.blog.service;
+package fr.paris.lutece.plugins.blog.service.resource;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
-import fr.paris.lutece.portal.service.plugin.PluginService;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-/**
- * class BlogsPlugin
- */
-public class BlogPlugin extends PluginDefaultImplementation
+import fr.paris.lutece.portal.business.rss.IResourceRssType;
+import fr.paris.lutece.portal.business.rss.ResourceRssType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
+
+@ApplicationScoped
+public class BlogResourceRssTypeProducer 
 {
-    /**
-     * The name of the plugin
-     */
-    public static final String PLUGIN_NAME = "blog";
-
-    /**
-     * Get the blog plugin
-     * 
-     * @return The blog plugin
-     */
-    public static Plugin getPlugin( )
+	@Produces
+	@ApplicationScoped
+	@Named( "blog.resourceRssTypeForm" )
+    public IResourceRssType produceBlogResourceRssType( 
+    		@ConfigProperty( name = "blog.resourceRssTypeForm.key" ) String key,
+            @ConfigProperty( name = "blog.resourceRssTypeForm.titleI18nKey" ) String titleI18nKey,
+            @ConfigProperty( name = "blog.resourceRssTypeForm.className" ) String className )
     {
-        return PluginService.getPlugin( PLUGIN_NAME );
+        IResourceRssType resourceRssType = new ResourceRssType( );
+        resourceRssType.setKey(key);
+        resourceRssType.setTitleI18nKey(titleI18nKey);
+        resourceRssType.setClassName(className);
+        
+        return resourceRssType;
     }
 }

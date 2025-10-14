@@ -53,8 +53,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
@@ -63,10 +65,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.plugins.blog.utils.BlogUtils;
-import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.util.ReferenceItem;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.outerj.daisy.diff.HtmlCleaner;
@@ -102,6 +102,7 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
+import fr.paris.lutece.portal.service.upload.MultipartItem;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -120,6 +121,8 @@ import fr.paris.lutece.util.url.UrlItem;
 /**
  * This class provides the user interface to manage Blog features ( manage, create, modify, remove )
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManageBlogs.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
 public class BlogJspBean extends ManageBlogJspBean
 {
@@ -173,7 +176,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
 
     // Properties for page titles
-    private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blogs.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_BLOG = "blog.modify_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_BLOG = "blog.create_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_HISTORY_BLOG = "blog.history_blog.pageTitle";
@@ -1309,8 +1312,7 @@ public class BlogJspBean extends ManageBlogJspBean
         }
         catch( Exception e )
         {
-            AppLogService.error( "Error generating daisy diff for blog " + nId + ":" + blog.getContentLabel( ) + "; versions (" + blog.getVersion( ) + ","
-                    + blog2.getVersion( ) + ")", e );
+            AppLogService.error( "Error generating daisy diff for blog {}:{}; versions ({},{})", nId, blog.getContentLabel( ), blog.getVersion( ), blog2.getVersion( ), e );
         }
 
         List<Blog> listBlogsVersions = BlogHome.getBlogsVersionsList( nId );
@@ -1641,7 +1643,7 @@ public class BlogJspBean extends ManageBlogJspBean
     public DocContent setContent( MultipartHttpServletRequest mRequest, Locale locale )
     {
 
-        FileItem fileParameterBinaryValue = mRequest.getFile( "attachment" );
+        MultipartItem fileParameterBinaryValue = mRequest.getFile( "attachment" );
 
         if ( fileParameterBinaryValue != null ) // If the field is a file
         {
@@ -1724,7 +1726,6 @@ public class BlogJspBean extends ManageBlogJspBean
     public String getConfirmRemoveMultipleBlogs( HttpServletRequest request ) throws AccessDeniedException
     {
         // Check if the user has the permission to archive a blog
-        AdminUser adminUser = AdminUserService.getAdminUser( request );
         User user = AdminUserService.getAdminUser( request );
         if ( !RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Blog.PERMISSION_DELETE, user ) )
         {
@@ -2001,7 +2002,7 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             return INFO_MULTIPLE_BLOGS_REMOVED;
         }
-    };
+    }
 
     /**
      * Process a specific action on a selection of multiple blog post elements

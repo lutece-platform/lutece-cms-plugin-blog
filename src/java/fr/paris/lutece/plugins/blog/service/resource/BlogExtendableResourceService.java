@@ -38,6 +38,7 @@ import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResourceService;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,6 +49,7 @@ import java.util.Locale;
  * DocumentExtendableResourceService
  *
  */
+@ApplicationScoped
 public class BlogExtendableResourceService implements IExtendableResourceService
 {
     private static final String MESSAGE_BLOG_RESOURCE_TYPE_DESCRIPTION = "blog.resource.resourceTypeDescription";

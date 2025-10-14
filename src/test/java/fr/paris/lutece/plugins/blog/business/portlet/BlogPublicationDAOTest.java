@@ -33,76 +33,65 @@
  */
 package fr.paris.lutece.plugins.blog.business.portlet;
 
+import fr.paris.lutece.plugins.blog.TestUtils;
+import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.test.LuteceTestCase;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.inject.Inject;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * BlogPublicationDAO Test
  */
 public class BlogPublicationDAOTest extends LuteceTestCase
 {
-
     private static final String PLUGIN_NAME = "blog";
-    private static final int BLOG_ID = 10000;
     private static final int PORTLET_ID = 20000;
     private static final int STATUS_ENABLED = 1;
     private static final int ORDER = 1;
-    private static final int TESTCOUNT = 14;
 
-    private static Plugin _plugin = PluginService.getPlugin( PLUGIN_NAME );
-    private static BlogPublicationDAO _dao = new BlogPublicationDAO( );
+    private static Plugin _plugin;
     private static String _strDatabaseEngine;
     private static int nTestCount = 0;
+    private int _nIdBlog;
+    @Inject
+    private IBlogPublicationDAO _dao;
 
-    /**
-     * {@inheritDoc }
-     * 
-     * @throws Exception
-     */
-    @Override
-    protected void setUp( ) throws Exception
+    @BeforeEach
+    protected void before( TestInfo testInfo ) throws Exception
     {
-        super.setUp( );
-
-        // Equivalent to @BeforeClass that is not compatible with LuteceTestCase
         if ( nTestCount == 0 )
         {
             setUpDatabase( );
+            nTestCount++;
         }
-        nTestCount++;
+        System.out.println( testInfo.getDisplayName( ) );
+        createBlog( );
     }
 
-    /**
-     * {@inheritDoc }
-     * 
-     * @throws Exception
-     */
-    @Override
-    protected void tearDown( ) throws Exception
+    @AfterAll
+    protected void after( ) throws Exception
     {
-        super.tearDown( );
-
-        // Equivalent to @AfterClass that is not compatible with LuteceTestCase
-        if ( nTestCount == TESTCOUNT )
-        {
-            tearDownDatabase( );
-        }
+        tearDownDatabase( );
     }
 
     /**
      * Test of insertBlogsId method, of class BlogPublicationDAO.
      */
     @Test
-    public void testInsertBlogsId( )
+    void testInsertBlogsId( )
     {
-        System.out.println( "insertBlogsId" );
         insert( );
     }
 
@@ -110,9 +99,8 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of store method, of class BlogPublicationDAO.
      */
     @Test
-    public void testStore( )
+    void testStore( )
     {
-        System.out.println( "store" );
         BlogPublication blogPublication = getBlogPublication( );
         _dao.store( blogPublication, _plugin );
     }
@@ -121,49 +109,39 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of deleteBlogsId method, of class BlogPublicationDAO.
      */
     @Test
-    public void testDeleteBlogsId( )
+    void testDeleteBlogsId( )
     {
-        System.out.println( "deleteBlogsId" );
-        insert( );
-        int nDocId = BLOG_ID;
-        _dao.deleteBlogsId( nDocId, _plugin );
+        _dao.deleteBlogsId( _nIdBlog, _plugin );
     }
 
     /**
      * Test of deleteBlogByIdPortlet method, of class BlogPublicationDAO.
      */
     @Test
-    public void testDeleteBlogByIdPortlet( )
+    void testDeleteBlogByIdPortlet( )
     {
-        System.out.println( "deleteBlogByIdPortlet" );
         insert( );
-        int nIdPortlet = PORTLET_ID;
-        _dao.deleteBlogByIdPortlet( nIdPortlet, _plugin );
+        _dao.deleteBlogByIdPortlet( PORTLET_ID, _plugin );
     }
 
     /**
      * Test of remove method, of class BlogPublicationDAO.
      */
     @Test
-    public void testRemove( )
+    void testRemove( )
     {
-        System.out.println( "remove" );
         insert( );
-        int nDocId = BLOG_ID;
-        int nIdPortlet = PORTLET_ID;
-        _dao.remove( nDocId, nIdPortlet, _plugin );
+        _dao.remove( _nIdBlog, PORTLET_ID, _plugin );
     }
 
     /**
      * Test of loadBlogsId method, of class BlogPublicationDAO.
      */
     @Test
-    public void testLoadBlogsId( )
+    void testLoadBlogsId( )
     {
-        System.out.println( "loadBlogsId" );
         insert( );
-        int nDocId = BLOG_ID;
-        List<BlogPublication> result = _dao.loadBlogsId( nDocId, _plugin );
+        List<BlogPublication> result = _dao.loadBlogsId( _nIdBlog, _plugin );
         assertTrue( !result.isEmpty( ) );
     }
 
@@ -171,12 +149,10 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of loadBlogsByPortlet method, of class BlogPublicationDAO.
      */
     @Test
-    public void testLoadBlogsByPortlet( )
+    void testLoadBlogsByPortlet( )
     {
-        System.out.println( "loadBlogsByPortlet" );
         insert( );
-        int nIdPortlet = PORTLET_ID;
-        List<BlogPublication> result = _dao.loadBlogsByPortlet( nIdPortlet, _plugin );
+        List<BlogPublication> result = _dao.loadBlogsByPortlet( PORTLET_ID, _plugin );
         assertTrue( !result.isEmpty( ) );
     }
 
@@ -184,14 +160,12 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of loadBlogsByPortletAndPublicationDate method, of class BlogPublicationDAO.
      */
     @Test
-    public void testLoadBlogsByPortletAndPublicationDate( )
+    void testLoadBlogsByPortletAndPublicationDate( )
     {
-        System.out.println( "loadBlogsByPortletAndPublicationDate" );
         insert( );
-        int nIdPortlet = PORTLET_ID;
         Date datePublishing = new Date( getTime( -2 ) );
         Date dateEndPublishing = new Date( getTime( 2 ) );
-        List<BlogPublication> result = _dao.loadBlogsByPortletAndPublicationDate( nIdPortlet, datePublishing, dateEndPublishing, _plugin );
+        List<BlogPublication> result = _dao.loadBlogsByPortletAndPublicationDate( PORTLET_ID, datePublishing, dateEndPublishing, _plugin );
         assertTrue( !result.isEmpty( ) );
     }
 
@@ -199,13 +173,10 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of loadBlogsPublication method, of class BlogPublicationDAO.
      */
     @Test
-    public void testLoadBlogsPublication( )
+    void testLoadBlogsPublication( )
     {
-        System.out.println( "loadBlogsPublication" );
         insert( );
-        int nPortletId = PORTLET_ID;
-        int nDocId = BLOG_ID;
-        BlogPublication result = _dao.loadBlogsPublication( nPortletId, nDocId, _plugin );
+        BlogPublication result = _dao.loadBlogsPublication( PORTLET_ID, _nIdBlog, _plugin );
         assertNotNull( result );
     }
 
@@ -213,9 +184,8 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of loadAllBlogsPublication method, of class BlogPublicationDAO.
      */
     @Test
-    public void testLoadAllBlogsPublication( )
+    void testLoadAllBlogsPublication( )
     {
-        System.out.println( "loadAllBlogsPublication" );
         insert( );
         List<BlogPublication> result = _dao.loadAllBlogsPublication( _plugin );
         assertTrue( !result.isEmpty( ) );
@@ -225,9 +195,8 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of selectSinceDatePublishingAndStatus method, of class BlogPublicationDAO.
      */
     @Test
-    public void testSelectSinceDatePublishingAndStatus( )
+    void testSelectSinceDatePublishingAndStatus( )
     {
-        System.out.println( "selectSinceDatePublishingAndStatus" );
         insert( );
         Date datePublishing = new Date( getTime( -4 ) );
         Date dateEndPublishing = new Date( getTime( 2 ) );
@@ -240,9 +209,8 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of getPublishedBlogsIdsListByPortletIds method, of class BlogPublicationDAO.
      */
     @Test
-    public void testGetPublishedBlogsIdsListByPortletIds( )
+    void testGetPublishedBlogsIdsListByPortletIds( )
     {
-        System.out.println( "getPublishedBlogsIdsListByPortletIds" );
         insert( );
         int [ ] nPortletsIds = {
                 PORTLET_ID
@@ -257,9 +225,8 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of getLastPublishedBlogsIdsListByPortletIds method, of class BlogPublicationDAO.
      */
     @Test
-    public void testGetLastPublishedBlogsIdsListByPortletIds( )
+    void testGetLastPublishedBlogsIdsListByPortletIds( )
     {
-        System.out.println( "getLastPublishedBlogsIdsListByPortletIds" );
         insert( );
         int [ ] nPortletsIds = {
                 PORTLET_ID
@@ -273,13 +240,11 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      * Test of countPublicationByIdBlogAndDate method, of class BlogPublicationDAO.
      */
     @Test
-    public void testCountPublicationByIdBlogAndDate( )
+    void testCountPublicationByIdBlogAndDate( )
     {
-        System.out.println( "countPublicationByIdBlogAndDate" );
         insert( );
-        int nIdBlog = BLOG_ID;
         Date date = new Date( );
-        int result = _dao.countPublicationByIdBlogAndDate( nIdBlog, date, _plugin );
+        int result = _dao.countPublicationByIdBlogAndDate( _nIdBlog, date, _plugin );
         assertTrue( result > 0 );
     }
 
@@ -338,7 +303,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      */
     private void clean( )
     {
-        _dao.deleteBlogsId( BLOG_ID, _plugin );
+        _dao.deleteBlogsId( _nIdBlog, _plugin );
     }
 
     /**
@@ -346,10 +311,8 @@ public class BlogPublicationDAOTest extends LuteceTestCase
      */
     private void insert( )
     {
-        clean( );
         BlogPublication blogPublication = getBlogPublication( );
         _dao.insertBlogsId( blogPublication, _plugin );
-
     }
 
     /**
@@ -360,7 +323,7 @@ public class BlogPublicationDAOTest extends LuteceTestCase
     private BlogPublication getBlogPublication( )
     {
         BlogPublication blogPublication = new BlogPublication( );
-        blogPublication.setIdBlog( BLOG_ID );
+        blogPublication.setIdBlog( _nIdBlog );
         blogPublication.setIdPortlet( PORTLET_ID );
         blogPublication.setStatus( STATUS_ENABLED );
         blogPublication.setBlogOrder( ORDER );
@@ -399,4 +362,11 @@ public class BlogPublicationDAOTest extends LuteceTestCase
         }
 
     }
+    
+    private void createBlog( )
+    {
+        Blog blog = TestUtils.createTestBlog( );
+        _nIdBlog = blog.getId( );
+    }
+
 }

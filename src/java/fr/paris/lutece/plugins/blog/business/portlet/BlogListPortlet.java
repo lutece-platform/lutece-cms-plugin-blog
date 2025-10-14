@@ -53,7 +53,7 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class represents business objects BlogsList Portlet

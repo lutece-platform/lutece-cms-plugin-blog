@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ import java.util.List;
 public final class BlogPageTemplateHome
 {
     // Static variable pointed at the DAO instance
-    private static IBlogPageTemplateDAO _dao = SpringContextService.getBean( "blog.blogPageTemplateDAO" );
+    private static IBlogPageTemplateDAO _dao = CDI.current( ).select( IBlogPageTemplateDAO.class ).get( );
 
     /** Creates a new instance of BlogPageTemplateHome */
     private BlogPageTemplateHome( )

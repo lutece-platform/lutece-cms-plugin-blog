@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.blog.business.rss;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ import java.util.List;
  * class BlogResourceRssConfigDAO
  *
  */
+@ApplicationScoped
 public class BlogResourceRssConfigDAO implements IBlogResourceRssConfigDAO
 {
     private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_rss,id_portlet " + "FROM blog_rss_cf  WHERE id_rss=?";

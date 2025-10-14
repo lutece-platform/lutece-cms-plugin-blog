@@ -36,8 +36,8 @@ package fr.paris.lutece.plugins.blog.business;
 import fr.paris.lutece.plugins.blog.service.BlogPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ import java.util.List;
 public final class TagHome
 {
     // Static variable pointed at the DAO instance
-    private static ITagDAO _dao = SpringContextService.getBean( "blog.tagDAO" );
+    private static ITagDAO _dao = CDI.current( ).select( ITagDAO.class ).get( );
     private static Plugin _plugin = PluginService.getPlugin( BlogPlugin.PLUGIN_NAME );
 
     /**

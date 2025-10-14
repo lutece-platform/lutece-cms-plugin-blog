@@ -3,10 +3,13 @@ package fr.paris.lutece.plugins.blog.web.admindashboard;
 import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.service.rbac.RBACService;
-import fr.paris.lutece.portal.service.security.SecurityTokenService;
+import fr.paris.lutece.portal.service.security.ISecurityTokenService;
 import fr.paris.lutece.portal.service.user.AdminUserResourceIdService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -15,15 +18,19 @@ import fr.paris.lutece.portal.web.dashboard.AdminDashboardJspBean;
 /**
  * This class provides the user interface to manage general Blog feature in the site admin dashboard ( modify mandatory tag number )
  */
+@RequestScoped
+@Named
 @Controller( controllerJsp = "ManageAdminDashboard.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_ADVANCED_CONFIGURATION" )
 public class BlogAdminDashboardJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = 3045411044102177294L;
     private static final String UNAUTHORIZED = "Unauthorized";
+    @Inject
+    private ISecurityTokenService _securityTokenService; 
 
     public String doModifyBlogAdvancedParameters( HttpServletRequest request ) throws AccessDeniedException
     {
-        if ( !SecurityTokenService.getInstance( ).validate( request, AdminDashboardJspBean.TEMPLATE_MANAGE_DASHBOARDS ) )
+        if ( !_securityTokenService.validate( request, AdminDashboardJspBean.TEMPLATE_MANAGE_DASHBOARDS ) )
         {
             throw new AccessDeniedException( ERROR_INVALID_TOKEN );
         }
