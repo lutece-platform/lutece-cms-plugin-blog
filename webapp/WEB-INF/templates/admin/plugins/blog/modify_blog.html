@@ -10,10 +10,10 @@
       <@btnToolbar id='blog-toolbar' params='aria-label="#i18n{blog.modify_blog.labelToolbarLabel}"'>
         <#assign alertClass>mb-0 me-2<#if number_mandatory_tags gte blogTagSize> visually-hidden</#if></#assign>
         <@alert id='required-tag' color='warning' class=alertClass>${i18n("blog.mandatoryTags.assign.mandatory.tags",number_mandatory_tags)}  </@alert>
+        <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='modify' id='action_modifyblog'  name='action_modifyblog' hideTitle=['xs','sm'] />
         <#if permission_manage_publish_blog?? && permission_manage_publish_blog>
-            <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='update' id='action_modifyblog'  name='button' hideTitle=['xs','sm'] />
+            <@button class='me-1 action' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='update' id='apply_modifyblog' name='button' hideTitle=['xs','sm'] />
         </#if>
-        <@button class='me-1 action' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='modify' id='action_modifyblog' id='apply_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] />
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}' color='danger' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['xs','sm'] size='' />
         <@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe' hideTitle=['xs','sm'] size='' />
         <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='btn-notif me-1' title='#i18n{blog.manage_blogs.labelHistory}  [ ${blog.version} versions]' hideTitle=['xs','sm', 'md'] buttonIcon='history' size='' />
