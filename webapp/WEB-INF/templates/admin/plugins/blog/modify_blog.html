@@ -162,8 +162,7 @@
 </@div>
 </#if>
 <@initEditor />
-<@blogJSInit />
-<#if is_crop_image> 
+<#if is_crop_image>
 <@modal id='imageModal' size='xl'>
 <@modalHeader modalTitle='#i18n{blog.publication_blog.labelPublication}'/>
 <@modalBody>
@@ -171,7 +170,8 @@
       <#include "/skin/plugins/uploadimage/uploadimage.html" />
       <@addRequiredJsUploadImages/>
       <@cropimage fieldName="attachment" file="images/admin/skin/plugins/uploadimage/picture.jpg" cssClass="text-center" synchronous= "false"/>
-  </@div> 
+  </@div>
 </@modalBody>
 </@modal>
-</#if> 
+</#if>
+<@blogJSInit />

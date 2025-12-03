@@ -97,7 +97,7 @@ const blogLangList = () => {
   }
 }
 
-const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve, reject) => {
+const blog_image_upload_handler = ( blobInfo, success, failure, progress ) => {
   const xhr = new XMLHttpRequest();
   xhr.withCredentials = false;
   xhr.open('POST', '${webapp_url}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent');
@@ -107,38 +107,38 @@ const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve
 
   xhr.onload = () => {
     if (xhr.status === 403) {
-      reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+      failure({ message: 'HTTP Error: ' + xhr.status, remove: true });
       return;
     }
 
     if (xhr.status < 200 || xhr.status >= 300) {
-      reject('HTTP Error: ' + xhr.status);
+      failure('HTTP Error: ' + xhr.status);
       return;
     }
 
     const json = JSON.parse(xhr.responseText);
     if (!json ) {
-      reject('Invalid JSON: ' + xhr.responseText);
+      failure('Invalid JSON: ' + xhr.responseText);
       return;
     }
     <#noparse>const fileLocation = `servlet/plugins/blogs/file?id_file=${json.result[1]}`</#noparse>
     setListFile( json.result[1], json.result[0], filetype, idBlog )
-    resolve(fileLocation);
+    success(fileLocation);
   };
 
   xhr.onerror = () => {
-    reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+    failure('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
   };
 
   formData = new FormData();
   const idBlog = document.querySelector('#id').value;
   const filetype = blobInfo.blob().type.startsWith('image') ? 1 : 0;
-  formData.append( 'fileContent', <#noparse>`data:${blobInfo.blob().type};base64,${blobInfo.base64()}`</#noparse> );
+  formData.append( 'file', blobInfo.blob() );
 	formData.append( 'fileName', blobInfo.blob().name );
 	formData.append( 'fileType', filetype );
 	formData.append( 'id', idBlog );
   xhr.send(formData);
-});
+};
 
 const contentBodyConfig = {
   selector: '.content-body',
@@ -205,7 +205,7 @@ const contentBodyConfig = {
   ],
   image_title: true,
   /*
-    URL of our upload handler 
+    URL of our upload handler
     here we add custom filepicker only to Image dialog
   */
   automatic_uploads: true,
@@ -218,21 +218,17 @@ const contentBodyConfig = {
       inputFile.setAttribute('accept', '.pdf,.doc,.docx,.xls,.xlsx,.odt,.ods');
       inputFile.addEventListener('change', (e) => {
         const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=2, extension = e.target.files[0].name.split('.').pop().toLowerCase()
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          doAddContent( file.name, file.size, reader.result, filetype, blogId ).then( resp => {
-            if ( resp.status == 'OK' ){
-              if( resp.result == "BLOG_LOCKED" ){
-                setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
-              } else {
-                setListFile( resp.result[1], resp.result[0], filetype, extension, blogId )
-                <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
-                cb( fileResFile , { title: file.name, text: file.name });
-              }
+        doAddContent( file.name, file, filetype, blogId ).then( resp => {
+          if ( resp.status == 'OK' ){
+            if( resp.result == "BLOG_LOCKED" ){
+              setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+            } else {
+              setListFile( resp.result[1], resp.result[0], filetype, extension, blogId )
+              <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
+              cb( fileResFile , { title: file.name, text: file.name });
             }
-          });
+          }
         });
-        reader.readAsDataURL(file);
       });
       inputFile.click();
     }
@@ -243,21 +239,17 @@ const contentBodyConfig = {
       input.setAttribute('accept', 'image/*');
       input.addEventListener('change', (e) => {
         const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=1;
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          doAddContent( file.name, file.size, reader.result, filetype, blogId ).then( resp => {
-              if ( resp.status == 'OK' ){
-                if( resp.result == "BLOG_LOCKED" ){
-                  setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
-                } else {
-                  setListFile( resp.result[1], resp.result[0], filetype, blogId )
-                  <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
-                  cb( fileResFile , { title: file.name, alt: file.name });
-                }
-              }
-            });
+        doAddContent( file.name, file, filetype, blogId ).then( resp => {
+          if ( resp.status == 'OK' ){
+            if( resp.result == "BLOG_LOCKED" ){
+             setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+            } else {
+              setListFile( resp.result[1], resp.result[0], filetype, blogId )
+              <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
+              cb( fileResFile , { title: file.name, alt: file.name });
+            }
+          }
         });
-        reader.readAsDataURL(file);
       });
       input.click();
     }
