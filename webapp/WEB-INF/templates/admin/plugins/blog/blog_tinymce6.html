@@ -133,7 +133,7 @@ const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve
   formData = new FormData();
   const idBlog = document.querySelector('#id').value;
   const filetype = blobInfo.blob().type.startsWith('image') ? 1 : 0;
-  formData.append( 'fileContent', <#noparse>`data:${blobInfo.blob().type};base64,${blobInfo.base64()}`</#noparse> );
+  formData.append( 'file', blobInfo.blob() );
 	formData.append( 'fileName', blobInfo.blob().name );
 	formData.append( 'fileType', filetype );
 	formData.append( 'id', idBlog );
@@ -218,21 +218,17 @@ const contentBodyConfig = {
       inputFile.setAttribute('accept', '.pdf,.doc,.docx,.xls,.xlsx,.odt,.ods');
       inputFile.addEventListener('change', (e) => {
         const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=2, extension = e.target.files[0].name.split('.').pop().toLowerCase()
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          doAddContent( file.name, file.size, reader.result, filetype, blogId ).then( resp => {
-            if ( resp.status == 'OK' ){
-              if( resp.result == "BLOG_LOCKED" ){
-                setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
-              } else {
-                setListFile( resp.result[1], resp.result[0], filetype, extension, blogId )
-                <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
-                cb( fileResFile , { title: file.name, text: file.name });
-              }
+        doAddContent( file.name, file, filetype, blogId ).then( resp => {
+          if ( resp.status == 'OK' ){
+            if( resp.result == "BLOG_LOCKED" ){
+              setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+            } else {
+              setListFile( resp.result[1], resp.result[0], filetype, extension, blogId )
+              <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
+              cb( fileResFile , { title: file.name, text: file.name });
             }
-          });
+          }
         });
-        reader.readAsDataURL(file);
       });
       inputFile.click();
     }
@@ -243,21 +239,17 @@ const contentBodyConfig = {
       input.setAttribute('accept', 'image/*');
       input.addEventListener('change', (e) => {
         const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=1;
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          doAddContent( file.name, file.size, reader.result, filetype, blogId ).then( resp => {
-              if ( resp.status == 'OK' ){
-                if( resp.result == "BLOG_LOCKED" ){
-                  setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
-                } else {
-                  setListFile( resp.result[1], resp.result[0], filetype, blogId )
-                  <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
-                  cb( fileResFile , { title: file.name, alt: file.name });
-                }
-              }
-            });
+        doAddContent( file.name, file, filetype, blogId ).then( resp => {
+          if ( resp.status == 'OK' ){
+            if( resp.result == "BLOG_LOCKED" ){
+             setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+            } else {
+              setListFile( resp.result[1], resp.result[0], filetype, blogId )
+              <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
+              cb( fileResFile , { title: file.name, alt: file.name });
+            }
+          }
         });
-        reader.readAsDataURL(file);
       });
       input.click();
     }
