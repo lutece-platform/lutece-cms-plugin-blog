@@ -114,13 +114,11 @@ document.addEventListener( "DOMContentLoaded", function(){
             createTag( idBlog );
         });
     }
-    <#if is_crop_image>
-    <#else>
+
     const btnAddFiles = document.querySelector("#btn-add-files")
     btnAddFiles.addEventListener( 'click', event => {
       document.querySelector('#attachment').click();
     });
-    </#if>
   })
   var number_mandatory_tags=<#if requiredTags gt 0>${requiredTags}<#else>0</#if>
 

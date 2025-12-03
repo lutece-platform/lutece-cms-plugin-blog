@@ -9,7 +9,7 @@ async function doAddTag( idTag, tgName, blogId ) {
 	} else {
 		const data = await response.json();
 		if ( data.status == 'OK' ){
-			if ( data.result == 'BLOG_LOCKED' ) {
+			if(data.result == "BLOG_LOCKED"){
 				setBlogToast( typeWarning , labelWarning, msgErrorBlogLocked )	
 			} else {
 			    blog_tag.push( idTag );
@@ -100,6 +100,7 @@ function refreshMandatoryTagInfo( ){
             elemEnoughTagsInfo.classList.add('alert-info');
         }
     }
+
 }
 
 function setListTag( idTag, tgName, blogId ){
@@ -212,13 +213,13 @@ function getFile( blogId ) {
 	reader.onload=function(){
 		const rgx = /image/g;
 		const fileType = rgx.test( file.type ) ? 1 : 2, extension = file.name.split('.').pop().toLowerCase()	
-		doAddContent( file.name, reader.result, fileType, blogId ).then( resp => {
+		doAddContent( file.name, file.size, reader.result, fileType, blogId ).then( resp => {
 			/* call the callback and populate the Title field with the file name */
 			if ( resp.status == 'OK' ){
 			  if( resp.result == "BLOG_LOCKED" ){
 				setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
 			  } else {
-				setListFile( resp.result[1], resp.result[0].replace(/'/g, "\\'"), fileType, extension, blogId )
+				setListFile( resp.result[1], resp.result[0], fileType, extension, blogId )
 			  }
 			}
 		});
@@ -230,12 +231,11 @@ function getFile( blogId ) {
  
  /* TODO : Is this is pnly used with uploadimage plugin */
  function getCroppedCanva( fieldName ) {
-	const currentIdBlog = document.querySelector('#id').value;
+	const idBlog = document.querySelector('#id').value;
 	const fileType = document.querySelector('#fileType').value;
 	const thisElement= document.querySelector( `.img-container ${fieldName} > img` );
 	const result = thisElement.cropper( 'getCroppedCanvas', { width: "222", height:"555" });
-	doAddContent( fieldName, result.toDataURL(), fileType, currentIdBlog );
-
+	doAddContent( fieldName, {}, result.toDataURL(), fileType, idBlog );
  }
  
 function deleteFileContent( idContent, idBlog ) {
@@ -243,17 +243,17 @@ function deleteFileContent( idContent, idBlog ) {
 	document.querySelector( `.blog-resources #doc_${idContent}`).remove();
 }
 
-async function doAddContent( fileName, result, fileType, idBlog ){
-	const modal = bootstrap.Modal.getInstance(document.getElementById('imageModal'));
-	if (modal) {modal.hide();}
-	
+async function doAddContent( fileName, fileInfo, result, fileType, idBlog ){
 	const formData = new FormData();
+
 	// Convert the JSON data to a JSON string and add it to the FormData object
 	formData.append( 'fileContent', result );
 	formData.append( 'fileName', fileName );
 	formData.append( 'fileType', fileType );
-	formData.append( 'id', idBlog );
-	
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		formData.append( 'id', idBlog );
+	}
+
 	// Make a POST request with the FormData object
 	const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent`, {
 		method: 'POST',
@@ -266,7 +266,6 @@ async function doAddContent( fileName, result, fileType, idBlog ){
 		const resp = await response.json();
 		return resp;
 	}
-
 }
 
 function doInsertContent( idContent, titleContent, typeContent ) {

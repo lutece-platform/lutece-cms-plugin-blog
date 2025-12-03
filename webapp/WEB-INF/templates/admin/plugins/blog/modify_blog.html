@@ -54,55 +54,32 @@
           </@box>
           <@box>
             <@boxHeader title='#i18n{blog.modify_blog.labelAttachment}' class='align-items-center mt-0 pt-0' boxTools=true>
-              <!--To the use of the content-type crop plugin -->
-              <#assign is_content_type=dskey('blog.advanced_parameters.use_content_type')?boolean>
-              <#if is_content_type >
-                  <@inputGroup class='mt-2'>
-                    <@select name='fileType'>
-                      <#list image_type as type>
-                      <@option value=type.idContentType label=type.label />             
-                      </#list>
-                    </@select>
-                    <!--To the use of the image crop plugin -->
-                    <#if is_crop_image>
-                      <@button color='outline-primary' buttonIcon='plus' title='#i18n{blog.modify_blog.labelAttachment}' params=' data-bs-toggle="modal" data-bs-target="#imageModal" ' />
-                    <#else>
-                      <@button title='#i18n{blog.modify_blog.labelAttachment}' id='btn-add-files' color='outline-primary' buttonIcon='plus' size='xs' />
-                    </#if>
-                  </@inputGroup>
-              <#else>
-               <!--To the use of the image crop plugin -->
-                <#if is_crop_image>
-                  <@button color='outline-primary my-2' buttonIcon='plus' title='#i18n{blog.modify_blog.labelAttachment}' params=' data-bs-toggle="modal" data-bs-target="#imageModal" ' />
-                <#else>
-                  <@button title="#i18n{blog.modify_blog.labelAttachment}" id='btn-add-files' color='outline-primary my-2' buttonIcon='plus' size='xs' />
-                </#if>
-                <@icon style='files' />
-              </#if>
+              <@button title="#i18n{blog.modify_blog.labelAttachment}" id='btn-add-files' color='outline-primary my-2' buttonIcon='plus' size='xs' />
+              <@icon style='files' />
             </@boxHeader>
             <@boxBody>
-              <#assign acceptedTypes=dskey('blog.advanced_parameters.accepted_file_types')!'image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp'>
-              <@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='${acceptedTypes}' params='onchange="getFile(${blog.id})"' value='' />
+              <#assign is_crop_image=false >
+              <!--To the use of the image crop plugin -->
+              <#if is_crop_image> 
+                <#include "/skin/plugins/uploadimage/uploadimage.html" />
+                <@addRequiredJsUploadImages/>
+                <@cropimage fieldName="attachment" file="themes/admin/shared/images/plugins/uploadimage/picture.jpg" cssClass="text-center" synchronous= "false"/>
+              <#else>
+                <@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='image/*,.pdf,.xls,.doc,.docx,.xls,.xlsx,.odt,.ods,.ppt,.pptx,.odp' params=' onchange="getFile( ${blog.id} )"' value='' />
+              </#if>
               <@div class="blog-resources">
                 <@listGroup id='content-list'>
                   <#if blog.docContent?? && blog.docContent?size!=0>
                     <#list blog.docContent as docContent>
                       <#assign itemClass>d-flex justify-content-between blog-<#if docContent.contentType.idContentType=1>image<#else>file</#if>-content</#assign>
-                      <#assign itemClass>d-flex justify-content-between blog-image</#assign>
                       <@listGroupItem id='doc_${docContent.id}' class=itemClass >
-                        <@img class="img-fluid img-thumbnail blog-thumbnails" url="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
-                        ${docContent.textValue!}
-                        <@select name='fileType' class=''>
-                          <#list image_type as type>
-                            <@option value=type.idContentType label=type.label />             
-                          </#list>
-                        </@select>
-                        <#if is_content_type >
-                        <@select name='fileType' class='fileTypeUpdate' params='onchange="doUpdateContentType( ${docContent.id}, this.value)"' >
-                            <#list image_type as type>
-                              <@option value=type.idContentType label=type.label selected=(type.idContentType == docContent.contentType.idContentType) />             
-                            </#list>
-                          </@select>
+                        <#if docContent.contentType.idContentType=1>
+                          <@img class="img-fluid img-thumbnail blog-thumbnails" url="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
+                        <#else>
+                          <@img class="img-fluid img-thumbnail blog-thumbnails" url="themes/admin/shared/plugins/blog/images/file-type-${getFileExtension(docContent.textValue)!}.svg" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
+                          <@link href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="#i18n{portal.util.labelDownload} ${docContent.textValue!}">
+                          ${docContent.textValue!}
+                          </@link>
                         </#if>
                         <@btnGroup>
                           <@button color='none' size='' class='text-primary' buttonIcon='file-plus' hideTitle=['all'] title='#i18n{blog.create_blog.labelAddToContent}' params=' onclick="doInsertContent( ${docContent.id}, \'${docContent.textValue!}\', ${docContent.contentType.idContentType} );"' />
@@ -163,15 +140,3 @@
 </#if>
 <@initEditor />
 <@blogJSInit />
-<#if is_crop_image> 
-<@modal id='imageModal' size='xl'>
-<@modalHeader modalTitle='#i18n{blog.publication_blog.labelPublication}'/>
-<@modalBody>
-  <@div id='uploadimage-group'>
-      <#include "/skin/plugins/uploadimage/uploadimage.html" />
-      <@addRequiredJsUploadImages/>
-      <@cropimage fieldName="attachment" file="images/admin/skin/plugins/uploadimage/picture.jpg" cssClass="text-center" synchronous= "false"/>
-  </@div> 
-</@modalBody>
-</@modal>
-</#if> 
