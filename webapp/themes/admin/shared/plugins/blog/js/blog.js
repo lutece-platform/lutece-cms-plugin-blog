@@ -231,10 +231,19 @@ function getFile( blogId ) {
  /* TODO : Is this is pnly used with uploadimage plugin */
  function getCroppedCanva( fieldName ) {
 	const currentIdBlog = document.querySelector('#id').value;
-	const fileType = document.querySelector('#fileType').value;
+	const fileType = document.querySelector('#fileType') != null ? document.querySelector('#fileType').value : null;
 	const thisElement= document.querySelector( `.img-container ${fieldName} > img` );
 	const result = thisElement.cropper( 'getCroppedCanvas', { width: "222", height:"555" });
-	doAddContent( fieldName, result.toDataURL(), fileType, currentIdBlog );
+	doAddContent( fieldName, result.toDataURL(), fileType, currentIdBlog ).then( resp => {
+		/* call the callback and populate the Title field with the file name */
+		if ( resp.status == 'OK' ){
+			if( resp.result == "BLOG_LOCKED" ){
+			setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
+			} else {
+			setListFile( resp.result[1], resp.result[0].replace(/'/g, "\\'"), fileType, extension, blogId )
+			}
+		}
+	});
 
  }
  
