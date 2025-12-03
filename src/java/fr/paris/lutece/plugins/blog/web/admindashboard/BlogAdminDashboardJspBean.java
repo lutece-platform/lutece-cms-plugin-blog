@@ -37,6 +37,9 @@ public class BlogAdminDashboardJspBean extends MVCAdminJspBean
         blogParameterService.updateNumberMandatoryTags(request.getParameter( BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS ) );
         blogParameterService.updateDefaultDateEndPublishing(request.getParameter( BlogParameterService.MARK_DEFAULT_DATE_END_PUBLISHING ) );
         blogParameterService.updateDefaultEditor(request.getParameter( BlogParameterService.MARK_DEFAULT_EDITOR ) );
+        blogParameterService.updateUseUploadImagePlugin( request.getParameter( BlogParameterService.MARK_USE_UPLOAD_IMAGE_PLUGIN ) != null );
+        blogParameterService.updateUseContentType( request.getParameter( BlogParameterService.MARK_USE_CONTENT_TYPE ) != null );
+        blogParameterService.updateAcceptedFileTypes( request.getParameter( BlogParameterService.MARK_ACCEPTED_FILE_TYPES ) );
 
         return getAdminDashboardsUrl( request, BlogAdminDashboardComponent.ANCHOR_ADMIN_DASHBOARDS );
     }

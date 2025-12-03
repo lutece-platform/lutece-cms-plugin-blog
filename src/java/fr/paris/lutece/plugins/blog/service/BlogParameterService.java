@@ -19,10 +19,18 @@ public class BlogParameterService
     public static final String DSKEY_DEFAULT_NUMBER_MANDATORY_TAGS = "blog.advanced_parameters.number_mandatory_tags";
     public static final String DSKEY_DEFAULT_DATE_END_PUBLISHING = "blog.advanced_parameters.default_date_end_publishing";
     public static final String DSKEY_DEFAULT_EDITOR = "blog.advanced_parameters.editor";
+    public static final String DSKEY_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
+    public static final String DSKEY_USE_CONTENT_TYPE = "blog.advanced_parameters.use_content_type";
+    public static final String DSKEY_ACCEPTED_FILE_TYPES = "blog.advanced_parameters.accepted_file_types";
     public static final String MARK_DEFAULT_NUMBER_MANDATORY_TAGS = "number_mandatory_tags";
     public static final String MARK_DEFAULT_DATE_END_PUBLISHING = "default_date_end_publishing";
     public static final String MARK_DEFAULT_EDITOR = "default_editor";
+    public static final String MARK_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
+    public static final String MARK_USE_CONTENT_TYPE = "use_content_type";
+    public static final String MARK_ACCEPTED_FILE_TYPES = "accepted_file_types";
     public static final String DSKEY_DEFAULT_EDITOR_BACK_OFFICE = "core.backOffice.defaultEditor";
+    
+    public static final String DEFAULT_ACCEPTED_FILE_TYPES = "image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp";
     
     private static final String FIELD_DATEFORMAT = "yyyy-MM-dd";
     private static final String DB_DATEFORMAT = "dd/MM/yyyy";
@@ -159,6 +167,73 @@ public class BlogParameterService
             return strDefaultEditor;
         }
              
+    }
+
+    /**
+     * Update the use upload image plugin setting
+     *
+     * @param bUseUploadImagePlugin true to enable, false to disable
+     */
+    public void updateUseUploadImagePlugin( boolean bUseUploadImagePlugin )
+    {
+        DatastoreService.setDataValue( DSKEY_USE_UPLOAD_IMAGE_PLUGIN, Boolean.toString( bUseUploadImagePlugin ) );
+    }
+
+    /**
+     * Check if upload image plugin is enabled
+     *
+     * @return true if enabled, false otherwise
+     */
+    public boolean isUseUploadImagePlugin()
+    {
+        return Boolean.parseBoolean( DatastoreService.getDataValue( DSKEY_USE_UPLOAD_IMAGE_PLUGIN, "false" ) );
+    }
+
+    /**
+     * Update the use content type setting
+     *
+     * @param bUseContentType true to enable, false to disable
+     */
+    public void updateUseContentType( boolean bUseContentType )
+    {
+        DatastoreService.setDataValue( DSKEY_USE_CONTENT_TYPE, Boolean.toString( bUseContentType ) );
+    }
+
+    /**
+     * Check if content type is enabled
+     *
+     * @return true if enabled, false otherwise
+     */
+    public boolean isUseContentType()
+    {
+        return Boolean.parseBoolean( DatastoreService.getDataValue( DSKEY_USE_CONTENT_TYPE, "true" ) );
+    }
+
+    /**
+     * Update the accepted file types for upload
+     *
+     * @param strAcceptedFileTypes the accepted file types (e.g., "image/*,.pdf,.doc")
+     */
+    public void updateAcceptedFileTypes( String strAcceptedFileTypes )
+    {
+        if ( StringUtils.isNotBlank( strAcceptedFileTypes ) )
+        {
+            DatastoreService.setDataValue( DSKEY_ACCEPTED_FILE_TYPES, strAcceptedFileTypes.trim() );
+        }
+        else
+        {
+            DatastoreService.setDataValue( DSKEY_ACCEPTED_FILE_TYPES, DEFAULT_ACCEPTED_FILE_TYPES );
+        }
+    }
+
+    /**
+     * Get the accepted file types for upload
+     *
+     * @return the accepted file types string
+     */
+    public String getAcceptedFileTypes()
+    {
+        return DatastoreService.getDataValue( DSKEY_ACCEPTED_FILE_TYPES, DEFAULT_ACCEPTED_FILE_TYPES );
     }
 
 }

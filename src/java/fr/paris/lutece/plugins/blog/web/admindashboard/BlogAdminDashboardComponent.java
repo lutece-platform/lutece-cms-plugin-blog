@@ -47,6 +47,9 @@ public class BlogAdminDashboardComponent extends AdminDashboardComponent
         model.put(BlogParameterService.MARK_DEFAULT_DATE_END_PUBLISHING, blogParameterService.getDefaultDateEndPublishing());
         model.put( MARK_LIST_EDITORS_BACK_OFFICE, RichTextEditorService.getListEditorsForBackOffice( AdminUserService.getLocale( request ) ) );
         model.put(BlogParameterService.MARK_DEFAULT_EDITOR, blogParameterService.getDefaultBlogEditor());
+        model.put(BlogParameterService.MARK_USE_UPLOAD_IMAGE_PLUGIN, blogParameterService.isUseUploadImagePlugin());
+        model.put(BlogParameterService.MARK_USE_CONTENT_TYPE, blogParameterService.isUseContentType());
+        model.put(BlogParameterService.MARK_ACCEPTED_FILE_TYPES, blogParameterService.getAcceptedFileTypes());
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ADMIN_DASHBOARD, user.getLocale( ), model );
 
