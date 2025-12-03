@@ -207,45 +207,46 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 
 function getFile( blogId ) {
 	const file =  document.querySelector('#attachment').files[0];
-	const reader = new FileReader();
-	reader.readAsDataURL( file );
-	reader.onload=function(){
-		const rgx = /image/g;
-		const fileType = rgx.test( file.type ) ? 1 : 2, extension = file.name.split('.').pop().toLowerCase()	
-		doAddContent( file.name, reader.result, fileType, blogId ).then( resp => {
-			/* call the callback and populate the Title field with the file name */
-			if ( resp.status == 'OK' ){
-			  if( resp.result == "BLOG_LOCKED" ){
-				setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
-			  } else {
-				setListFile( resp.result[1], resp.result[0].replace(/'/g, "\\'"), fileType, extension, blogId )
-			  }
-			}
-		});
-	};
-	reader.onerror = function (error) {
-	  setBlogToast( typeDanger , labelError, error )	
-	};
- }
- 
- /* TODO : Is this is pnly used with uploadimage plugin */
- function getCroppedCanva( fieldName ) {
-	const currentIdBlog = document.querySelector('#id').value;
-	const fileType = document.querySelector('#fileType') != null ? document.querySelector('#fileType').value : null;
-	const thisElement= document.querySelector( `.img-container ${fieldName} > img` );
-	const result = thisElement.cropper( 'getCroppedCanvas', { width: "222", height:"555" });
-	doAddContent( fieldName, result.toDataURL(), fileType, currentIdBlog ).then( resp => {
-		/* call the callback and populate the Title field with the file name */
-		if ( resp.status == 'OK' ){
-			if( resp.result == "BLOG_LOCKED" ){
-			setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
-			} else {
-			setListFile( resp.result[1], resp.result[0].replace(/'/g, "\\'"), fileType, extension, blogId )
-			}
-		}
-	});
+    const rgx = /image/g;
+    const fileType = rgx.test( file.type ) ? 1 : 2, extension = file.name.split('.').pop().toLowerCase()
+    doAddContent( file.name, file, fileType, blogId ).then( resp => {
+        /* call the callback and populate the Title field with the file name */
+        if ( resp.status == 'OK' ){
+          if( resp.result == "BLOG_LOCKED" ){
+            setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
+          } else {
+            setListFile( resp.result[1], resp.result[0].replace(/'/g, "\\'"), fileType, extension, blogId )
+          }
+        }
+    });
 
  }
+
+/* TODO : Is this is pnly used with uploadimage plugin */
+ function getCroppedCanva( fieldName ){
+
+	const currentIdBlog = document.querySelector('#id').value;
+	const currentfileType = document.querySelector('#fileType') != null ? document.querySelector('#fileType').value : 1;
+    const currentdHeight = document.querySelector('#dataHeightattachment').value;
+    const currentdWidth = document.querySelector('#dataWidthattachment').value;
+ 	const $element= $('.img-container'+fieldName+' > img');
+ 	const resultCanva = $element.cropper('getCroppedCanvas', { width: currentdWidth, height: currentdHeight });
+
+     resultCanva.toBlob((blob) => {
+         const extension = blob.type.split('/').pop().toLowerCase();
+         doAddContent( fieldName+'.png', blob, currentfileType, currentIdBlog ).then( resp => {
+           /* call the callback and populate the Title field with the file name */
+           if ( resp.status == 'OK' ){
+             if( resp.result == "BLOG_LOCKED" ){
+               setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
+             } else {
+               setListFile( resp.result[1], resp.result[0], currentfileType, extension, currentIdBlog );
+             }
+           }
+         });
+     });
+ };
+
  
 function deleteFileContent( idContent, idBlog ) {
 	doDeleteContent( idContent, idBlog);
@@ -253,29 +254,31 @@ function deleteFileContent( idContent, idBlog ) {
 }
 
 async function doAddContent( fileName, result, fileType, idBlog ){
-	const modal = bootstrap.Modal.getInstance(document.getElementById('imageModal'));
-	if (modal) {modal.hide();}
-	
+    const modal = bootstrap.Modal.getInstance(document.getElementById('imageModal'));
+    if (modal) {modal.hide();}
+
 	const formData = new FormData();
+
 	// Convert the JSON data to a JSON string and add it to the FormData object
-	formData.append( 'fileContent', result );
-	formData.append( 'fileName', fileName );
-	formData.append( 'fileType', fileType );
-	formData.append( 'id', idBlog );
-	
+	formData.append( 'file', result );
+    formData.append( 'fileName', fileName );
+    formData.append( 'fileType', fileType );
+	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
+		formData.append( 'id', idBlog );
+	}
+
 	// Make a POST request with the FormData object
 	const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent`, {
 		method: 'POST',
-		datatype: 'json',
+		datatype : 'multipart/form-data',
 		body: formData,
 	})
 	if (!response.ok) {
-		setBlogToast( typeDanger , labelError, response.statusText )	
+		setBlogToast( typeDanger , labelError, response.statusText )
 	} else {
 		const resp = await response.json();
 		return resp;
 	}
-
 }
 
 function doInsertContent( idContent, titleContent, typeContent ) {

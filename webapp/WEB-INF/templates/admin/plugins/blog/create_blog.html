@@ -120,7 +120,6 @@
     </@formGroup>
 </@tform>
 <@initEditor />
-<@blogJSInit />
 <#if is_crop_image> 
 <@modal id='imageModal' size='xl'>
 <@modalHeader modalTitle='#i18n{blog.publication_blog.labelPublication}'/>
@@ -132,4 +131,5 @@
   </@div> 
 </@modalBody>
 </@modal>
-</#if> 
+</#if>
+<@blogJSInit />
