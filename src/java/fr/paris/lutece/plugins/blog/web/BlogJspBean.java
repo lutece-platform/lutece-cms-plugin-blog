@@ -142,6 +142,7 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     protected static final String PARAMETER_DESCRIPTION = "description";
     protected static final String PARAMETER_FILE_NAME = "fileName";
+    protected static final String PARAMETER_FILE = "file";
     protected static final String PARAMETER_VIEW = "view";
     protected static final String PARAMETER_BUTTON_SEARCH = "button_search";
     protected static final String PARAMETER_BUTTON_RESET = "button_reset";
@@ -1061,6 +1062,7 @@ public class BlogJspBean extends ManageBlogJspBean
                int actualVersion = BlogHome.getActualVersionNumber( actualVersionUpdateDate,nId );
                model.put( MARK_ACTUAL_BLOG_VERSION, actualVersion );
             }
+            lastVersion.setDocContent( actualBlog.getDocContent() );
           _blog = lastVersion;
             _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
 
@@ -1357,53 +1359,20 @@ public class BlogJspBean extends ManageBlogJspBean
                     return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
                 }
         }
-        /* Gestion du mimeType */
-        String result = request.getParameter( "fileContent" );
-        String firstDelimiter = "[;]";
-        String secondDelimiter = "[:]";
-        String thirdDelimiter = "[,]";
-        String [ ] firstParts = result.split( firstDelimiter );
-        String partAfterFirstDelimiter = firstParts [0];
-        String [ ] secondParts = partAfterFirstDelimiter.split( secondDelimiter );
-        // Le mimeType
-        String mimeType = secondParts[1];
-        // Le fichier en base64
-        String base64FileString = StringUtils.EMPTY;
-        // Gestion des fichiers vides
-        if ( !result.endsWith( "," ) )
-        {
-            String [ ] thirdParts = result.split( thirdDelimiter );
-            base64FileString = thirdParts [1];
-        }
 
-        byte [ ] fileByteArray = Base64.getDecoder( ).decode( base64FileString );
+        FileItem file = ((MultipartHttpServletRequest) request).getFile(PARAMETER_FILE);
+
 
         String strFileName = request.getParameter( PARAMETER_FILE_NAME );
         String strFileType = request.getParameter( "fileType" );
 
-        if ( StringUtils.isEmpty( mimeType ) )
-        {
-
-            InputStream is = new ByteArrayInputStream( fileByteArray );
-
-            // Trouver le type du fichier
-            try
-            {
-                mimeType = URLConnection.guessContentTypeFromStream( is );
-            }
-            catch( IOException ioException )
-            {
-                AppLogService.error( ioException.getStackTrace( ), ioException );
-            }
-
-        }
 
         DocContent docContent = new DocContent( );
-        docContent.setBinaryValue( fileByteArray );
-        docContent.setValueContentType( mimeType );
+        docContent.setBinaryValue( file.get() );
+        docContent.setValueContentType( file.getContentType() );
         docContent.setTextValue( strFileName );
 
-        if ( strFileType != null )
+        if ( StringUtils.isNumeric( strFileType ) )
         {
 
             ContentType contType = new ContentType( );
@@ -1413,9 +1382,11 @@ public class BlogJspBean extends ManageBlogJspBean
         String[] results;
         if( nIdBlog != 0 )
         {
-            docContent.setPriority( _blog.getDocContent( ).size( ) + 1 );
+            int priority = _blog.getDocContent( ).size( ) + 1;
+            docContent.setPriority( priority );
             _blog.addContent( docContent );
             DocContentHome.create( docContent );
+            DocContentHome.insertInBlog( nIdBlog, docContent.getId(), priority);
             results = new String [ ] {
                     strFileName, String.valueOf( docContent.getId( ) )
             };
@@ -1489,6 +1460,7 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setDocContent( listDocs );
             _blog.deleteDocContent( nIdDoc );
             DocContentHome.removeInBlogById( nIdDoc );
+            DocContentHome.removeById( nIdDoc );
         }
         else
         {
@@ -1575,6 +1547,9 @@ public class BlogJspBean extends ManageBlogJspBean
         if( nIdBlog == 0 )
         {
             _blogServiceSession.saveBlogInSession( request.getSession( ), docCont, AdminUserService.getAdminUser( request ) );
+            if( docContMove != null  ) {
+                _blogServiceSession.saveBlogInSession(request.getSession(), docContMove, AdminUserService.getAdminUser( request ) );
+            }
         }
         if ( docContMove != null )
         {

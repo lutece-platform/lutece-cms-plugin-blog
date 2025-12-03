@@ -369,13 +369,7 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
      */
     public void addContent( DocContent docContent )
     {
-
-        boolean isContain = _docContent.stream( ).anyMatch( dc -> dc.getTextValue( ).equals( docContent.getTextValue( ) ) );
-
-        if ( !isContain )
-        {
-            _docContent.add( docContent );
-        }
+        _docContent.add( docContent );
     }
 
     /**
