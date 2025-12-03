@@ -49,12 +49,39 @@
         </@columns>
     </@row>
     </@formGroup>
+    </@box>
+    <@box title='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin.title}'>
+    <@row>
+        <@columns md=6>
+            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin}' labelFor='use_upload_image_plugin' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
+                <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin.checkbox}' orientation='switch' name='use_upload_image_plugin' id='use_upload_image_plugin' checked=use_upload_image_plugin!false />
+            </@formGroup>
+        </@columns>
+    </@row>
+    </@box>
+    <@box title='#i18n{blog.advanced_parameters.blog.use_content_type.title}'>
+    <@row>
+        <@columns md=6>
+            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.use_content_type}' labelFor='use_content_type' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
+                <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.use_content_type.checkbox}' orientation='switch' name='use_content_type' id='use_content_type' checked=use_content_type!true />
+            </@formGroup>
+        </@columns>
+    </@row>
+    </@box>
+    <@box title='#i18n{blog.advanced_parameters.blog.accepted_file_types.title}'>
+    <@row>
+        <@columns md=8>
+            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.accepted_file_types}' labelFor='accepted_file_types' helpKey='#i18n{blog.advanced_parameters.blog.accepted_file_types.help}'>
+                <@input name='accepted_file_types' id='accepted_file_types' value='${accepted_file_types!"image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp"}' />
+            </@formGroup>
+        </@columns>
+    </@row>
+    </@box>
     <@row>
        <@columns>
             <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary' />
         </@columns>
     </@row>
-    </@box>
 </@tform>
 <script>
 let numberMandatoryTags = document.getElementById('number_mandatory_tags');

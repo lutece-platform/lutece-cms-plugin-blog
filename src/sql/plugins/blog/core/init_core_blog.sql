@@ -29,6 +29,8 @@ INSERT INTO core_user_right (id_right,id_user) VALUES ('MANAGE_ADVANCED_PARAMETE
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.number_mandatory_tags', '0');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('number.documents.to.be.loaded', '10');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('use_upload_image_plugin', 'false');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.use_content_type', 'false');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.accepted_file_types', 'image/*,.pdf,.xls,.doc,.docx,.xls,.xlsx,.odt,.ods,.ppt,.pptx,.odp');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.editor', 'tinymce5');
