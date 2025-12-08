@@ -20,6 +20,7 @@
         <#if actual_blog_version?? >
           <@aButton class='btn-notif me-1' color='danger' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${actual_blog_version}' title='#i18n{blog.modify_blog.returnToActualVersion}' hideTitle=['xs','sm', 'md'] buttonIcon='history' size='' />
         </#if>
+        <@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.modify_blog.labelPreview}' hideTitle=['all']  color='default' size='' buttonIcon='eye' />
         <@offcanvas id='blog-properties' title='#i18n{blog.modify_blog.labelProperties}' btnTitle='#i18n{blog.modify_blog.labelProperties}' position='end' btnIcon='cog me-2'>
           <@box class='mt-3'>
             <@boxHeader title='#i18n{blog.modify_blog.TagsTitle}'>
