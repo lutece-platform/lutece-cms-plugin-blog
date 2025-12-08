@@ -50,9 +50,9 @@
                         <#assign is_content_type=dskey('blog.advanced_parameters.use_content_type')?boolean>
                         <#if is_content_type >
                             <@inputGroup class='mt-2'>
-                                <@select name='fileType'>
+                               <@select name='fileType' params='onchange="doUpdateContentType( ${docContent.id}, this.value, ${blog.id} )"' >
                                 <#list image_type as type>
-                                    <@option value=type.idContentType label=type.label />             
+                                    <@option value=type.idContentType label=type.label selected=(type.idContentType == docContent.contentType.idContentType) />             
                                 </#list>
                                 </@select>
                                 <!--To the use of the image crop plugin -->

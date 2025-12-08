@@ -81,7 +81,7 @@
               </#if>
             </@boxHeader>
             <@boxBody>
-              <#assign acceptedTypes=dskey('blog.advanced_parameters.accepted_file_types')!'image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp'>
+              <#assign acceptedTypes><#if dskey('blog.advanced_parameters.accepted_file_types')??&& dskey('blog.advanced_parameters.accepted_file_types')!=''><#else>image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp</#if></#assign>
               <@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='${acceptedTypes}' params='onchange="getFile(${blog.id})"' value='' />
               <@div class="blog-resources">
                 <@listGroup id='content-list'>
@@ -91,14 +91,9 @@
                       <#assign itemClass>d-flex justify-content-between blog-image</#assign>
                       <@listGroupItem id='doc_${docContent.id}' class=itemClass >
                         <@img class="img-fluid img-thumbnail blog-thumbnails" url="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
-                        ${docContent.textValue!}
-                        <@select name='fileType' class=''>
-                          <#list image_type as type>
-                            <@option value=type.idContentType label=type.label />             
-                          </#list>
-                        </@select>
+                        <#if !docContent.textValue?ends_with('png')>${docContent.textValue!}</#if>
                         <#if is_content_type >
-                        <@select name='fileType' class='fileTypeUpdate' params='onchange="doUpdateContentType( ${docContent.id}, this.value)"' >
+                        <@select name='fileType' params='onchange="doUpdateContentType( ${docContent.id}, this.value, ${blog.id} )"' >
                             <#list image_type as type>
                               <@option value=type.idContentType label=type.label selected=(type.idContentType == docContent.contentType.idContentType) />             
                             </#list>
