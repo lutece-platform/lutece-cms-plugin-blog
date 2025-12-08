@@ -141,7 +141,7 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	let li = document.createElement( 'li' );
 	li.classList.add( 'list-group-item', 'list-group-item-action', 'blog-image-content', 'd-flex', 'justify-content-between', 'align-items-center');
 	li.setAttribute( 'id', `doc_${idFile}` );
-	if ( fileType == 1 ){   
+	if ( fileExt === 'png' ){   
 		let imgFile = li.appendChild( document.createElement( 'img' ) );
 		imgFile.setAttribute('src', `servlet/plugins/blogs/file?id_file=${idFile}` );
 		imgFile.setAttribute('alt', `${fileName}` );
@@ -166,7 +166,7 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	btnInsert.classList.add( 'btn','btn-none', 'text-primary');
 	btnInsert.setAttribute('title', 'Ajouter au contenu' );
 	btnInsert.setAttribute('type', 'button' );
-	btnInsert.setAttribute('onclick', `doInsertContent( ${idFile}, '${fileName}', ${fileType} )` );
+	btnInsert.setAttribute('onclick', `doInsertContent( ${idFile}, '${fileName}', '${fileExt}' )` );
 	let iconInsert = btnInsert.appendChild( document.createElement( 'i' ) );
 	iconInsert.classList.add( 'ti','ti-file-plus');
 	let btnDown = div.appendChild( document.createElement( 'button' ) );
@@ -283,7 +283,7 @@ async function doAddContent( fileName, result, fileType, idBlog ){
 
 function doInsertContent( idContent, titleContent, typeContent ) {
 	let contentToInsert='', contentTag = 'p';
-	if ( typeContent === 1 ) {
+	if ( typeContent === 'png' ) {
 		contentTag = 'figure'
 		contentToInsert=`<img src="servlet/plugins/blogs/file?id_file=${idContent}" alt="${titleContent}" />`
 	} else {
@@ -315,35 +315,46 @@ async function doDeleteContent( idContent, idBlog ) {
 	  }
 	}
 }
- 
+
 async function doUpdateContentType( idContent, idTypeContent, idBlog ) {
 	let response;
+	const formData = new FormData();
 	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
-		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
-		method: 'POST',
-		headers: {'Content-Type': 'application/json'},
-		body: {idType: idTypeContent, idContent: idContent, id: idBlog},
-	});
-    }
-	else {
-		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
-		method: 'POST',
-		headers: {'Content-Type': 'application/json'},
-		body: {idType: idTypeContent, idContent: idContent},
-	});
-	}
-	if (!response.ok) {
-		setBlogToast( typeDanger , labelError, response.statusText )	
-	} else {
-		const data = await response.json();
-		if ( data.status == 'OK' ){
-			if(data.result == "BLOG_LOCKED"){
-				setBlogToast( typeWarning,labelWarning,msgErrorBlogLocked )	
+		formData.append('idType', idTypeContent);
+		formData.append('idContent', idContent);
+		formData.append('id', idBlog);
+
+		const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
+			method: 'POST',
+			body: formData,
+			cache: "no-cache",
+		});
+
+		if (!response.ok) {
+			setBlogToast(typeDanger, labelError, response.statusText);
+		} else {
+			const data = await response.json();
+			if (data.status != 'OK') {
+				setBlogToast(typeDanger, labelError, msgErrorBlogFileTypeNotUpdated);
 			}
-	  }	else {
-		setBlogToast( typeDanger , labelError, msgErrorBlogFileTypeNotUpdated )	
-	  }
+		}
+    }	else {
+		formData.append('idType', idTypeContent);
+		formData.append('idContent', idContent);
+		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
+			method: 'POST',
+			body: formData,
+		});
+		if (!response.ok) {
+			setBlogToast(typeDanger, labelError, response.statusText);
+		} else {
+			const data = await response.json();
+			if (data.status != 'OK') {
+				setBlogToast(typeDanger, labelError, msgErrorBlogFileTypeNotUpdated);
+			}
+		}
 	}
+	
 }
  
 async function doUpdatePriorityContent( idContent, action, idBlog ){
