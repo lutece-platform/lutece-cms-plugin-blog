@@ -1572,33 +1572,34 @@ public class BlogJspBean extends ManageBlogJspBean
 
         String strContentTypeId = request.getParameter( PARAMETER_TYPE_ID );
         String strContentId = request.getParameter( PARAMETER_CONTENT_ID );
-        int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        String nIdSession = request.getSession( ).getId( );
-        _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
 
-        if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
+        int nIdBlog = 0;
+        if( request.getParameter( PARAMETER_ID_BLOG ) != null && !request.getParameter( PARAMETER_ID_BLOG ).equals( "0" ) )
         {
-
-            lockBlog( nIdBlog, request.getSession( ).getId( ) );
+            nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         }
-        else
-            if ( _blog.getId( ) != 0 )
-            {
 
-                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+        if( nIdBlog != 0 ) {
+            String nIdSession = request.getSession().getId();
+            _blog = _blogServiceSession.getBlogFromSession(request.getSession(), nIdBlog);
+
+            if (_mapLockBlog.get(nIdBlog) != null && _mapLockBlog.get(nIdBlog).getSessionId().equals(nIdSession)) {
+
+                lockBlog(nIdBlog, request.getSession().getId());
+            } else if (_blog.getId() != 0) {
+
+                return JsonUtil.buildJsonResponse(new JsonResponse(RESPONSE_BLOG_LOCKED));
             }
+        }
 
-        for ( DocContent content : _blog.getDocContent( ) )
-        {
+        for (DocContent content : _blog.getDocContent()) {
+            if (strContentId != null && content.getId() == Integer.parseInt(strContentId)) {
 
-            if ( strContentId != null && content.getId( ) == Integer.parseInt( strContentId ) )
-            {
+                ContentType contType = new ContentType();
+                contType.setIdContentType(Integer.parseInt(strContentTypeId));
 
-                ContentType contType = new ContentType( );
-                contType.setIdContentType( Integer.parseInt( strContentTypeId ) );
-
-                content.setContentType( contType );
-                DocContentHome.update( content );
+                content.setContentType(contType);
+                DocContentHome.update(content);
                 break;
             }
         }

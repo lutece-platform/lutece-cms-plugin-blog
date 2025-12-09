@@ -90,8 +90,14 @@
                       <#assign itemClass>d-flex justify-content-between blog-<#if docContent.contentType.idContentType=1>image<#else>file</#if>-content</#assign>
                       <#assign itemClass>d-flex justify-content-between blog-image</#assign>
                       <@listGroupItem id='doc_${docContent.id}' class=itemClass >
-                        <@img class="img-fluid img-thumbnail blog-thumbnails" url="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
-                        <#if !docContent.textValue?ends_with('png')>${docContent.textValue!}</#if>
+                        <#if docContent.textValue?ends_with('png') || docContent.textValue?ends_with('jpg')>
+                          <@img class="img-fluid img-thumbnail blog-thumbnails" url="servlet/plugins/blogs/file?id_file=${docContent.id}" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
+                        <#else>
+                          <@img class="img-fluid img-thumbnail blog-thumbnails" url="themes/admin/shared/plugins/blog/images/file-type-${getFileExtension(docContent.textValue)!}.svg" alt="${docContent.textValue!}" title="${docContent.textValue!}" />
+                          <@link href="servlet/plugins/blogs/file?id_file=${docContent.id}" title="#i18n{portal.util.labelDownload} ${docContent.textValue!}">
+                            ${docContent.textValue!}
+                          </@link>
+                        </#if>
                         <#if is_content_type >
                         <@select name='fileType' params='onchange="doUpdateContentType( ${docContent.id}, this.value, ${blog.id} )"' >
                             <#list image_type as type>
