@@ -273,12 +273,36 @@ async function doAddContent( fileName, result, fileType, idBlog ){
 		datatype : 'multipart/form-data',
 		body: formData,
 	})
-	if (!response.ok) {
-		setBlogToast( typeDanger , labelError, response.statusText )
-	} else {
-		const resp = await response.json();
-		return resp;
-	}
+
+    const data = await response.text();
+    if (data.trim().startsWith("<!DOCTYPE html") || data.trim().startsWith("<html")) {
+        parseAdminMessageError( data );
+        return { status : "KO" };
+    }
+    else
+    {
+        if (!response.ok) {
+            setBlogToast( typeDanger , labelError, response.statusText )
+        } else {
+            const resp = JSON.parse(data);
+            return resp;
+        }
+    }
+}
+
+function parseAdminMessageError( htmlContent )
+{
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+    const message = doc.querySelector("p.text-center");
+    if( message )
+    {
+        setBlogToast( typeDanger , labelError, message.innerText )
+    }
+    else
+    {
+        setBlogToast( typeDanger , labelError, msgErrorFileUpload )
+    }
 }
 
 function doInsertContent( idContent, titleContent, typeContent ) {
