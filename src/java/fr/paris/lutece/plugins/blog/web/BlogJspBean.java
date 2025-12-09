@@ -1598,6 +1598,7 @@ public class BlogJspBean extends ManageBlogJspBean
                 contType.setIdContentType( Integer.parseInt( strContentTypeId ) );
 
                 content.setContentType( contType );
+                DocContentHome.update( content );
                 break;
             }
         }
