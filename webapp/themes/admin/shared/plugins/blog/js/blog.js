@@ -139,9 +139,8 @@ function setListTag( idTag, tgName, blogId ){
 
 function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	let li = document.createElement( 'li' );
-	li.classList.add( 'list-group-item', 'list-group-item-action', 'blog-image-content', 'd-flex', 'justify-content-between', 'align-items-center');
-	li.setAttribute( 'id', `doc_${idFile}` );
-	if ( fileExt === 'png' ){   
+    li.classList.add( 'list-group-item', 'list-group-item-action', 'blog-image', 'd-flex', 'justify-content-between', 'align-items-center');	li.setAttribute( 'id', `doc_${idFile}` );
+	if ( fileExt === 'png' || fileExt === 'jpg' ){
 		let imgFile = li.appendChild( document.createElement( 'img' ) );
 		imgFile.setAttribute('src', `servlet/plugins/blogs/file?id_file=${idFile}` );
 		imgFile.setAttribute('alt', `${fileName}` );
@@ -158,6 +157,25 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 		linkFile.setAttribute('title', `${fileName}` );
 		linkFile.textContent = fileName;
 	}
+    if (isContentType)
+    {
+        let selectType = li.appendChild( document.createElement( 'select' ) );
+        selectType.classList.add('form-select');
+        if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
+            selectType.setAttribute('onchange', `doUpdateContentType( ${idFile}, this.value, ${blogId})` );
+        } else {
+            selectType.setAttribute('onchange', `doUpdateContentType( ${idFile}, this.value, 0)` );
+        }
+        list_contentType.forEach(function(item) {
+            let option = document.createElement('option');
+            option.value = item[0];
+            option.textContent = item[1];
+            if (parseInt(item[0]) == fileType) {
+                option.selected = true;
+            }
+            selectType.appendChild(option);
+        });
+    }
 	let div = li.appendChild( document.createElement( 'div' ) );
 	div.classList.add( 'btn-group' );
 	div.setAttribute( 'role', 'group' );
@@ -185,7 +203,7 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	btnUp.setAttribute('type', 'button' );
 	btnUp.setAttribute('title', 'Up' );
 	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
-		btnUp.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveUp'), ${blogId})` );
+		btnUp.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveUp', ${blogId})` );
 	} else {
 		btnUp.setAttribute('onclick', `doUpdatePriorityContentBis( ${idFile}, 'moveUp')` );
 	}
