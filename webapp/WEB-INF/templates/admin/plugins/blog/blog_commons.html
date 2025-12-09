@@ -2,6 +2,7 @@
 <#assign textEditorBlogName><#if !dskey('blog.advanced_parameters.editor')?starts_with('DS') || dskey('blog.advanced_parameters.editor')?starts_with('DS') !=''>${dskey('blog.advanced_parameters.editor')}</#if></#assign>
 <#assign textEditorName><#if textEditorBlogName !=''>${textEditorBlogName}<#else>${textEditorCoreName!}</#if></#assign>
 <#assign blogEditorFile=.get_optional_template('blog_${textEditorName}.html')>
+<#assign is_content_type=dskey('blog.advanced_parameters.use_content_type')?boolean>
 <#if textEditorName?trim !=''>
   <#if blogEditorFile.exists>
     <@blogEditorFile.include />
@@ -30,6 +31,8 @@ var numberMandatoryTags = '${number_mandatory_tags}';
 
 var all_tag = [<#list list_alltag as tag>['${tag.code}','${tag.name?js_string}' ],</#list>];
 var blog_tag = [<#list blog.tag as tag>'${tag.idTag}',</#list>];
+var isContentType = ${is_content_type?c};
+var list_contentType = [<#list image_type as type>['${type.idContentType}','${type.label?js_string}' ],</#list>];
 
 var msgErrorTagExist = '#i18n{blog.message.errorTagExist}'
 var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
