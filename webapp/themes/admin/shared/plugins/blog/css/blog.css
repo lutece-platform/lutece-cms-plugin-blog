@@ -335,3 +335,84 @@ div.diff-added-image {
 	background-size: 25%;
 	background-position: center center;
 }
+
+#lutece-blog-site-preview-wrapper {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+    height: 100svb;
+    min-height: 100svb;
+}
+
+#lutece-blog-site-preview-frame {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+    height: 100svb;
+    min-height: 100svb;
+}
+
+#lutece-blog-site-preview-frame.phone,
+#lutece-blog-site-preview-frame.tablet,
+#lutece-blog-site-preview-frame.laptop,
+#lutece-blog-site-preview-frame.desktop {
+    display: block;
+    color: #fff;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    letter-spacing: -0.022em;
+    font-size: 2.5vmin;
+    text-shadow: 0 0 0.5em #000;
+    background-color: #000;
+    background-size:
+        auto 200%,
+        cover;
+    background-repeat: no-repeat, no-repeat;
+    border: solid #111;
+    position: relative;
+    box-shadow:
+        0 0.5em 2em 0.2em rgba(0, 0, 0, 0.33),
+        0 0 0 0.5px #000 inset;
+    transition:
+        all 0.1s linear,
+        line-height 0s linear;
+    background-position:
+        50% 100%,
+        center;
+    transform-origin: bottom center;
+}
+#lutece-blog-site-preview-frame.phone {
+    width: 40.7623762376vmin;
+    height: 51.0891089109vmin;
+    line-height: 51.4455445545vmin;
+    border-width: 1.5207920792vmin;
+    border-radius: 4.0550130098vmin;
+}
+#lutece-blog-site-preview-frame.tablet {
+    height: 85.8vmin;
+    width: 90vmin;
+    line-height: 85.8vmin;
+    border-width: 1.5207920792vmin;
+    border-radius: 4.2857142857vmin;
+}
+#lutece-blog-site-preview-frame.laptop {
+    height: 85.8vmin;
+    width: 115vmin;
+    line-height: 85.8vmin;
+    border-width: 1.5207920792vmin;
+    border-radius: 4.2857142857vmin;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+#lutece-blog-site-preview-frame.desktop {
+    width: 100vmin;
+    height: 85.8vmin;
+    line-height: 85.8vmin;
+    border-width: 0;
+    border-radius: 0;
+    background-color: #fff;
+}
