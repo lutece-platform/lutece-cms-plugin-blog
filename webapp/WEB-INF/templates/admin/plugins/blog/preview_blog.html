@@ -2,15 +2,29 @@
     <@pageColumn>
 		<#assign pageTitle><@tag class='me-2'>#i18n{blog.manage_blogs.columnVersion} ${blog.version}</@tag>${blog.contentLabel}</#assign>
         <@pageHeader title=pageTitle>
+			<@aButton class='me-1' href='jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}' title='#i18n{blog.preview_blog.labelShowPage}' target='_blank' buttonIcon='external-link me-2' size='' color='default ms-1' />
 			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
 			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
 		</@pageHeader>
 		<@row>
 			<@columns sm=9>
-				<iframe class="w-100 vh-100 border-0" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}"></iframe>
+				<@div id='lutece-blog-page-preview' class='flex-column align-items-center'>
+					<@div id='lutece-blog-site-preview-wrapper' class="desktop">
+						<@div id='lutece-blog-site-preview-frame' class="desktop">
+							<iframe id='lutece-blog-site-preview' class="w-100 vh-100 border-0" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}"></iframe>
+						</@div>
+					</@div>
+				</@div>
 			</@columns>
 			<@columns sm=3>
 				<@card>
+					<@btnGroup class='ms-3 me-2 d-none d-lg-block'>
+						<@button id='display-desktop' title='#i18n{blog.preview_blog.buttonXLargeScreen}' buttonIcon='device-desktop' color='primary' class='btn-preview active' hideTitle=['all'] />
+						<@button id='display-laptop' title='#i18n{blog.preview_blog.buttonLargeScreen}' buttonIcon='device-laptop' color='primary' class='btn-preview' hideTitle=['all'] />
+						<@button id='display-tablet' title='#i18n{blog.preview_blog.buttonTablet}' buttonIcon='device-tablet' color='primary' class='btn-preview' hideTitle=['all'] />
+						<@button id='display-phone' title='#i18n{blog.preview_blog.buttonSmartphone}' buttonIcon='device-mobile' color='primary' class='btn-preview' hideTitle=['all'] />
+					</@btnGroup>
+					<hr class="my-2">
 					<h3>#i18n{blog.manage_blogs.columnDescription}</h3>
 					<hr class="my-2">
 					<@p><@span class="font-weight-bold">#i18n{blog.preview_blog.createdBy} :</@span><br> ${blog.userCreator} ${blog.creationDate} </@p>
@@ -42,3 +56,61 @@
 		</@row>
 	</@pageColumn>
 </@pageContainer>
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+        // Admin responsive preview
+		const previewFrame = document.getElementById( 'lutece-blog-site-preview-frame' );
+		const previewIframe = document.getElementById( 'lutece-blog-site-preview' );
+
+		const btnPreview = document.querySelectorAll( '.btn-preview' );
+
+        function _resizePreview( ) {
+            previewFrame.style.height = ( window.innerHeight - 30 ) + "px";
+            previewFrame.style.width = "100%";
+            previewIframe.style.height = ( window.innerHeight - 30 ) + "px";
+            previewIframe.style.width = "100%";
+        }
+
+        function _setBtnPreview( el, w ) {
+            btnPreview.forEach( btn => { btn.classList.remove('active') } );
+            previewFrame.style.width = w;
+            previewIframe.style.width = w - 50;
+            el.classList.add('active');
+        }
+
+        function _setPreviewClass( el, c ) {
+            previewFrame.classList.remove( ...previewFrame.classList )
+            previewFrame.classList.add( c );
+        }
+
+        // Init preview size
+        _resizePreview();
+
+        window.addEventListener( "resize", _resizePreview);
+
+        document.querySelector("#display-desktop").addEventListener( "click", e => {
+            e.preventDefault();
+            _setBtnPreview( e.currentTarget, '100%' )
+            _setPreviewClass( e.currentTarget, 'desktop' )
+        });
+
+        document.querySelector("#display-laptop").addEventListener( "click", e => {
+            e.preventDefault();
+            _setBtnPreview( e.currentTarget, '1024px' )
+            _setPreviewClass( e.currentTarget, 'laptop' )
+        });
+
+        document.querySelector( '#display-tablet' ).addEventListener( "click", e => {
+            e.preventDefault();
+            _setBtnPreview( e.currentTarget, '768px');
+            _setPreviewClass( e.currentTarget, 'tablet' )
+        });
+
+        document.querySelector( '#display-phone' ).addEventListener( "click", e => {
+            e.preventDefault();
+            _setBtnPreview( e.currentTarget, '360px' );
+            _setPreviewClass( e.currentTarget, 'phone' )
+        });
+
+    });
+</script>
