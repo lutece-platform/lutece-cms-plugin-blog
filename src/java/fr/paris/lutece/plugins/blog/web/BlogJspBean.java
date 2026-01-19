@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -318,7 +319,8 @@ public class BlogJspBean extends ManageBlogJspBean
 
 
     // Session variable to store working values
-    private final BlogServiceSession _blogServiceSession = BlogServiceSession.getInstance( );
+    @Inject
+    private BlogServiceSession _blogServiceSession;
 
     /**
      * Build the Manage View

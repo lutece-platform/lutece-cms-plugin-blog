@@ -33,14 +33,17 @@
  */
 package fr.paris.lutece.plugins.blog.business.portlet;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.sql.Date;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 
-public class BlogPublication
+public class BlogPublication implements Serializable
 {
-
+    @Serial
+    private static final long serialVersionUID = 1L;
     private int _nIdBlog;
     private int _nIdPortlet;
     private Date _dateBeginPublishing;

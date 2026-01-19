@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.blog.service;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpSession;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
@@ -47,23 +48,12 @@ import java.util.HashMap;
 /**
  * This Service manages document actions (create, move, delete, validate ...) and notify listeners.
  */
+@ApplicationScoped
 public class BlogServiceSession
 {
-
-    private static BlogServiceSession _singleton = new BlogServiceSession( );
     private static final String SESSION_BLOG = "blog.serviceblog";
     private static final String SESSION_KEY_ID_DOCCONTENT = "docContentId";
     private static final String SESSION_KEY_PRIORITY_DOCCONTENT = "docContentPriority";
-
-    /**
-     * Get the unique instance of the service
-     *
-     * @return The unique instance
-     */
-    public static BlogServiceSession getInstance( )
-    {
-        return _singleton;
-    }
 
     /**
      * Save an blog in the session of the user
