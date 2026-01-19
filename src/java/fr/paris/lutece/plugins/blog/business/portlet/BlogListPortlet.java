@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.blog.business.portlet;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -58,8 +60,10 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * This class represents business objects BlogsList Portlet
  */
-public class BlogListPortlet extends PortletHtmlContent
+public class BlogListPortlet extends PortletHtmlContent implements Serializable
 {
+    @Serial
+    private static final long serialVersionUID = 1L;
     public static final String RESOURCE_ID = "BLOG_LIST_PORTLET";
 
     // ///////////////////////////////////////////////////////////////////////////////
