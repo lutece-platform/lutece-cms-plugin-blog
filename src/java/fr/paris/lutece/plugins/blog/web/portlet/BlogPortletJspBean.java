@@ -72,6 +72,7 @@ public class BlogPortletJspBean extends PortletJspBean
     public static final String MARK_BLOG_ID = "blog_id";
 
     public static final String PARAMETER_CONTENT_ID = "content_id";
+    public static final String PARAMETER_DESCRIPTION = "description";
     public static final String PARAMETER_HTML_CONTENT = "html_content";
     public static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     public static final String PARAMETER_PORTLET_NAME = "portlet_name";
@@ -156,6 +157,7 @@ public class BlogPortletJspBean extends PortletJspBean
             blog.setVersion( 1 );
             blog.setCreationDate( getSqlDate( ) );
             blog.setUpdateDate( getSqlDate( ) );
+            blog.setDescription( request.getParameter( PARAMETER_DESCRIPTION ) );
             blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
             // TODO error validation on edit comment length
             blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
@@ -217,7 +219,7 @@ public class BlogPortletJspBean extends PortletJspBean
         String strDocumentTypeCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
         int nPortletId = Integer.parseInt( strPortletId );
         BlogPortlet portlet = (BlogPortlet) PortletHome.findByPrimaryKey( nPortletId );
-        Blog blog = BlogHome.findByPrimaryKey( portlet.getContentId( ) );
+        Blog blog = BlogService.getInstance( ).loadBlog( portlet.getContentId() );
         // retrieve portlet common attributes
         String strErrorUrl = setPortletCommonData( request, portlet );
 
@@ -231,14 +233,14 @@ public class BlogPortletJspBean extends PortletJspBean
         blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );
         blog.setUpdateDate( getSqlDate( ) );
         blog.setVersion( blog.getVersion( ) + 1 );
-        BlogHome.addNewVersion( blog );
+
+        BlogHome.update( blog );
+        BlogService.getInstance( ).updateBlog( blog, blog.getDocContent( ) );
 
         portlet.setBlogPublication( BlogPublicationHome.findDocPublicationByPimaryKey( nPortletId, portlet.getContentId( ) ) );
         // updates the portlet
         portlet.update( );
-
-        // update of this blog -> re-indexing needed
-        BlogService.getInstance( ).fireUpdateBlogEvent( blog.getId( ) );
+        
         // displays the page with the updated portlet
         return getPageUrl( portlet.getPageId( ) );
     }
