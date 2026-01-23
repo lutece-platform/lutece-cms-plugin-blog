@@ -221,7 +221,7 @@ const contentBodyConfig = {
         doAddContent( file.name, file, filetype, blogId ).then( resp => {
           if ( resp.status == 'OK' ){
             if( resp.result == "BLOG_LOCKED" ){
-              setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+              setBlogToast( 'warning', '#i18n{blog.message.labelDanger}', '#i18n{blog.message.blogLocked}' );
             } else {
               setListFile( resp.result[1], resp.result[0], filetype, extension, blogId )
               <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
@@ -242,7 +242,7 @@ const contentBodyConfig = {
         doAddContent( file.name, file, filetype, blogId ).then( resp => {
           if ( resp.status == 'OK' ){
             if( resp.result == "BLOG_LOCKED" ){
-             setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
+             setBlogToast( 'warning', '#i18n{blog.message.labelDanger}', '#i18n{blog.message.blogLocked}' );
             } else {
               setListFile( resp.result[1], resp.result[0], filetype, blogId )
               <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
