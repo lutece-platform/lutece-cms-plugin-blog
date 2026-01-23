@@ -76,7 +76,7 @@ public class TagJspBean extends ManageBlogJspBean
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_TAGS = "blog.manage_tags.pageTitle";
-    private static final String PROPERTY_PAGE_TITLE_MODIFY_TAGS = "blog.modify_tags.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_MODIFY_TAG = "blog.modify_tag.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_TAG = "blog.create_tag.pageTitle";
 
     private static final String MESSAGE_ERROR_TAG_IS_AFFECTED = "blog.message.errorTagIsAffected";
@@ -297,7 +297,7 @@ public class TagJspBean extends ManageBlogJspBean
         model.put( MARK_TAG, _tag );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
-        return getPage( PROPERTY_PAGE_TITLE_MODIFY_TAGS, TEMPLATE_MODIFY_TAG, model );
+        return getPage( PROPERTY_PAGE_TITLE_MODIFY_TAG, TEMPLATE_MODIFY_TAG, model );
     }
 
     /**

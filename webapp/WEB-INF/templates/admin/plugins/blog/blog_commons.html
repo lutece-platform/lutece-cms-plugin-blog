@@ -38,7 +38,7 @@ var msgErrorTagExist = '#i18n{blog.message.errorTagExist}'
 var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
 var msgErrorTagDeletion = '#i18n{blog.message.errorTagDeletion}' 
 var msgErrorTagTitleNotEmpty = '#i18n{blog.message.errorTagTitleNotEmpty}'
-var msgErrorTagNotSet = '#i18n{blog.message.message.errorTagNotSet}'
+var msgErrorTagNotSet = '#i18n{blog.message.errorTagNotSet}'
 
 var msgErrorBlogLocked = '#i18n{blog.message.blogLocked}' 
 var msgErrorBlogFileCannotBeDeleted = '#i18n{blog.message.blogFileCannotBeDeleted}' 
@@ -46,7 +46,7 @@ var msgErrorBlogFileTypeNotUpdated = '#i18n{blog.message.blogFileTypeNotUpdated}
 var msgErrorFileUpload = '#i18n{blog.message.blogFileUpload}'
 
 var labelWarning='#i18n{portal.util.labelWarning}'
-var labelDanger='#i18n{portal.util.labelDanger}'
+var labelDanger='#i18n{blog.message.labelDanger}'
 var labelError='#i18n{portal.util.message.titleError}'
 
 function setBlogToast( toastType, toastTitle, toastContent ){
@@ -92,7 +92,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     if( document.querySelector("#tag-list li") != null ){
       const tagsLen = document.querySelector("#tag-list li").length;
       if ( tagsLen == 0  ){
-        setBlogToast( 'warning' , '#i18n{blog.message.message.errorTagNotSet}', '' )
+        setBlogToast( 'warning' , '#i18n{blog.message.errorTagNotSet}', '' )
         event.preventDefault();
         return false;
       }

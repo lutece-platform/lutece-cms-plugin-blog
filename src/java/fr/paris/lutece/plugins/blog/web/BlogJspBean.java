@@ -174,7 +174,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
 
     // Properties for page titles
-    private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blog.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_MANAGE_BLOG = "blog.manage_blogs.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_BLOG = "blog.modify_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_BLOG = "blog.create_blog.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_HISTORY_BLOG = "blog.history_blog.pageTitle";
