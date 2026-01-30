@@ -38,7 +38,7 @@ var msgErrorTagExist = '#i18n{blog.message.errorTagExist}'
 var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
 var msgErrorTagDeletion = '#i18n{blog.message.errorTagDeletion}' 
 var msgErrorTagTitleNotEmpty = '#i18n{blog.message.errorTagTitleNotEmpty}'
-var msgErrorTagNotSet = '#i18n{blog.message.errorTagNotSet}'
+var msgErrorTagNotSet = "#i18n{blog.message.errorTagNotSet}"
 
 var msgErrorBlogLocked = '#i18n{blog.message.blogLocked}' 
 var msgErrorBlogFileCannotBeDeleted = '#i18n{blog.message.blogFileCannotBeDeleted}' 
@@ -92,7 +92,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     if( document.querySelector("#tag-list li") != null ){
       const tagsLen = document.querySelector("#tag-list li").length;
       if ( tagsLen == 0  ){
-        setBlogToast( 'warning' , '#i18n{blog.message.errorTagNotSet}', '' )
+        setBlogToast( 'warning' , "#i18n{blog.message.errorTagNotSet}", '' )
         event.preventDefault();
         return false;
       }
