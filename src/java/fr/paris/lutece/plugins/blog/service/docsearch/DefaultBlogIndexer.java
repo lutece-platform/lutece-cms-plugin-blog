@@ -139,18 +139,15 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
         if ( !bCreate )
         {
             // incremental indexing
-            // delete all record which must be deleted
-            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : BlogSearchService.getInstance( )
-                    .getAllIndexerActionByTask( IndexerAction.TASK_DELETE ) )
+
+            // add all record which must be added
+            for ( IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_CREATE ) )
             {
-                sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_DELETE );
+                sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_CREATE );
 
-                Term term = new Term( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdBlog( ) ) );
-                Term [ ] terms = {
-                        term
-                };
-
-                indexWriter.deleteDocuments( terms );
+                listIdBlog = new ArrayList<>( );
+                listIdBlog.add( action.getIdBlog( ) );
+                this.indexListBlog( indexWriter, listIdBlog );
                 BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ) );
             }
 
@@ -171,18 +168,20 @@ public class DefaultBlogIndexer implements IBlogSearchIndexer
                 BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ) );
             }
 
-            listIdBlog = new ArrayList<>( );
-
-            // add all record which must be added
-            for ( IndexerAction action : BlogSearchService.getInstance( ).getAllIndexerActionByTask( IndexerAction.TASK_CREATE ) )
+            // delete all record which must be deleted
+            for ( fr.paris.lutece.plugins.blog.business.IndexerAction action : BlogSearchService.getInstance( )
+                    .getAllIndexerActionByTask( IndexerAction.TASK_DELETE ) )
             {
-                sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_CREATE );
-                listIdBlog.add( action.getIdBlog( ) );
+                sbLogBlog( sbLogs, action.getIdBlog( ), IndexerAction.TASK_DELETE );
 
+                Term term = new Term( BlogSearchItem.FIELD_ID_HTML_DOC, Integer.toString( action.getIdBlog( ) ) );
+                Term [ ] terms = {
+                        term
+                };
+
+                indexWriter.deleteDocuments( terms );
                 BlogSearchService.getInstance( ).removeIndexerAction( action.getIdAction( ) );
             }
-
-            indexListBlog( indexWriter, listIdBlog );
         }
         else
         {
