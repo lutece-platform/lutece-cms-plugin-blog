@@ -373,7 +373,7 @@ public class BlogJspBean extends ManageBlogJspBean
             }
         }
         if ( StringUtils.isNotBlank( _strSearchText ) || ( _strTag != null && _strTag.length > 0 ) || _bIsChecked || _nIsUnpublished > 0
-                || _dateUpdateBlogAfter != null || _dateUpdateBlogBefor != null )
+                || StringUtils.isNotBlank( _dateUpdateBlogAfter ) || StringUtils.isNotBlank( _dateUpdateBlogBefor ) )
         {
             BlogSearchFilter filter = new BlogSearchFilter( );
             if ( StringUtils.isNotBlank( _strSearchText ) )
@@ -398,7 +398,7 @@ public class BlogJspBean extends ManageBlogJspBean
             }
             filter.setIsUnpulished(_nIsUnpublished);
 
-            if ( _dateUpdateBlogAfter != null )
+            if ( StringUtils.isNotBlank( _dateUpdateBlogAfter ) )
             {
                 try {
                     filter.setUpdateDateAfter( isoDateFormat.parse(_dateUpdateBlogAfter)) ;
@@ -406,7 +406,7 @@ public class BlogJspBean extends ManageBlogJspBean
                     AppLogService.error( "Bad Date Format for indexed item: " + e.getMessage( ) );
                 }
             }
-            if ( _dateUpdateBlogBefor != null )
+            if ( StringUtils.isNotBlank( _dateUpdateBlogBefor ) )
             {
                 try {
                     filter.setUpdateDateBefor( isoDateFormat.parse( _dateUpdateBlogBefor ) ) ;
