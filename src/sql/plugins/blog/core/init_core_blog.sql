@@ -14,7 +14,7 @@ INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home
 --
 DELETE FROM core_admin_right WHERE id_right IN ( 'BLOG_MANAGEMENT', 'BLOG_TAGS_MANAGEMENT');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url ) VALUES
-('BLOG_MANAGEMENT','blog.adminFeature.ManageBlogs.name',2,'jsp/admin/plugins/blog/ManageBlogs.jsp','blog.adminFeature.ManageBlogs.description',0,'blog','APPLICATIONS','ti ti-notebook','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
+('BLOG_MANAGEMENT','blog.adminFeature.ManageBlogs.name',2,'jsp/admin/plugins/blog/ManageBlogs.jsp','blog.adminFeature.ManageBlogs.description',0,'blog','APPLICATIONS','ti ti-list-letters','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
 ('BLOG_TAGS_MANAGEMENT','blog.adminFeature.ManageBlogsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageBlogsTags.description',0,'blog','APPLICATIONS','ti ti-tags',NULL,4);
 
@@ -44,3 +44,4 @@ INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permiss
 INSERT INTO core_user_role (role_key, id_user) VALUES('blog_resources', 1);
 
 INSERT INTO core_admin_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('blogAdminDashboardComponent', 1, 7);
+

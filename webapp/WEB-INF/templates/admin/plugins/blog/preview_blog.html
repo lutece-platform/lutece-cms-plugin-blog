@@ -6,18 +6,22 @@
 			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
 			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
 		</@pageHeader>
-		<@row>
-			<@columns sm=9>
-				<@div id='lutece-blog-page-preview' class='flex-column align-items-center'>
-					<@div id='lutece-blog-site-preview-wrapper' class="desktop">
-						<@div id='lutece-blog-site-preview-frame' class="desktop">
-							<iframe id='lutece-blog-site-preview' class="w-100 vh-100 border-0" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}"></iframe>
+		<@tabs>
+			<@tabList>
+				<@tabLink active=true href='#preview' title='#i18n{blog.modify_blog.labelPreview}' tabIcon='eye' />
+				<@tabLink href='#description' title='#i18n{blog.manage_blogs.columnDescription}' tabIcon='info-circle' />
+			</@tabList>
+			<@tabContent>
+				<@tabPanel id='preview' active=true>
+					<@div id='lutece-blog-page-preview' class='flex-column align-items-center'>
+						<@div id='lutece-blog-site-preview-wrapper' class="desktop">
+							<@div id='lutece-blog-site-preview-frame' class="desktop">
+								<iframe id='lutece-blog-site-preview' class="w-100 vh-100 border-0" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}"></iframe>
+							</@div>
 						</@div>
 					</@div>
-				</@div>
-			</@columns>
-			<@columns sm=3>
-				<@card>
+				</@tabPanel>
+				<@tabPanel id='description'>
 					<@btnGroup class='ms-3 me-2 d-none d-lg-block'>
 						<@button id='display-desktop' title='#i18n{blog.preview_blog.buttonXLargeScreen}' buttonIcon='device-desktop' color='primary' class='btn-preview active' hideTitle=['all'] />
 						<@button id='display-laptop' title='#i18n{blog.preview_blog.buttonLargeScreen}' buttonIcon='device-laptop' color='primary' class='btn-preview' hideTitle=['all'] />
@@ -51,9 +55,9 @@
 							</#list>
 						</#list>
 					</#if>
-				</@card>
-			</@columns>
-		</@row>
+				</@tabPanel>
+			</@tabContent>
+		</@tabs>
 	</@pageColumn>
 </@pageContainer>
 <script>

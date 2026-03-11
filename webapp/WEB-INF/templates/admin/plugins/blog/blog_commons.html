@@ -2,7 +2,7 @@
 <#assign textEditorBlogName><#if !dskey('blog.advanced_parameters.editor')?starts_with('DS') || dskey('blog.advanced_parameters.editor')?starts_with('DS') !=''>${dskey('blog.advanced_parameters.editor')}</#if></#assign>
 <#assign textEditorName><#if textEditorBlogName !=''>${textEditorBlogName}<#else>${textEditorCoreName!}</#if></#assign>
 <#assign blogEditorFile=.get_optional_template('blog_${textEditorName}.html')>
-<#assign is_content_type=dskey('blog.advanced_parameters.use_content_type')?boolean>
+<#assign is_content_type><#if !dskey('blog.advanced_parameters.use_content_type')?starts_with('DS')>dskey('blog.advanced_parameters.use_content_type')?boolean<#else>false</#if></#assign>
 <#if textEditorName?trim !=''>
   <#if blogEditorFile.exists>
     <@blogEditorFile.include />
@@ -131,7 +131,6 @@ document.addEventListener( "DOMContentLoaded", function(){
   <@charcounter />
 });
 </script>
-
 </#macro>
 <#function getFileExtension fileName>
 <#local lastDotIndex = fileName?last_index_of(".")>

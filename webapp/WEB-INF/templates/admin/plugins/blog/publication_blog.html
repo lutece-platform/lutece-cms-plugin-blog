@@ -8,7 +8,7 @@
 	<@messages errors=errors />
 	<@input type='hidden' id='id' name='id' value='${blog.id}' />
 	<@row>
-		<@columns sm=2 md=2 lg=1 >
+		<@columns >
 			<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
 				<@select name='portlet_filter_type' id='portlet_filter_type' title='#i18n{blog.publication_blog.labelSearchBy}'>
 					<#assign isSelected><#if portlet_filter??  && portlet_filter.portletFilterType = "page_id">true<#else>false</#if></#assign>
@@ -20,13 +20,13 @@
 				</@select>
 			</@formGroup>
 		</@columns>
-		<@columns sm=3>
+		<@columns>
 			<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.manage_blogs.labelSearch}' rows=2>
 				<#assign value><#if portlet_filter??>${portlet_filter.searchValue}</#if></#assign>
 				<@input type='text' id='portlet_filter_value' name='portlet_filter_value' placeHolder='#i18n{blog.publication_blog.labelSearchBy}' value=value />
 			</@formGroup>
 		</@columns>
-		<@columns sm=2>
+		<@columns>
 			<@formGroup labelFor='order_portlet' labelKey='#i18n{blog.publication_blog.labelOrder}' rows=2>
 				<@select name='order_portlet' title='#i18n{blog.publication_blog.labelOrder}'>
 					<#assign isSelected><#if !order_portlet?? || order_portlet?? && order_portlet = 0>true<#else>false</#if></#assign>
@@ -40,31 +40,29 @@
 				</@select>
 			</@formGroup>
 		</@columns>
-		<@columns sm=2 md=2 lg=1 >
+		<@columns>
 			<@formGroup labelFor='order_portlet_asc' labelKey='#i18n{blog.publication_blog.labelOrder}' rows=2>
-				<@select name='order_portlet_asc'>
-					<#assign isSelected><#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0>true<#else>false</#if></#assign>
-					<@option value='0' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderDesc}' />
-					<#assign isSelected><#if order_portlet_asc?? && order_portlet_asc = 1>true<#else>false</#if></#assign>
-					<@option value='1' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderAsc}' />
-				</@select>
-			</@formGroup>
-		</@columns>
-		<@columns sm=3 class='d-inline-flex'>
-			<@formGroup labelKey='#i18n{blog.manage_blogs.labelSearch}' labelClass='invisible' rows=2>
-			<@button type='submit' title='#i18n{blog.manage_blogs.search}' name='view_manageBlogsPublication' id='view_manageBlogsPublication'  buttonIcon='search' />
-			<#if !portlet_filter?? >
-				<@input type='hidden' name='is_display_latest_portlets' value='false' />
-			<#else>
-				<@button type='submit' color='danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
-				<@input type='hidden' name='is_display_latest_portlets' value='true' />
-			</#if>
+				<@inputGroup>
+					<@select name='order_portlet_asc'>
+						<#assign isSelected><#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0>true<#else>false</#if></#assign>
+						<@option value='0' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderDesc}' />
+						<#assign isSelected><#if order_portlet_asc?? && order_portlet_asc = 1>true<#else>false</#if></#assign>
+						<@option value='1' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderAsc}' />
+					</@select>
+					<@button type='submit' title='#i18n{blog.manage_blogs.search}' name='view_manageBlogsPublication' id='view_manageBlogsPublication'  buttonIcon='search' />
+					<#if !portlet_filter?? >
+						<@input type='hidden' name='is_display_latest_portlets' value='false' />
+					<#else>
+						<@button type='submit' color='danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
+						<@input type='hidden' name='is_display_latest_portlets' value='true' />
+					</#if>
+				</@inputGroup>	
 			</@formGroup>
 		</@columns>
 	</@row>
 	<@row>
-		<@columns sm=12 md=6>
-		<#if document_list_portlet_list?size &gt; 0>
+		<@columns xs=12 md=6>
+		<#if document_list_portlet_list?size gt 0>
 			<#assign boxTitle>#i18n{blog.publication_blog.labelAvailablePortlet} #i18n{blog.publication_blog.labelAvailableDocumentListPortlet}</#assign>
 			<@box>
 				<@boxHeader title=boxTitle />
@@ -105,8 +103,8 @@
 							<@div class='invalid-feedback mb-3' id="error_idPortlet" params='role="alert"' >#i18n{blog.publication_blog.labelSelectError}</@div>
 						</@columns>
 					</@row>
-					<#if document_list_portlet_list?size &gt; 0>
-						<h3 id="portlets" class="visually-hidden">#i18n{blog.manage_blogs.title}</h3>
+					<#if document_list_portlet_list?size gt 0>
+						<@h level=3 id='portlets' class='visually-hidden'>#i18n{blog.manage_blogs.title}</@h>
 						<@listGroup id='portlet-available' class='border-bottom' params='style="height:15rem;overflow-y: auto" tabindex="0" role="listbox" aria-labelledby="portlets"'>
 							<#list document_list_portlet_list as portlet>
 								<@listGroupItem class='d-flex justify-content-between vh-50' params='data-portlet="${portlet.code!}"'>
@@ -119,21 +117,17 @@
 					<#else>
 						<@empty  title='#i18n{blog.publication_blog.messagePortletNotExist}' />
 					</#if>
-					<@formGroup rows=2 class='mt-5'>
+					<@formGroup rows=2>
 						<@button type='submit' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' title='#i18n{blog.publication_blog.buttonPublish}' />
 					</@formGroup>
 					<@row>
-						<@columns sm=4 offsetSm=8>
+						<@columns class='d-flex jsutify-content-end'>
 							<@formGroup labelFor='${paginator.itemsPerPageParameterName!}' labelKey='#i18n{blog.portlet.blog.lableNbPost!}' rows=2>
 								<@inputGroup>
-									<@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='w-25' params='data-max-item="${paginator.itemsCount}"'>
-									<#list [ "10" , "20" , "50" , "100" ] as nb>
-										<@option value=nb?string label=nb?string  selected=(nb?string == paginator.itemsPerPage?string) />
-									</#list>
+									<@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='form-select' params='data-max-item="${paginator.itemsCount}"'>
+									<#list [ "10" , "20" , "50" , "100" ] as nb><@option value=nb?string label=nb?string  selected=(nb?string == paginator.itemsPerPage?string) /></#list>
 								</@select>
-									<@inputGroupItem type=''>
-										<@button type='button' id='refresh-listPortlet' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' class='btn-target' name='refresh' value='refresh' hideTitle=['all']/>
-									</@inputGroupItem>
+								<@button type='button' id='refresh-listPortlet' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' class='btn-target' name='refresh' value='refresh' hideTitle=['all']/>
 								</@inputGroup>
 							</@formGroup>
 						</@columns>
@@ -141,14 +135,14 @@
 				</@boxBody>
 			</@box>
 		<#else>
-			<@callOut color='warning'><@icon style='exclamation-circle' />  #i18n{blog.publication_blog.messagePortletNotExist}</@callOut>
+			<@empty title='#i18n{blog.publication_blog.messagePortletNotExist}' />
 		</#if>
 	</@columns>
-	<@columns sm=12 md=6>
+	<@columns xs=12 md=6>
 		<@box>
 			<@boxHeader title='#i18n{blog.publication_blog.labelPublishedPost}' />
 			<@boxBody>
-			<#if blog.blogPublication?size &gt; 0>
+			<#if blog.blogPublication?size gt 0>
 				<@listGroup id='portlet-published'>
 					<#list blog.blogPublication?sort_by("idPortlet") as publication>
 					<@listGroupItem class='d-flex justify-content-between'>

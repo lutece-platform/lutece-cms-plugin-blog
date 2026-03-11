@@ -84,22 +84,23 @@ function refreshMandatoryTagInfo( ){
 			}
    	 	});
 	}
-
-    if( numberOfTagsAssigned <= ( parseInt( numberMandatoryTags ) - 1 )  ) {
-        alertRequiredTags.classList.remove('visually-hidden');
-        if(elemEnoughTagsInfo!=null)
-        {
-            elemEnoughTagsInfo.classList.add('alert-warning');
-            elemEnoughTagsInfo.classList.remove('alert-info');
-        }
-    } else {
-        alertRequiredTags.classList.add('visually-hidden');
-        if(elemEnoughTagsInfo!=null)
-        {
-            elemEnoughTagsInfo.classList.remove('alert-warning');
-            elemEnoughTagsInfo.classList.add('alert-info');
-        }
-    }
+	if( alertRequiredTags != null ){
+		if( numberOfTagsAssigned <= ( parseInt( numberMandatoryTags ) - 1 )  ) {
+			alertRequiredTags.classList.remove('visually-hidden');
+			if(elemEnoughTagsInfo!=null)
+			{
+				elemEnoughTagsInfo.classList.add('alert-warning');
+				elemEnoughTagsInfo.classList.remove('alert-info');
+			}
+		} else {
+			alertRequiredTags.classList.add('visually-hidden');
+			if(elemEnoughTagsInfo!=null)
+			{
+				elemEnoughTagsInfo.classList.remove('alert-warning');
+				elemEnoughTagsInfo.classList.add('alert-info');
+			}
+		}
+	}
 }
 
 function setListTag( idTag, tgName, blogId ){
@@ -145,13 +146,17 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 		imgFile.setAttribute('src', `servlet/plugins/blogs/file?id_file=${idFile}` );
 		imgFile.setAttribute('alt', `${fileName}` );
 		imgFile.setAttribute('title', `${fileName}` );
-		imgFile.classList.add( 'img-fluid', 'img-thumbnail', 'blog-thumbnails');
+		imgFile.classList.add( 'img-fluid', 'object-fit-cover', 'border', 'rounded');
+		imgFile.style.width = '48px';
+		imgFile.style.height = '48px';
 	} else {
 		let imgFile = li.appendChild( document.createElement( 'img' ) );
 		imgFile.setAttribute('src', `themes/admin/shared/plugins/blog/images/file-type-${fileExt}.svg` );
 		imgFile.setAttribute('alt', `${fileName}` );
 		imgFile.setAttribute('title', `${fileName}` );
-		imgFile.classList.add( 'img-fluid', 'img-thumbnail', 'blog-thumbnails');
+		imgFile.classList.add( 'img-fluid', 'object-fit-cover', 'border', 'rounded');
+		imgFile.style.width = '48px';
+		imgFile.style.height = '48px';
 		let linkFile = li.appendChild( document.createElement( 'a' ) );
 		linkFile.setAttribute('href', `servlet/plugins/blogs/file?id_file=${idFile}` );
 		linkFile.setAttribute('title', `${fileName}` );
@@ -188,7 +193,7 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	let iconInsert = btnInsert.appendChild( document.createElement( 'i' ) );
 	iconInsert.classList.add( 'ti','ti-file-plus');
 	let btnDown = div.appendChild( document.createElement( 'button' ) );
-	btnDown.classList.add( 'btn','btn-none', 'btn-down' ,'text-primary');
+	btnDown.classList.add( 'btn','btn-none', 'btn-down', 'btn-sm' ,'text-primary');
 	btnDown.setAttribute('type', 'button' );
 	btnDown.setAttribute('title', 'Down' );
 	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
@@ -199,7 +204,7 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	let iconDown = btnDown.appendChild( document.createElement( 'i' ) );
 	iconDown.classList.add( 'ti','ti-arrow-down');
 	let btnUp = div.appendChild( document.createElement( 'button' ) );
-	btnUp.classList.add( 'btn', 'btn-none', 'btn-up', 'text-primary');
+	btnUp.classList.add( 'btn', 'btn-outline-secondary', 'btn-up', 'btn-sm', 'text-primary');
 	btnUp.setAttribute('type', 'button' );
 	btnUp.setAttribute('title', 'Up' );
 	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
@@ -210,7 +215,7 @@ function setListFile( idFile, fileName, fileType, fileExt, blogId ){
 	let iconUp = btnUp.appendChild( document.createElement( 'i' ) );
 	iconUp.classList.add( 'ti','ti-arrow-up');
 	let btnRm = div.appendChild( document.createElement( 'button' ) );
-	btnRm.classList.add( 'btn', 'btn-none', 'text-danger');
+	btnRm.classList.add( 'btn', 'btn-outline-secondary', 'btn-sm', 'text-danger');
 	btnRm.setAttribute('id', idFile );
 	btnRm.setAttribute('type', 'button' );
 	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
@@ -308,8 +313,7 @@ async function doAddContent( fileName, result, fileType, idBlog ){
     }
 }
 
-function parseAdminMessageError( htmlContent )
-{
+function parseAdminMessageError( htmlContent ){
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, "text/html");
     const message = doc.querySelector("p.text-center");
@@ -420,6 +424,7 @@ async function doUpdatePriorityContent( idContent, action, idBlog ){
 		}
 	}
 }
+
 /*
  * Duplicate of the function doUpdatePriorityContent without the idBlog parameter
  * Due to a parsing error in createBlog when calling the function, the idBlog parameter is not passed
@@ -449,8 +454,7 @@ async function doUpdatePriorityContentBis( idContent, action ){
 /*
  * Refresh the list of available tag to add
  */
-async function refreshListTag()
-{
+async function refreshListTag(){
     const tagSelect = document.getElementById('tag_doc');
     tagSelect.textContent = '';
 

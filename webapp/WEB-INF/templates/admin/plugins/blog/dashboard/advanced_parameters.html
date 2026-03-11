@@ -1,119 +1,82 @@
 <@tform method='post' name='blog_advanced_parameters' action='jsp/admin/plugins/blog/admindashboard/DoModifyAdvancedParameters.jsp' boxed=true>
     <@input type='hidden' name='token' value='${token}' />
     <@box title='#i18n{blog.advanced_parameters.blog.mandatory_tag}'>
-    <@row>
-        <@columns md=3>
-            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag}' labelFor='mandatory_tag' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
-                <#if number_mandatory_tags gt 0>
-                    <#assign tagMandatory=true>
-                <#else>
-                    <#assign tagMandatory=false>
-                </#if>
-                <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag.checkbox}' orientation='switch' name='mandatory_tag' id='mandatory_tag' checked=tagMandatory />
-            </@formGroup>
-            </@columns>
-            <@columns>
-            <@formGroup labelFor='number_mandatory_tags' id='sec_number_mandatory_tags' labelKey='#i18n{blog.advanced_parameters.blog.number_mandatory_tags}' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
-                <@row>
-                    <@columns>
-                        <@inputGroup>
-                            <@input params='style="flex-basis:60px;flex-grow:0;"' type='number' min=0 max=10 name='number_mandatory_tags' id='number_mandatory_tags' value='${number_mandatory_tags!""}' />
-                            <@inputGroupItem>#i18n{blog.advanced_parameters.blog.number_mandatory_tags}</@inputGroupItem>
-                        </@inputGroup>
-                    </@columns>
-                </@row>
-            </@formGroup>
-        </@columns>
-    </@row>
+        <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag}' labelFor='mandatory_tag' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
+            <#if number_mandatory_tags gt 0><#assign tagMandatory=true><#else><#assign tagMandatory=false></#if>
+            <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.mandatory_tag.checkbox}' orientation='switch' name='mandatory_tag' id='mandatory_tag' checked=tagMandatory />
+        </@formGroup>
+        <@formGroup labelFor='number_mandatory_tags' id='sec_number_mandatory_tags' labelKey='#i18n{blog.advanced_parameters.blog.number_mandatory_tags}' formClass='inline' labelClass='col-lg-12' >
+            <@input class='form-control w-25' type='number' min=0 max=10 name='number_mandatory_tags' id='number_mandatory_tags' value='${number_mandatory_tags!""}' />
+        </@formGroup>
     </@box>
     <@box title='#i18n{blog.advanced_parameters.blog.default_date_end_publishing.title}'>
-    <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.default_date_end_publishing}' labelFor='default_date_end_publishing' mandatory=true>
-    <@row>
-        <@columns md=2>
-            <@inputGroup>
-            <@input type='date' name='default_date_end_publishing' id='default_date_end_publishing' value='${default_date_end_publishing!}' language=.lang format='Y-m-d' />
-                <@inputGroupItem>
-                    <@icon style='calendar' />
-                </@inputGroupItem>
-            </@inputGroup>
-        </@columns>
-    </@row>
-    </@formGroup>
+        <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.default_date_end_publishing}' labelFor='default_date_end_publishing' mandatory=true>
+        <@row>
+            <@columns sm=12 md=4>
+                <@inputGroup>
+                    <@input type='date' name='default_date_end_publishing' id='default_date_end_publishing' value='${default_date_end_publishing!}' language=.lang format='Y-m-d' />
+                    <@inputGroupItem>
+                        <@icon style='calendar' />
+                    </@inputGroupItem>
+                </@inputGroup>
+            </@columns>
+        </@row>
+        </@formGroup>
     </@box>
     <@box title='#i18n{blog.advanced_parameters.blog.editor.title}'>
-    <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.editor}' labelFor='editor'>
-    <@row>
-        <@columns md=2>
+        <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.editor}' labelFor='editor'>
             <#if !default_editor??><#assign default_editor = ""></#if>
             <@select name='default_editor' items=listEditorsBackOffice default_value=default_editor />
-        </@columns>
-    </@row>
-    </@formGroup>
+        </@formGroup>
     </@box>
     <@box title='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin.title}'>
-    <@row>
-        <@columns md=6>
-            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin}' labelFor='use_upload_image_plugin' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
-                <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin.checkbox}' orientation='switch' name='use_upload_image_plugin' id='use_upload_image_plugin' checked=use_upload_image_plugin!false />
-            </@formGroup>
-        </@columns>
-    </@row>
+        <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin}' labelFor='use_upload_image_plugin' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
+           <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.use_upload_image_plugin.checkbox}' orientation='switch' name='use_upload_image_plugin' id='use_upload_image_plugin' checked=use_upload_image_plugin!false />
+        </@formGroup>
     </@box>
     <@box title='#i18n{blog.advanced_parameters.blog.use_content_type.title}'>
-    <@row>
-        <@columns md=6>
-            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.use_content_type}' labelFor='use_content_type' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
-                <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.use_content_type.checkbox}' orientation='switch' name='use_content_type' id='use_content_type' checked=use_content_type!true />
-            </@formGroup>
-        </@columns>
-    </@row>
+        <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.use_content_type}' labelFor='use_content_type' formClass='inline' labelClass='col-lg-12' hideLabel=['all']>
+            <@checkBox labelKey='#i18n{blog.advanced_parameters.blog.use_content_type.checkbox}' orientation='switch' name='use_content_type' id='use_content_type' checked=use_content_type!true />
+        </@formGroup>
     </@box>
     <@box title='#i18n{blog.advanced_parameters.blog.accepted_file_types.title}'>
-    <@row>
-        <@columns md=8>
-            <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.accepted_file_types}' labelFor='accepted_file_types' helpKey='#i18n{blog.advanced_parameters.blog.accepted_file_types.help}'>
-                <@input name='accepted_file_types' id='accepted_file_types' value='${accepted_file_types!"image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp"}' />
-            </@formGroup>
-        </@columns>
-    </@row>
+        <@formGroup labelKey='#i18n{blog.advanced_parameters.blog.accepted_file_types}' labelFor='accepted_file_types' helpKey='#i18n{blog.advanced_parameters.blog.accepted_file_types.help}'>
+            <@input name='accepted_file_types' id='accepted_file_types' value='${accepted_file_types!"image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp"}' />
+        </@formGroup>
     </@box>
     <@row>
        <@columns>
             <@button type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' color='primary' />
-        </@columns>
+       </@columns>
     </@row>
 </@tform>
 <script>
-let numberMandatoryTags = document.getElementById('number_mandatory_tags');
-let mandatoryTag = document.getElementById('mandatory_tag');
-let secNumberMandatoryTags = document.getElementById('sec_number_mandatory_tags');
-
-let numberMandatoryTagsSave = ${number_mandatory_tags};
+let numberMandatoryTags = document.getElementById('number_mandatory_tags'),
+    mandatoryTag = document.getElementById('mandatory_tag'),
+    secNumberMandatoryTags = document.getElementById('sec_number_mandatory_tags'),
+    numberMandatoryTagsSave = ${number_mandatory_tags};
 
 document.addEventListener('DOMContentLoaded', function () {
-if(numberMandatoryTagsSave == 0) {
-    numberMandatoryTags.min=0
-    secNumberMandatoryTags.style.display = 'none';
-}
+    if(numberMandatoryTagsSave == 0) {
+        numberMandatoryTags.min=0
+        secNumberMandatoryTags.style.display = 'none';
+    }
 });
 
 mandatoryTag.addEventListener('change', function () {
-if (this.checked) {
-    secNumberMandatoryTags.style.display = '';
-    numberMandatoryTags.min=1
-    if(numberMandatoryTagsSave == 0)
-    {
-        numberMandatoryTags.value = 1;
+    if (this.checked) {
+        secNumberMandatoryTags.style.display = '';
+        numberMandatoryTags.min=1
+        if(numberMandatoryTagsSave == 0) {
+            numberMandatoryTags.value = 1;
+        } else {
+            numberMandatoryTags.value = numberMandatoryTagsSave;
+        }
+    } else {
+        numberMandatoryTagsSave = numberMandatoryTags.value;
+        secNumberMandatoryTags.style.display = 'none';
+        numberMandatoryTags.min=0
+        numberMandatoryTags.value = 0;
     }
-    else
-    {
-        numberMandatoryTags.value = numberMandatoryTagsSave;
-    }
-} else {
-    numberMandatoryTagsSave = numberMandatoryTags.value;
-    secNumberMandatoryTags.style.display = 'none';
-    numberMandatoryTags.min=0
-    numberMandatoryTags.value = 0;
-}
 });
 </script>

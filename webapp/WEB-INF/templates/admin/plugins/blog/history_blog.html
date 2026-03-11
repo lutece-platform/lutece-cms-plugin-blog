@@ -1,59 +1,51 @@
 <@pageContainer>
     <@pageColumn>
         <@pageHeader title='#i18n{blog.manage_blogs.labelHistory}'>
-			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
-			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
+			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
 		</@pageHeader>
-		<@messages infos=infos errors=errors />
+		<@messages infos=infos />
 		<@tform method='get' name='diff_blogs' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+		<@messages errors=errors />
 		<@input type='hidden' name='view' value='diffBlog' />
 		<@input type='hidden' name='id' value='${(blog_list[0].id)!}' />
-		<@table headBody=true >
-			<@tr>
-				<@th class='text-center'>
-					<@button type='submit' value='1' buttonIcon='git-compare' title='#i18n{blog.history_blog.columnDiffSelect}' color='info' />
-				</@th>
-				<@th>#i18n{blog.manage_blogs.columnUpdateDate} / #i18n{blog.manage_blogs.columnCreator} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&id=${id}" attribute="updateDate" /></@th>
-				<@th>#i18n{blog.manage_blogs.columnEditComment}</@th>
-				<@th colspan=2>#i18n{portal.util.labelActions}</@th>
-			</@tr>
-			<@tableHeadBodySeparator />
+		<@row class='justify-content-end mb-2'>
+			<@columns>
+				<@button type='submit' value='1' buttonIcon='git-compare' title='#i18n{blog.history_blog.columnDiffSelect}' color='info' />
+			</@columns>
+		</@row>
+		<@manageFeature>
 			<#assign nbVersion=blog_list?size >
 			<#assign nIdxVersion=1>
 			<#list blog_list?reverse as blog >
-			<@tr>
-				<@td class='text-center'>
+			<@manageFeatureItem>
+				<@manageFeatureItemColumn auto=true>
 					<strong class="me-2">#i18n{blog.manage_blogs.columnVersion} ${blog.version}</strong>
 					<#assign isChecked><#if nIdxVersion==1>true<#else>false</#if></#assign>
 					<@radioButton name='blog_version' id='blog_version_${blog.version}' labelKey='' class='form-check-input me-2' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
 					<#assign isChecked><#if nIdxVersion==nbVersion>true<#else>false</#if></#assign>
 					<@radioButton name='blog_version2' id='blog_version2_${blog.version}' labelKey='' orientation='inline' value='${blog.version}' checked=isChecked?boolean />
-				</@td>
-				<@td>${i18n("blog.history_blog.updatedBy")?cap_first}<em class="ms-1">${blog.updateDate}</em> #i18n{blog.manage_blogs.labelBy} <strong>${blog.user}</strong></@td>
-				<@td>${blog.editComment}</@td>
-				<@td>
-
-					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelPreview}' hideTitle=['all']  color='default' size='' buttonIcon='eye' /> 
-
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn auto=true flex=false valign='top'>
+					<@p class='fw-bold fs-3'>#i18n{blog.manage_blogs.columnUpdateDate} / #i18n{blog.manage_blogs.columnCreator} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&id=${id}" attribute="updateDate" /></@p>
+					${i18n("blog.history_blog.updatedBy")?cap_first}<em class="ms-1">${blog.updateDate}</em> #i18n{blog.manage_blogs.labelBy} <strong>${blog.user}</strong>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn auto=true flex=false valign='top'>
+					<@p class='fw-bold fs-3'>#i18n{blog.manage_blogs.columnEditComment}</@p>
+					${blog.editComment}
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn align='end'>
+					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelPreview}' hideTitle=['all'] color='default' size='' buttonIcon='eye' />
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' hideTitle=['all'] buttonIcon='arrow-back-up' size='' />
 					<#if blog.version != 1>
 					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' hideTitle=['all'] buttonIcon='git-fork' color='info' size='' />
-						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveHistoryBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' size='' />
+					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveHistoryBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' color='danger' size='' />
 					</#if>
-				</@td>
-			</@tr>
+				</@manageFeatureItemColumn>
+			</@manageFeatureItem>
 			<#assign nIdxVersion++>
 			</#list>
-			<#--
-			<@tableFoot>
-				<@td>
-					<@button type='submit' value='1' buttonIcon='git-compare' title='#i18n{blog.history_blog.columnDiffSelect}' color='info'  />
-				</@td>
-				<@td colspan=2>
-				</@td>
-			</@tableFoot>
-				-->
-		</@table>
+		</@manageFeature>
 		</@tform>
 		<@paginationAdmin paginator=paginator combo=1 showcount=0 />
 	</@pageColumn>
