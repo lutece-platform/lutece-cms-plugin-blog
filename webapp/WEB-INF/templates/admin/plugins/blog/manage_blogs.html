@@ -1,25 +1,26 @@
 <@pageContainer>
     <@pageColumn>
-        <@pageHeader title='#i18n{blog.manage_blogs.title}' toolsClass='d-flex'>
-			<#if permission_manage_create_blog>
-				<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-					<@button type='submit' name='view_createBlog' buttonIcon='plus' class='me-1' title='#i18n{blog.manage_blogs.buttonAdd}' hideTitle=['xs'] />
-				</@tform>
-			</#if>
-        </@pageHeader>
-		<@box class='p-0'>
-			<@boxBody>
-				<@tform id='form-manage' name='form-manage' class='p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp?search='>
-				<@row>
-					<@formGroup labelFor='search_text' formStyle='col' class='col-md-6 col-lg-4' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.search}' helpKey='#i18n{blog.manage_blogs.search.help}' rows=2 >
+        <@pageHeader title='#i18n{blog.manage_blogs.title}' toolsClass='d-flex justify-content-between' class='col-12 col-md-4 col-lg-4'>
+			<@tform type='inline' name='form-manage' class='p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp?search='>
+				<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' class='me-1' hideLabel=['all'] formStyle='inline'>
+					<@inputGroup class='input-group-flat'>
+						<@input type='text' id='search_text_a' name='search_text' placeHolder='paris vil*' value='${search_text!\'\'}' />
+						<@inputGroupItem type='text'>
+							<@button type='submit' color='link' size='sm' class='link-secondary mx-0' buttonIcon='search icon icon-1' name='button_search' id='button_search' title='#i18n{blog.manage_blogs.labelSearch}' hideTitle=['all'] params='data-bs-toggle="tooltip" data-bs-original-title="#i18n{blog.manage_blogs.labelSearch}" data-bs-placement="bottom"'/>
+							<@button type='submit' color='link' size='sm' class='link-danger mx-0 btn-reset d-none' buttonIcon='filter-off icon icon-1' name='button_reset' title='#i18n{blog.manage_blogs.labelRemoveStatusFilter}' hideTitle=['all'] params='data-bs-toggle="tooltip" data-bs-original-title="#i18n{blog.manage_blogs.labelRemoveFilter}" data-bs-placement="bottom"' />
+							<@span class='form-help' params='data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="#i18n{blog.manage_blogs.search.help}"' ><@icon style='help-circle icon icon-1' /></@span>
+						</@inputGroupItem>
+					</@inputGroup>	
+				</@formGroup>
+				<@offcanvas id='offcanvasSearch' title='#i18n{blog.manage_blogs.search}' btnTitle='#i18n{blog.manage_blogs.labelAdvancedSearch}' btnIcon='filter-plus' size='sm' hideTitle=['xs','md','lg'] >
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' helpKey='#i18n{blog.manage_blogs.search.help}'  >
 						<@inputGroup>
 							<@input type='text' id='search_text' name='search_text' placeHolder='lutece lut*' value='${search_text!\'\'}' />
-							<@inputGroupItem>
-								<@checkBox labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked orientation='switch' />
-							</@inputGroupItem>
+							<@button type='submit' id='button_search' name='button_search' title='#i18n{blog.manage_blogs.search}' buttonIcon='search' hideTitle=['all'] />
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='search_text' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}'  rows=2 >
+					<@checkBox labelKey='#i18n{blog.manage_blogs.sortByUserButton}' id='current_user' name='current_user' value='true' checked=is_checked orientation='switch' />
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}'   >
 						<@select id='tag_doc' multiple=1 name='tag_doc' class='form-control'>
 						<#list list_tag?sort as tgName>
 							<#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign>
@@ -27,223 +28,185 @@
 						</#list>
 						</@select>
 					</@formGroup>
-					<@formGroup labelFor='dateUpdateBlogAfter' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'  rows=2 >
+					<@formGroup labelFor='dateUpdateBlogAfter' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'   >
 						<@inputGroup>
 							<@input type='html5date' name='dateUpdateBlogAfter' id='dateUpdateBlogAfter' value='${dateUpdateBlogAfter!}' />
 						</@inputGroup>
 					</@formGroup>
-					<@formGroup labelFor='dateUpdateBlogBefore' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2 >
+					<@formGroup labelFor='dateUpdateBlogBefore' labelKey='#i18n{blog.manage_blogs.labelBefore}'  >
 						<@inputGroup>
-							<@input type='html5date' name='dateUpdateBlogBefor' id='dateUpdateBlogBefore' value='${dateUpdateBlogBefor!}' />
+							<@input type='html5date' name='dateUpdateBlogBefor' id='dateUpdateBlogBefor' value='${dateUpdateBlogBefor!}' />
 						</@inputGroup>
 					</@formGroup>
-					<#if unpublished??>
-						<#assign unpublishedString = unpublished?string>
-					<#else>
-						<#assign unpublishedString = "">
-					</#if>
-					<@formGroup labelFor='search_text' formStyle='col' class='col-md-3 col-lg-2' labelClass='pt-md-4' labelKey='#i18n{blog.manage_blogs.labelUnPublished}' helpKey='#i18n{blog.manage_blogs.labelUnPublished.help}' rows=2>
+					<#assign unpublishedString=''>
+					<#if unpublished??><#assign unpublishedString=unpublished?string></#if>
+					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelUnPublished}' helpKey='#i18n{blog.manage_blogs.labelUnPublished.help}' >
 						<@select id='unpublished' name='unpublished' class='form-control'>
-							<@option value="0" selected=(unpublishedString == '') label='#i18n{blog.manage_blogs.labelAllBlogs}'/>
-							<@option value="1" selected=(unpublishedString == '1') label='#i18n{blog.manage_blogs.labelNotPublished}' />
-							<@option value="2" selected=(unpublishedString == '2') label='#i18n{blog.manage_blogs.labelPublished}' />
-							<@option value="3" selected=(unpublishedString == '3') label='#i18n{blog.manage_blogs.labelArchived}'  />
+							<@option value='0' selected=(unpublishedString == '') label='#i18n{blog.manage_blogs.labelAllBlogs}'/>
+							<@option value='1' selected=(unpublishedString == '1') label='#i18n{blog.manage_blogs.labelNotPublished}' />
+							<@option value='2' selected=(unpublishedString == '2') label='#i18n{blog.manage_blogs.labelPublished}' />
+							<@option value='3' selected=(unpublishedString == '3') label='#i18n{blog.manage_blogs.labelArchived}'  />
 						</@select>
 					</@formGroup>
-				</@row>
 				<@row>
-					<@formGroup rows=2 formStyle='col' class='d-flex justify-content-end'>
-					<@button type='submit' class='mb-lg-1' buttonIcon='search me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
-					<@button type='submit' class='mb-lg-1' color='danger' buttonIcon='x me-1' name='button_reset' id='button_reset' title='#i18n{blog.manage_blogs.reset}' />
-					</@formGroup>
+					<@columns>
+						<@button type='submit' buttonIcon='filter me-1' name='button_search' id='button_search'title='#i18n{blog.manage_blogs.search}' />
+						<@button type='submit' color='danger' class='btn-reset d-none' buttonIcon='filter-off me-1' name='button_reset' title='#i18n{blog.manage_blogs.reset}' />
+					</@columns>
 				</@row>
-				</@tform>
-			</@boxBody>
-		</@box>
-		<@messages infos=infos />
-		<@box>
-			<@boxBody>
-				<@tform id='form_checkbox_action' name='form_checkbox_action' method='post' class='p-0' action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
-				<@input type='hidden' id='action' name='action' value='form_checkbox_action' />
-					<#assign idx=0 />
-                    <#if info_message?? && info_message?trim !=''>
-                        <@initToast>
-                            <@addToast content=info_message class='text-bg-info border-0' />
-                        </@initToast>
-                    </#if>
-					<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3>
-						<@div class='d-flex flex-row'>
-							<@inputGroup class='p-2'>
-								<@select id='select_blog_action' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' class='p-2' disabled=true>
-									<#if permission_manage_archive_blog>
-										<#if status_filter == 3>
-											<option value=1 >#i18n{blog.manage_blogs.labelUnarchive}</option>
-										<#else>
-											<option value=0 selected>#i18n{blog.manage_blogs.labelArchive}</option>
-										</#if>
-									</#if>
-									<#if permission_manage_delete_blog && status_filter == 3>
-										<option value=2>#i18n{blog.manage_blogs.delete}</option>
-									</#if>
-								</@select>
-								<@inputGroupItem type='btn'>
-									<@button type='submit' id='button_apply_selected_action' name='button_apply_selected_action' title='#i18n{blog.manage_blogs.applyToSelection}' buttonIcon='check' hideTitle=['all'] disabled=true />
-								</@inputGroupItem>
-							</@inputGroup>
-						</@div>
-					</#if>
-				<@table headBody=true >
-					<@tr>
-						<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3>
-							<@th><@checkBox name='select_all_blogs_id' id='select_all_blogs_id' /></@th>
+			</@offcanvas>
+		</@tform>
+		<#if permission_manage_create_blog>
+			<@tform action='jsp/admin/plugins/blog/ManageBlogs.jsp'>
+				<@button type='submit' name='view_createBlog' buttonIcon='plus' class='me-1' title='#i18n{blog.manage_blogs.buttonAdd}' hideTitle=['xs','sm','md'] />
+			</@tform>
+		</#if>
+	</@pageHeader>
+	<@messages infos=infos />
+	<#if blog_list?has_content && blog_list?size gt 0 >
+		<@tform id='form_checkbox_action' name='form_checkbox_action' method='post' action='jsp/admin/plugins/blog/ManageBlogs.jsp' >
+		<@input type='hidden' id='action' name='action' value='form_checkbox_action' />
+		<#assign idx=0 />
+		<#if info_message?? && info_message?trim !=''><@initToast><@addToast content=info_message class='text-bg-info border-0' /></@initToast></#if>
+		<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3>
+			<#if blog_list?size gt 5 >
+				<@div class='mt-1 d-flex align-items-center justify-content-between'>
+					<@checkBox orientation='switch' wrapperClass='mb-0' name='select_all_blogs_id' id='select_all_blogs_id' labelKey='#i18n{blog.manage_blogs.labelSelectUnselectAll}'/>
+					<@formGroup labelKey='#i18n{blog.manage_blogs.labelSelectUnselectAll}' hideLabel=['all'] formStyle='inline' >
+						<@inputGroup>
+							<@select id='select_blog_action' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' disabled=true formsStyle='inline'>
+							<#if permission_manage_archive_blog>
+								<#if status_filter == 3>
+									<@option value=1 label='#i18n{blog.manage_blogs.labelUnarchive}' />
+								<#else>
+									<@option value=0 selected=true label='#i18n{blog.manage_blogs.labelArchive}' />
+								</#if>
+							</#if>
+							<#if permission_manage_delete_blog && status_filter == 3>
+								<@option value=2 label='#i18n{blog.manage_blogs.delete}' />
+							</#if>
+							</@select>
+							<@button type='submit' id='button_apply_selected_action' name='button_apply_selected_action' title='#i18n{blog.manage_blogs.applyToSelection}' buttonIcon='check' hideTitle=['all'] disabled=true />
+						</@inputGroup>
+					</@formGroup>
+				</@div>
+			</#if>
+		</#if>
+		<@manageFeature class='mt-0'>
+		<#list blog_list as blog>
+			<@manageFeatureItem liClass='item-labels'>
+				<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3 >
+					<@manageFeatureItemColumn auto=true valign='start' cols='1'>
+						<@checkBox orientation='switch' id='selected_blog_${blog.id}' name='select_blog_id' value='${blog.id}' />
+					</@manageFeatureItemColumn>
+				</#if>
+				<@manageFeatureItemColumn auto=true dir='column' valign='baseline' cols='6' class='searchable'>
+					<@link href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}" title="#i18n{portal.util.labelModify}">
+						<strong>${blog.contentLabel!}</strong> <#if blog.locked><@icon style='lock' /></#if>
+					</@link>
+					<@p class='my-1'>
+						<small>#i18n{blog.manage_blogs.labelCreate} #i18n{blog.manage_blogs.labelBy} <#if blog.userCreatorInfos??><strong>${blog.userCreatorInfos.lastName!} ${blog.userCreatorInfos.firstName!}</strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}<#else><strong>#i18n{blog.manage_blogs.unknownUser}</strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}</#if></small>
+					</@p>	
+					<@p class='mb-0'>
+						<small><#if blog.userInfos??>#i18n{blog.manage_blogs.columnUpdateDate}: <strong>${blog.userInfos.lastName!} ${blog.userInfos.firstName!}</strong> ${blog.updateDate!}<#else>#i18n{blog.manage_blogs.columnUpdateDate}: <strong>#i18n{blog.manage_blogs.unknownUser}</strong> ${blog.updateDate!}</#if></small>
+					</@p>	
+					<#if blog.editComment?? && blog.editComment?trim !=''><@p class='mt-1 mb-0'><@span class="label label-default"><@icon style='comment' /> <strong>#i18n{blog.manage_blogs.columnEditComment}:</strong> ${blog.editComment}</@span></@p></#if>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn auto=true dir='column' valign='baseline' class='d-none searchable'>
+					<@p class='fw-bold fs-3 mb-0'>#i18n{blog.manage_blogs.labelContributors}</@p>
+					<@cBlock class='d-flex flex-column align-items-start'>
+					<#list list_blog_contributors as blogId, contributorList>
+						<#if blogId == blog.id>
+							<#list contributorList as contributorName>
+								<#if blog.userCreatorInfos.accessCode != contributorName>
+									<@span class='badge bg-default text-default-fg text-truncate mw-xs d-inline-block mb-1 fs-5 ${spanClass!}'><@icon style='user-circle' /> ${contributorName}</@span>
+								</#if>
+							</#list>
 						</#if>
-						<@th>#i18n{blog.manage_blogs.columnContentLabel} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="contentLabel" /></@th>
-						<@th>#i18n{blog.manage_blogs.columnCreationDate} <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="creationDate" /></@th>
-						<@th>#i18n{blog.manage_blogs.columnUpdateDate} 	 <@sort jsp_url="jsp/admin/plugins/blog/ManageBlogs.jsp" attribute="updateDate" /></@th>
-						<@th>#i18n{blog.create_blog.TagsTitle}</@th>
-						<@th>#i18n{blog.publication_blog.labelPublication}</@th>
-						<@th>#i18n{portal.util.labelActions}</@th>
-						<@th>#i18n{blog.manage_blogs.labelContributors}</@th>
-					</@tr>
-					<@tableHeadBodySeparator />
-						<#list blog_list as blog>
-						<@tr>
-							<#if permission_manage_archive_blog || permission_manage_delete_blog && status_filter == 3>
-								<@td>
-									<@checkBox id='selected_blog_${blog.id}' name='select_blog_id' value='${blog.id}' />
-								</@td>
-							</#if>
-							<@td>
-								<@div class='d-flex justify-content-between align-items-center mb-0 w-100'>
-									<@div class='mb-1'>
-										<@link href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}" title="#i18n{portal.util.labelModify}">
-											${blog.contentLabel!} <#if blog.locked><@icon style='lock' /></#if>
-										</@link>
-										<@p class='mt-2'>
-										<small>
-											#i18n{blog.manage_blogs.labelCreate} #i18n{blog.manage_blogs.labelBy}
-											<#if blog.userCreatorInfos??>
-												<strong>${blog.userCreatorInfos.lastName!}</strong>
-												<strong> ${blog.userCreatorInfos.firstName!}</strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}
-											<#else>
-												<strong> #i18n{blog.manage_blogs.unknownUser} </strong> #i18n{blog.manage_blogs.labelThe} ${blog.creationDate?date}
-											</#if>
-										</small>
-										</@p>
-										<#if blog.editComment?? && blog.editComment?trim !=''>
-											<@p><@span class="label label-default"><@icon style='comment' /> <strong>#i18n{blog.manage_blogs.columnEditComment}:</strong> ${blog.editComment} </@span></@p>
-										</#if>
-									</@div>
-								</@div>
-							</@td>
-							<#if blog.userCreatorInfos??>
-								<@td>${blog.creationDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userCreatorInfos.lastName!} ${blog.userCreatorInfos.firstName!}</strong></@td>
-							<#else>
-								<@td>${blog.creationDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong> #i18n{blog.manage_blogs.unknownUser} </strong></@td>
-							</#if>
-							<#if blog.userInfos??>
-								<@td>${blog.updateDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong>${blog.userInfos.lastName!} ${blog.userInfos.firstName!}</strong></@td>
-							<#else>
-								<@td>${blog.updateDate!}<br>#i18n{blog.manage_blogs.labelBy} <strong> #i18n{blog.manage_blogs.unknownUser} </strong></@td>
-							</#if>
-							<@td>
-								<#list blog.tag as tg>
-									<#list list_tag as tgName>
-										<#if tgName.code==tg.idTag?string>
-											<@tag color='info text-white mb-1'>${tgName.name!}</@tag>
-											<#break>
-										</#if>
-									</#list>
-								</#list>
-							</@td>
-							<@td>
-							<#if permission_manage_publish_blog && status_filter != 3>
-								<#assign btnColor><#if blog.blogPublication?size = 0>default<#else>primary</#if></#assign>
-								<#assign btnTitle><#if blog.blogPublication?size==0>#i18n{blog.manage_blogs.labelPublished}<#else>#i18n{blog.manage_blogs.managePublication}</#if></#assign>
-								<@btnGroup params='aria-label="Manage"'>
-									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' class='position-relative overflow-visible' color='${btnColor}' title=title buttonIcon='globe' size=''>
-									<#if blog.blogPublication?size &gt; 0>
-										<@span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success z-2">
-											${blog.blogPublication?size} <@span class="visually-hidden">#i18n{blog.manage_blogs.labelDisplays}</@span>
-										</@span>
+					</#list>	
+					</@cBlock>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn auto=true dir='column' valign='baseline' class='searchable' cols='4'>
+				<@p class='fw-bold fs-3 mb-0 w-100'>#i18n{blog.create_blog.TagsTitle}</@p>
+				<#if blog.tag?size gt 0>
+					<@cBlock class='d-flex flex-column align-items-start flex-shrink-1'>
+						<#list blog.tag as tg><#list list_tag as tgName><#if tgName.code==tg.idTag?string><@tag color='' class='badge-outline text-blue badge-sm mb-1'><@icon style='tag' />${tgName.name!}</@tag><#break></#if></#list></#list>
+					</@cBlock>
+				<#else>
+					<@span class='text-muted'><@icon style='tag-off' /> #i18n{blog.manage_tags.noTag}</@span>
+				</#if>
+				</@manageFeatureItemColumn>
+				<@manageFeatureItemColumn bp='lg' align='end'>
+					<#if permission_manage_modify_blog>
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' hideTitle=['all'] />
+					</#if>
+					<#if permission_manage_publish_blog && status_filter != 3>
+						<#if blog.blogPublication?size = 0>
+							<#assign btnColor>secondary me-1</#assign>
+							<#assign btnTitle>#i18n{blog.manage_blogs.labelNotPublished}</#assign>
+						<#else>
+							<#assign btnColor>primary</#assign>
+							<#assign btnTitle>#i18n{blog.manage_blogs.labelPublished}</#assign>
+						</#if>	
+						<#assign nbPublication><#if blog.blogPublication?size gt 0>${blog.blogPublication?size!}</#if></#assign>
+						<#assign btnPublicationDropdown>
+						<#if blog.blogPublication?size gt 0>
+							<@button type='button' class='btn-primary me-1' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all'] size=''>
+							<#list blog.blogPublication?sort_by("idPortlet") as publication>
+								<@li class='dropdown-item'>
+									<@span class='me-auto' params='data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}"' >${publication.portlet.name} - #i18n{blog.modify_blog.labelPage} ${publication.portlet.pageId}</@span>
+									<#if !publication.portlet.contentId??>
+										<#-- <@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='secondary' size='sm' hideTitle=['all'] buttonIcon='playlist-x'  params='data-bs-toggle="tooltip" data-bs-placement="bottom"'/> -->
+										<@offcanvas id='blog-unpublish-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}' useIframe=true title='#i18n{blog.publication_blog.buttonUnPublish}' btnTitle='#i18n{blog.publication_blog.buttonUnPublish}' btnIcon='playlist-x' btnColor='outline-secondary' btnClass='btn-sm' hideTitle=['all'] position='end' size='half' params=' data-bs-toggle="popover" data-bs-placement="bottom" data-bs-title="#i18n{blog.publication_blog.buttonUnPublish}"' />
 									</#if>
-									</@aButton>
-									<#if blog.blogPublication?size &gt; 0>
-										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all']size=''>
-											<#list blog.blogPublication?sort_by("idPortlet") as publication>
-												<@li>
-													<@btnGroup class='d-flex justify-content-between'>
-														<@span class='mx-2 pt-1'>${publication.portlet.name} - #i18n{blog.modify_blog.labelPage}   ${publication.portlet.pageId} </@span>
-														<@span>
-															<#if !publication.portlet.contentId??>
-																<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idBlog=${blog.id}&amp;idPortlet=${publication.idPortlet}&id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='danger' size='sm' hideTitle=['all'] buttonIcon='trash' />
-															</#if>
-															<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}" color='outline-primary' size='sm' hideTitle=['all'] buttonIcon='external-link' />
-														</@span>
-													</@btnGroup>
-												</@li>
-											</#list>
-										</@button>
-									</#if>
-								</@btnGroup>
-							</#if>
-							<#-- Improvement needed to use Offcanvas with search in publication  -->
-							<#-- <@offcanvas targetUrl="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}" targetElement="#publication_blog" id="publish-${blog.id}"  btnIcon="globe" btnColor="primary" position="end" title="#i18n{blog.publication_blog.buttonPublish}" size="auto"/> -->
-							</@td>
-							<@td class='w-25'>
-								<#if permission_manage_modify_blog>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' hideTitle=['all']  />
-								</#if>
-								<#if permission_manage_create_blog>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=duplicateBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelDuplicateBlog}' buttonIcon='copy' hideTitle=['all']  />
-								</#if>
-								<@btnGroup>
-								<#if blog.version !=1>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&amp;id=${blog.id}&amp;blog_version=${blog.version}' title='#i18n{blog.history_blog.labelDiffPrevious}' buttonIcon='git-compare' hideTitle=['all'] />
-								</#if>
-								<#if blog.version &gt; 1>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' class='notif position-relative overflow-visible' title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions}' buttonIcon='history' hideTitle=['all']size=''>
-										<@span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-											${blog.version}
-										</@span>
-									</@aButton>
-								</#if>
-								</@btnGroup>
-								<#if permission_manage_archive_blog>
-                                    <#if blog.isArchived() >
-                                        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=1&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
-									<#else>
-                                        <@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&amp;select_blog_action=0&amp;select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
-									</#if>
-								</#if>
-								<#if permission_manage_delete_blog && status_filter == 3>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&amp;id=${blog.id}'  title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='danger' />
-								</#if>
-								<@aButton href='jsp/site/Portal.jsp?page=blog&amp;id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default ms-1' size='' class='btn-preview'  />
-							</@td>
-                         <@td class='w-12'>
-                            <#list list_blog_contributors as blogId, contributorList>
-                               <#if blogId == blog.id>
-                                   <#list contributorList as contributorName>
-                                     ${contributorName}
-                                  </#list>
-                               </#if>
-                            </#list>
-                         </@td>
-                      </@tr>
-						<#assign idx=idx + 1/>
-					</#list>
-				</@table>
-				</@tform>
-			</@boxBody>
-		</@box>
-		<@paginationAdmin paginator=paginator combo=1 />
+									<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' title='#i18n{blog.publication_blog.labelShowInAdmin}' color='outline-secondary' size='sm' hideTitle=['all'] buttonIcon='external-link' params=' data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="#i18n{blog.publication_blog.labelShowInAdmin} ?" '/>
+								</@li>
+							</#list>
+							</@button>
+						</#if>
+						</#assign>
+						<@offcanvas id='blog-publication-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' useIframe=true title=btnTitle btnTitle=btnTitle btnIcon='globe' btnColor='${btnColor}' hideTitle=['xs','sm','md','lg','xl'] btnDropdown=true  btnDropdownContent=btnPublicationDropdown badgeColor='success' badgeContent=nbPublication! position='end' size='half' />
+					</#if>
+					<#if blog.version gt 1>
+						<@offcanvas id='blog-history-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&id=${blog.id}' useIframe=true title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions}' hideTitle=['xs','sm','md','lg','xl'] btnTitle='#i18n{blog.manage_blogs.labelHistory}' btnClass='rounded' btnIcon='history' badgeColor='info' badgeContent=blog.version! position='end' size='half' />
+					</#if>
+					<#if permission_manage_create_blog>
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=duplicateBlog&id=${blog.id}' title='#i18n{blog.manage_blogs.labelDuplicateBlog}' buttonIcon='copy' hideTitle=['all'] />
+					</#if>
+					<#-- <#if blog.version !=1><@offcanvas id='blog-diff-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' useIframe=true title='#i18n{blog.history_blog.labelDiffPrevious}' btnIcon='git-compare' position='end' size='half' /></#if> -->
+					<#if permission_manage_archive_blog>
+						<#if blog.isArchived()>
+							<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&select_blog_action=1&select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
+						<#else>
+							<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&select_blog_action=0&select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
+						</#if>
+					</#if>
+					<#if permission_manage_delete_blog && status_filter == 3>
+						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=confirmRemoveBlog&id=${blog.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='danger' />
+					</#if>
+					<@aButton href='jsp/site/Portal.jsp?page=blog&id=${blog.id}' title='#i18n{portal.site.admin_page.labelShowPage}' buttonIcon='external-link' hideTitle=['all'] target='_blank' color='default ms-1' size='' class='btn-preview' />
+				</@manageFeatureItemColumn>
+			</@manageFeatureItem>
+			<#assign idx=idx + 1/>
+			</#list>
+		</@manageFeature>
+		</@tform>
+		<#if blog_list?size gte 5><@paginationAdmin paginator=paginator combo=1 /></#if>
+	<#else>
+		<@card>
+		<#if permission_manage_create_blog>
+			<@empty title='#i18n{blog.manage_blogs.noPost}' iconName='inbox-off' subtitle='#i18n{blog.modify_blog.labelHtmlContent.help}' actionTitle='#i18n{blog.manage_blogs.buttonAdd}' actionUrl='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' />
+		<#else>
+			<@empty title='#i18n{blog.manage_blogs.noPost}' iconName='inbox-off' subtitle='#i18n{blog.modify_blog.labelHtmlContent.help}' />
+		</#if>
+		</@card>	
+	</#if>
 	</@pageColumn>
 </@pageContainer>
 <script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
 <link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
 <script>
-document.addEventListener( "DOMContentLoaded", function(){
+document.addEventListener( "DOMContentLoaded", function() {
   	new SlimSelect({
         select: '#tag_doc',
 		settings: {
@@ -257,6 +220,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 			timeoutDelay: 200,
 		},
 	});
+
 	new SlimSelect({
 		select: '#unpublished',
 		settings: {
@@ -265,80 +229,93 @@ document.addEventListener( "DOMContentLoaded", function(){
 			timeoutDelay: 200,
 		},
 	});
-});
-
-	// Check if all inputs are empty or unchecked
-
-	function areAllInputsEmptyOrUnchecked() {
-		const isChecked = document.getElementById('current_user').checked;
-		const searchText = document.getElementById('search_text').value.trim();
-		const tagValue = document.getElementById('tag_doc').selectedOptions.length > 0
-		const dateUpdateBlogAfter = document.getElementById('dateUpdateBlogAfter').value.trim();
-		const dateUpdateBlogBefore = document.getElementById('dateUpdateBlogBefore').value.trim();
-		const blogStatus = document.getElementById('unpublished').value;
-		return !isChecked &&
-			   (searchText === '' || searchText === null) &&
-			  	!tagValue &&
-			   (dateUpdateBlogAfter === '' || dateUpdateBlogAfter === null) &&
-			   (dateUpdateBlogBefore === '' || dateUpdateBlogBefore === null) &&
-			   (blogStatus === '0' || blogStatus === null);
-	}
-
-	// Show/hide reset button based on input values
-	const btnReset = document.getElementById('button_reset');
-	const formManage = document.getElementById('form-manage');
-
-	btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
-
-	formManage.addEventListener('input', function() {
-		btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
-	});
-
-	// Add change event listener to the select elements
-	document.getElementById('tag_doc').addEventListener('change', function() {
-		btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
-	});
-
-	document.getElementById('unpublished').addEventListener('change', function() {
-		btnReset.classList.toggle('d-none', areAllInputsEmptyOrUnchecked());
-	});
-
-// checkbox row
-let btnApplyActionOnSelection = document.getElementById('button_apply_selected_action')
-
-window.addEventListener("load", ( ) => manageActionButtonVisibility( ) );
-
-// When the "Check all" / "Uncheck all" element is clicked, check / uncheck all the blog posts' checkboxes
-document.getElementById('select_all_blogs_id').addEventListener('click', function () {
-	var selectionButton = document.getElementById('select_blog_action')
-	var checkBoxes = document.querySelectorAll('input[name="select_blog_id"]')
-
-	// Check / uncheck the available checkboxes
-	checkBoxes.forEach(function (checkBox) {
-		checkBox.checked = this.checked
-	}, this);
-	manageActionButtonVisibility();
-});
-
-// Enable / disabled the selection of an action when a blog post's checkbox is checked
-document.querySelectorAll('input[name="select_blog_id"]').forEach(function (checkbox) {
-	checkbox.addEventListener('change', function () {
-		manageActionButtonVisibility();
-	})
-});
+	
+	// checkbox row
+	let btnApplyActionOnSelection = document.getElementById('button_apply_selected_action');
+	
 
 	function manageActionButtonVisibility() {
 		var selectionButton = document.getElementById('select_blog_action');
 		var selectedCheckBoxes = document.querySelectorAll('input[name="select_blog_id"]:checked');
-		if (selectedCheckBoxes.length > 0) {
-			// Enable the selection and execution of an action
-			selectionButton.removeAttribute('disabled');
-			btnApplyActionOnSelection.removeAttribute('disabled');
-		}
-		else {
-			// Disable the selection and execution of an action
-			selectionButton.setAttribute('disabled', 'disabled');
-			btnApplyActionOnSelection.setAttribute('disabled', 'disabled');
+		if ( selectedCheckBoxes != undefined && selectionButton != null ){
+			if (selectedCheckBoxes.length > 0) {
+				// Enable the selection and execution of an action
+				selectionButton.removeAttribute('disabled');
+				btnApplyActionOnSelection.removeAttribute('disabled');
+			} else {
+				// Disable the selection and execution of an action
+				selectionButton.setAttribute('disabled', 'disabled');
+				btnApplyActionOnSelection.setAttribute('disabled', 'disabled');
+			}
 		}
 	}
+
+	// When the "Check all" / "Uncheck all" element is clicked, check / uncheck all the blog posts' checkboxes
+	if( document.getElementById('select_all_blogs_id') != null ){
+		document.getElementById('select_all_blogs_id').addEventListener('click', function () {
+			var selectionButton = document.getElementById('select_blog_action')
+			var checkBoxes = document.querySelectorAll('input[name="select_blog_id"]')
+			
+			// Check / uncheck the available checkboxes
+			checkBoxes.forEach(function (checkBox) {
+				checkBox.checked = this.checked
+			}, this);
+			manageActionButtonVisibility();
+		});
+	} 
+
+	// Enable / disabled the selection of an action when a blog post's checkbox is checked
+	document.querySelectorAll('input[name="select_blog_id"]').forEach(function (checkbox) {
+		checkbox.addEventListener('change', function () {
+			manageActionButtonVisibility();
+		})
+	});
+	
+	manageActionButtonVisibility( )
+
+	// Show/hide .btn-reset based on search fields in form-manage
+	function isFieldFilled( field ) {
+		if ( field.type === 'checkbox' ) return field.checked;
+		if ( field.tagName === 'SELECT' && field.multiple ) return field.selectedOptions.length > 0;
+		if ( field.tagName === 'SELECT' ) return field.value !== '' && field.value !== '0';
+		return field.value !== '';
+	}
+
+	function toggleResetButtons() {
+		document.querySelectorAll( 'form[name="form-manage"]' ).forEach( function( form ) {
+			var fields = form.querySelectorAll( 'input:not([type="hidden"]):not([type="submit"]), select, textarea' );
+			var hasValue = false;
+			fields.forEach( function( field ) {
+				if ( isFieldFilled( field ) ) hasValue = true;
+			});
+			form.querySelectorAll( '.btn-reset' ).forEach( function( btn ) {
+				btn.classList.toggle( 'd-none', !hasValue );
+			});
+			// Show/hide paginator item count badge on page title
+			var pageTitle = document.querySelector( '#page-header .page-title' );
+			var paginatorItemCount = document.querySelector( '.paginator-item-count' );
+			if ( pageTitle && paginatorItemCount ) {
+				var badge = pageTitle.querySelector( '.badge-paginator-count' );
+				if ( hasValue ) {
+					if ( !badge ) {
+						badge = document.createElement( 'span' );
+						badge.className = 'badge bg-blue-lt ms-2 badge-paginator-count';
+						pageTitle.appendChild( badge );
+					}
+					badge.textContent = paginatorItemCount.textContent.trim();
+				} else if ( badge ) {
+					badge.remove();
+				}
+			}
+		});
+	}
+
+	document.querySelectorAll( 'form[name="form-manage"]' ).forEach( function( form ) {
+		form.addEventListener( 'input', toggleResetButtons );
+		form.addEventListener( 'change', toggleResetButtons );
+	});
+
+	toggleResetButtons();
+
+});
 </script>
