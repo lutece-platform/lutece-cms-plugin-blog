@@ -148,12 +148,10 @@
             <@card class='mt-3'>
             <@messages errors=errors />
             <@formGroup labelFor='content_label' labelKey='#i18n{blog.create_blog.labelContentLabel}' rows=2>
-                <@input name='content_label' id='content_label' value='${blog.contentLabel!?trim}' class='visually-hidden' />
-                <@div id='div_content_label' class='content-head form-control lutece-charcounter' params='data-lutece-counter-max="75" contenteditable="true"'>${blog.contentLabel!?trim}</@div>
+                <@input name='content_label' id='content_label' value='${blog.contentLabel!?trim}' max="75" />
             </@formGroup>
             <@formGroup labelFor='description' labelKey='#i18n{blog.create_blog.labelDescription}' rows=2>
-                <@input name='description' id='description' value='${blog.description!}' class='visually-hidden' />
-                <@div id='div_description' class='content-desc form-control lutece-charcounter' params='data-lutece-counter-max="300" contenteditable="true"'>${blog.description!}</@div>
+                <@input type='textarea' name='description' id='description' value='${blog.description!}' max="300" />
             </@formGroup>
             <@formGroup labelFor='html_content' labelKey='#i18n{blog.create_blog.labelHtmlContent}' rows=2>
                 <@input type='textarea' name='html_content' id='html_content' value='${blog.htmlContent!}' class='visually-hidden' />
