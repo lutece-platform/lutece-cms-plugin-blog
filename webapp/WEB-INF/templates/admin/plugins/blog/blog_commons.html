@@ -59,33 +59,12 @@ function setBlogToast( toastType, toastTitle, toastContent ){
 }
 
 document.addEventListener( "DOMContentLoaded", function(){
-  const formEditor = document.querySelector('#form-editor'), 
-  dLabel=document.querySelector('#div_content_label') , iLabel=document.querySelector('#content_label'),
-  dDesc=document.querySelector('#div_description') , iDesc=document.querySelector('#description'),
+  const formEditor = document.querySelector('#form-editor'),
   dHtml=document.querySelector('#div_html_content') , iHtml=document.querySelector('#html_content');
 
   refreshMandatoryTagInfo( );
 
   formEditor.addEventListener( "submit", event => {
-    const t = dLabel.textContent.replace('\n','').replace('#i18n{blog.message.default.blogTitle}','').trim();
-    if( t == '' ){
-      setBlogToast( 'warning' , '#i18n{blog.message.blogTitleNotEmpty}', ''  );
-      event.preventDefault();
-      dLabel.focus({ focusVisible: true })
-      return false;
-    } else {
-      iLabel.value = t ;
-    }
-    
-    const d = dDesc.innerHTML.replace('#i18n{blog.message.default.blogDescription}','').replace('<p>','').replace('</p>','').trim();
-    if( d == '' ) {
-      setBlogToast( 'warning' , '#i18n{blog.message.blogDescriptionNotEmpty}', ''  )	
-      event.preventDefault();
-      dDesc.focus({ focusVisible: true })
-      return false;
-    } else {
-      iDesc.value = d;
-    }
 
     iHtml.value = dHtml.innerHTML.trim();
     
