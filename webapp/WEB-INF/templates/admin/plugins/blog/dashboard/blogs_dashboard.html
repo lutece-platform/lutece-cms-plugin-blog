@@ -1,4 +1,5 @@
-<@adminDashboardWidget title='#i18n{blog.dashboard.columnLastModifiedDocument}' id='blog_dashboard' url=url >
+<#assign blogFooter><#if permission_manage_create_blog><@div class='d-flex'><@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' title='#i18n{blog.manage_blogs.buttonAdd}' buttonIcon='plus' class='ms-auto' size='' /></@div></#if></#assign>
+<@adminDashboardWidget title='#i18n{blog.dashboard.columnLastModifiedDocument}' id='blog_dashboard' url=url bodyClass='vmax-dvh-25 overflow-y-auto ' boxContentFooter=blogFooter>
 <#if last_modified_document?size=0>
 	<#if permission_manage_create_blog>
 		<@empty title='#i18n{blog.manage_blogs.noPost}' iconName='inbox-off' subtitle='#i18n{blog.modify_blog.labelHtmlContent.help}' actionTitle='#i18n{blog.manage_blogs.buttonAdd}' actionUrl='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' />
@@ -27,12 +28,5 @@
 	</@manageFeatureItem>	
 	</#list>
 	</@manageFeature>
-	<#if permission_manage_create_blog>
-	<@row class='border-top mt-2 pt-2'>
-		<@columns>
-			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' title='#i18n{blog.manage_blogs.buttonAdd}' buttonIcon='plus' class='ms-auto' size='' />
-		</@columns>	
-	</@row>	
-	</#if>
 </#if>
 </@adminDashboardWidget>
