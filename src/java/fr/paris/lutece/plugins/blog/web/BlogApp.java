@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.blog.web;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
+import fr.paris.lutece.plugins.blog.business.DocContentHome;
 import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
@@ -45,7 +46,9 @@ import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -80,6 +83,9 @@ public class BlogApp extends MVCApplication
     protected static final String PARAMETER_ID_BLOG = "id";
     protected static final String PARAMETER_VERSION_BLOG = "version";
     protected static final String PARAMETER_ID_PORTLET = "portlet_id";
+    protected static final String PARAMETER_FROM_NAME = "from_name";
+    protected static final String PARAMETER_FROM_PAGE_NAME = "from_page_name";
+    protected static final String PARAMETER_FROM_PAGE_ID = "from_page_id";
 
     protected static final String PARAMETER_VIEW = "view";
 
@@ -88,6 +94,10 @@ public class BlogApp extends MVCApplication
     // Filter Marks
     protected static final String MARK_BLOG = "blog";
     protected static final String MARK_LIST_DOC = "blog_list";
+    protected static final String MARK_FROM_NAME = "from_name";
+    protected static final String MARK_FROM_PAGE_NAME = "from_page_name";
+    protected static final String MARK_FROM_PAGE_ID = "from_page_id";
+    protected static final String MARK_RELATED_BLOGS = "related_blogs";
 
     // Views
     private static final String VIEW_DETAILS = "documentDetails";
@@ -117,11 +127,9 @@ public class BlogApp extends MVCApplication
             nVersion = Integer.parseInt( strVersion );
         }
 
-
         String idPortlet = request.getParameter( PARAMETER_ID_PORTLET );
         if ( idPortlet != null && !idPortlet.isEmpty( ) )
         {
-
             listBlogPub = BlogPublicationHome.getDocPublicationByPortlet( Integer.parseInt( idPortlet ) );
         }
         List<Blog> listBlogs = new ArrayList<>( );
@@ -151,8 +159,47 @@ public class BlogApp extends MVCApplication
         }
 
         model.put( MARK_BLOG, blog );
-        model.put( MARK_LIST_DOC, listBlogs );
         model.put( MARK_LIST_TAG, TagHome.getTagsReferenceList( ) );
+
+        if ( blog != null && blog.isDisplayRelated( ) )
+        {
+            int nMaxRelated = blog.getMaxRelated( ) > 0 ? blog.getMaxRelated( ) : 3;
+            List<Blog> relatedBlogs = listBlogs.stream( )
+                    .filter( b -> b.getId( ) != blog.getId( ) )
+                    .sorted( Comparator.comparing( Blog::getUpdateDate, Comparator.nullsLast( Comparator.reverseOrder( ) ) ) )
+                    .limit( nMaxRelated )
+                    .collect( Collectors.toList( ) );
+            for ( Blog relBlog : relatedBlogs )
+            {
+                relBlog.setDocContent( DocContentHome.getDocsContentByHtmlDoc( relBlog.getId( ) ) );
+            }
+            model.put( MARK_RELATED_BLOGS, relatedBlogs );
+        }
+
+        String strFromName = request.getParameter( PARAMETER_FROM_NAME );
+        if ( strFromName != null && !strFromName.isEmpty( ) )
+        {
+            model.put( MARK_FROM_NAME, strFromName );
+        }
+
+        String strFromPageName = request.getParameter( PARAMETER_FROM_PAGE_NAME );
+        if ( strFromPageName != null && !strFromPageName.isEmpty( ) )
+        {
+            model.put( MARK_FROM_PAGE_NAME, strFromPageName );
+        }
+
+        String strFromPageId = request.getParameter( PARAMETER_FROM_PAGE_ID );
+        if ( strFromPageId != null && !strFromPageId.isEmpty( ) )
+        {
+            try
+            {
+                model.put( MARK_FROM_PAGE_ID, Integer.parseInt( strFromPageId ) );
+            }
+            catch ( NumberFormatException e )
+            {
+                // ignore invalid value, breadcrumb falls back to a non-clickable item
+            }
+        }
 
         return getXPage( TEMPLATE_VIEW_BLOG, getLocale( request ), model );
     }

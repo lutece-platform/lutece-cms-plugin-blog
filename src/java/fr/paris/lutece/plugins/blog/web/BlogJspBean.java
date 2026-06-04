@@ -171,6 +171,9 @@ public class BlogJspBean extends ManageBlogJspBean
     protected static final String PARAMETER_CONTENT_ACTION = "contentAction";
     protected static final String PARAMETER_INFO_MESSAGE = "info_message";
     protected static final String PARAMETER_TO_ARCHIVE = "to_archive";
+    protected static final String PARAMETER_DISPLAY_TOC = "display_toc";
+    protected static final String PARAMETER_DISPLAY_RELATED = "display_related";
+    protected static final String PARAMETER_MAX_RELATED = "max_related";
 
     protected static final String PARAMETER_SELECTED_BLOGS = "select_blog_id";
     protected static final String PARAMETER_SELECTED_BLOG_ACTION = "select_blog_action";
@@ -1052,6 +1055,14 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             nVersion = Integer.parseInt( strResetVersion );
             _blog = BlogHome.findVersion( nId, nVersion );
+            // display options are not versioned: copy them from the current blog_blog row
+            Blog currentBlog = BlogService.getInstance( ).loadBlog( nId );
+            if ( currentBlog != null )
+            {
+                _blog.setDisplayToc( currentBlog.isDisplayToc( ) );
+                _blog.setDisplayRelated( currentBlog.isDisplayRelated( ) );
+                _blog.setMaxRelated( currentBlog.getMaxRelated( ) );
+            }
             _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
         }
         else
@@ -1068,6 +1079,10 @@ public class BlogJspBean extends ManageBlogJspBean
                model.put( MARK_ACTUAL_BLOG_VERSION, actualVersion );
             }
             lastVersion.setDocContent( actualBlog.getDocContent() );
+            // display options are not versioned: copy them from the current blog_blog row
+            lastVersion.setDisplayToc( actualBlog.isDisplayToc( ) );
+            lastVersion.setDisplayRelated( actualBlog.isDisplayRelated( ) );
+            lastVersion.setMaxRelated( actualBlog.getMaxRelated( ) );
           _blog = lastVersion;
             _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
 
@@ -1141,6 +1156,9 @@ public class BlogJspBean extends ManageBlogJspBean
         String strDescription = request.getParameter( PARAMETER_DESCRIPTION );
         String strShareable = request.getParameter( PARAMETER_SHAREABLE );
         String strUrl = request.getParameter( PARAMETER_URL );
+        String strDisplayToc = request.getParameter( PARAMETER_DISPLAY_TOC );
+        String strDisplayRelated = request.getParameter( PARAMETER_DISPLAY_RELATED );
+        String strMaxRelated = request.getParameter( PARAMETER_MAX_RELATED );
 
         if ( RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_MODIFY, (User) getUser( ) ) )
         {
@@ -1162,6 +1180,19 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setUpdateDate( getSqlDate( ) );
             _blog.setUser( AdminUserService.getAdminUser( request ).getAccessCode( ) );
             _blog.setUrl( strUrl );
+            _blog.setDisplayToc( strDisplayToc != null );
+            _blog.setDisplayRelated( strDisplayRelated != null );
+            if ( strMaxRelated != null && !strMaxRelated.isEmpty( ) )
+            {
+                try
+                {
+                    _blog.setMaxRelated( Integer.parseInt( strMaxRelated ) );
+                }
+                catch ( NumberFormatException e )
+                {
+                    _blog.setMaxRelated( 3 );
+                }
+            }
 
             // Check constraints
             if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )

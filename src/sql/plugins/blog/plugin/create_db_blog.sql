@@ -30,6 +30,9 @@ description long varchar default '' NOT NULL,
 shareable int default 0 NOT NULL,
 url varchar(255) default '',
 is_archived boolean default false,
+display_toc boolean default false NOT NULL,
+display_related boolean default false NOT NULL,
+max_related int default 3 NOT NULL,
 
 PRIMARY KEY (id_blog)
 );

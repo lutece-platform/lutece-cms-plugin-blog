@@ -54,15 +54,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 public final class BlogDAO implements IBlogDAO
 {
     // Constants
-    private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url, is_archived FROM blog_blog WHERE id_blog = ?";
+    private static final String SQL_QUERY_SELECT = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url, is_archived, display_toc, display_related, max_related FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_SELECT_LAST_DOCUMENTS = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description,  shareable, url, is_archived FROM blog_blog ORDER BY update_date DESC LIMIT ?";
     private static final String SQL_QUERY_SELECT_BY_NAME = "SELECT id_blog,  version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived FROM blog_blog WHERE content_label = ?";
     private static final String SQL_QUERY_SELECT_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions WHERE id_blog = ? AND version = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_blog ( version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived, display_toc, display_related, max_related ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_blog WHERE id_blog = ?";
     private static final String SQL_QUERY_DELETE_VERSIONS = "DELETE FROM blog_versions WHERE id_blog = ? ";
     private static final String SQL_QUERY_DELETE_SPECIFIC_VERSION = "DELETE FROM blog_versions WHERE id_blog = ? AND version = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_blog SET version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ?, url= ?, is_archived=? WHERE id_blog = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_blog SET version = ?, content_label = ?, creation_date = ?, update_date = ?, html_content = ?, user_editor = ?, user_creator = ?, attached_portlet_id = ?, edit_comment = ?, description = ?, shareable = ?, url= ?, is_archived=?, display_toc=?, display_related=?, max_related=? WHERE id_blog = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url, is_archived FROM blog_blog order by creation_date DESC";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_blog FROM blog_blog WHERE !is_archived ORDER BY creation_date DESC";
     private static final String SQL_QUERY_SELECTALL_VERSION = "SELECT id_blog, version, content_label, creation_date, update_date, html_content, user_editor, user_creator, attached_portlet_id, edit_comment, description, shareable, url FROM blog_versions where id_blog = ?";
@@ -119,7 +119,10 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setString( nIndex++, blog.getDescription( ) );
             daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
             daoUtil.setString( nIndex++, blog.getUrl( ) );
-            daoUtil.setBoolean( nIndex, false );
+            daoUtil.setBoolean( nIndex++, false );
+            daoUtil.setBoolean( nIndex++, blog.isDisplayToc( ) );
+            daoUtil.setBoolean( nIndex++, blog.isDisplayRelated( ) );
+            daoUtil.setInt( nIndex, blog.getMaxRelated( ) );
 
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -187,7 +190,10 @@ public final class BlogDAO implements IBlogDAO
                 blog.setDescription( daoUtil.getString( nIndex++ ) );
                 blog.setShareable( daoUtil.getBoolean( nIndex++ ) );
                 blog.setUrl( daoUtil.getString( nIndex++ ) );
-                blog.setArchived( daoUtil.getBoolean( nIndex ) );
+                blog.setArchived( daoUtil.getBoolean( nIndex++ ) );
+                blog.setDisplayToc( daoUtil.getBoolean( nIndex++ ) );
+                blog.setDisplayRelated( daoUtil.getBoolean( nIndex++ ) );
+                blog.setMaxRelated( daoUtil.getInt( nIndex ) );
 
             }
 
@@ -332,6 +338,9 @@ public final class BlogDAO implements IBlogDAO
             daoUtil.setBoolean( nIndex++, blog.getShareable( ) );
             daoUtil.setString( nIndex++, blog.getUrl( ) );
             daoUtil.setInt( nIndex++, blog.isArchived( )?1:0 );
+            daoUtil.setBoolean( nIndex++, blog.isDisplayToc( ) );
+            daoUtil.setBoolean( nIndex++, blog.isDisplayRelated( ) );
+            daoUtil.setInt( nIndex++, blog.getMaxRelated( ) );
 
             daoUtil.setInt( nIndex, blog.getId( ) );
 

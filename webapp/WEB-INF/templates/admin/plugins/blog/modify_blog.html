@@ -141,6 +141,23 @@
                                         </@formGroup>
                                     </@boxBody>
                                 </@box>
+                                <@box>
+                                    <@boxHeader title='#i18n{blog.modify_blog.labelOptions}'>
+                                        <@icon style='adjustments' />
+                                    </@boxHeader>
+                                    <@boxBody>
+                                        <@formGroup rows=2>
+                                            <@checkBox labelKey='#i18n{blog.modify_blog.labelDisplayToc}' orientation='switch' name='display_toc' id='display_toc' value='true' checked=blog.displayToc />
+                                        </@formGroup>
+                                        <@formGroup rows=2>
+                                            <@checkBox labelKey='#i18n{blog.modify_blog.labelDisplayRelated}' orientation='switch' name='display_related' id='display_related' value='true' checked=blog.displayRelated />
+                                        </@formGroup>
+                                        <#assign maxRelatedWrapperClass>mb-0<#if !blog.displayRelated> visually-hidden</#if></#assign>
+                                        <@formGroup id='max_related_wrapper' labelFor='max_related' labelKey='#i18n{blog.modify_blog.labelMaxRelated}' helpKey='#i18n{blog.modify_blog.labelMaxRelated.help}' rows=2 class=maxRelatedWrapperClass>
+                                            <@input type='number' name='max_related' id='max_related' value='${blog.maxRelated?c}' min=1 max=20 />
+                                        </@formGroup>
+                                    </@boxBody>
+                                </@box>
                         </@offcanvas>
                     </@columns>
                 </@row>
@@ -179,6 +196,16 @@
 </#if>
 <@initEditor />
 <@blogJSInit />
+<script>
+(function() {
+    var displayRelated = document.getElementById('display_related');
+    var wrapper = document.getElementById('max_related_wrapper');
+    if (!displayRelated || !wrapper) return;
+    displayRelated.addEventListener('change', function() {
+        wrapper.classList.toggle('visually-hidden', !displayRelated.checked);
+    });
+})();
+</script>
 <#if is_crop_image>
 <@modal id='imageModal' size='xl'>
 <@modalHeader modalTitle='#i18n{blog.publication_blog.labelPublication}'/>

@@ -51,6 +51,8 @@ import fr.paris.lutece.plugins.blog.business.BlogFilter;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.utils.BlogUtils;
+import fr.paris.lutece.portal.business.page.Page;
+import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -71,6 +73,8 @@ public class BlogListPortlet extends PortletHtmlContent implements Serializable
     public static final String MARK_PAGE_TEMPLATE = "page_template";
     public static final String MARK_PORTLET_ID = "portlet_id";
     public static final String MARK_PORTLET_NAME = "portlet_name";
+    public static final String MARK_PAGE_NAME = "page_name";
+    public static final String MARK_PAGE_ID = "page_id";
 
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -121,6 +125,12 @@ public class BlogListPortlet extends PortletHtmlContent implements Serializable
 
             model.put( MARK_PORTLET_NAME, this.getName( ) );
 
+        }
+        Page parentPage = PageHome.findByPrimaryKey( this.getPageId( ) );
+        if ( parentPage != null && parentPage.getName( ) != null )
+        {
+            model.put( MARK_PAGE_NAME, parentPage.getName( ) );
+            model.put( MARK_PAGE_ID, parentPage.getId( ) );
         }
         Locale locale = null;
         if ( request != null )

@@ -1,34 +1,96 @@
-<section class="p-2">
-<h2 class="my-3">${portlet_name!}</h2>
-<#if blog_list_published??>
-<#list blog_list_published as doc>
-<div class="card portlet mb-2">
-	<div class="card-body">
-	<div class="media">
-		<div class="media-left">
-			<a href="jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}">
-			<#if doc.docContent?? && doc.docContent?size!=0>
-				<#list doc.docContent as docContent >
-					<#if docContent.contentType.idContentType=1>
-						<img  src="servlet/plugins/blogs/file?id_file=${docContent.id}"  title="${doc.contentLabel}" alt="${doc.contentLabel}" style="width:80px" class="media-object img-fluid">
-						<#break>
-					</#if>
-				</#list>
-			</#if>
-    		</a>
-		</div>
-		<div class="media-body pl-3">
-			<h4 class="media-heading">${doc.contentLabel}</h4>
-			${doc.description!}
-			<p class="lead">
-				<a href="<#if doc.url?trim != ''>${doc.url}<#else>jsp/site/Portal.jsp?page=blog&id=${doc.id}&portlet_id=${portlet_id}</#if>" alt="" title="">
-					#i18n{blog.xpage.blog.readMoreLabel}
-				</a>
-			</p>
-		</div>
-	</div>
-	</div>
-</div>
-</#list>
-</#if>
-</section>
+<@cTpl>
+<@cSection class='blog-posts'>
+    <@cBlock class='section-head'>
+        <@cTitle level=2 class='my-3 section-title'>${portlet_name!}</@cTitle>
+        <@cBtn id='toggle-grid' type='button' class='secondary btn-sm' label='Grid' />
+    </@cBlock>
+    <#if blog_list_published??>
+        <@chList class='posts list-unstyled'>
+            <#list blog_list_published as blog>
+                <#assign blogUrl><#if blog.url?trim != ''>${blog.url}<#else>jsp/site/Portal.jsp?page=blog&id=${blog.id}&portlet_id=${portlet_id}<#if portlet_name?has_content>&from_name=${portlet_name?url('UTF-8')}</#if><#if page_name?has_content>&from_page_name=${page_name?url('UTF-8')}</#if><#if page_id??>&from_page_id=${page_id?c}</#if></#if></#assign>
+                <@chItem>
+                    <@cArticle class='card post post--wide'>
+                        <#if blog.docContent?? && blog.docContent?size!=0>
+                            <@cBlock class='post__media'>
+                                <#if blog.tag?has_content>
+                                    <#list blog.tag as tg>
+                                        <@cInline class='post__cat me-2'>${tg.name!}</@cInline>
+                                    </#list>
+                                </#if>
+                                <#list blog.docContent as docContent>
+                                    <#if docContent.contentType.idContentType=1>
+                                        <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id}' alt=blog.contentLabel class='media-object img-fluid' params='title="${blog.contentLabel}"' />
+                                        <#break>
+                                    </#if>
+                                </#list>
+                            </@cBlock>
+                        <#else>
+                            <@cBlock class='post__media' params='style="background:linear-gradient(135deg, #FF442A 0%, #F87C97 100%);"'>
+                                <#if blog.tag?has_content>
+                                    <#list blog.tag as tg>
+                                        <@cInline class='post__cat me-2'>${tg.name!}</@cInline>
+                                    </#list>
+                                </#if>
+                                <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+                                    <g fill="rgba(255,255,255,0.18)">
+                                        <rect x="40" y="60" width="320" height="180" rx="8"></rect>
+                                    </g>
+                                    <g fill="#fff" transform="translate(60,80)">
+                                        <rect width="100" height="8" rx="2"></rect>
+                                        <rect y="20" width="200" height="6" rx="2" opacity="0.6"></rect>
+                                        <rect y="34" width="160" height="6" rx="2" opacity="0.6"></rect>
+                                        <rect y="60" width="80" height="24" rx="4" fill="#0E3968"></rect>
+                                        <rect x="90" y="60" width="80" height="24" rx="4" fill="rgba(255,255,255,0.4)"></rect>
+                                        <rect y="100" width="260" height="4" rx="2" opacity="0.3"></rect>
+                                        <rect y="110" width="200" height="4" rx="2" opacity="0.3"></rect>
+                                        <rect y="120" width="240" height="4" rx="2" opacity="0.3"></rect>
+                                    </g>
+                                    <circle cx="330" cy="80" r="22" fill="#fff" opacity="0.25"></circle>
+                                </svg>
+                            </@cBlock>
+                        </#if>
+                        <@cBlock class='card-body post__body'>
+                            <@cBlock class='media-body pl-3'>
+                                <@cTitle level=3 class='post__title'>
+                                    <@cLink href=blogUrl?trim label=blog.contentLabel></@cLink>
+                                </@cTitle>
+                                <@cText class='post__desc'>${blog.description!}</@cText>
+                                <@cBlock class='post__meta'>
+                                    <#assign blogAuthor=blog.userCreator />
+                                    <#assign creator = blog.userCreatorInfos!>
+                                    <#if creator?? && creator?has_content>
+                                        <#assign creatorFields = blog.userCreatorFields!>
+                                        <#if creatorFields?? && creatorFields?size gt 0>
+                                            <#list creatorFields as field>
+                                                <#if field.attribute??>
+                                                    <#if field.attribute.title='blog_author_title'><#assign blogAuthor>${field.value!}</#assign></#if>
+                                                </#if>
+                                            </#list>
+                                        </#if>
+                                    </#if>
+                                    <@cBlock class='av-sm'>${blogAuthor[0]?upper_case!}</@cBlock>
+                                    <@cBlock class='bl-author__name'>${blogAuthor}</@cBlock>
+                                    <#if blog.updateDate??>
+                                        <#assign updateDateIso = blog.updateDate?string('yyyy-MM-dd')>
+                                        <@cInline class='sep'>·</@cInline>
+                                        <@cInline type='time' params='datetime="${updateDateIso}"'>${blog.updateDate?string('dd/MM/yyyy')}</@cInline>
+                                    </#if>
+                                </@cBlock>
+                            </@cBlock>
+                        </@cBlock>
+                    </@cArticle>
+                </@chItem>
+            </#list>
+        </@chList>
+    </#if>
+</@cSection>
+<script>
+document.getElementById('toggle-grid').addEventListener('click', function() {
+    document.querySelector('.posts').classList.toggle('grid__inner');
+    document.querySelectorAll('.post').forEach(function(post) {
+        post.classList.toggle('post--wide');
+    });
+    this.textContent = this.textContent === 'Grid' ? 'List' : 'Grid';
+});
+</script>
+</@cTpl>

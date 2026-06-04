@@ -1,24 +1,201 @@
-<section class="card portlet pt-5 mt-5">
-    <div class="row px-5">
-        <article class="col p-3 mt-4">
-            <header class="px-5">        
-                <h2 class="h1">${blog.contentLabel}</h2>
-				<#if blog.docContent?? && blog.docContent?size!=0>
-                <#list blog.docContent?sort_by('priority') as docContent >
-                <#if docContent.contentType.idContentType=1>
-                    <figure class="float-left p-3"> 
-                        <img src="servlet/plugins/blogs/file?id_file=${docContent.id!}" title="${blog.contentLabel}" alt="${blog.contentLabel}" style="width:150px" class="img-fluid">
-                    </figure>
-					<#break>
-					</#if>
-					</#list>
-				</#if>
-                <h3>${blog.description!}</h3>
-            </header>
-            <div class="py-4 px-5">
-            ${blog.htmlContent}
-            </div>
-        </article>
-        <div class=" overflow-hidden"></div>
-    </div>
-</section>
+<@cTpl>
+<#assign readingTimeLabel = "#i18n{blog.portlet.blog.readingTime.label}">
+<@cContainer>
+    <@cRow>
+        <@cCol>
+            <@cArticle class='bg-light mt-m'>
+                <#assign breadcrumbItems = []>
+                <#if from_page_name?? && from_page_name != ''>
+                    <#assign fromPageUrl = ''>
+                    <#if from_page_id??><#assign fromPageUrl = 'jsp/site/Portal.jsp?page_id=' + from_page_id?c></#if>
+                    <#assign breadcrumbItems = breadcrumbItems + [{ 'title': from_page_name, 'url': fromPageUrl }]>
+                </#if>
+                <#if from_name?? && from_name != ''>
+                    <#assign breadcrumbItems = breadcrumbItems + [{ 'title': from_name, 'url': '' }]>
+                </#if>
+                <@cBreadCrumb home='Home' type='fluid' items=breadcrumbItems listClass='ms-m' />
+                <@cHeader class='bl-hero'>
+                    <@cBlock>
+                        <@cBlock class='bl-hero__meta'>
+                            <#if blog.tag?has_content>
+                                <#list blog.tag as tg>
+                                    <@cInline class='bl-cat'>${tg.name?string[0..*14]}<#if tg.name?length gt 14>...</#if></@cInline>
+                                </#list>
+                            </#if>
+                            <@cInline>·</@cInline>
+                            <#if blog.updateDate??>
+                                <#assign updateDateIso = blog.updateDate?string('yyyy-MM-dd')>
+                                <@cInline type='time' params='datetime="${updateDateIso}"'>${blog.updateDate?string('d MMMM yyyy')}</@cInline>
+                            </#if>
+                            <@cInline>·</@cInline>
+                            <@cInline class='bl-reading-time' params='data-reading-time-label="${readingTimeLabel}"'></@cInline>
+                        </@cBlock>
+                        <@cTitle level=1 class='bl-title'>${blog.contentLabel}</@cTitle>
+                        <@cText class='bl-lede'>${blog.description!}</@cText>
+                        <@cBlock class='bl-author'>
+                            <@cBlock class='bl-author__avatar'>${blog.userCreator[0]?upper_case!}</@cBlock>
+                            <@cBlock>
+                                <#assign blogAuthor=blog.userCreator />
+                                <#assign blogAuthorRole='' />
+                                <#assign creator = blog.userCreatorInfos!>
+                                <#if creator?? && creator?has_content>
+                                    <#assign creatorFields = blog.userCreatorFields!>
+                                    <#if creatorFields?? && creatorFields?size gt 0>
+                                       <#list creatorFields as field>
+                                           <#if field.attribute??>
+                                             <#if field.attribute.title='blog_author_title'><#assign blogAuthor>${field.value!}</#assign></#if>
+                                             <#if field.attribute.title='blog_author_role'><#assign blogAuthorRole>${field.value!}</#assign></#if>
+                                           </#if>
+                                        </#list>
+                                    </#if>
+                                </#if>
+                                <@cBlock class='bl-author__name'>${blogAuthor}</@cBlock>
+                                <#if blogAuthorRole !=''><@cBlock class='bl-author__role'>${blogAuthorRole}</@cBlock></#if   >
+                            </@cBlock>
+                        </@cBlock>
+                    </@cBlock>
+                    <#if blog.docContent?? && blog.docContent?size!=0>
+                        <#list blog.docContent?sort_by('priority') as docContent>
+                            <#if docContent.contentType.idContentType=1>
+                                <@cFigure class='bl-heroimg' caption=blog.contentLabel>
+                                    <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=blog.contentLabel params='title="${blog.contentLabel}"' />
+                                </@cFigure>
+                                <#break>
+                            </#if>
+                        </#list>
+                    </#if>
+                </@cHeader>
+                <@cBlock class='bl-wrap'>
+                    <#assign bodyClass = 'bl-body'>
+                    <#if !blog.displayToc><#assign bodyClass = bodyClass + ' bl-body-one-col'></#if>
+                    <@cBlock class=bodyClass>
+                        <#if blog.displayToc>
+                            <@cBlock type='aside' class='bl-toc'>
+                                <@cBlock class='bl-toc__title'>#i18n{blog.view_blog.tocTitle}</@cBlock>
+                                <@chList id='bl-toc'></@chList>
+                            </@cBlock>
+                        </#if>
+                        <@cBlock class='bl-article'>
+                            ${blog.htmlContent}
+                        </@cBlock>
+                    </@cBlock>
+                </@cBlock>
+            </@cArticle>
+            <#if blog.displayRelated && related_blogs?? && related_blogs?size gt 0>
+                <@cSection class='bl-related'>
+                    <@cBlock class='bl-related__head'>
+                        <@cBlock class='bl-related__title'>#i18n{blog.view_blog.relatedTitle}</@cBlock>
+                    </@cBlock>
+                    <@cBlock class='bl-cards'>
+                        <#list related_blogs as relBlog>
+                            <#assign relUrl>jsp/site/Portal.jsp?page=blog&id=${relBlog.id}<#if blog.attachedPortletId gt 0>&portlet_id=${blog.attachedPortletId}</#if></#assign>
+                            <@cLink href=relUrl class='bl-rcard' label=''>
+                                <@cBlock class='bl-rcard__img'>
+                                    <#if relBlog.docContent?? && relBlog.docContent?size!=0>
+                                        <#list relBlog.docContent?sort_by('priority') as docContent>
+                                            <#if docContent.contentType.idContentType=1>
+                                                <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=relBlog.contentLabel params='title="${relBlog.contentLabel}"' />
+                                                <#break>
+                                            </#if>
+                                        </#list>
+                                    </#if>
+                                </@cBlock>
+                                <@cBlock class='bl-rcard__body'>
+                                    <#if relBlog.tag?has_content>
+                                        <@cBlock class='bl-rcard__meta'>${relBlog.tag[0].name}</@cBlock>
+                                    </#if>
+                                    <@cTitle level=3>${relBlog.contentLabel}</@cTitle>
+                                    <@cText>${relBlog.description!}</@cText>
+                                    <#if relBlog.updateDate??>
+                                        <#assign relUpdateIso = relBlog.updateDate?string('yyyy-MM-dd')>
+                                        <@cBlock class='bl-rcard__foot'>
+                                            <@cInline type='time' params='datetime="${relUpdateIso}"'>${relBlog.updateDate?string('d MMMM yyyy')}</@cInline>
+                                        </@cBlock>
+                                    </#if>
+                                </@cBlock>
+                            </@cLink>
+                        </#list>
+                    </@cBlock>
+                </@cSection>
+            </#if>
+        </@cCol>
+    </@cRow>
+</@cContainer>
+<script>
+<#if blog.displayToc>
+(function() {
+    var article = document.querySelector('div.bl-article');
+    var tocList = document.getElementById('bl-toc');
+    if (!article || !tocList) return;
+    var headings = article.querySelectorAll('h2');
+    if (headings.length === 0) {
+        var aside = tocList.closest('aside.bl-toc');
+        if (aside) aside.style.display = 'none';
+        return;
+    }
+    var slugify = function(text) {
+        return text.toString().toLowerCase()
+            .normalize('NFD').replace(/[̀-ͯ]/g, '')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim().replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+    };
+    var used = {};
+    headings.forEach(function(h) {
+        var base = h.id || slugify(h.textContent || '');
+        if (!base) return;
+        var id = base, n = 1;
+        while (used[id]) { id = base + '-' + (++n); }
+        used[id] = true;
+        h.id = id;
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = window.location + '#' + id;
+        a.textContent = h.textContent;
+        li.appendChild(a);
+        tocList.appendChild(li);
+    });
+})();
+</#if>
+(function() {
+    var article = document.querySelector('div.bl-article');
+    var meta = document.querySelector('div.bl-hero__meta');
+    if (!article || !meta) return;
+    var spans = meta.querySelectorAll('span');
+    if (spans.length === 0) return;
+    var target = spans[spans.length - 1];
+    var label = target.dataset.readingTimeLabel || '';
+    var wpm = 200;
+    var text = (article.textContent || '').replace(/\s+/g, ' ').trim();
+    if (!text) { target.textContent = ''; return; }
+    var words = text.split(' ').length;
+    var seconds = Math.ceil((words / wpm) * 60);
+    var duration = seconds < 60
+        ? seconds + ' s'
+        : Math.ceil(seconds / 60) + ' min';
+    target.textContent = label ? duration + ' ' + label : duration;
+})();
+<#if from_page_id??>
+document.addEventListener('DOMContentLoaded', function() {
+    /* Active menu */
+    const menu = document.getElementById('navbarMainMenu');
+    if (menu) {
+        const navItems = menu.querySelectorAll(".nav-item, .dropdown-navitem");
+        navItems.forEach(function(item) {
+            const link = item.querySelector(".nav-link");
+            if (link && link.href) {
+                const linkId = link.search;
+                if (linkId === '?page_id=${from_page_id?c}' && !item.classList.contains("active")) {
+                    item.classList.add("active");
+                    link.setAttribute("aria-current", "page");
+                } else {
+                    item.classList.remove("active");
+                    link.removeAttribute("aria-current");
+                }
+            }
+        });
+    }
+});
+</#if>
+</script>
+</@cTpl>

@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.blog.business;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -44,6 +45,9 @@ import jakarta.validation.constraints.Size;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
+import fr.paris.lutece.portal.business.user.attribute.AdminUserField;
+import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldFilter;
+import fr.paris.lutece.portal.business.user.attribute.AdminUserFieldHome;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.resource.IExtendableResource;
 import fr.paris.lutece.util.ReferenceItem;
@@ -110,6 +114,9 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     private List<BlogPublication> _blogPublication = new ArrayList<>( );
     private boolean _bIsArchived;
+    private boolean _bDisplayToc;
+    private boolean _bDisplayRelated;
+    private int _nMaxRelated = 3;
 
     /**
      * Returns the Id
@@ -626,12 +633,46 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
 
     /**
      * Return the user creator informations
-     * 
+     *
      * @return AdminUser
      */
     public AdminUser getUserCreatorInfos( )
     {
         return AdminUserHome.findUserByLogin( _strUserCreator );
+    }
+
+    /**
+     * Return the extended attributes (BO custom user fields) for the creator user.
+     *
+     * @return list of AdminUserField, empty list if user not found
+     */
+    public List<AdminUserField> getUserCreatorFields( )
+    {
+        AdminUser user = getUserCreatorInfos( );
+        if ( user == null )
+        {
+            return Collections.emptyList( );
+        }
+        AdminUserFieldFilter filter = new AdminUserFieldFilter( );
+        filter.setIdUser( user.getUserId( ) );
+        return AdminUserFieldHome.findByFilter( filter );
+    }
+
+    /**
+     * Return the extended attributes (BO custom user fields) for the last editor user.
+     *
+     * @return list of AdminUserField, empty list if user not found
+     */
+    public List<AdminUserField> getUserFields( )
+    {
+        AdminUser user = getUserInfos( );
+        if ( user == null )
+        {
+            return Collections.emptyList( );
+        }
+        AdminUserFieldFilter filter = new AdminUserFieldFilter( );
+        filter.setIdUser( user.getUserId( ) );
+        return AdminUserFieldHome.findByFilter( filter );
     }
 
 
@@ -651,5 +692,53 @@ public class Blog extends ReferenceItem implements Serializable, IExtendableReso
     public void setArchived( boolean bIsArchived )
     {
         _bIsArchived = bIsArchived;
+    }
+
+    /**
+     * @return whether the automatic table of contents must be displayed on the blog detail page
+     */
+    public boolean isDisplayToc( )
+    {
+        return _bDisplayToc;
+    }
+
+    /**
+     * @param bDisplayToc the displayToc to set
+     */
+    public void setDisplayToc( boolean bDisplayToc )
+    {
+        _bDisplayToc = bDisplayToc;
+    }
+
+    /**
+     * @return whether related articles from the same portlet must be displayed on the blog detail page
+     */
+    public boolean isDisplayRelated( )
+    {
+        return _bDisplayRelated;
+    }
+
+    /**
+     * @param bDisplayRelated the displayRelated to set
+     */
+    public void setDisplayRelated( boolean bDisplayRelated )
+    {
+        _bDisplayRelated = bDisplayRelated;
+    }
+
+    /**
+     * @return the maximum number of related articles to display
+     */
+    public int getMaxRelated( )
+    {
+        return _nMaxRelated;
+    }
+
+    /**
+     * @param nMaxRelated the maxRelated to set
+     */
+    public void setMaxRelated( int nMaxRelated )
+    {
+        _nMaxRelated = nMaxRelated;
     }
 }

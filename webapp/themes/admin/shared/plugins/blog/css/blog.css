@@ -1,6 +1,6 @@
 /*
- * Styles for the HTML Diff 
- */
+* Styles for the HTML Diff 
+*/
 .diff-html-added { 
 	color: var(--tblr-success); 
 }

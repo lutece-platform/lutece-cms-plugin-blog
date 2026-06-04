@@ -39,8 +39,11 @@
             <feature-icon-url/>
 		</admin-feature>
     </admin-features>    
-
     <!-- Specific plugin CSS stylesheet -->
+   <css-stylesheets>
+        <css-stylesheets-scope>portal</css-stylesheets-scope>
+        <css-stylesheet>../../themes/shared/plugins/blog/css/blog.min.css</css-stylesheet>
+    </css-stylesheets>
     <admin-css-stylesheets>
         <admin-css-stylesheet>themes/admin/shared/plugins/blog/css/blog.min.css</admin-css-stylesheet>
     </admin-css-stylesheets>
