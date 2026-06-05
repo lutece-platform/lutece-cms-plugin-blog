@@ -2,12 +2,12 @@
 <@cTpl>
 <#assign readingTimeLabel = "#i18n{blog.portlet.blog.readingTime.label}">
 <@cArticle class='portlet bg-light'>
-    <@cHeader class='bl-hero py-0'>
+    <@cHeader class='blog-hero py-0'>
         <@cBlock>
-            <@cBlock class='bl-hero__meta'>
+            <@cBlock class='blog-hero__meta'>
                 <#if blog.tag?has_content>
                     <#list blog.tag as tg>
-                        <@cInline class='bl-cat'>${tg.name?string[0..*14]}<#if tg.name?length gt 14>...</#if></@cInline>
+                        <@cInline class='blog-cat'>${tg.name?string[0..*14]}<#if tg.name?length gt 14>...</#if></@cInline>
                     </#list>
                 </#if>
                 <@cInline>·</@cInline>
@@ -16,12 +16,12 @@
                     <@cInline type='time' params='datetime="${updateDateIso}"'>${blog.updateDate?string('d MMMM yyyy')}</@cInline>
                 </#if>
                 <@cInline>·</@cInline>
-                <@cInline class='bl-reading-time' params='data-reading-time-label="${readingTimeLabel}"'></@cInline>
+                <@cInline class='blog-reading-time' params='data-reading-time-label="${readingTimeLabel}"'></@cInline>
             </@cBlock>
-            <@cTitle level=1 class='bl-title'>${blog.contentLabel}</@cTitle>
-            <@cText class='bl-lede'>${blog.description!}</@cText>
-            <@cBlock class='bl-author'>
-                <@cBlock class='bl-author__avatar'>${blog.userCreator[0]?upper_case!}</@cBlock>
+            <@cTitle level=1 class='blog-title'>${blog.contentLabel}</@cTitle>
+            <@cText class='blog-lede'>${blog.description!}</@cText>
+            <@cBlock class='blog-author'>
+                <@cBlock class='blog-author__avatar'>${blog.userCreator[0]?upper_case!}</@cBlock>
                 <@cBlock>
                     <#assign blogAuthor=blog.userCreator />
                     <#assign blogAuthorRole='' />
@@ -37,15 +37,15 @@
                             </#list>
                         </#if>
                     </#if>
-                    <@cBlock class='bl-author__name'>${blogAuthor}</@cBlock>
-                    <#if blogAuthorRole !=''><@cBlock class='bl-author__role'>${blogAuthorRole}</@cBlock></#if>
+                    <@cBlock class='blog-author__name'>${blogAuthor}</@cBlock>
+                    <#if blogAuthorRole !=''><@cBlock class='blog-author__role'>${blogAuthorRole}</@cBlock></#if>
                 </@cBlock>
             </@cBlock>
         </@cBlock>
         <#if blog.docContent?? && blog.docContent?size!=0>
             <#list blog.docContent?sort_by('priority') as docContent>
                 <#if docContent.contentType.idContentType=1>
-                    <@cFigure class='bl-heroimg' caption=blog.contentLabel>
+                    <@cFigure class='blog-heroimg' caption=blog.contentLabel>
                         <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=blog.contentLabel params='title="${blog.contentLabel}"' />
                     </@cFigure>
                     <#break>
@@ -53,17 +53,17 @@
             </#list>
         </#if>
     </@cHeader>
-    <@cBlock class='bl-wrap'>
+    <@cBlock class='blog-wrap'>
         <#assign bodyClass = 'bl-body'>
         <#if !blog.displayToc><#assign bodyClass = bodyClass + ' bl-body-one-col'></#if>
         <@cBlock class=bodyClass>
             <#if blog.displayToc>
-                <@cBlock type='aside' class='bl-toc'>
-                    <@cBlock class='bl-toc__title'>#i18n{blog.view_blog.tocTitle}</@cBlock>
+                <@cBlock type='aside' class='blog-toc'>
+                    <@cBlock class='blog-toc__title'>#i18n{blog.view_blog.tocTitle}</@cBlock>
                     <@chList id='bl-toc'></@chList>
                 </@cBlock>
             </#if>
-            <@cBlock class='bl-article'>
+            <@cBlock class='blog-article'>
                 ${blog.htmlContent}
             </@cBlock>
         </@cBlock>
