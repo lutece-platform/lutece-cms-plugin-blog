@@ -130,7 +130,7 @@
 				<@p class='fw-bold fs-3 mb-0 w-100'>#i18n{blog.create_blog.TagsTitle}</@p>
 				<#if blog.tag?size gt 0>
 					<@cBlock class='d-flex flex-column align-items-start flex-shrink-1'>
-						<#list blog.tag as tg><#list list_tag as tgName><#if tgName.code==tg.idTag?string><@tag color='' class='badge-outline text-blue badge-sm mb-1'><@icon style='tag' />${tgName.name!}</@tag><#break></#if></#list></#list>
+						<#list blog.tag as tg><#list list_tag as tgName><#if tgName.code==tg.idTag?string><@tag color='' class='badge-outline text-blue badge-sm mb-1 badge-tag' params='data-tag-id="${tg.idTag}"'><@icon style='tag' />${tgName.name!}</@tag><#break></#if></#list></#list>
 					</@cBlock>
 				<#else>
 					<@span class='text-muted'><@icon style='tag-off' /> #i18n{blog.manage_tags.noTag}</@span>
@@ -205,9 +205,10 @@
 </@pageContainer>
 <script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
 <link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
+<style>.badge-tag { cursor: pointer; }</style>
 <script>
 document.addEventListener( "DOMContentLoaded", function() {
-  	new SlimSelect({
+  	const tagDocSlimSelect = new SlimSelect({
         select: '#tag_doc',
 		settings: {
 			// Below are a list of optional fields
@@ -316,6 +317,23 @@ document.addEventListener( "DOMContentLoaded", function() {
 	});
 
 	toggleResetButtons();
+
+	// Click on a .badge-tag : select the matching option in #tag_doc and submit the search form
+	document.querySelectorAll( '.badge-tag' ).forEach( function( badge ) {
+		badge.addEventListener( 'click', function() {
+			var tagId = badge.getAttribute( 'data-tag-id' );
+			if ( !tagId ) return;
+			tagDocSlimSelect.setSelected( [ tagId ] );
+			var form = document.querySelector( 'form[name="form-manage"]' );
+			if ( !form ) return;
+			var searchButton = form.querySelector( '[name="button_search"]' );
+			if ( form.requestSubmit ) {
+				form.requestSubmit( searchButton || undefined );
+			} else {
+				form.submit();
+			}
+		});
+	});
 
 });
 </script>
