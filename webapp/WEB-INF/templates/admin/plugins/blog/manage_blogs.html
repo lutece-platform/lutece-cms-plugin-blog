@@ -176,7 +176,7 @@
 					<#-- <#if blog.version !=1><@offcanvas id='blog-diff-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManageBlogs.jsp?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' useIframe=true title='#i18n{blog.history_blog.labelDiffPrevious}' btnIcon='git-compare' position='end' size='half' /></#if> -->
 					<#if permission_manage_archive_blog>
 						<#if blog.isArchived()>
-							<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&select_blog_action=1&select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive' hideTitle=['all'] color='info' />
+							<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&select_blog_action=1&select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionUnarchive}' buttonIcon='archive-off' hideTitle=['all'] color='info' />
 						<#else>
 							<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?action=form_checkbox_action&select_blog_action=0&select_blog_id=${blog.id}' title='#i18n{blog.manage_blog_archives.labelActionArchive}' buttonIcon='archive' hideTitle=['all'] color='warning' />
 						</#if>

@@ -176,9 +176,9 @@
             </@formGroup>
             <@row class='my-3'>
                 <@columns xs=12 sm=4>
-                    <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='modify' id='action_modifyblog' name='action_modifyblog' hideTitle=['xs','sm', 'md', 'lg'] />
+                    <@button class='me-1 action' type='submit' size='' buttonIcon='check me-2' title='#i18n{blog.modify_blog.labelUpdate}' value='modify' id='action_modifyblog' name='action_modifyblog' hideTitle=['xs','sm'] />
                     <#if permission_manage_publish_blog?? && permission_manage_publish_blog>
-                    <@button class='me-1 action' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='update' id='apply_modifyblog' name='button' hideTitle=['xs','sm', 'md', 'lg'] />
+                    <@button class='me-1 action' type='submit' size='' buttonIcon='device-floppy me-2' title='#i18n{blog.modify_blog.labelSave}' value='update' id='apply_modifyblog' name='button' hideTitle=['xs','sm'] />
                     </#if>
                 </@columns>
                 <@columns xs=12 sm=8>
