@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.SessionScoped;
@@ -304,7 +305,7 @@ public class BlogJspBean extends ManageBlogJspBean
     private static final String RESPONSE_FAILURE = "FAILURE";
 
     // Session variable to store working values
-    private static Map<Integer, BlogLock> _mapLockBlog = new HashMap<>( );
+    private static Map<Integer, BlogLock> _mapLockBlog = new ConcurrentHashMap<>( );
     protected Blog _blog;
     protected boolean _bIsChecked = false;
     protected String _strSearchText;

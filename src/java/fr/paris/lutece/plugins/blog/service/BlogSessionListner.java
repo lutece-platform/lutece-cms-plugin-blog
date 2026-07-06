@@ -66,8 +66,14 @@ public class BlogSessionListner implements HttpSessionListener
     public void sessionDestroyed( HttpSessionEvent se )
     {
         String strSessionId = se.getSession( ).getId( );
-        BlogJspBean.unLockedBlogByIdSession( strSessionId );
-        _mapSession.remove( se.getSession( ).getId( ) );
+        try
+        {
+            BlogJspBean.unLockedBlogByIdSession( strSessionId );
+        }
+        finally
+        {
+            _mapSession.remove( strSessionId );
+        }
     }
 
     public static Map<String, HttpSession> getMapSession( )
