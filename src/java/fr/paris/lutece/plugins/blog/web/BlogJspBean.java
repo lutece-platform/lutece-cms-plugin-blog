@@ -2140,7 +2140,6 @@ public class BlogJspBean extends ManageBlogJspBean
             BlogHome.updateBlogArchiveId(bArchive, blogId);
             Blog blog = BlogHome.findByPrimaryKey( blogId );
             BlogSearchService.getInstance( ).updateDocument( blog );
-            BlogSearchService.getInstance( ).updateDocument( blog );
             if( bArchive )
             {
                 BlogPublicationHome.getDocPublicationByIdDoc( blogId );
