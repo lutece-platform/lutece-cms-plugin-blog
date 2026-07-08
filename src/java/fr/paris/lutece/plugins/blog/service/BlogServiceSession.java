@@ -41,6 +41,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import  fr.paris.lutece.plugins.blog.business.DocContent;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.blog.business.DocContentHome;
+import java.util.ArrayList;
 import java.util.List;
 import  java.util.Enumeration;
 import java.util.HashMap;
@@ -52,6 +53,8 @@ import java.util.HashMap;
 public class BlogServiceSession
 {
     private static final String SESSION_BLOG = "blog.serviceblog";
+    private static final String SESSION_BLOG_ORDER = "blog.serviceblog.order";
+    private static final int MAX_EDITED_BLOGS_IN_SESSION = 20;
     private static final String SESSION_KEY_ID_DOCCONTENT = "docContentId";
     private static final String SESSION_KEY_PRIORITY_DOCCONTENT = "docContentPriority";
 
@@ -69,6 +72,7 @@ public class BlogServiceSession
         {
 
             session.setAttribute( SESSION_BLOG + blog.getId( ), blog );
+            capSessionBlogs( session, blog.getId( ) );
 
         }
         catch( IllegalStateException e )
@@ -80,8 +84,50 @@ public class BlogServiceSession
     }
 
     /**
+     * Bound the number of blogs kept in the session. Each blog opened for edition is stored under its own key and only removed on a successful save, so browsing
+     * many blogs without saving would accumulate all their HTML content and attached binaries in the session for its whole lifetime. Keep only the
+     * {@value #MAX_EDITED_BLOGS_IN_SESSION} most recently accessed blogs and evict the least recently used ones. Stale ids (already removed after a save) are
+     * pruned lazily so no other call site needs to maintain the access order.
+     *
+     * @param session
+     *            The session
+     * @param nIdBlog
+     *            The id of the blog that has just been stored
+     */
+    @SuppressWarnings( "unchecked" )
+    private void capSessionBlogs( HttpSession session, int nIdBlog )
+    {
+        // The read-modify-write on the order list must be atomic: requests of the same session are not serialized by the servlet container (several BO tabs /
+        // in-flight AJAX). Without this, a concurrent request working on a stale copy could evict a blog another request just refreshed to most-recently-used,
+        // losing its in-progress edits. Synchronizing on the session serializes these mutations.
+        synchronized( session )
+        {
+            List<Integer> listStored = (List<Integer>) session.getAttribute( SESSION_BLOG_ORDER );
+            List<Integer> listOrder = ( listStored == null ) ? new ArrayList<>( ) : new ArrayList<>( listStored );
+            // drop ids whose payload is no longer in the session (e.g. removed after a save)
+            listOrder.removeIf( id -> session.getAttribute( SESSION_BLOG + id ) == null );
+            // move the current blog to the most recently used position
+            listOrder.remove( Integer.valueOf( nIdBlog ) );
+            listOrder.add( Integer.valueOf( nIdBlog ) );
+
+            while ( listOrder.size( ) > MAX_EDITED_BLOGS_IN_SESSION )
+            {
+                int nEvicted = listOrder.remove( 0 );
+                session.removeAttribute( SESSION_BLOG + nEvicted );
+                AppLogService.info( "Blog {} evicted from session {} : more than {} blogs kept in the admin session", nEvicted, session.getId( ),
+                        MAX_EDITED_BLOGS_IN_SESSION );
+            }
+            // only write back when the order actually changed, to avoid marking the session dirty (and triggering cluster replication) on every read
+            if ( !listOrder.equals( listStored ) )
+            {
+                session.setAttribute( SESSION_BLOG_ORDER, listOrder );
+            }
+        }
+    }
+
+    /**
      * Get the current blog form from the session
-     * 
+     *
      * @param session
      *            The session of the user
      * @param blog
@@ -92,7 +138,12 @@ public class BlogServiceSession
 
         try
         {
-            return (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+            Blog blogInSession = (Blog) session.getAttribute( SESSION_BLOG + blog.getId( ) );
+            if ( blogInSession != null )
+            {
+                capSessionBlogs( session, blog.getId( ) );
+            }
+            return blogInSession;
 
         }
         catch( IllegalStateException e )
@@ -106,7 +157,7 @@ public class BlogServiceSession
 
     /**
      * Get the current blog form from the session
-     * 
+     *
      * @param session
      *            The session of the user
      * @param nIdBlog
@@ -117,7 +168,12 @@ public class BlogServiceSession
         try
         {
 
-            return (Blog) session.getAttribute( SESSION_BLOG + nIdBlog );
+            Blog blogInSession = (Blog) session.getAttribute( SESSION_BLOG + nIdBlog );
+            if ( blogInSession != null )
+            {
+                capSessionBlogs( session, nIdBlog );
+            }
+            return blogInSession;
 
         }
         catch( IllegalStateException e )
