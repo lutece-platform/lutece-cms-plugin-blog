@@ -776,6 +776,10 @@ public class BlogJspBean extends ManageBlogJspBean
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession = request.getSession( ).getId( );
         _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
+        if ( _blog == null )
+        {
+            return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+        }
         if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
         {
 
@@ -817,6 +821,10 @@ public class BlogJspBean extends ManageBlogJspBean
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession = request.getSession( ).getId( );
         _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
+        if ( _blog == null )
+        {
+            return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+        }
         if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
         {
 
@@ -868,6 +876,10 @@ public class BlogJspBean extends ManageBlogJspBean
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
         String nIdSession = request.getSession( ).getId( );
         _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
+        if ( _blog == null )
+        {
+            return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+        }
         if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
         {
 
@@ -1383,6 +1395,10 @@ public class BlogJspBean extends ManageBlogJspBean
             String nIdSession = request.getSession( ).getId( );
             _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
 
+            if ( _blog == null )
+            {
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+            }
             if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
             {
 
@@ -1471,6 +1487,10 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
 
+            if ( _blog == null )
+            {
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+            }
             if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
             {
 
@@ -1535,6 +1555,10 @@ public class BlogJspBean extends ManageBlogJspBean
         if( nIdBlog != 0 )
         {
             _blog = _blogServiceSession.getBlogFromSession( request.getSession( ), nIdBlog );
+            if ( _blog == null )
+            {
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+            }
             if ( _mapLockBlog.get( nIdBlog ) != null && _mapLockBlog.get( nIdBlog ).getSessionId( ).equals( nIdSession ) )
             {
 
@@ -1619,6 +1643,10 @@ public class BlogJspBean extends ManageBlogJspBean
             String nIdSession = request.getSession().getId();
             _blog = _blogServiceSession.getBlogFromSession(request.getSession(), nIdBlog);
 
+            if ( _blog == null )
+            {
+                return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_BLOG_LOCKED ) );
+            }
             if (_mapLockBlog.get(nIdBlog) != null && _mapLockBlog.get(nIdBlog).getSessionId().equals(nIdSession)) {
 
                 lockBlog(nIdBlog, request.getSession().getId());
