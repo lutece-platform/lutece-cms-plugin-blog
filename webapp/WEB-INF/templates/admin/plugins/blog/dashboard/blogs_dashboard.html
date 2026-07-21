@@ -10,10 +10,10 @@
 	<@manageFeature class=''>
 	<#list last_modified_document as blog>
 	<@manageFeatureItem>
-		<@manageFeatureItemColumn valign='baseline'><#assign blogImage><#list blog.docContent as content><@img url='servlet/plugins/blogs/file?id_file=${content.id}' class='img-fluid img-thumbnail' alt='' params='width="48" aria-hidden="true"'/><#break></#list></#assign><#if blogImage?trim !=''>${blogImage}<#else><@icon style='photo-off fs-1' /></#if></@manageFeatureItemColumn>
+		<@manageFeatureItemColumn auto=true valign='baseline'><#assign blogImage><#list blog.docContent as content><@img url='servlet/plugins/blogs/file?id_file=${content.id}' class='img-fluid img-thumbnail' alt='' params='width="48" aria-hidden="true"'/><#break></#list></#assign><#if blogImage?trim !=''>${blogImage}<#else><@icon style='photo-off fs-1' /></#if></@manageFeatureItemColumn>
 		<@manageFeatureItemColumn auto=true flex=false>
 			<#if permission_manage_modify_blog>
-				<@link href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title} ${blog.name}' params='data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="#i18n{blog.modify_blog.title} &quot;${blog.name}&quot;"'><strong class="d-inline-block text-truncate mw-sm">${blog.id} - ${blog.name}</strong><br><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small></@link>
+				<@link href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title} ${blog.name}' params='data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="#i18n{blog.modify_blog.title} &quot;${blog.name}&quot;"'><strong class="d-inline-block">${blog.id} - ${blog.name}</strong><br><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small></@link>
 			<#else>
 				<strong class="d-inline-block text-truncate mw-sm">${blog.id} - ${blog.name}</strong><br><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small>
 			</#if>
