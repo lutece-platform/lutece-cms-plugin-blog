@@ -328,9 +328,9 @@ public class BlogService
 
     {
         TransactionManager.beginTransaction( BlogPlugin.getPlugin( ) );
-        BlogHome.update( blog );
         try
         {
+            BlogHome.update( blog );
             if ( docContent != null )
             {
                 updateDocContentList( blog, docContent );
