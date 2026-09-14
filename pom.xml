@@ -52,10 +52,19 @@
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
             <version>1.9.22</version>
-			 <exclusion>
-	             <groupId>xerces</groupId>
-                 <artifactId>xercesImpl</artifactId>
-	        </exclusion>
+            <exclusions>
+                <!--
+                  nekohtml 1.9.22 declares exactly one dependency: xerces:xercesImpl 2.11.0.
+                  This plugin already declares xercesImpl itself, at a higher version and
+                  without xml-apis, so the transitive copy is both redundant and harmful:
+                  it makes the two versions diverge, and it would drag xml-apis back in
+                  through its own dependencies, defeating the exclusion set below.
+                -->
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <!-- Needed by daisydiff -->
