@@ -1,4 +1,4 @@
-<#assign textEditorCoreName = "fr.paris.lutece.portal.service.editor.RichTextEditorBackOfficeMethod"?new()() >
+<#assign textEditorCoreName = richTextEditorBackOffice() >
 <#assign textEditorBlogName><#if !dskey('blog.advanced_parameters.editor')?starts_with('DS') || dskey('blog.advanced_parameters.editor')?starts_with('DS') !=''>${dskey('blog.advanced_parameters.editor')}</#if></#assign>
 <#assign textEditorName><#if textEditorBlogName !=''>${textEditorBlogName}<#else>${textEditorCoreName!}</#if></#assign>
 <#assign blogEditorFile=.get_optional_template('blog_${textEditorName}.html')>
