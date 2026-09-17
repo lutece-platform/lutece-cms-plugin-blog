@@ -1,20 +1,28 @@
 <!-- Portlet specific parameters -->
-<@input type="hidden" id="id" name="id" value="0" />
 <@input type="hidden" id="action" name="action" value="createBlog" />
 <@row>
-	<@columns sm=4 class='mb-3'>
-		<@tform>
+	<@columns class='mb-3 d-flex align-items-center'>
+		<@tform type='inline'>
 			<@formGroup labelFor='search_post' labelKey='#i18n{portal.system.manage_plugins.buttonFilter}' hideLabel=['all'] formStyle='inline'>
 				<@inputGroup>
 					<@input type='text' name='search_post' id='search_post' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' params='autocomplete="off"' size='' />
 					<@button type='button' title='#i18n{portal.system.manage_plugins.buttonFilter}' buttonIcon='filter' hideTitle=['all'] size='' />
 				</@inputGroup>
 			</@formGroup>
+			<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' formStyle='inline'>
+				<@select id='page_template_code' name='page_template_code'>
+					<#list pages_list as key, value >
+						<@option value=key label=value />
+					</#list>
+				</@select>
+				<@span class='invalid-feedback'>Vous devez sélectionner un modèle</@span>
+			</@formGroup>
 		</@tform>
+		<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?plugin_name=blog' title='#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}' color='link' buttonIcon='external-link' target='_blank' />
 	</@columns>
 </@row>
 <@row>
-	<@columns sm=7>
+	<@columns sm=12 md=6 class='mb-3'>
 		<@listGroup params='style="height:40vh;overflow-y: auto"'>
 			<#list blog_list?sort_by('updateDate')?reverse as blog>
 				<@listGroupItem class='d-flex justify-content-between vh-50' params='data-post="${blog.id} ${blog.contentLabel}" data-blog="${blog.id}"'>
@@ -29,28 +37,6 @@
 				<@option value=blog.id label='${blog.contentLabel} - ${blog.id}' />
 			</#list>
 		</@select>
-
-	</@columns>
-	<@columns sm=5>
-		<@row class='mt-2'>
-			<@columns >
-				<@formGroup labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' labelClass='invisible' rows=2 >
-					<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?plugin_name=blog' title='#i18n{blog.portlet.blogsListBlogsPortlet.titlePostList}' color='link' buttonIcon='external-link' target='_blank' />
-				</@formGroup>
-			</@columns>
-		</@row>
-		<@row>
-			<@columns>
-				<@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2 >
-					<@select id='page_template_code' name='page_template_code'>
-						<#list pages_list as key, value >
-							<@option value=key label=value />
-						</#list>
-					</@select>
-					<@span class='invalid-feedback'>Vous devez sélectionner un billet</@span>
-				</@formGroup>
-			</@columns>
-		</@row>
 	</@columns>
 </@row>
 <script type="module">
