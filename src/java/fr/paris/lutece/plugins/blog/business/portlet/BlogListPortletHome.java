@@ -34,7 +34,6 @@
 package fr.paris.lutece.plugins.blog.business.portlet;
 
 import java.util.Collection;
-import java.util.Map;
 
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -130,17 +129,6 @@ public class BlogListPortletHome extends PortletHome
     public static Collection<ReferenceItem> findByFilter( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
     {
         return _dao.selectPortletByType( nDocumentId, pOrder, pFilter );
-    }
-
-    /**
-     * Load the portlet template whose type is specified in parameter
-     * 
-     * @param strPortletType
-     * @return Map template
-     */
-    public static Map<Integer, String> loadPages( String strPortletType )
-    {
-        return _dao.loadPages( strPortletType );
     }
 
     /**

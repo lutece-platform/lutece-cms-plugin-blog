@@ -48,7 +48,6 @@ import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  *
@@ -85,14 +84,6 @@ public interface IBlogListPortletDAO extends IPortletInterfaceDAO
      */
     @Override
     Portlet load( int nPortletId );
-
-    /**
-     * Load the portlet template whose type is specified in parameter
-     * 
-     * @param strPortletType
-     * @return Map template
-     */
-    Map<Integer, String> loadPages( String strPortletType );
 
     /**
      * Update the record in the table

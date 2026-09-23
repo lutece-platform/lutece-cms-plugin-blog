@@ -51,13 +51,11 @@ new LuteceSearchList( searchInput, searchElementList, {
 let alreadySubmitted = false;
 document.addEventListener('DOMContentLoaded', (event) => {
 	const form = document.getElementById( 'form-portlet' )
-	const tpl = document.getElementById( 'page_template_code' )
 	const blog = document.getElementById( 'blog_selected' )
 	const listPost = document.querySelectorAll( '.list-group-item' )
 
 	listPost.forEach( post => {
 		post.addEventListener( 'click', (e) => {
-			if( tpl.classList.contains('is-invalid') )	tpl.classList.remove('is-invalid')
 			blog.value = post.dataset.blog
 			listPost.forEach( p => { p.classList.remove('active') })
 			post.classList.toggle('active')
@@ -72,7 +70,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		alreadySubmitted = true;
 		if( blog.value === '0' ){
 			e.preventDefault();
-			tpl.classList.add('is-invalid')
+			alreadySubmitted = false;
 		}
 	})
 

@@ -1,13 +1,13 @@
 <@cTpl>
-<@cSection class='blog-posts'>
+<@cSection class='portlet portlet-blog-list blog-posts ${device_class!}' id='portlet_${portlet_id?c}'>
     <@cBlock class='section-head'>
-        <@cTitle level=2 class='my-3 section-title'>${portlet_name!}</@cTitle>
+        <#if portlet_name??><@cTitle level=2 class='my-3 section-title'>${portlet_name}</@cTitle></#if>
         <@cBtn id='toggle-grid' type='button' class='secondary btn-sm' label='Grid' />
     </@cBlock>
     <#if blog_list_published??>
         <@chList class='posts list-unstyled'>
             <#list blog_list_published as blog>
-                <#assign blogUrl><#if blog.url?trim != ''>${blog.url}<#else>jsp/site/Portal.jsp?page=blog&id=${blog.id}&portlet_id=${portlet_id}<#if portlet_name?has_content>&from_name=${portlet_name?url('UTF-8')}</#if><#if page_name?has_content>&from_page_name=${page_name?url('UTF-8')}</#if><#if page_id??>&from_page_id=${page_id?c}</#if></#if></#assign>
+                <#assign blogUrl><#if (blog.url!'')?trim != ''>${blog.url}<#else>jsp/site/Portal.jsp?page=blog&id=${blog.id?c}&portlet_id=${portlet_id?c}<#if portlet_name?has_content>&from_name=${portlet_name?url('UTF-8')}</#if><#if page_name?has_content>&from_page_name=${page_name?url('UTF-8')}</#if><#if page_id??>&from_page_id=${page_id?c}</#if></#if></#assign>
                 <@chItem>
                     <@cArticle class='card post post--wide'>
                         <#if blog.docContent?? && blog.docContent?size!=0>

@@ -38,14 +38,11 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
-import fr.paris.lutece.plugins.blog.business.BlogPageTemplate;
-import fr.paris.lutece.plugins.blog.business.BlogPageTemplateHome;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogFilter;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
@@ -54,8 +51,6 @@ import fr.paris.lutece.plugins.blog.utils.BlogUtils;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -70,15 +65,14 @@ public class BlogListPortlet extends PortletHtmlContent implements Serializable
 
     // ///////////////////////////////////////////////////////////////////////////////
     public static final String MARK_LIST_BLOG_PUBLISHED = "blog_list_published";
-    public static final String MARK_PAGE_TEMPLATE = "page_template";
-    public static final String MARK_PORTLET_ID = "portlet_id";
-    public static final String MARK_PORTLET_NAME = "portlet_name";
     public static final String MARK_PAGE_NAME = "page_name";
     public static final String MARK_PAGE_ID = "page_id";
 
+    /** Default FreeMarker template, used when the portlet has no template chosen in the core (core_portlet_template) */
+    public static final String TEMPLATE_PORTLET_BLOG_LIST_DEFAULT = "skin/plugins/blog/portlet/default_portlet_list_blog.html";
+
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants
-    private int _nPageTemplateDocument;
     private int _nPortletId;
     private List<BlogPublication> _arrayBlogs = new ArrayList<>( );
     private Set<Integer> _removedBlogsId = new HashSet<>( );
@@ -114,33 +108,17 @@ public class BlogListPortlet extends PortletHtmlContent implements Serializable
         documentFilter.setPortletId( this.getId( ) );
 
         List<Blog> listBlogsPublished = BlogHome.findByFilter( documentFilter );
-        BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
 
-        HashMap<String, Object> model = new HashMap<>( );
+        Map<String, Object> model = createPortletModel( );
         model.put( MARK_LIST_BLOG_PUBLISHED, listBlogsPublished );
-        model.put( MARK_PAGE_TEMPLATE, pageTemplate );
-        model.put( MARK_PORTLET_ID, this.getId( ) );
-        if ( this.getDisplayPortletTitle( ) == 0 )
-        {
-
-            model.put( MARK_PORTLET_NAME, this.getName( ) );
-
-        }
         Page parentPage = PageHome.findByPrimaryKey( this.getPageId( ) );
         if ( parentPage != null && parentPage.getName( ) != null )
         {
             model.put( MARK_PAGE_NAME, parentPage.getName( ) );
             model.put( MARK_PAGE_ID, parentPage.getId( ) );
         }
-        Locale locale = null;
-        if ( request != null )
-        {
-            locale = request.getLocale( );
-        }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale, model );
-
-        return template.getHtml( );
+        return renderTemplate( request, TEMPLATE_PORTLET_BLOG_LIST_DEFAULT, model );
     }
 
     /**
@@ -179,27 +157,6 @@ public class BlogListPortlet extends PortletHtmlContent implements Serializable
     public void setPortletId( int nPortletId )
     {
         _nPortletId = nPortletId;
-    }
-
-    /**
-     * Sets the parent page identifier of the portlet to the value specified in parameter
-     *
-     * @param nPageTemplateDocument
-     *            the code
-     */
-    public void setPageTemplateDocument( int nPageTemplateDocument )
-    {
-        _nPageTemplateDocument = nPageTemplateDocument;
-    }
-
-    /**
-     * Returns the identifier of the parent page of the portlet
-     *
-     * @return the parent page identifier
-     */
-    public int getPageTemplateDocument( )
-    {
-        return _nPageTemplateDocument;
     }
 
     /**

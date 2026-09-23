@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.blog.web.portlet;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
-import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
@@ -71,7 +70,6 @@ public class BlogPortletJspBean extends PortletJspBean
     public static final String MARK_EDIT_COMMENT = "editcomment";
     public static final String MARK_WEBAPP_URL = "webapp_url";
     public static final String MARK_LIST_HTMLDOC = "blog_list";
-    public static final String MARK_LIST_PAGES = "pages_list";
     public static final String MARK_BLOG_ID = "blog_id";
 
     public static final String PARAMETER_CONTENT_ID = "content_id";
@@ -79,7 +77,6 @@ public class BlogPortletJspBean extends PortletJspBean
     public static final String PARAMETER_EDIT_COMMENT = "edit_comment";
     public static final String PARAMETER_PORTLET_NAME = "portlet_name";
     public static final String PARAMETER_HTMLDOC_SELECTED = "blog_selected";
-    private static final String PARAMETER_PAGE_TEMPLATE_CODE = "page_template_code";
 
     public static final String TEMPLATE_MODIFY_PORTLET = "admin/portlet/modify_portlet.html";
 
@@ -100,7 +97,6 @@ public class BlogPortletJspBean extends PortletJspBean
 
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LIST_HTMLDOC, listBlog );
-        model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
 
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
 
@@ -125,7 +121,6 @@ public class BlogPortletJspBean extends PortletJspBean
 
         model.put( MARK_HTML_CONTENT, blog.getHtmlContent( ) );
         model.put( MARK_EDIT_COMMENT, blog.getEditComment( ) );
-        model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogPortlet.RESOURCE_ID ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_BLOG_ID, blog.getId( ) );
 
@@ -147,7 +142,6 @@ public class BlogPortletJspBean extends PortletJspBean
         BlogPortlet portlet = new BlogPortlet( );
         AdminUser user = AdminUserService.getAdminUser( request );
         String strSelectedBlog = request.getParameter( PARAMETER_HTMLDOC_SELECTED );
-        String strTemplateCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
 
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
@@ -180,7 +174,6 @@ public class BlogPortletJspBean extends PortletJspBean
             return strErrorUrl;
         }
 
-        portlet.setPageTemplateDocument( Integer.parseInt( strTemplateCode ) );
         portlet.setPageId( nPageId );
         portlet.setContentId( nContentId );
         portlet.setPortletName( request.getParameter( PARAMETER_PORTLET_NAME ) );
@@ -216,8 +209,6 @@ public class BlogPortletJspBean extends PortletJspBean
     {
         // fetches portlet attributes
         String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        // recovers portlet attributes
-        String strDocumentTypeCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
         int nPortletId = Integer.parseInt( strPortletId );
         BlogPortlet portlet = (BlogPortlet) PortletHome.findByPrimaryKey( nPortletId );
         Blog blog = BlogHome.findByPrimaryKey( portlet.getContentId( ) );
@@ -228,7 +219,6 @@ public class BlogPortletJspBean extends PortletJspBean
         {
             return strErrorUrl;
         }
-        portlet.setPageTemplateDocument( Integer.parseInt( strDocumentTypeCode ) );
         // updates the blog
         blog.setHtmlContent( request.getParameter( PARAMETER_HTML_CONTENT ) );
         blog.setEditComment( request.getParameter( PARAMETER_EDIT_COMMENT ) );

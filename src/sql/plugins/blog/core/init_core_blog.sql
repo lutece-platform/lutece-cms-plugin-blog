@@ -57,3 +57,14 @@ DELETE FROM core_attribute_field WHERE id_field=10;
 INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (10, 10, NULL, 'Ville de Paris', 0, 0, 50, 255, 0, 1);
 DELETE FROM core_attribute_field WHERE id_field=11;
 INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (11, 11, NULL, 'Rédacteur - Ville de Paris', 0, 0, 50, 255, 0, 2);
+
+
+--
+-- The FreeMarker templates of the blog portlets are registered in the core (core_portlet_template, "Gestion des modèles de rubrique" feature,
+-- CORE_PORTLET_TEMPLATE_MANAGEMENT right). The first template of each portlet type is the default one.
+--
+-- changeset blog:init_core_blog.sql-rev1.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_portlet_template WHERE id_portlet_type IN ('BLOG_PORTLET', 'BLOG_LIST_PORTLET')
+INSERT INTO core_portlet_template (id_portlet_type, description, template_path) VALUES ('BLOG_PORTLET', 'Post template', 'skin/plugins/blog/portlet/default_portlet_blog.html');
+INSERT INTO core_portlet_template (id_portlet_type, description, template_path) VALUES ('BLOG_LIST_PORTLET', 'Posts list template', 'skin/plugins/blog/portlet/default_portlet_list_blog.html');

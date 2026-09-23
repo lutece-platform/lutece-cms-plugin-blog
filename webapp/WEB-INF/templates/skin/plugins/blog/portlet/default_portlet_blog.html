@@ -1,7 +1,7 @@
 <#if blog??>
 <@cTpl>
 <#assign readingTimeLabel = "#i18n{blog.portlet.blog.readingTime.label}">
-<@cArticle class='portlet bg-light'>
+<@cArticle class='portlet portlet-blog bg-light ${device_class!}' id='portlet_${portlet_id?c}'>
     <@cHeader class='blog-hero py-0'>
         <@cBlock>
             <@cBlock class='blog-hero__meta'>
