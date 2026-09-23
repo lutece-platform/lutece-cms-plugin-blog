@@ -90,19 +90,6 @@
     <@box>
       <@boxHeader title='#i18n{blog.portlet.blogsListBlogsPortlet.titlePublishedPostList}' />
       <@boxBody class='p-3'>
-        <@formGroup labelFor='page_template_code' labelKey='#i18n{blog.portlet.blogsListBlogsPortlet.labelModel}' rows=2>
-          <@inputGroup>
-            <@inputGroupItem>
-              <@icon style='layout-2' />
-            </@inputGroupItem>
-            <@select name='page_template_code' >
-            <#list pages_list as key, value >
-              <#assign isModelSelected><#if portlet??><#if portlet.pageTemplateDocument==key>true<#else>false</#if><#else>false</#if></#assign>
-              <@option label=value value=key selected=isModelSelected?boolean />
-              </#list>
-            </@select>
-          </@inputGroup>
-        </@formGroup>
         <@box>
           <@boxHeader title='#i18n{blog.portlet.blog.titleListPublished}' />
           <@boxBody class='p-2'>

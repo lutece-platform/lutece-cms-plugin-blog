@@ -88,13 +88,11 @@ public class BlogListPortletJspBean extends PortletJspBean
 
     public static final String MARK_WEBAPP_URL = "webapp_url";
     public static final String MARK_LIST_HTMLDOC = "blog_list";
-    public static final String MARK_LIST_PAGES = "pages_list";
     public static final String MARK_LIST_HTMLDOC_PUBLISHED = "blog_list_published";
 
     public static final String PARAMETER_ACTION_PORTLET_ADD = "add";
     public static final String PARAMETER_ACTION_PORTLET_REMOVE = "remove";
     public static final String PARAMETER_ACTION_PORTLET = "action";
-    private static final String PARAMETER_PAGE_TEMPLATE_CODE = "page_template_code";
 
     private static final String PARAMETER_DOCUMENT_ID = "idDocument";
     private static final String PARAMETER_DOCUMENT_ORDER = "orderDocument";
@@ -215,8 +213,6 @@ public class BlogListPortletJspBean extends PortletJspBean
         model.put( MARK_DATE_UPDATE_BLOG_AFTER, _dateUpdateBlogAfter );
         model.put( MARK_DATE_UPDATE_BLOG_BEFOR, _dateUpdateBlogBefor );
         model.put( MARK_UNPUBLISHED, _nIsUnpublished );
-
-        model.put( MARK_LIST_PAGES, BlogListPortletHome.loadPages( BlogListPortlet.RESOURCE_ID ) );
 
         return model;
     }
@@ -417,9 +413,6 @@ public class BlogListPortletJspBean extends PortletJspBean
 
         int order = 1;
 
-        // gets the identifier of the parent page
-        String strTemplateCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
-
         // get portlet common attributes
         String strErrorUrl = setPortletCommonData( request, _portlet );
 
@@ -429,9 +422,6 @@ public class BlogListPortletJspBean extends PortletJspBean
         }
 
         _portlet.setPageId( nIdPage );
-
-        // gets the specific parameters
-        _portlet.setPageTemplateDocument( Integer.parseInt( strTemplateCode ) );
 
         for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
         {
@@ -482,8 +472,6 @@ public class BlogListPortletJspBean extends PortletJspBean
 
         int order = 1;
 
-        // recovers portlet attributes
-        String strDocumentTypeCode = request.getParameter( PARAMETER_PAGE_TEMPLATE_CODE );
         // retrieve portlet common attributes
         String strErrorUrl = setPortletCommonData( request, _portlet );
 
@@ -491,8 +479,6 @@ public class BlogListPortletJspBean extends PortletJspBean
         {
             return strErrorUrl;
         }
-
-        _portlet.setPageTemplateDocument( Integer.parseInt( strDocumentTypeCode ) );
 
         for ( BlogPublication doc : _portlet.getArrayBlogs( ) )
         {

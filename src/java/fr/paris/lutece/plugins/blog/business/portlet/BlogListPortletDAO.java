@@ -42,9 +42,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class provides Data Access methods for BlogsListPortlet objects
@@ -53,10 +51,10 @@ import java.util.Map;
 public final class BlogListPortletDAO implements IBlogListPortletDAO
 {
 
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet , id_page_template_document FROM blog_list_portlet ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_list_portlet ( id_portlet , id_page_template_document ) VALUES ( ? , ? )";
-    private static final String SQL_QUERY_SELECT = "SELECT id_portlet , id_page_template_document FROM blog_list_portlet WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_list_portlet SET id_portlet = ?, id_page_template_document = ? WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet FROM blog_list_portlet ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_list_portlet ( id_portlet ) VALUES ( ? )";
+    private static final String SQL_QUERY_SELECT = "SELECT id_portlet FROM blog_list_portlet WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_list_portlet SET id_portlet = ? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_list_portlet WHERE id_portlet= ? ";
     private static final String SQL_QUERY_CHECK_IS_ALIAS = "SELECT id_alias FROM core_portlet_alias WHERE id_alias = ?";
 
@@ -68,7 +66,6 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
     private static final String SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_begin_publishing, date_end_publishing) VALUES ( ? , ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_DELETE_BLOGS_PORTLET = " DELETE FROM blog_list_portlet_htmldocs WHERE id_portlet = ? ";
     private static final String SQL_QUERY_SELECT_CATEGORY_PORTLET = "SELECT id_blog, document_order, date_begin_publishing, date_end_publishing, status FROM blog_list_portlet_htmldocs WHERE id_portlet = ? order by document_order ";
-    private static final String SQL_QUERY_SELECT_PAGE_PORTLET = "SELECT id_page_template_document,description from  blog_page_template where portlet_type= ?";
 
     private static final String SQL_QUERY_SELECT_MIN_DOC_ORDER = "SELECT MIN( document_order ) FROM blog_list_portlet_htmldocs ";
 
@@ -86,7 +83,6 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT ) )
         {
             daoUtil.setInt( 1, p.getId( ) );
-            daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
 
             daoUtil.executeUpdate( );
         }
@@ -198,32 +194,11 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
             if ( daoUtil.next( ) )
             {
                 portlet.setId( daoUtil.getInt( 1 ) );
-                portlet.setPageTemplateDocument( daoUtil.getInt( 2 ) );
             }
         }
 
         portlet.setArrayBlogs( loadBlogsId( nPortletId ) );
         return portlet;
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public Map<Integer, String> loadPages( String strPortletType )
-    {
-        Map<Integer, String> page = new HashMap<>( );
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_PAGE_PORTLET ) )
-        {
-            daoUtil.setString( 1, strPortletType );
-            daoUtil.executeQuery( );
-
-            while ( daoUtil.next( ) )
-            {
-                page.put( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
-            }
-        }
-        return page;
     }
 
     /**
@@ -266,8 +241,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE ) )
         {
             daoUtil.setInt( 1, p.getId( ) );
-            daoUtil.setInt( 2, p.getPageTemplateDocument( ) );
-            daoUtil.setInt( 3, p.getId( ) );
+            daoUtil.setInt( 2, p.getId( ) );
 
             daoUtil.executeUpdate( );
         }

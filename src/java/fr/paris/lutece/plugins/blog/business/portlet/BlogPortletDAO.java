@@ -50,11 +50,11 @@ public final class BlogPortletDAO implements IBlogPortletDAO
 {
     // Constants
 
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet, name, content_id, id_page_template_document FROM blog_portlet";
-    private static final String SQL_QUERY_SELECT = "SELECT id_portlet, name, content_id,id_page_template_document  FROM blog_portlet WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_portlet ( id_portlet, name, content_id, id_page_template_document ) VALUES ( ?, ?, ?, ? )";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_portlet, name, content_id FROM blog_portlet";
+    private static final String SQL_QUERY_SELECT = "SELECT id_portlet, name, content_id FROM blog_portlet WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO blog_portlet ( id_portlet, name, content_id ) VALUES ( ?, ?, ? )";
     private static final String SQL_QUERY_DELETE = "DELETE FROM blog_portlet WHERE id_portlet = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE blog_portlet SET id_portlet = ?, name = ?, content_id = ?, id_page_template_document=? WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE blog_portlet SET id_portlet = ?, name = ?, content_id = ? WHERE id_portlet = ? ";
     private static final String SQL_QUERY_INSERT_BLOGS_PORTLET = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_end_publishing ) VALUES ( ? , ?, ?, ?, ? )";
     private static final String SQL_QUERY_INSERT_BLOGS_PORTLET_ON_UPDATE = "INSERT INTO blog_list_portlet_htmldocs ( id_portlet , id_blog, status, document_order, date_begin_publishing, date_end_publishing) VALUES ( ? , ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_SELECT_PORTLET_BY_TYPE = "SELECT DISTINCT b.id_portlet , a.name, a.date_update " + "FROM blog_portlet b "
@@ -76,7 +76,6 @@ public final class BlogPortletDAO implements IBlogPortletDAO
             daoUtil.setInt( 1, p.getId( ) );
             daoUtil.setString( 2, p.getPortletName( ) );
             daoUtil.setInt( 3, p.getContentId( ) );
-            daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
             daoUtil.executeUpdate( );
         }
         insertBlogPublication( p );
@@ -114,8 +113,7 @@ public final class BlogPortletDAO implements IBlogPortletDAO
             daoUtil.setInt( 1, p.getId( ) );
             daoUtil.setString( 2, p.getPortletName( ) );
             daoUtil.setInt( 3, p.getContentId( ) );
-            daoUtil.setInt( 4, p.getPageTemplateDocument( ) );
-            daoUtil.setInt( 5, p.getId( ) );
+            daoUtil.setInt( 4, p.getId( ) );
 
             daoUtil.executeUpdate( );
         }
@@ -147,7 +145,6 @@ public final class BlogPortletDAO implements IBlogPortletDAO
                 portlet.setId( daoUtil.getInt( 1 ) );
                 portlet.setPortletName( daoUtil.getString( 2 ) );
                 portlet.setContentId( daoUtil.getInt( 3 ) );
-                portlet.setPageTemplateDocument( daoUtil.getInt( 4 ) );
             }
         }
         return portlet;

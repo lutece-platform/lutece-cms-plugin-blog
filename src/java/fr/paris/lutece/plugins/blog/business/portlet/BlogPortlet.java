@@ -35,17 +35,12 @@ package fr.paris.lutece.plugins.blog.business.portlet;
 
 import java.sql.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.Map;
 
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.plugins.blog.business.BlogPageTemplate;
-import fr.paris.lutece.plugins.blog.business.BlogPageTemplateHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
 import fr.paris.lutece.plugins.blog.business.Blog;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -56,10 +51,9 @@ public class BlogPortlet extends PortletHtmlContent
 {
     public static final String RESOURCE_ID = "BLOG_PORTLET";
     public static final String MARK_BLOG = "blog";
-    public static final String MARK_PORTLET_NAME = "portlet_name";
-    public static final String MARK_PORTLET_ID = "portlet_id";
 
-    private int _nPageTemplateDocument;
+    /** Default FreeMarker template, used when the portlet has no template chosen in the core (core_portlet_template) */
+    public static final String TEMPLATE_PORTLET_BLOG_DEFAULT = "skin/plugins/blog/portlet/default_portlet_blog.html";
 
     /**
      * Sets the identifier of the portlet type to value specified
@@ -76,11 +70,11 @@ public class BlogPortlet extends PortletHtmlContent
     private BlogPublication _blogPublication;
 
     /**
-     * Returns the HTML code of the blogsPortlet portlet with XML heading
+     * Returns the HTML code of the blog portlet, rendered with the template chosen for the portlet in the core (or the default one)
      *
      * @param request
      *            The HTTP servlet request
-     * @return the HTML code of the blogsPortlet portlet
+     * @return the HTML code of the blog portlet
      */
     @Override
     public String getHtmlContent( HttpServletRequest request )
@@ -89,31 +83,15 @@ public class BlogPortlet extends PortletHtmlContent
         Blog blog = BlogService.getInstance( ).loadBlog( this.getContentId( ) );
         BlogPublication docPub = PublishingService.getInstance( ).getBlogPublication( this.getId( ), this.getContentId( ) );
 
-        HashMap<String, Object> model = new HashMap<>( );
-        BlogPageTemplate pageTemplate = BlogPageTemplateHome.findByPrimaryKey( this.getPageTemplateDocument( ) );
+        Map<String, Object> model = createPortletModel( );
 
         if ( docPub != null && docPub.getIdBlog( ) != 0 && docPub.getDateBeginPublishing( ).before( new Date( calendar.getTimeInMillis( ) ) )
                 && docPub.getDateEndPublishing( ).after( new Date( calendar.getTimeInMillis( ) ) ) )
         {
-            if ( this.getDisplayPortletTitle( ) == 0 )
-            {
-
-                model.put( MARK_PORTLET_NAME, this.getName( ) );
-
-            }
             model.put( MARK_BLOG, blog );
         }
-        model.put( MARK_PORTLET_ID, this.getId( ) );
-        Locale locale = null;
-        if ( request != null )
-        {
-            locale = request.getLocale( );
-        }
 
-        HtmlTemplate template = AppTemplateService.getTemplate( pageTemplate.getFile( ), locale, model );
-
-        return template.getHtml( );
-
+        return renderTemplate( request, TEMPLATE_PORTLET_BLOG_DEFAULT, model );
     }
 
     /**
@@ -195,26 +173,5 @@ public class BlogPortlet extends PortletHtmlContent
     public String getPortletName( )
     {
         return _strName;
-    }
-
-    /**
-     * Sets the parent page identifier of the portlet to the value specified in parameter
-     *
-     * @param nPageTemplateDocument
-     *            the code
-     */
-    public void setPageTemplateDocument( int nPageTemplateDocument )
-    {
-        _nPageTemplateDocument = nPageTemplateDocument;
-    }
-
-    /**
-     * Returns the identifier of the parent page of the portlet
-     *
-     * @return the parent page identifier
-     */
-    public int getPageTemplateDocument( )
-    {
-        return _nPageTemplateDocument;
     }
 }
