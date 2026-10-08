@@ -158,18 +158,19 @@
 							</@td>
 							<@td>
 							<#if permission_manage_publish_blog && status_filter != 3>
-								<#assign btnColor><#if blog.blogPublication?size = 0>default<#else>primary</#if></#assign>
+								<#assign isPublishedNow = blog.blogPublication?filter( p -> p.dateBeginPublishing?long < .now?long && .now?long < p.dateEndPublishing?long )?size gt 0>
+								<#assign btnColor = isPublishedNow?then('primary','muted-lt')>
 								<#assign btnTitle><#if blog.blogPublication?size==0>#i18n{blog.manage_blogs.labelPublished}<#else>#i18n{blog.manage_blogs.managePublication}</#if></#assign>
 								<@btnGroup params='aria-label="Manage"'>
 									<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id}' class='position-relative overflow-visible' color='${btnColor}' title=title buttonIcon='globe' size=''>
 									<#if blog.blogPublication?size &gt; 0>
-										<@span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success z-2">
+										<@span class="position-absolute top-0 start-100 translate-middle badge rounded-pill ${isPublishedNow?then('bg-success','bg-secondary')} z-2">
 											${blog.blogPublication?size} <@span class="visually-hidden">#i18n{blog.manage_blogs.labelDisplays}</@span>
 										</@span>
 									</#if>
 									</@aButton>
 									<#if blog.blogPublication?size &gt; 0>
-										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all']size=''>
+										<@button type='button' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all'] size='' color=isPublishedNow?then('primary','default') class=isPublishedNow?then('','bg-muted-lt')>
 											<#list blog.blogPublication?sort_by("idPortlet") as publication>
 												<@li>
 													<@btnGroup class='d-flex justify-content-between'>
