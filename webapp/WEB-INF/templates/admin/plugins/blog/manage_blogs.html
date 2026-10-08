@@ -141,8 +141,9 @@
 						<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' hideTitle=['all'] />
 					</#if>
 					<#if permission_manage_publish_blog && status_filter != 3>
-						<#if blog.blogPublication?size = 0>
-							<#assign btnColor>secondary me-1</#assign>
+						<#assign isPublishedNow = blog.blogPublication?filter( p -> p.dateBeginPublishing?long < .now?long && .now?long < p.dateEndPublishing?long )?size gt 0>
+						<#if !isPublishedNow>
+							<#assign btnColor>secondary<#if blog.blogPublication?size = 0> me-1</#if></#assign>
 							<#assign btnTitle>#i18n{blog.manage_blogs.labelNotPublished}</#assign>
 						<#else>
 							<#assign btnColor>primary</#assign>
@@ -151,7 +152,7 @@
 						<#assign nbPublication><#if blog.blogPublication?size gt 0>${blog.blogPublication?size!}</#if></#assign>
 						<#assign btnPublicationDropdown>
 						<#if blog.blogPublication?size gt 0>
-							<@button type='button' class='btn-primary me-1' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all'] size=''>
+							<@button type='button' class=isPublishedNow?then('btn-primary','btn-secondary') + ' me-1' dropdownMenu=true title='#i18n{blog.modify_blog.labelToggleDropdown}' hideTitle=['all'] size=''>
 							<#list blog.blogPublication?sort_by("idPortlet") as publication>
 								<@li class='dropdown-item'>
 									<@span class='me-auto' params='data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}"' >${publication.portlet.name} - #i18n{blog.modify_blog.labelPage} ${publication.portlet.pageId}</@span>
@@ -165,7 +166,7 @@
 							</@button>
 						</#if>
 						</#assign>
-						<@offcanvas id='blog-publication-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' useIframe=true reloadOnClose=true title=btnTitle btnTitle=btnTitle btnIcon='globe' btnColor='${btnColor}' hideTitle=['xs','sm','md','lg','xl'] btnDropdown=true  btnDropdownContent=btnPublicationDropdown badgeColor='success' badgeContent=nbPublication! position='end' size='half' />
+						<@offcanvas id='blog-publication-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' useIframe=true reloadOnClose=true title=btnTitle btnTitle=btnTitle btnIcon='globe' btnColor='${btnColor}' hideTitle=['xs','sm','md','lg','xl'] btnDropdown=true  btnDropdownContent=btnPublicationDropdown badgeColor=isPublishedNow?then('success','dark') badgeContent=nbPublication! position='end' size='half' />
 					</#if>
 					<#if blog.version gt 1>
 						<@offcanvas id='blog-history-${blog.id}' targetUrl='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&id=${blog.id}' useIframe=true title='#i18n{blog.manage_blogs.labelHistory} ${blog.version} #i18n{blog.manage_blogs.labelVersions}' hideTitle=['xs','sm','md','lg','xl'] btnTitle='#i18n{blog.manage_blogs.labelHistory}' btnClass='rounded' btnIcon='history' badgeColor='info' badgeContent=blog.version! position='end' size='half' />
