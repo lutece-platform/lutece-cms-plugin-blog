@@ -276,7 +276,7 @@ public class BlogServiceSession
                     }
                     }
             }
-            listDocContent.sort( ( d1, d2 ) -> d1.getPriority( ) );
+            listDocContent.sort( java.util.Comparator.comparingInt( DocContent::getPriority ) );
             return listDocContent;
 
         }

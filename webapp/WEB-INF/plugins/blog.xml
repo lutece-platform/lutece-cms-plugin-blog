@@ -27,7 +27,7 @@
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/blog/ManageBlogs.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
-            <feature-icon-url/>
+            <feature-icon-url>ti ti-list-letters</feature-icon-url>
 		</admin-feature>
 		<admin-feature>
             <feature-id>BLOG_TAGS_MANAGEMENT</feature-id>
@@ -36,7 +36,7 @@
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/blog/ManageTags.jsp</feature-url>
             <feature-group>CONTENT</feature-group>
-            <feature-icon-url/>
+            <feature-icon-url>ti ti-tags</feature-icon-url>
 		</admin-feature>
     </admin-features>    
     <!-- Specific plugin CSS stylesheet -->

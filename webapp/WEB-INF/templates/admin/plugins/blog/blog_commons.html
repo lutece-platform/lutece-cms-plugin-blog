@@ -78,34 +78,58 @@ document.addEventListener( "DOMContentLoaded", function(){
     }
   });
 
-  /* Offcanvas  */
-  /* Tags       */
+  /* Properties: tags and attachments (bound once, whether they sit in the page or in a panel) */
   const idBlog = document.querySelector('#id').value;
-  const myOffcanvas = document.getElementById('blog-properties')
-  myOffcanvas.addEventListener('show.bs.offcanvas', event => {
-    const btnAddTag = document.querySelector( "#addTag" )
+  const btnAddTag = document.querySelector( "#addTag" )
+  if ( btnAddTag ){
     btnAddTag.addEventListener( 'click', function(e){
       const tagDoc = document.querySelector('#tag_doc');
       const index = tagDoc.selectedIndex;
+      if ( index < 0 ) return;
       const selOption = tagDoc.options[ index ].textContent;
       doAddTag( tagDoc.value, selOption, idBlog );
     });
+  }
 
-    const btnCreateTag = document.querySelector( "#createTag" )
-    if (btnCreateTag){
-        btnCreateTag.addEventListener( 'click', event => {
-            createTag( idBlog );
-        });
-    }
-    <#if is_crop_image>
-    <#else>
-    const btnAddFiles = document.querySelector("#btn-add-files")
+  const btnCreateTag = document.querySelector( "#createTag" )
+  if ( btnCreateTag ){
+    btnCreateTag.addEventListener( 'click', event => {
+      createTag( idBlog );
+    });
+  }
+
+  const btnAddFiles = document.querySelector("#btn-add-files")
+  if ( btnAddFiles ){
     btnAddFiles.addEventListener( 'click', event => {
       document.querySelector('#attachment').click();
     });
-    </#if>
-  })
+  }
   var number_mandatory_tags=<#if requiredTags gt 0>${requiredTags}<#else>0</#if>
+
+  /* Unsaved changes guard: leaving the editor (back, publication, history...) asks before losing edits.
+     On an existing post, tags and attachments are saved at once through AJAX, so they do not count;
+     on a new post (id 0) they only live in the session until the post is created, so they do. */
+  let blogFormDirty = false;
+  const isNewBlog = idBlog === '0';
+  const isPropertyControl = el => el.closest( '#tag-list, .blog-resources' ) || [ 'tag_doc', 'fileType', 'attachment' ].includes( el.id ) || ( el.name || '' ).startsWith( 'fileType_' );
+  const markDirty = e => { if ( isNewBlog || !isPropertyControl( e.target ) ) blogFormDirty = true; };
+  if ( isNewBlog ) {
+    [ '#addTag', '#createTag' ].forEach( sel => document.querySelector( sel )?.addEventListener( 'click', () => { blogFormDirty = true; } ) );
+  }
+  formEditor.addEventListener( 'input', markDirty );
+  formEditor.addEventListener( 'change', markDirty );
+  const editorsDirty = () => window.tinymce ? tinymce.get().some( ed => ed.isDirty() ) : false;
+  window.addEventListener( 'beforeunload', e => {
+    if ( blogFormDirty || editorsDirty() ) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+  formEditor.addEventListener( 'submit', e => {
+    if ( e.defaultPrevented ) return;
+    blogFormDirty = false;
+    if ( window.tinymce ) tinymce.get().forEach( ed => ed.setDirty( false ) );
+  });
 
   <@charcounter />
 });
@@ -119,3 +143,120 @@ document.addEventListener( "DOMContentLoaded", function(){
 <#return x > 
 </#if>
 </#function>
+
+<#-- Tags and attachments cards of the editor side column, shared by create_blog.html and modify_blog.html.
+     The ids (#tag-list, #tag_doc, #addTag, #content-list, #attachment, #fileType, #btn-add-files) are used by blog.js -->
+<#macro blogPropertiesCards>
+<#local is_content_type=dskey('blog.advanced_parameters.use_content_type')?boolean />
+<#local acceptedTypes=dskey('blog.advanced_parameters.accepted_file_types')!'image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp' />
+<#-- Tags -->
+<@box class='mb-0'>
+	<@boxHeader title='#i18n{blog.modify_blog.TagsTitle}' titleActions=true>
+		<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blog' target='_blank' color='' class='btn-action' buttonIcon='settings' title='#i18n{blog.manage_blogs.labelManageTags}' hideTitle=['all'] />
+	</@boxHeader>
+	<@boxBody>
+		<#if number_mandatory_tags gt 0>
+			<@alert id='enoughTagsInfo' color='info' title='#i18n{blog.mandatoryTags.minimum.number} : ${number_mandatory_tags}' />
+		</#if>
+		<@formGroup labelFor='tag_doc' labelKey='#i18n{blog.manage_tags.buttonAdd}' hideLabel=['all'] rows=2 class='mb-0'>
+			<@inputGroup>
+				<@select name='tag_doc' id='tag_doc' default_value='' items=list_tag />
+				<@button type='button' id='addTag' name='addTag' value='addTag' buttonIcon='plus' title='#i18n{blog.manage_tags.buttonAdd}' hideTitle=['all'] />
+			</@inputGroup>
+		</@formGroup>
+	</@boxBody>
+	<@listGroup id='tag-list' class='list-group-flush'>
+		<#list blog.tag as tg>
+			<@listGroupItem id='tag_${tg.idTag}' class='d-flex align-items-center justify-content-between py-2'>
+				<@span class='badge bg-blue-lt text-truncate'><@icon style='tag' /> ${tg.name!}</@span>
+				<@btnGroup size='sm' ariaLabel='#i18n{portal.util.labelActions}'>
+					<@button color='ghost-secondary' class='btn-icon btn-down' size='sm' buttonIcon='arrow-down' title='#i18n{blog.create_blog.labelDown}' hideTitle=['all'] params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\', ${blog.id} );"' />
+					<@button color='ghost-secondary' class='btn-icon btn-up' size='sm' buttonIcon='arrow-up' title='#i18n{blog.create_blog.labelUp}' hideTitle=['all'] params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\', ${blog.id} );"' />
+					<@button color='ghost-danger' class='btn-icon' size='sm' name='removeTag' value='removeTag' buttonIcon='x' title='#i18n{blog.create_blog.labelRemove}' hideTitle=['all'] params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!?js_string}\', ${blog.id} );"' />
+				</@btnGroup>
+			</@listGroupItem>
+		</#list>
+	</@listGroup>
+</@box>
+
+<#-- Attachments -->
+<@box class='mb-0'>
+	<@boxHeader title='#i18n{blog.modify_blog.labelAttachment}' titleActions=true>
+		<#if is_crop_image>
+			<@button color='action' buttonIcon='upload' title='#i18n{blog.modify_blog.labelAttachment}' hideTitle=['all'] params='data-bs-toggle="modal" data-bs-target="#imageModal"' />
+		<#else>
+			<@button id='btn-add-files' color='action' buttonIcon='upload' title='#i18n{blog.modify_blog.labelAttachment}' hideTitle=['all'] />
+		</#if>
+	</@boxHeader>
+	<@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='${acceptedTypes}' params='onchange="getFile(${blog.id})"' />
+	<#if is_content_type>
+		<@boxBody class='py-2'>
+			<@select name='fileType' id='fileType' class='form-select form-select-sm'>
+				<#list image_type as type><@option value=type.idContentType label=type.label /></#list>
+			</@select>
+		</@boxBody>
+	</#if>
+	<@div class='blog-resources'>
+		<@listGroup id='content-list' class='list-group-flush'>
+			<#list blog.docContent![] as docContent>
+				<#assign isImage=docContent.textValue?lower_case?matches('.*\\.(png|jpe?g|gif|webp|svg)$') />
+				<@listGroupItem id='doc_${docContent.id}' class='blog-image d-flex align-items-center gap-2 py-2 ${isImage?then("blog-image-content","blog-file-content")}'>
+					<#if isImage>
+						<@img class='avatar avatar-md rounded object-fit-cover' url='servlet/plugins/blogs/file?id_file=${docContent.id}' alt='${docContent.textValue!}' title='${docContent.textValue!}' />
+					<#else>
+						<@img class='avatar avatar-md rounded' url='themes/admin/shared/plugins/blog/images/file-type-${getFileExtension(docContent.textValue)!}.svg' alt='' />
+					</#if>
+					<@div class='flex-fill text-truncate'>
+						<@link href='servlet/plugins/blogs/file?id_file=${docContent.id}' class='text-reset small' title='#i18n{portal.util.labelDownload} ${docContent.textValue!}'>${docContent.textValue!}</@link>
+						<#if is_content_type>
+							<@select name='fileType_${docContent.id}' class='form-select form-select-sm mt-1' params='onchange="doUpdateContentType( ${docContent.id}, this.value, ${blog.id} )"'>
+								<#list image_type as type>
+									<@option value=type.idContentType label=type.label selected=(type.idContentType == (docContent.contentType.idContentType)!0) />
+								</#list>
+							</@select>
+						</#if>
+					</@div>
+					<@button color='ghost-secondary' class='btn-icon' size='sm' id='doc-actions-${docContent.id}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
+						<@li><@link class='dropdown-item' href='#' params='onclick="doInsertContent( ${docContent.id}, \'${docContent.textValue!?js_string}\', ${(docContent.contentType.idContentType)!1} ); return false;"'><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link></@li>
+						<@li><@link class='dropdown-item btn-up' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\', ${blog.id} ); return false;"'><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link></@li>
+						<@li><@link class='dropdown-item btn-down' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\', ${blog.id} ); return false;"'><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link></@li>
+						<@li class='dropdown-divider' />
+						<@li><@link class='dropdown-item text-danger' href='#' params='onclick="deleteFileContent( ${docContent.id}, ${blog.id} ); return false;"'><@icon style='trash' class='me-2' />#i18n{blog.create_blog.labelRemove}</@link></@li>
+					</@button>
+				</@listGroupItem>
+			</#list>
+		</@listGroup>
+	</@div>
+</@box>
+
+</#macro>
+
+<#-- Display options and URL card of the editor side column, shared by create_blog.html and modify_blog.html -->
+<#macro blogOptionsCard>
+<#-- Display options and URL -->
+<@box class='mb-0'>
+	<@boxHeader title='#i18n{blog.modify_blog.labelOptions}' />
+	<@boxBody>
+		<@checkBox orientation='switch' id='display_toc' name='display_toc' value='true' checked=blog.displayToc labelKey='#i18n{blog.modify_blog.labelDisplayToc}' />
+		<@checkBox orientation='switch' id='display_related' name='display_related' value='true' checked=blog.displayRelated labelKey='#i18n{blog.modify_blog.labelDisplayRelated}' />
+		<#assign maxRelatedWrapperClass><#if !blog.displayRelated>visually-hidden</#if></#assign>
+		<@formGroup id='max_related_wrapper' labelFor='max_related' labelKey='#i18n{blog.modify_blog.labelMaxRelated}' helpKey='#i18n{blog.modify_blog.labelMaxRelated.help}' rows=2 class=maxRelatedWrapperClass>
+			<@input type='number' name='max_related' id='max_related' value='${blog.maxRelated?c}' min=1 max=20 />
+		</@formGroup>
+		<#assign urlPattern><#noparse>[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\-\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)</#noparse></#assign>
+		<@formGroup labelFor='url' labelKey='#i18n{blog.create_blog.labelUrl}' helpKey='#i18n{blog.create_blog.labelUrl.help}' rows=2 class='mb-0'>
+			<@input name='url' id='url' value='${blog.url!}' pattern=urlPattern placeHolder='https://' />
+		</@formGroup>
+	</@boxBody>
+</@box>
+<script>
+document.addEventListener( 'DOMContentLoaded', function() {
+	const displayRelated = document.getElementById( 'display_related' );
+	const wrapper = document.getElementById( 'max_related_wrapper' );
+	if ( !displayRelated || !wrapper ) return;
+	displayRelated.addEventListener( 'change', function() {
+		wrapper.classList.toggle( 'visually-hidden', !displayRelated.checked );
+	});
+});
+</script>
+</#macro>

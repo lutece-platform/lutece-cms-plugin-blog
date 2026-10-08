@@ -51,8 +51,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPortlet;
-import fr.paris.lutece.plugins.blog.business.portlet.BlogPortletHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.business.portlet.PortletFilter;
@@ -70,6 +68,8 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
+import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceItem;
@@ -104,7 +104,6 @@ public class BlogPublicationJspBean extends BlogJspBean
     private static final String MARK_PORTLET = "portlet";
     private static final String MARK_LIST_PAGE = "page_list";
 
-    private static final String MARK_DOCUMENT_PORTLET_LIST = "document_portlet_list";
     private static final String MARK_DOCUMENT_LIST_PORTLET_LIST = "document_list_portlet_list";
     private static final String MARK_PORTLET_FILTER = "portlet_filter";
 
@@ -131,6 +130,8 @@ public class BlogPublicationJspBean extends BlogJspBean
     private static final String PARAMETER_ORDER_PORTLET_ASC = "order_portlet_asc";
     private static final String PARAMETER_PORTLET_FILTER_TYPE = "portlet_filter_type";
     private static final String PARAMETER_PORTLET_FILTER_VALUE = "portlet_filter_value";
+    private static final String PARAMETER_FILTER_DATE_BEGIN_PUBLISHING = "filter_date_begin_publishing";
+    private static final String PARAMETER_FILTER_DATE_END_PUBLISHING = "filter_date_end_publishing";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "blog.listItems.itemsPerPage";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
@@ -140,6 +141,8 @@ public class BlogPublicationJspBean extends BlogJspBean
     // Message
     private static final String ERROR_MESSAGE_NOT_NUMERIC_FIELD = "blog.message.notNumericField";
     private static final String ERROR_MESSAGE_MESSAGE_MANDATORY_SEARCH_FIELD = "blog.message.mandatory.searchField";
+    private static final String ERROR_MESSAGE_INVALID_DATE = "blog.publication_blog.message.errorInvalidDate";
+    private static final String ERROR_MESSAGE_INVALID_PERIOD = "blog.publication_blog.message.errorInvalidPeriod";
 
     // Session variable to store working values
     protected BlogPublication _blogPublication;
@@ -185,7 +188,15 @@ public class BlogPublicationJspBean extends BlogJspBean
             portletFilter.setPortletFilterType( request.getParameter( PARAMETER_PORTLET_FILTER_TYPE ) );
             portletFilter.setDisplayLatestPortlets( bIsDisplayPortlets );
             portletFilter.setSearchValue( request.getParameter( PARAMETER_PORTLET_FILTER_VALUE ) );
-            strErrorFilter = setFillFilter( portletFilter );
+            String strDateBegin = request.getParameter( PARAMETER_FILTER_DATE_BEGIN_PUBLISHING );
+            String strDateEnd = request.getParameter( PARAMETER_FILTER_DATE_END_PUBLISHING );
+            portletFilter.setDateBeginPublishing( parseIsoDate( strDateBegin ) );
+            portletFilter.setDateEndPublishing( parseIsoDate( strDateEnd ) );
+            strErrorFilter = getPublicationPeriodError( strDateBegin, strDateEnd, portletFilter );
+            if ( strErrorFilter == null )
+            {
+                strErrorFilter = setFillFilter( portletFilter );
+            }
 
             if ( strErrorFilter != null )
             {
@@ -205,12 +216,9 @@ public class BlogPublicationJspBean extends BlogJspBean
 
         Collection<ReferenceItem> listDocumentListPortlets = getListAuthorizedDocumentListPortlets( _blog.getId( ), pOrder,
                 ( strErrorFilter == null ) ? portletFilter : null );
-        Collection<ReferenceItem> listDocumentPortlets = getListAuthorizedDocumentPortlets( _blog.getId( ), pOrder,
-                ( strErrorFilter == null ) ? portletFilter : null );
-        // PAGINATOR
         java.util.List<ReferenceItem> listDocumentPortletsRef = new ArrayList<>( listDocumentListPortlets );
-        model = getPaginatedListModel( request, MARK_DOCUMENT_LIST_PORTLET_LIST, listDocumentPortletsRef, getHomeUrl( request ), model );
-        model.put( MARK_DOCUMENT_PORTLET_LIST, listDocumentPortlets );
+        model = getPaginatedListModel( request, MARK_DOCUMENT_LIST_PORTLET_LIST, listDocumentPortletsRef,
+                getPublicationListUrl( request, nId, bIsDisplayPortlets ), model );
         model.put( MARK_BLOG, _blog );
         model.put( MARK_PORTLET_LIST, PublishingService.getInstance( ).getBlogsPortletstoPublish( ) );
         model.put( MARK_ORDER_PORTLET, nOrderPortlet );
@@ -358,11 +366,100 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
 
         else
-        {
-            strErrorMessage = I18nService.getLocalizedString( ERROR_MESSAGE_MESSAGE_MANDATORY_SEARCH_FIELD, getLocale( ) );
-        }
+            if ( !portletFilter.hasPublicationPeriod( ) )
+            {
+                strErrorMessage = I18nService.getLocalizedString( ERROR_MESSAGE_MESSAGE_MANDATORY_SEARCH_FIELD, getLocale( ) );
+            }
 
         return strErrorMessage;
+    }
+
+    /**
+     * Check the publication period of the portlet filter
+     *
+     * @param strDateBegin
+     *            the start of the period as sent by the browser
+     * @param strDateEnd
+     *            the end of the period as sent by the browser
+     * @param portletFilter
+     *            the filter holding the parsed dates
+     * @return the localized error message, or null if the period is valid
+     */
+    private String getPublicationPeriodError( String strDateBegin, String strDateEnd, PortletFilter portletFilter )
+    {
+        boolean bInvalidBegin = StringUtils.isNotBlank( strDateBegin ) && ( portletFilter.getDateBeginPublishing( ) == null );
+        boolean bInvalidEnd = StringUtils.isNotBlank( strDateEnd ) && ( portletFilter.getDateEndPublishing( ) == null );
+
+        if ( bInvalidBegin || bInvalidEnd )
+        {
+            return I18nService.getLocalizedString( ERROR_MESSAGE_INVALID_DATE, getLocale( ) );
+        }
+        if ( ( portletFilter.getDateBeginPublishing( ) != null ) && ( portletFilter.getDateEndPublishing( ) != null )
+                && portletFilter.getDateBeginPublishing( ).after( portletFilter.getDateEndPublishing( ) ) )
+        {
+            return I18nService.getLocalizedString( ERROR_MESSAGE_INVALID_PERIOD, getLocale( ) );
+        }
+
+        return null;
+    }
+
+    /**
+     * Build the URL of the portlet list, keeping the blog, the filter and the sort, so that the paginator links stay on the same list
+     *
+     * @param request
+     *            the HTTP request
+     * @param nIdBlog
+     *            the blog identifier
+     * @param bIsDisplayPortlets
+     *            true if no filter is applied
+     * @return the URL of the portlet list
+     */
+    private String getPublicationListUrl( HttpServletRequest request, int nIdBlog, boolean bIsDisplayPortlets )
+    {
+        UrlItem url = new UrlItem( getHomeUrl( request ) );
+        url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_PUBLICATION );
+        url.addParameter( PARAMETER_ID_BLOG, nIdBlog );
+        url.addParameter( PARAMETER_IS_DISPLAY_LATEST_PORTLETS, String.valueOf( bIsDisplayPortlets ) );
+
+        java.util.List<String> listKeptParameters = new ArrayList<>( java.util.Arrays.asList( PARAMETER_ORDER_PORTLET, PARAMETER_ORDER_PORTLET_ASC ) );
+        if ( !bIsDisplayPortlets )
+        {
+            listKeptParameters.addAll( java.util.Arrays.asList( PARAMETER_PORTLET_FILTER_TYPE, PARAMETER_PORTLET_FILTER_VALUE,
+                    PARAMETER_FILTER_DATE_BEGIN_PUBLISHING, PARAMETER_FILTER_DATE_END_PUBLISHING ) );
+        }
+        for ( String strParameter : listKeptParameters )
+        {
+            String strValue = request.getParameter( strParameter );
+            if ( StringUtils.isNotBlank( strValue ) )
+            {
+                url.addParameter( strParameter, java.net.URLEncoder.encode( strValue, java.nio.charset.StandardCharsets.UTF_8 ) );
+            }
+        }
+
+        return url.getUrl( );
+    }
+
+    /**
+     * Parse a date sent by an HTML date input (yyyy-MM-dd)
+     *
+     * @param strDate
+     *            the date sent by the browser
+     * @return the date, or null if the value is blank or not a valid date
+     */
+    private static java.sql.Date parseIsoDate( String strDate )
+    {
+        if ( StringUtils.isBlank( strDate ) )
+        {
+            return null;
+        }
+        try
+        {
+            return java.sql.Date.valueOf( java.time.LocalDate.parse( strDate.trim( ) ) );
+        }
+        catch( java.time.format.DateTimeParseException e )
+        {
+            return null;
+        }
     }
 
     /**
@@ -437,43 +534,6 @@ public class BlogPublicationJspBean extends BlogJspBean
         }
 
         return listFilteredPortlets;
-    }
-
-    /**
-     * Get the list of authorized portlets.
-     *
-     * Check :
-     * <ul>
-     * <li>if user is authorized to manage DocumentListPortlet</li>
-     * <li>if user is authorized to manage DocumentPortlet</li>
-     * <li>For each portlet :
-     * <ul>
-     * <li>if user is authorized to manage the linked page</li>
-     * <li>if portlet isn't in autopublication mode</li>
-     * </ul>
-     * </li>
-     * </ul>
-     *
-     * @param nDocumentId
-     *            The document id
-     * 
-     * @param pOrder
-     *            The portlet order
-     * @param pFilter
-     *            The portlet filter
-     * @return A collection of {@link ReferenceItem}
-     */
-    private Collection<ReferenceItem> getListAuthorizedDocumentPortlets( int nDocumentId, PortletOrder pOrder, PortletFilter pFilter )
-    {
-        Collection<ReferenceItem> listPortlets = new ArrayList<>( );
-
-        // Check role PERMISSION_MANAGE for DocumentPortlet
-        if ( RBACService.isAuthorized( PortletType.RESOURCE_TYPE, BlogPortlet.RESOURCE_ID, PortletResourceIdService.PERMISSION_MANAGE, (User) getUser( ) ) )
-        {
-            listPortlets.addAll( BlogPortletHome.findByFilter( nDocumentId, pOrder, pFilter ) );
-        }
-
-        return filterByWorkgroup( listPortlets, pFilter );
     }
 
     /**

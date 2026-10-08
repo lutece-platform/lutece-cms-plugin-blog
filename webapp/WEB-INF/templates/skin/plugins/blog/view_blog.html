@@ -10,10 +10,8 @@
                     <#if from_page_id??><#assign fromPageUrl = 'jsp/site/Portal.jsp?page_id=' + from_page_id?c></#if>
                     <#assign breadcrumbItems = breadcrumbItems + [{ 'title': from_page_name, 'url': fromPageUrl }]>
                 </#if>
-                <#if from_name?? && from_name != ''>
-                    <#assign breadcrumbItems = breadcrumbItems + [{ 'title': from_name, 'url': '' }]>
-                </#if>
-                <@cBreadCrumb home='Home' type='fluid' items=breadcrumbItems listClass='ms-m' />
+                <#if from_name?? && from_name != ''><#assign breadcrumbItems = breadcrumbItems + [{ 'title': from_name, 'url': '' }]></#if>
+                <@cBreadCrumb home='Home' type='fluid' containerClass='ps-0' items=breadcrumbItems />
                 <@cHeader class='blog-hero'>
                     <@cBlock>
                         <@cBlock class='blog-hero__meta'>

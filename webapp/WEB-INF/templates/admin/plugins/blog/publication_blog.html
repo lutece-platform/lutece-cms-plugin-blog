@@ -1,240 +1,194 @@
+<#assign publicationUrl='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp' />
+<#assign manageUrl='jsp/admin/plugins/blog/ManageBlogs.jsp' />
+<#assign hasFilter=portlet_filter?? />
+<#assign filterDateBegin=(portlet_filter.dateBeginPublishing?string('yyyy-MM-dd'))!'' />
+<#assign filterDateEnd=(portlet_filter.dateEndPublishing?string('yyyy-MM-dd'))!'' />
+<#assign orderPortlet=order_portlet!-1 />
+<#assign orderPortletAsc=order_portlet_asc!-1 />
+<#assign publications=(blog.blogPublication![])?sort_by('idPortlet') />
+<#-- Current portlet filter and sort, carried by publish and unpublish so the list stays as the user left it -->
+<#assign listStateQuery>is_display_latest_portlets=${(!hasFilter)?c}<#if hasFilter>&portlet_filter_type=${(portlet_filter.portletFilterType!)?url('UTF-8')}&portlet_filter_value=${(portlet_filter.searchValue!)?url('UTF-8')}&filter_date_begin_publishing=${filterDateBegin}&filter_date_end_publishing=${filterDateEnd}</#if><#if orderPortlet gte 0 && orderPortletAsc gte 0>&order_portlet=${orderPortlet}&order_portlet_asc=${orderPortletAsc}</#if></#assign>
+<#-- Hidden fields carrying the current filter and sort, so that publishing or paging keeps the list as the user left it -->
+<#macro listStateFields>
+	<@input type='hidden' name='is_display_latest_portlets' value='${(!hasFilter)?c}' />
+	<#if hasFilter>
+		<@input type='hidden' name='portlet_filter_type' value='${(portlet_filter.portletFilterType!)?html}' />
+		<@input type='hidden' name='portlet_filter_value' value='${(portlet_filter.searchValue!)?html}' />
+		<@input type='hidden' name='filter_date_begin_publishing' value='${filterDateBegin}' />
+		<@input type='hidden' name='filter_date_end_publishing' value='${filterDateEnd}' />
+	</#if>
+	<#if orderPortlet gte 0 && orderPortletAsc gte 0>
+		<@input type='hidden' name='order_portlet' value='${orderPortlet}' />
+		<@input type='hidden' name='order_portlet_asc' value='${orderPortletAsc}' />
+	</#if>
+</#macro>
 <@pageContainer id='publication_blog'>
-<@pageColumn>
-	<@pageHeader title='#i18n{blog.manage_blogs.managePublication} "${blog.contentLabel}"'>
-		<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
-		<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory}' buttonIcon='history me-2' size='' />
-	</@pageHeader>
-	<@tform id='form-portlet' name='publication_blog' params='enctype="multipart/form-data"' action='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp'>
-	<@messages errors=errors />
-	<@input type='hidden' id='id' name='id' value='${blog.id}' />
-	<@row>
-		<@columns >
-			<@formGroup labelFor='portlet_filter_type' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2>
-				<@select name='portlet_filter_type' id='portlet_filter_type' title='#i18n{blog.publication_blog.labelSearchBy}'>
-					<#assign isSelected><#if portlet_filter??  && portlet_filter.portletFilterType = "page_id">true<#else>false</#if></#assign>
-					<@option value='page_id' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelSearchByIdPage}' />
-					<#assign isSelected><#if portlet_filter??  && portlet_filter.portletFilterType = "page_name">true<#else>false</#if></#assign>
-					<@option value='page_name' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelSearchByPageName}' />
-					<#assign isSelected><#if portlet_filter??  && portlet_filter.portletFilterType = "portlet_name">true<#else>false</#if></#assign>
-					<@option value='portlet_name' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelSearchByPortletName}' />
-				</@select>
-			</@formGroup>
-		</@columns>
-		<@columns>
-			<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.manage_blogs.labelSearch}' rows=2>
-				<#assign value><#if portlet_filter??>${portlet_filter.searchValue}</#if></#assign>
-				<@input type='text' id='portlet_filter_value' name='portlet_filter_value' placeHolder='#i18n{blog.publication_blog.labelSearchBy}' value=value />
-			</@formGroup>
-		</@columns>
-		<@columns>
-			<@formGroup labelFor='order_portlet' labelKey='#i18n{blog.publication_blog.labelOrder}' rows=2>
-				<@select name='order_portlet' title='#i18n{blog.publication_blog.labelOrder}'>
-					<#assign isSelected><#if !order_portlet?? || order_portlet?? && order_portlet = 0>true<#else>false</#if></#assign>
-					<@option value='0' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelDateUpdatePortlet}' />
-					<#assign isSelected><#if order_portlet?? && order_portlet = 1>true<#else>false</#if></#assign>
-					<@option value='1' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelPageName}' />
-					<#assign isSelected><#if order_portlet?? && order_portlet = 2>true<#else>false</#if></#assign>
-					<@option value='2' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelPageId}' />
-					<#assign isSelected><#if order_portlet?? && order_portlet = 3>true<#else>false</#if></#assign>
-					<@option value='3' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelPortletName}' />
-				</@select>
-			</@formGroup>
-		</@columns>
-		<@columns>
-			<@formGroup labelFor='order_portlet_asc' labelKey='#i18n{blog.publication_blog.labelOrder}' rows=2>
-				<@inputGroup>
-					<@select name='order_portlet_asc'>
-						<#assign isSelected><#if !order_portlet_asc?? || order_portlet_asc?? && order_portlet_asc = 0>true<#else>false</#if></#assign>
-						<@option value='0' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderDesc}' />
-						<#assign isSelected><#if order_portlet_asc?? && order_portlet_asc = 1>true<#else>false</#if></#assign>
-						<@option value='1' selected=isSelected?boolean label='#i18n{blog.publication_blog.labelOrderAsc}' />
-					</@select>
-					<@button type='submit' title='#i18n{blog.manage_blogs.search}' name='view_manageBlogsPublication' id='view_manageBlogsPublication'  buttonIcon='search' />
-					<#if !portlet_filter?? >
-						<@input type='hidden' name='is_display_latest_portlets' value='false' />
+	<@pageColumn>
+		<@pageHeader title=blog.contentLabel!'' description='#i18n{blog.manage_blogs.managePublication}'>
+			<@aButton href=manageUrl color='' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' hideTitle=['all'] />
+			<@aButton href='${manageUrl}?view=historyBlog&id=${blog.id}' color='' buttonIcon='history' title='#i18n{blog.manage_blogs.labelHistory}' hideTitle=['xs','sm','md','lg'] />
+			<@aButton href='${manageUrl}?view=modifyBlog&id=${blog.id}' color='primary' buttonIcon='edit' title='#i18n{blog.modify_blog.title}' hideTitle=['xs','sm'] />
+		</@pageHeader>
+		<@messages infos=infos![] errors=errors![] />
+		<#if portlet_filter_error??><@alert color='danger' title=portlet_filter_error dismissible=true /></#if>
+
+		<@row class='row-cards'>
+			<#-- Left: choose a "list of posts" portlet and publish -->
+			<@columns lg=7>
+				<@box class='mb-0'>
+					<@boxHeader title='#i18n{blog.publication_blog.labelAvailablePortlet}' />
+					<#-- Portlet search: text and/or publication period (each criterion is optional), plus the sort -->
+					<@boxBody class='border-bottom'>
+						<@tform id='form-portlet-search' method='get' action=publicationUrl>
+							<@input type='hidden' name='view' value='manageBlogsPublication' />
+							<@input type='hidden' name='id' value='${blog.id}' />
+							<@input type='hidden' id='is_display_latest_portlets' name='is_display_latest_portlets' value='${(!hasFilter)?c}' />
+							<@row class='g-2 align-items-end'>
+								<@columns md=12 xl=6>
+									<@formGroup labelFor='portlet_filter_value' labelKey='#i18n{blog.publication_blog.labelSearchBy}' rows=2 class='mb-0'>
+										<@inputGroup>
+											<@select name='portlet_filter_type' id='portlet_filter_type' class='form-select flex-grow-0 w-auto' title='#i18n{blog.publication_blog.labelSearchBy}'>
+												<@option value='page_name' selected=(hasFilter && portlet_filter.portletFilterType == 'page_name') label='#i18n{blog.publication_blog.labelSearchByPageName}' />
+												<@option value='portlet_name' selected=(hasFilter && portlet_filter.portletFilterType == 'portlet_name') label='#i18n{blog.publication_blog.labelSearchByPortletName}' />
+												<@option value='page_id' selected=(hasFilter && portlet_filter.portletFilterType == 'page_id') label='#i18n{blog.publication_blog.labelSearchByIdPage}' />
+											</@select>
+											<@input type='text' id='portlet_filter_value' name='portlet_filter_value' value=((portlet_filter.searchValue)!'')?html placeHolder='#i18n{blog.portlet.blogsBlogsPortlet.labelFilterPlaceholder}' />
+										</@inputGroup>
+									</@formGroup>
+								</@columns>
+								<@columns md=12 xl=6>
+									<@formGroup labelFor='filter_date_begin_publishing' labelKey='#i18n{blog.publication_blog.labelFilterPeriod}' rows=2 class='mb-0'>
+										<@inputGroup>
+											<@inputGroupItem pos='prepend'>#i18n{blog.publication_blog.labelPublishedFrom}</@inputGroupItem>
+											<@input type='html5date' id='filter_date_begin_publishing' name='filter_date_begin_publishing' value=filterDateBegin />
+											<@inputGroupItem>#i18n{blog.publication_blog.labelPublishedTo}</@inputGroupItem>
+											<@input type='html5date' id='filter_date_end_publishing' name='filter_date_end_publishing' value=filterDateEnd />
+										</@inputGroup>
+									</@formGroup>
+								</@columns>
+								<@columns md=12>
+									<@formGroup labelFor='order_portlet' labelKey='#i18n{blog.publication_blog.labelSortBy}' rows=2 class='mb-0'>
+										<#-- The Search button sits in the same input group as the sort selects, so it always lines up with them -->
+										<@inputGroup>
+											<@select name='order_portlet' id='order_portlet'>
+												<@option value='0' selected=(orderPortlet lte 0) label='#i18n{blog.publication_blog.labelDateUpdatePortlet}' />
+												<@option value='1' selected=(orderPortlet == 1) label='#i18n{blog.publication_blog.labelPageName}' />
+												<@option value='2' selected=(orderPortlet == 2) label='#i18n{blog.publication_blog.labelPageId}' />
+												<@option value='3' selected=(orderPortlet == 3) label='#i18n{blog.publication_blog.labelPortletName}' />
+											</@select>
+											<@select name='order_portlet_asc' id='order_portlet_asc' class='form-select flex-grow-0 w-auto' title='#i18n{blog.publication_blog.labelOrder}'>
+												<@option value='0' selected=(orderPortletAsc lte 0) label='#i18n{blog.publication_blog.labelOrderDesc}' />
+												<@option value='1' selected=(orderPortletAsc == 1) label='#i18n{blog.publication_blog.labelOrderAsc}' />
+											</@select>
+											<@button type='submit' color='primary' buttonIcon='search' title='#i18n{blog.manage_blogs.search}' hideTitle=['xs'] />
+											<#if hasFilter>
+												<@aButton href='${publicationUrl}?view=manageBlogsPublication&id=${blog.id}&is_display_latest_portlets=true' color='outline-danger' buttonIcon='filter-off' title='#i18n{blog.publication_blog.labelRemoveFilter}' hideTitle=['all'] />
+											</#if>
+										</@inputGroup>
+									</@formGroup>
+								</@columns>
+							</@row>
+						</@tform>
+					</@boxBody>
+					<#if document_list_portlet_list?has_content>
+						<@tform id='form-portlet' name='publication_blog' action=publicationUrl>
+							<@input type='hidden' name='id' value='${blog.id}' />
+							<@listStateFields />
+							<#-- Native radios: the selection is submitted as idPortlet, no hidden select nor JS validation -->
+							<@div id='portlet-available' class='list-group list-group-flush list-group-hoverable overflow-auto border-top' params='style="max-height:22rem" role="radiogroup" aria-label="#i18n{blog.publication_blog.labelAvailablePortlet}"'>
+								<#list document_list_portlet_list as portlet>
+									<label class="list-group-item list-group-item-action d-flex align-items-center gap-3" data-portlet="${portlet.code!}">
+										<input class="form-check-input m-0 flex-shrink-0" type="radio" name="idPortlet" value="${portlet.code!}"<#if portlet?is_first> required</#if>>
+										<@span class='flex-fill'>${portlet.name!}</@span>
+										<@span class='badge bg-secondary-lt'>#${portlet.code!}</@span>
+									</label>
+								</#list>
+							</@div>
+							<#-- Publication period of the post in the chosen portlet (dd/mm/yyyy, read by populateBlogPublication); empty = now / default end date -->
+							<@boxFooter>
+								<@row>
+									<@columns md=6>
+										<@formGroup labelFor='dateBeginPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateBegin}' rows=2>
+											<@input type='date' name='dateBeginPublishing' id='dateBeginPublishing' value='' format='d/m/Y' />
+										</@formGroup>
+									</@columns>
+									<@columns md=6>
+										<@formGroup labelFor='dateEndPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateEnd}' rows=2>
+											<@input type='date' name='dateEndPublishing' id='dateEndPublishing' value='' format='d/m/Y' />
+										</@formGroup>
+									</@columns>
+								</@row>
+								<@div class='d-flex justify-content-end'>
+									<@button type='submit' color='primary' name='action_publishDocument' id='action_publishDocument' buttonIcon='world-upload' title='#i18n{blog.publication_blog.buttonPublish}' />
+								</@div>
+							</@boxFooter>
+						</@tform>
+						<#if paginator.itemsCount gt 10>
+							<@boxFooter class='py-2 d-flex flex-wrap align-items-center justify-content-between gap-2'>
+								<#if paginator.pagesCount gt 1><@paginationPageLinks paginator=paginator /><#else><@span /></#if>
+								<@tform id='form-portlet-paging' method='get' action=publicationUrl class='d-flex align-items-center gap-2'>
+									<@input type='hidden' name='view' value='manageBlogsPublication' />
+									<@input type='hidden' name='id' value='${blog.id}' />
+									<@listStateFields />
+									<@span class='text-secondary small'>${paginator.labelItemCountPerPage}</@span>
+									<@inputGroup class='w-auto' size='sm'>
+										<@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='form-select form-select-sm'>
+											<#list [ 10, 20, 50, 100 ] as nb><@option value=nb?c label=nb?c selected=(nb == paginator.itemsPerPage) /></#list>
+										</@select>
+										<@button type='submit' size='sm' color='outline-secondary' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' hideTitle=['all'] />
+									</@inputGroup>
+								</@tform>
+							</@boxFooter>
+						</#if>
 					<#else>
-						<@button type='submit' color='danger' class='btn-block' title='#i18n{blog.publication_blog.labelRemoveFilter}' name='view_manageBlogsPublication' buttonIcon='times' />
-						<@input type='hidden' name='is_display_latest_portlets' value='true' />
+						<@boxBody>
+							<@empty title='#i18n{blog.publication_blog.messagePortletNotExist}' iconName='layout-off' subtitle=' ' />
+						</@boxBody>
 					</#if>
-				</@inputGroup>	
-			</@formGroup>
-		</@columns>
-	</@row>
-	<@row>
-		<@columns xs=12 md=6>
-		<#if document_list_portlet_list?size gt 0>
-			<#assign boxTitle>#i18n{blog.publication_blog.labelAvailablePortlet} #i18n{blog.publication_blog.labelAvailableDocumentListPortlet}</#assign>
-			<@box>
-				<@boxHeader title=boxTitle />
-				<@boxBody>
-					<@row class='input-daterange'>
-						<@columns sm=12 md=6 lg=3>
-							<@formGroup labelFor='dateBeginPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateBegin}' rows=2>
-								<@inputGroup>
-									<@input type='date' name='dateBeginPublishing' id='dateBeginPublishing' value='' format='d/m/Y' />
-									<@inputGroupItem>
-										<@icon style='calendar' />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-						<@columns sm=12 md=6 lg=3>
-							<@formGroup labelFor='dateEndPublishing' labelKey='#i18n{blog.publication_blog.labelPublicationDateEnd}' rows=2>
-								<@inputGroup>
-									<@input type='date' name='dateEndPublishing' id='dateEndPublishing' value='' format='d/m/Y' />
-									<@inputGroupItem>
-										<@icon style='calendar' />
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-						<@columns sm=12 md=12 lg=6>
-							<@formGroup labelFor='search_portlet' labelKey='#i18n{blog.portlet.blogsBlogsPortlet.labelFilter}' rows=2 >
-								<@inputGroup>
-									<@input type='text' name='search_portlet' id='search_portlet' placeHolder='#i18n{blog.portlet.blogsBlogsPortlet.labelFilterPlaceholder}' params='autocomplete="off"' size='' />
-									<@button type='button' title='#i18n{portal.system.manage_plugins.buttonFilter}' buttonIcon='filter' hideTitle=['all'] size='' />
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-					</@row>
-					<@row>
-						<@columns sm=12 md=8>
-							<@select name='idPortlet' id='idPortlet' multiple=10 default_value='' params='hidden' items=document_list_portlet_list  />
-							<@div class='invalid-feedback mb-3' id="error_idPortlet" params='role="alert"' >#i18n{blog.publication_blog.labelSelectError}</@div>
-						</@columns>
-					</@row>
-					<#if document_list_portlet_list?size gt 0>
-						<@h level=3 id='portlets' class='visually-hidden'>#i18n{blog.manage_blogs.title}</@h>
-						<@listGroup id='portlet-available' class='border-bottom' params='style="height:15rem;overflow-y: auto" tabindex="0" role="listbox" aria-labelledby="portlets"'>
-							<#list document_list_portlet_list as portlet>
-								<@listGroupItem class='d-flex justify-content-between vh-50' params='data-portlet="${portlet.code!}"'>
-									<@span class='searchable mx-2 pt-1'>${portlet.code!}</@span>
-									<@span class='searchable mx-2 pt-1 ps-2 w-50'>${portlet.name!}</@span>
-									<@button type='submit' class='invisible' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' title='#i18n{blog.publication_blog.buttonPublish}' />
+				</@box>
+			</@columns>
+
+			<#-- Right: where the post is already published -->
+			<@columns lg=5>
+				<@box class='mb-0'>
+					<@boxHeader title='#i18n{blog.publication_blog.labelPublishedPost}' titleActions=true>
+						<#if publications?has_content><@tag color='' class='bg-green-lt'>${publications?size}</@tag></#if>
+					</@boxHeader>
+					<#if publications?has_content>
+						<@listGroup id='portlet-published' class='list-group-flush'>
+							<#list publications as publication>
+								<@listGroupItem class='d-flex align-items-center gap-3'>
+									<@span class='status-dot status-dot-animated status-green flex-shrink-0' />
+									<@div class='flex-fill text-truncate'>
+										<@div class='fw-bold text-truncate'>${publication.portlet.name!}</@div>
+										<@div class='text-secondary small'>
+											<@icon style='file' /> #i18n{blog.modify_blog.labelPage} ${publication.portlet.pageId}
+											<@span class='mx-1'>·</@span>
+											<@icon style='calendar' /> ${(publication.dateBeginPublishing?date?string.short)!"…"} → ${(publication.dateEndPublishing?date?string.short)!"…"}
+										</@div>
+									</@div>
+									<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' color='' size='sm' class='btn-icon' buttonIcon='external-link' title='#i18n{blog.publication_blog.labelShowInAdmin}' hideTitle=['all'] />
+									<@aButton href='${publicationUrl}?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}&${listStateQuery}' color='' size='sm' class='btn-icon text-danger' buttonIcon='world-off' title='#i18n{blog.publication_blog.buttonUnPublish}' hideTitle=['all'] />
 								</@listGroupItem>
 							</#list>
-						</@listGroup>	
+						</@listGroup>
 					<#else>
-						<@empty  title='#i18n{blog.publication_blog.messagePortletNotExist}' />
+						<@boxBody>
+							<@empty title='#i18n{blog.publication_blog.messageDocumentNotAffectedOrPublished}' iconName='world-off' subtitle=' ' />
+						</@boxBody>
 					</#if>
-					<@formGroup rows=2>
-						<@button type='submit' name='action_publishDocument' title='#i18n{blog.publication_blog.buttonPublish}' buttonIcon='check' title='#i18n{blog.publication_blog.buttonPublish}' />
-					</@formGroup>
-					<@row>
-						<@columns class='d-flex jsutify-content-end'>
-							<@formGroup labelFor='${paginator.itemsPerPageParameterName!}' labelKey='#i18n{blog.portlet.blog.lableNbPost!}' rows=2>
-								<@inputGroup>
-									<@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='form-select' params='data-max-item="${paginator.itemsCount}"'>
-									<#list [ "10" , "20" , "50" , "100" ] as nb><@option value=nb?string label=nb?string  selected=(nb?string == paginator.itemsPerPage?string) /></#list>
-								</@select>
-								<@button type='button' id='refresh-listPortlet' buttonIcon='refresh' title='#i18n{portal.util.labelRefresh}' class='btn-target' name='refresh' value='refresh' hideTitle=['all']/>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-					</@row>
-				</@boxBody>
-			</@box>
-		<#else>
-			<@empty title='#i18n{blog.publication_blog.messagePortletNotExist}' />
-		</#if>
-	</@columns>
-	<@columns xs=12 md=6>
-		<@box>
-			<@boxHeader title='#i18n{blog.publication_blog.labelPublishedPost}' />
-			<@boxBody>
-			<#if blog.blogPublication?size gt 0>
-				<@listGroup id='portlet-published'>
-					<#list blog.blogPublication?sort_by("idPortlet") as publication>
-					<@listGroupItem class='d-flex justify-content-between'>
-						<@span class='mx-2 pt-1'>[ #i18n{blog.modify_blog.labelPage} ${publication.portlet.pageId} ] ${publication.portlet.name}</@span>
-						<@span class='mx-2 pt-1'>#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing} </@span>
-						<@btnGroup>
-							<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?action=unPublishDocument&amp;idBlog=${blog.id}&amp;&idPortlet=${publication.idPortlet}&amp;id=${blog.id}' title="#i18n{blog.publication_blog.buttonUnPublish}" color='danger' hideTitle=['all'] buttonIcon='trash' />
-							<@link href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' class="btn btn-outline-primary" title="#i18n{blog.publication_blog.labelPublishedFrom} ${publication.dateBeginPublishing} #i18n{blog.publication_blog.labelPublishedTo} ${publication.dateEndPublishing}">
-								<@icon style='external-link' />
-							</@link>
-						</@btnGroup>
-					</@listGroupItem>
-					</#list>
-				</@listGroup>
-			</#if>
-			</@boxBody>
-		</@box>
-	</@columns>
-</@row>
-</@tform>
-</@pageColumn>
+				</@box>
+			</@columns>
+		</@row>
+	</@pageColumn>
 </@pageContainer>
-<script type="module">
-	const refresh = document.getElementById('refresh-listPortlet');
-	refresh.addEventListener( 'click',  (e) => {
-		const itemPerPage = document.getElementById('items_per_page').value;
-		const blogid = '${blog.id}';
-		const url = 'jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id='+blogid+'&items_per_page='+itemPerPage
-		window.location.replace( url )
+<script>
+document.addEventListener( 'DOMContentLoaded', () => {
+	const form = document.getElementById( 'form-portlet-search' );
+	form.addEventListener( 'submit', () => {
+		const filled = id => document.getElementById( id ).value.trim() !== '';
+		const hasCriterion = filled( 'portlet_filter_value' ) || filled( 'filter_date_begin_publishing' ) || filled( 'filter_date_end_publishing' );
+		document.getElementById( 'is_display_latest_portlets' ).value = hasCriterion ? 'false' : 'true';
 	});
-</script>
-<script type="module">
-import LuteceSearchList from './themes/shared/modules/luteceSearchList.js';
-
-const searchInput = document.querySelector( "#search_portlet" );
-const searchElementList = document.querySelectorAll( "*[data-portlet]" );
-
-new LuteceSearchList( searchInput, searchElementList, {
-searchableChild: [".searchable"],
-highlight: true,
-hideClass: 'd-none'
-});
-
-function portletSelect( portlet, listPortlet, p ){
-if( portlet.classList.contains('is-invalid') )	portlet.classList.remove('is-invalid')
-portlet.value = p.dataset.portlet
-listPortlet.forEach( p => { 
-p.classList.remove('active') 
-p.setAttribute( 'aria-hidden', 'false') 
-})
-p.classList.toggle('active')
-listPortlet.forEach( p => { p.setAttribute( 'aria-hidden', 'true') })
-}
-
-function moveItem( sourceList, targetList ) {
-const selectedItem = sourceList.querySelector(':hover');
-if (selectedItem) {
-const newItem = selectedItem.cloneNode(true);
-targetList.appendChild(newItem);
-sourceList.removeChild(selectedItem);
-}
-return selectedItem.id
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-const btnPublish = document.getElementById('action_publishDocument'),
-listPortlet = document.getElementById('idPortlet'),
-form = document.getElementById('form-portlet'),
-portletAvailable = document.querySelector("#portlet-available"),
-portletPublished = document.querySelector("#portlet-published"), 
-listPortletItems = portletAvailable.querySelectorAll( '.list-group-item' )
-
-listPortletItems.forEach( (po) => {
-po.addEventListener( 'click', (e) => {
-	portletSelect( listPortlet, listPortletItems, po )
-})
-})
-
-form.addEventListener( 'submit', ( e ) => { 
-if( e.submitter.name ==='action_publishDocument' ){
-	if( listPortlet.value === ''  ){
-		listPortlet.classList.add('is-invalid')
-		listPortlet.setAttribute( 'aria-labelledby', 'error_idPortlet' )
-		e.preventDefault();
-	} else {
-		if( listPortlet.classList.contains('is-invalid') ){
-			listPortlet.classList.remove('is-invalid')
-			listPortlet.removeAttribute( 'aria-labelledby' )
-		}	
-	}
-}
-})
-
 });
 </script>

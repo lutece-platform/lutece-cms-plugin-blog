@@ -670,7 +670,8 @@ public class BlogJspBean extends ManageBlogJspBean
             throw new AccessDeniedException( UNAUTHORIZED );
         }
 
-        _blog = ( _blog != null && _blog.getId( ) == 0 ) ? _blog : new Blog( );
+        boolean bResumeCreation = ( _blog != null ) && ( _blog.getId( ) == 0 );
+        _blog = bResumeCreation ? _blog : new Blog( );
         _blogServiceSession.saveBlogInSession( request.getSession( ), _blog );
         _blog.getTag( ).sort( ( tg1, tg2 ) -> tg1.getPriority( ) - tg2.getPriority( ) );
 
@@ -679,15 +680,16 @@ public class BlogJspBean extends ManageBlogJspBean
 
         boolean bPermissionCreate = RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, Tag.PERMISSION_CREATE,
                 (User) getUser( ) );
-        // get the docContent from the session
         AdminUser user = AdminUserService.getAdminUser( request );
-       List<DocContent> listDocContent = _blogServiceSession.getDocContentFromSession(request.getSession(), user);
-        // remove remaining files (docContent) from the session
-        for ( int i = 0; i < listDocContent.size(); i++ )
+        if ( bResumeCreation )
         {
-                listDocContent.remove( i );
+            List<DocContent> listDocContent = _blogServiceSession.getDocContentFromSession( request.getSession( ), user );
+            _blog.setDocContent( ( listDocContent != null ) ? listDocContent : new ArrayList<>( ) );
         }
-        _blogServiceSession.removeDocContentFromSession( request.getSession( ), user );
+        else
+        {
+            _blogServiceSession.removeDocContentFromSession( request.getSession( ), user );
+        }
 
         ReferenceList allTag = TagHome.getTagsReferenceList( );
         allTag.sort( Comparator.comparing(ReferenceItem::getName , String.CASE_INSENSITIVE_ORDER ) );
@@ -733,6 +735,8 @@ public class BlogJspBean extends ManageBlogJspBean
             _blog.setArchived( false );
             _blog.setDocContent( listDocContent );
             populate( _blog, request );
+            _blog.setDisplayToc( request.getParameter( PARAMETER_DISPLAY_TOC ) != null );
+            _blog.setDisplayRelated( request.getParameter( PARAMETER_DISPLAY_RELATED ) != null );
 
             // Check constraints
             if ( !validateBean( _blog, VALIDATION_ATTRIBUTES_PREFIX ) )

@@ -1,54 +1,80 @@
+<#assign tagsUrl='jsp/admin/plugins/blog/ManageTags.jsp' />
 <@pageContainer>
 	<@pageColumn>
 		<@pageHeader title='#i18n{blog.manage_tags.title}'>
-			<@tform method='post' type='inline'>
-				<@formGroup labelFor='search_tag' labelKey='#i18n{portal.system.manage_plugins.buttonFilter}' hideLabel=['all'] formStyle='inline'>
-					<@inputGroup>
-						<@input type='text' name='search_tag' id='search_tag' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' params='autocomplete="off" addons' />
-						<@button color='primary' title='#i18n{portal.system.manage_plugins.buttonFilter}' buttonIcon='search' hideTitle=['all'] />
-					</@inputGroup>
-				</@formGroup>
-			</@tform>
-			<@offcanvas id="offcanvasCreateTag" title="#i18n{blog.create_tag.title}" btnTitle="#i18n{blog.create_tag.title}" btnIcon="plus" btnColor="primary" btnClass="ms-2" position="end">
-				<@tform name='create_tag' action='jsp/admin/plugins/blog/ManageTags.jsp'>
-					<@messages errors=errors />
-					<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' mandatory=true>
-						<@input type='text' name='name' value='' />
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' name='action_createTag' buttonIcon='check' title='#i18n{portal.admin.message.buttonValidate}' />
-						<@button type='submit' name='view_manageTags' buttonIcon='times' title='#i18n{portal.admin.message.buttonCancel}' color='secondary' cancel=true />
-					</@formGroup>
-				</@tform>
-			</@offcanvas>
+			<#if permission_manage_create_tag>
+				<@aButton href='#tag-create' color='primary' buttonIcon='plus' title='#i18n{blog.manage_tags.buttonAdd}' hideTitle=['xs','sm'] params='data-bs-toggle="modal"' />
+			</#if>
 		</@pageHeader>
-		<@messages infos=infos />
-		<@manageFeature>
-			<#list tag_list as tag>
-			<@manageFeatureItem liClass='item-labels'>
-				<@manageFeatureItemColumn class='searchable'>
-					<strong>${tag.name}</strong>
-				</@manageFeatureItemColumn>
-				<@manageFeatureItemColumn auto=true align='end'>
-					<#if permission_manage_modify_tag>
-						<@offcanvas targetUrl="jsp/admin/plugins/blog/ManageTags.jsp?view=modifyTag&id=${tag.idTag}" targetElement="#edit_tag" id="tag-edit-${tag.idTag}" btnIcon="edit" btnColor="primary" position="end" title="#i18n{portal.util.labelModify}" />
+		<@messages infos=infos![] errors=errors![] />
+
+		<@box>
+			<@boxHeader title='#i18n{blog.manage_tags.title} <span class="badge bg-blue-lt ms-1">${paginator.itemsCount}</span>' titleActions=true>
+				<#if tag_list?has_content>
+					<#-- Live filter of the tags shown on this page -->
+					<@inputGroup class='input-group-flat w-auto' size='sm'>
+						<@inputGroupItem pos='prepend'><@icon style='search' /></@inputGroupItem>
+						<@input type='text' id='search_tag' name='search_tag' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' params='autocomplete="off" aria-label="#i18n{portal.system.manage_plugins.buttonFilter}"' />
+					</@inputGroup>
+				</#if>
+			</@boxHeader>
+			<#if tag_list?has_content>
+				<@listGroup id='tags-list' class='list-group-flush list-group-hoverable'>
+					<#list tag_list as tag>
+						<@listGroupItem class='tag-item d-flex align-items-center gap-3 py-2'>
+							<@span class='avatar avatar-sm bg-blue-lt'><@icon style='tag' /></@span>
+							<@div class='flex-fill searchable fw-medium text-truncate'>${tag.name!}</@div>
+							<#if permission_manage_modify_tag>
+								<@aButton href='${tagsUrl}?view=modifyTag&id=${tag.idTag}' color='' size='sm' class='btn-icon' buttonIcon='edit' title='#i18n{portal.util.labelModify}' hideTitle=['all'] />
+							</#if>
+							<#if permission_manage_delete_tag>
+								<@aButton href='${tagsUrl}?action=confirmRemoveTag&id=${tag.idTag}' color='' size='sm' class='btn-icon text-danger' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] />
+							</#if>
+						</@listGroupItem>
+					</#list>
+				</@listGroup>
+				<#if paginator.itemsCount gt 10>
+					<@boxFooter>
+						<@paginationAdmin paginator=paginator combo=1 />
+					</@boxFooter>
+				</#if>
+			<#else>
+				<@boxBody>
+					<#if permission_manage_create_tag>
+						<@empty title='#i18n{blog.manage_tags.noTag}' iconName='tags-off' subtitle=' ' actionTitle='#i18n{blog.manage_tags.buttonAdd}' actionUrl='${tagsUrl}?view=createTag' />
+					<#else>
+						<@empty title='#i18n{blog.manage_tags.noTag}' iconName='tags-off' subtitle=' ' />
 					</#if>
-					<#if permission_manage_delete_tag>
-						<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?action=confirmRemoveTag&id=${tag.idTag}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='' hideTitle=['all'] />
-					</#if>
-				</@manageFeatureItemColumn>
-			</@manageFeatureItem>
-			</#list>
-		</@manageFeature>
-		<#if tag_list?size gt 10><@paginationAdmin paginator=paginator combo=1 /></#if>
+				</@boxBody>
+			</#if>
+		</@box>
+
+		<#if permission_manage_create_tag>
+			<#-- A tag has a single field: it is created from a modal; validation errors fall back to the full create page -->
+			<@modal id='tag-create'>
+				<@modalHeader modalTitle='#i18n{blog.create_tag.title}' />
+				<@modalBody>
+					<@tform id='form-create-tag' name='create_tag' action=tagsUrl>
+						<@formGroup labelFor='tag_create_name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' rows=2 mandatory=true>
+							<@input type='text' id='tag_create_name' name='name' value='' mandatory=true />
+						</@formGroup>
+					</@tform>
+				</@modalBody>
+				<@modalFooter>
+					<@button type='button' color='light' buttonIcon='x' title='#i18n{portal.util.labelCancel}' params='data-bs-dismiss="modal"' />
+					<@button type='submit' formId='form-create-tag' name='action_createTag' color='primary' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+				</@modalFooter>
+			</@modal>
+		</#if>
 	</@pageColumn>
 </@pageContainer>
+<#if tag_list?has_content>
 <script type="module">
 import LuteceSearchList from './themes/shared/modules/luteceSearchList.js';
-const searchInput = document.querySelector("#search_tag");
-const searchElementList = document.querySelectorAll(".item-labels");
-new LuteceSearchList( searchInput, searchElementList, {
-	searchableChild: [".searchable"],
+new LuteceSearchList( document.querySelector( '#search_tag' ), document.querySelectorAll( '#tags-list .tag-item' ), {
+	searchableChild: [ '.searchable' ],
 	highlight: true,
+	hideClass: 'd-none'
 });
 </script>
+</#if>

@@ -1,32 +1,35 @@
-<#assign blogFooter><#if permission_manage_create_blog><@div class='d-flex'><@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' title='#i18n{blog.manage_blogs.buttonAdd}' buttonIcon='plus' class='ms-auto' size='' /></@div></#if></#assign>
-<@adminDashboardWidget title='#i18n{blog.dashboard.columnLastModifiedDocument}' id='blog_dashboard' url=url bodyClass='vmax-dvh-25 overflow-y-auto ' boxContentFooter=blogFooter>
+<#assign createBlogButton><#if permission_manage_create_blog><a class="btn btn-sm btn-primary" href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog" title="#i18n{blog.manage_blogs.buttonAdd}"><i class="ti ti-plus" aria-hidden="true"></i>#i18n{portal.util.labelCreate}</a></#if></#assign>
+<@adminDashboardWidget title='#i18n{blog.dashboard.columnLastModifiedDocument}' id='blog_dashboard' url=url boxIcon='news' iconColor='pink' headerActions=createBlogButton flush=true>
 <#if last_modified_document?size=0>
-	<#if permission_manage_create_blog>
-		<@empty title='#i18n{blog.manage_blogs.noPost}' iconName='inbox-off' subtitle='#i18n{blog.modify_blog.labelHtmlContent.help}' actionTitle='#i18n{blog.manage_blogs.buttonAdd}' actionUrl='jsp/admin/plugins/blog/ManageBlogs.jsp?view=createBlog' />
-	<#else>
-		<@empty title='#i18n{blog.manage_blogs.noPost}' iconName='inbox-off' subtitle='#i18n{blog.modify_blog.labelHtmlContent.help}' />
-	</#if>	
+<div class="d-flex align-items-center gap-2 px-3 py-2 text-secondary small"><i class="ti ti-info-circle" aria-hidden="true"></i>#i18n{blog.manage_blogs.noPost}</div>
 <#else>
-	<@manageFeature class=''>
+<div class="list-group list-group-flush">
 	<#list last_modified_document as blog>
-	<@manageFeatureItem>
-		<@manageFeatureItemColumn auto=true valign='baseline'><#assign blogImage><#list blog.docContent as content><@img url='servlet/plugins/blogs/file?id_file=${content.id}' class='img-fluid img-thumbnail' alt='' params='width="48" aria-hidden="true"'/><#break></#list></#assign><#if blogImage?trim !=''>${blogImage}<#else><@icon style='photo-off fs-1' /></#if></@manageFeatureItemColumn>
-		<@manageFeatureItemColumn auto=true flex=false>
-			<#if permission_manage_modify_blog>
-				<@link href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title} ${blog.name}' params='data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="#i18n{blog.modify_blog.title} &quot;${blog.name}&quot;"'><strong class="d-inline-block">${blog.id} - ${blog.name}</strong><br><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small></@link>
-			<#else>
-				<strong class="d-inline-block text-truncate mw-sm">${blog.id} - ${blog.name}</strong><br><small>#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}</small>
-			</#if>
-		</@manageFeatureItemColumn>
-		<@manageFeatureItemColumn align='end'>
-		<@button type='button' class='btn-action' buttonIcon='dots-vertical fs-2' dropdownMenu=true>
-			<#if permission_manage_modify_blog><@link href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' class='dropdown-item'><@icon style='pencil' /> #i18n{portal.util.labelModify}</@link></#if>
-			<@link href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}' class='dropdown-item'><@icon style='eye' /> #i18n{blog.history_blog.labelPreview}</@link>
-			<#if permission_manage_publish_blog><@link href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' class='dropdown-item btn-publish'><@icon style='globe' /> #i18n{blog.dashboard.managePublication}</@link></#if>
-		</@button>	
-		</@manageFeatureItemColumn>	
-	</@manageFeatureItem>	
+	<div class="list-group-item">
+		<div class="row align-items-center g-2">
+			<#-- The first image of the post as its thumbnail -->
+			<div class="col-auto"><#if blog.docContent?has_content><span class="avatar avatar-sm" style="background-image: url(servlet/plugins/blogs/file?id_file=${blog.docContent[0].id})" aria-hidden="true"></span><#else><span class="avatar avatar-sm bg-pink-lt" aria-hidden="true"><i class="ti ti-photo-off"></i></span></#if></div>
+			<div class="col text-truncate">
+				<#if permission_manage_modify_blog>
+				<a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}" class="text-reset fw-semibold" title="#i18n{blog.modify_blog.title} ${blog.name}">${blog.name}</a>
+				<#else>
+				<span class="fw-semibold" title="${blog.name}">${blog.name}</span>
+				</#if>
+				<#if blog.archived><span class="badge bg-secondary-lt ms-1">#i18n{blog.manage_blogs.labelArchived}</span></#if>
+				<div class="text-secondary small text-truncate">#i18n{blog.create_blog.labelUpdateDate} ${blog.updateDate}<#if blog.user?has_content> · ${blog.user}</#if></div>
+			</div>
+			<div class="col-auto btn-actions">
+				<#if permission_manage_modify_blog>
+				<a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}" class="btn-action" title="#i18n{portal.util.labelModify}"><i class="ti ti-pencil" aria-hidden="true"></i><span class="visually-hidden">#i18n{portal.util.labelModify} ${blog.name}</span></a>
+				</#if>
+				<a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=previewBlog&id=${blog.id}" class="btn-action" title="#i18n{blog.history_blog.labelPreview}"><i class="ti ti-eye" aria-hidden="true"></i><span class="visually-hidden">#i18n{blog.history_blog.labelPreview} ${blog.name}</span></a>
+				<#if permission_manage_publish_blog>
+				<a href="jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}" class="btn-action btn-publish" title="#i18n{blog.dashboard.managePublication}"><i class="ti ti-world" aria-hidden="true"></i><span class="visually-hidden">#i18n{blog.dashboard.managePublication} ${blog.name}</span></a>
+				</#if>
+			</div>
+		</div>
+	</div>
 	</#list>
-	</@manageFeature>
+</div>
 </#if>
 </@adminDashboardWidget>

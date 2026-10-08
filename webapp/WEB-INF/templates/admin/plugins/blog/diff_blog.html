@@ -1,76 +1,73 @@
+<#assign manageUrl='jsp/admin/plugins/blog/ManageBlogs.jsp' />
 <@pageContainer>
-    <@pageColumn>
-        <@pageHeader title='#i18n{blog.diff_blog.title} "${blog.contentLabel}"'>
-			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=historyBlog&amp;id=${blog.id}' title='#i18n{blog.manage_blogs.labelHistory} [ ${blog.version} versions ]' buttonIcon='history me-2' />
-			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&amp;id=${blog.id!}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
-			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&amp;id=${blog.id!}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
-        </@pageHeader>
-		<@tform boxed=true action='jsp/admin/plugins/blog/ManageBlogs.jsp' >
-		<@input type='hidden' name='view' value='diffBlog' />
-		<@input type='hidden' name='id' value='${blog.id}' />
-		<@row>
-			<@columns>
-				<@select name='blog_version'>
-				<#list blog_version_list as blog_tmp>
-					<#assign isSelected><#if blog_tmp.version == blog2.version>true<#else>false</#if></#assign>
-					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
-				</#list>
-				</@select>
-			</@columns>
-			<@columns>
-				<@select name='blog_version2'>
-				<#list blog_version_list as blog_tmp>
-					<#assign isSelected><#if blog_tmp.version == blog.version>true<#else>false</#if></#assign>
-					<@option value=blog_tmp.version selected=isSelected?boolean label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} - ${blog_tmp.updateDate}' />
-				</#list>
-				</@select>
-			</@columns>
-			<@columns>
-				<@button type='submit' name='button_search' value='1' title='#i18n{blog.diff_blog.labelButtonCompare}' buttonIcon='git-compare me-2' />
-			</@columns>
-		</@row>
+	<@pageColumn>
+		<@pageHeader title=blog.contentLabel!'' description='#i18n{blog.diff_blog.title}'>
+			<@aButton href='${manageUrl}?view=historyBlog&id=${blog.id}' color='' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' hideTitle=['all'] />
+			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' color='' buttonIcon='world-upload' title='#i18n{blog.publication_blog.pageTitle}' hideTitle=['xs','sm','md','lg'] />
+			<@aButton href='${manageUrl}?view=modifyBlog&id=${blog.id}' color='primary' buttonIcon='edit' title='#i18n{blog.modify_blog.title}' hideTitle=['xs','sm'] />
+		</@pageHeader>
+
+		<#-- Version picker: the two versions to compare, then the Tabler card with its header tabs -->
+		<@tform id='form-diff' method='get' action=manageUrl boxed=true>
+			<@input type='hidden' name='view' value='diffBlog' />
+			<@input type='hidden' name='id' value='${blog.id}' />
+			<@row class='align-items-end g-2'>
+				<@columns md=5>
+					<@formGroup labelFor='blog_version' labelKey='#i18n{blog.manage_blogs.columnVersion} A' rows=2 class='mb-0'>
+						<@select name='blog_version' id='blog_version'>
+						<#list blog_version_list as blog_tmp>
+							<@option value=blog_tmp.version selected=(blog_tmp.version == blog2.version) label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} – ${blog_tmp.updateDate?datetime?string.short}' />
+						</#list>
+						</@select>
+					</@formGroup>
+				</@columns>
+				<@columns md=5>
+					<@formGroup labelFor='blog_version2' labelKey='#i18n{blog.manage_blogs.columnVersion} B' rows=2 class='mb-0'>
+						<@select name='blog_version2' id='blog_version2'>
+						<#list blog_version_list as blog_tmp>
+							<@option value=blog_tmp.version selected=(blog_tmp.version == blog.version) label='#i18n{blog.manage_blogs.columnVersion} ${blog_tmp.version} – ${blog_tmp.updateDate?datetime?string.short}' />
+						</#list>
+						</@select>
+					</@formGroup>
+				</@columns>
+				<@columns md=2>
+					<@button type='submit' name='button_search' value='1' color='primary' class='w-100' buttonIcon='git-compare' title='#i18n{blog.diff_blog.labelButtonCompare}' />
+				</@columns>
+			</@row>
 		</@tform>
-		<@tabs>
+
+		<@tabs keepState=false class='mt-3'>
 			<@tabList>
-				<@tabLink active=true href='#current' title='#i18n{blog.diff_blog.currentVersion}' />
-				<@tabLink href='#diff' title='#i18n{blog.diff_blog.latestVersion}' />
+				<@tabLink active=true href='#current' tabIcon='git-compare' title='#i18n{blog.diff_blog.currentVersion}' />
+				<@tabLink href='#diff' tabIcon='layout-columns' title='#i18n{blog.diff_blog.latestVersion}' />
+				<#-- Legend of the diff colours, pushed to the right like Tabler's secondary tab item -->
+				<@tabLink href='' tabClass='ms-auto d-none d-md-flex align-items-center gap-2'>
+					<@tag color='' class='bg-red-lt'>${blog2.version}</@tag><@icon style='arrow-right' class='text-secondary' /><@tag color='' class='bg-green-lt'>${blog.version}</@tag>
+				</@tabLink>
 			</@tabList>
 			<@tabContent>
 				<@tabPanel id='current' active=true>
-					<@row>
-						<@columns>
-							<h2><span<#if blog.contentLabel! != blog2.contentLabel!> class="diff-html-added"</#if>>${blog.contentLabel!}</span><#if blog.contentLabel! != blog2.contentLabel!><span class="diff-html-removed">${blog2.contentLabel!}</span></h2></#if></h2>
-							<h3><span<#if blog.description! != blog2.description!> class="diff-html-added"</#if>>${blog.description!}</span> <#if blog.description! != blog2.description!><span class="diff-html-removed">${blog2.description!}</span></#if></h3>
-							${blog_diff!}
-						</@columns>
-					</@row>
+					<h2><span<#if blog.contentLabel! != blog2.contentLabel!> class="diff-html-added"</#if>>${blog.contentLabel!}</span><#if blog.contentLabel! != blog2.contentLabel!> <span class="diff-html-removed">${blog2.contentLabel!}</span></#if></h2>
+					<p class="text-secondary"><span<#if blog.description! != blog2.description!> class="diff-html-added"</#if>>${blog.description!}</span><#if blog.description! != blog2.description!> <span class="diff-html-removed">${blog2.description!}</span></#if></p>
+					${blog_diff!}
 				</@tabPanel>
 				<@tabPanel id='diff'>
-					<@row>
-						<@columns sm=6>
-							<@box>
-								<@boxHeader titleClass='d-flex w-100' title='#i18n{blog.model.entity.blog.attribute.version} ${blog2.version} <small class="mx-auto">${blog2.updateDate}</small>'>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog2.id}&blog_version=${blog2.version}' title='#i18n{blog.history_blog.labelReset} ${blog2.version}' buttonIcon='arrow-back-up me-2' />
-								</@boxHeader>
-								<@boxBody>
-								<h2>${blog2.contentLabel!}</h2>
-								<h3>${blog2.description!}</h3>
-								${blog2.htmlContent!}
-								</@boxBody>
-							</@box>
-						</@columns> 
-						<@columns sm=6>
-							<@box>
-								<@boxHeader titleClass='d-flex w-100' title='#i18n{blog.model.entity.blog.attribute.version} ${blog.version} <small class="mx-auto">${blog.updateDate}</small>'>
-									<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}' title='#i18n{blog.history_blog.labelReset} ${blog.version}' buttonIcon='arrow-back-up me-2' />
-								</@boxHeader>
-								<@boxBody>
-								<h2>${blog.contentLabel!}</h2>
-								<h3>${blog.description!}</h3>
-								${blog.htmlContent!}
-								</@boxBody>
-							</@box>
-						</@columns>
+					<@row class='row-cards'>
+						<#list [ blog2, blog ] as version>
+							<@columns md=6>
+								<@box class='mb-0 h-100'>
+									<@boxHeader title='#i18n{blog.manage_blogs.columnVersion} ${version.version}' titleActions=true>
+										<@span class='text-secondary small me-2'>${version.updateDate?datetime?string.short}</@span>
+										<@aButton href='${manageUrl}?view=modifyBlog&id=${version.id}&blog_version=${version.version}' color='' size='sm' buttonIcon='arrow-back-up' title='#i18n{blog.history_blog.labelReset} ${version.version}' hideTitle=['all'] />
+									</@boxHeader>
+									<@boxBody>
+										<h2>${version.contentLabel!}</h2>
+										<p class="text-secondary">${version.description!}</p>
+										${version.htmlContent!}
+									</@boxBody>
+								</@box>
+							</@columns>
+						</#list>
 					</@row>
 				</@tabPanel>
 			</@tabContent>
@@ -107,7 +104,7 @@ function updateOverlays(){
 }
 
 document.addEventListener( "DOMContentLoaded", function(){
-	updateOverlays;
+	updateOverlays();
 	window.onresize = updateOverlays;
 });
 </script>
