@@ -35,6 +35,9 @@ package fr.paris.lutece.plugins.blog.business.portlet;
 
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 /**
  * PortletFilter class
  * 
@@ -50,12 +53,18 @@ public class PortletFilter
     private static final String SQL_FILTER_PAGE_NAME = "  f.name LIKE ? ";
     private static final String SQL_FILTER_BY_PAGE_ID = "  a.id_page=? ";
     private static final String SQL_FILTER_BY_PORTLET_NAME = " a.name LIKE ? ";
+    private static final String SQL_FILTER_PUBLICATION_EXISTS = " EXISTS ( SELECT 1 FROM blog_list_portlet_htmldocs p WHERE p.id_portlet = b.id_portlet ";
+    private static final String SQL_FILTER_PUBLICATION_END_AFTER = " AND p.date_end_publishing >= ? ";
+    private static final String SQL_FILTER_PUBLICATION_BEGIN_BEFORE = " AND p.date_begin_publishing < ? ";
+    private static final String SQL_FILTER_PUBLICATION_END = " ) ";
     private boolean _bIsDisplayLatestPortlets;
     private String [ ] _aPageName;
     private String [ ] _aPortletName;
     private Integer _nIdPage;
     private String _portletFilterType;
     private String _strSearchValue;
+    private Date _dateBeginPublishing;
+    private Date _dateEndPublishing;
 
     /**
      * Set the page name list
@@ -212,7 +221,10 @@ public class PortletFilter
                         sbSQL.append( SQL_FILTER_BY_PAGE_ID );
                     }
 
-            return sbSQL.toString( );
+            if ( sbSQL.length( ) > 0 )
+            {
+                return sbSQL.toString( );
+            }
         }
 
         return null;
@@ -237,5 +249,102 @@ public class PortletFilter
     public String getSearchValue( )
     {
         return _strSearchValue;
+    }
+
+    /**
+     * Set the start of the publication period: only portlets with a publication still running at that date are kept
+     *
+     * @param dateBeginPublishing
+     *            the start of the period, or null for no lower bound
+     */
+    public void setDateBeginPublishing( Date dateBeginPublishing )
+    {
+        _dateBeginPublishing = dateBeginPublishing;
+    }
+
+    /**
+     * Get the start of the publication period
+     *
+     * @return the start of the period, or null
+     */
+    public Date getDateBeginPublishing( )
+    {
+        return _dateBeginPublishing;
+    }
+
+    /**
+     * Set the end of the publication period: only portlets with a publication started on or before that date are kept
+     *
+     * @param dateEndPublishing
+     *            the end of the period, or null for no upper bound
+     */
+    public void setDateEndPublishing( Date dateEndPublishing )
+    {
+        _dateEndPublishing = dateEndPublishing;
+    }
+
+    /**
+     * Get the end of the publication period
+     *
+     * @return the end of the period, or null
+     */
+    public Date getDateEndPublishing( )
+    {
+        return _dateEndPublishing;
+    }
+
+    /**
+     * Tell whether a publication period is set
+     *
+     * @return true if at least one bound of the publication period is set
+     */
+    public boolean hasPublicationPeriod( )
+    {
+        return !_bIsDisplayLatestPortlets && ( ( _dateBeginPublishing != null ) || ( _dateEndPublishing != null ) );
+    }
+
+    /**
+     * Get the SQL condition keeping the portlets that hold at least one publication overlapping the publication period. The parameters to bind are, in
+     * order, the start of the period (if set) then the day after its end (if set).
+     *
+     * @return the SQL condition, or null if no publication period is set
+     */
+    public String getSQLPublicationPeriodFilter( )
+    {
+        if ( !hasPublicationPeriod( ) )
+        {
+            return null;
+        }
+
+        StringBuilder sbSQL = new StringBuilder( SQL_FILTER_PUBLICATION_EXISTS );
+
+        if ( _dateBeginPublishing != null )
+        {
+            sbSQL.append( SQL_FILTER_PUBLICATION_END_AFTER );
+        }
+
+        if ( _dateEndPublishing != null )
+        {
+            sbSQL.append( SQL_FILTER_PUBLICATION_BEGIN_BEFORE );
+        }
+
+        return sbSQL.append( SQL_FILTER_PUBLICATION_END ).toString( );
+    }
+
+    /**
+     * Get the exclusive upper bound used by the SQL condition: the day after the end of the period, because date_begin_publishing holds a time
+     *
+     * @return the day after the end of the period, or null
+     */
+    public Date getDateEndPublishingExclusive( )
+    {
+        if ( _dateEndPublishing == null )
+        {
+            return null;
+        }
+
+        LocalDate nextDay = _dateEndPublishing.toLocalDate( ).plusDays( 1 );
+
+        return Date.valueOf( nextDay );
     }
 }

@@ -42,6 +42,7 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.blog.business.BlogHome;
@@ -84,6 +85,7 @@ public class TagJspBean extends ManageBlogJspBean
     private static final String PROPERTY_PAGE_TITLE_CREATE_TAG = "blog.create_tag.pageTitle";
 
     private static final String MESSAGE_ERROR_TAG_IS_AFFECTED = "blog.message.errorTagIsAffected";
+    private static final String ERROR_TAG_EXIST = "blog.message.errorTagExist";
 
     // Markers
     private static final String MARK_TAG_LIST = "tag_list";
@@ -213,6 +215,11 @@ public class TagJspBean extends ManageBlogJspBean
 
                     return JsonUtil.buildJsonResponse( new JsonResponse( "TAG_EXIST" ) );
                 }
+                else
+                {
+                    addError( ERROR_TAG_EXIST, getLocale( ) );
+                    return redirectView( request, VIEW_CREATE_TAG );
+                }
         }
         return redirectView( request, VIEW_MANAGE_TAGS );
     }
@@ -314,8 +321,15 @@ public class TagJspBean extends ManageBlogJspBean
     @Action( ACTION_MODIFY_TAG )
     public String doModifyTag( HttpServletRequest request )
     {
-
-        _tag = ( _tag != null ) ? _tag : new Tag( );
+        String strId = request.getParameter( PARAMETER_ID_TAG );
+        if ( StringUtils.isNumeric( strId ) && ( _tag == null || _tag.getIdTag( ) != Integer.parseInt( strId ) ) )
+        {
+            _tag = TagHome.findByPrimaryKey( Integer.parseInt( strId ) );
+        }
+        if ( _tag == null )
+        {
+            return redirectView( request, VIEW_MANAGE_TAGS );
+        }
         populate( _tag, request );
         if ( RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, String.valueOf( _tag.getIdTag( ) ), Tag.PERMISSION_MODIFY,
                 (User) AdminUserService.getAdminUser( request ) ) )
@@ -326,13 +340,16 @@ public class TagJspBean extends ManageBlogJspBean
                 return redirect( request, VIEW_MODIFY_TAG, PARAMETER_ID_TAG, _tag.getIdTag( ) );
             }
 
-            if ( TagHome.findByName( _tag.getName( ) ) == null )
+            Tag tagWithSameName = TagHome.findByName( _tag.getName( ) );
+
+            if ( tagWithSameName != null && tagWithSameName.getIdTag( ) != _tag.getIdTag( ) )
             {
-
-                TagHome.update( _tag );
-                addInfo( INFO_TAG_UPDATED, getLocale( ) );
-
+                addError( ERROR_TAG_EXIST, getLocale( ) );
+                return redirect( request, VIEW_MODIFY_TAG, PARAMETER_ID_TAG, _tag.getIdTag( ) );
             }
+
+            TagHome.update( _tag );
+            addInfo( INFO_TAG_UPDATED, getLocale( ) );
         }
         return redirectView( request, VIEW_MANAGE_TAGS );
     }

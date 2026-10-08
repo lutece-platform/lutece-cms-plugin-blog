@@ -1,124 +1,126 @@
-<script src="js/admin/jquery/jquery-3.6.0.min.js"></script>
-<@boxBody>
-	<@row class='mt-2 d-flex'>
-		<@columns md=4>
-			<#if blog_insert_service_type=="blog_resource_insert_service">
-				<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogResourceLink.jsp' />
-			<#elseif blog_insert_service_type=="blog_url_insert_service">
-				<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogUrlLink.jsp' />
-			<#else>
-				<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogPortletLink.jsp' />
-			</#if>
-			<@tform action=formActionSearch boxed=true>
+<#--
+ # Link to a blog (or a blog resource, or a blog portlet): a search on the left, its results on the right, then the text and title of the link.
+ # Styles: insert_service.css, behaviours: lutece-insert.js (InsertServiceHeader.jsp). The results stay radio buttons: the blog and resource services
+ # post either selected_blog_id or selected_document_id.
+-->
+<#if blog_insert_service_type=="blog_resource_insert_service">
+	<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogResourceLink.jsp' />
+	<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogResourceLink.jsp' />
+	<#assign serviceLabelKey='blog.insertService.resource.label' />
+	<#assign serviceIcon='paperclip' />
+<#elseif blog_insert_service_type=="blog_url_insert_service">
+	<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogUrlLink.jsp' />
+	<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogUrlLink.jsp' />
+	<#assign serviceLabelKey='blog.insertService.blog.label' />
+	<#assign serviceIcon='link' />
+<#else>
+	<#assign formActionSearch='jsp/admin/plugins/blog/DoSearchBlogPortletLink.jsp' />
+	<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogPortletLink.jsp' />
+	<#assign serviceLabelKey='blog.insertService.portlet.label' />
+	<#assign serviceIcon='layout-list' />
+</#if>
+<div class="lutece-insert">
+	<div class="lutece-insert-head">
+		<span class="lutece-insert-badge lutece-insert-tint-0" aria-hidden="true"><i class="ti ti-${serviceIcon}"></i></span>
+		<h2>#i18n{${serviceLabelKey}}</h2>
+	</div>
+	<div class="lutece-insert-browser">
+		<@tform action=formActionSearch class='lutece-insert-aside'>
+			<@input type='hidden' name='input' value=.data_model.input! />
+			<h3>#i18n{blog.insertService.blog.searchForBlog}</h3>
+			<@formGroup labelFor='search_text' labelKey='#i18n{blog.insertService.blog.searchByKeyWord}' helpKey='#i18n{blog.insertService.blog.searchByKeyWord.help}' rows=2>
+				<@input type='text' id='search_text' name='search_text' placeHolder='#i18n{blog.insertService.blog.keyWord}' value='${search_text!\'\'}' />
+			</@formGroup>
+			<@formGroup labelFor='selected_tags' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}' rows=2>
+				<@select id='selected_tags' name='selected_tags' multiple=1 class='input-sm'>
+					<#list tags_reference_list?sort as tagRef>
+						<#assign isSelected><#if tags?? && tags?seq_contains(tagRef.code)>true<#else>false</#if></#assign>
+						<@option value=tagRef.code! label=tagRef.name!?capitalize selected=isSelected?boolean />
+					</#list>
+				</@select>
+			</@formGroup>
+			<@formGroup labelFor='date_blog_published_after' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}' rows=2>
+				<@input type='date' name='date_blog_published_after' id='date_blog_published_after' value='' language=.lang format='d/m/Y' showFormat='d/m/Y' />
+			</@formGroup>
+			<@formGroup labelFor='date_blog_published_before' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2>
+				<@input type='date' name='date_blog_published_before' id='date_blog_published_before' value='' language=.lang format='d/m/Y' showFormat='d/m/Y' />
+			</@formGroup>
+			<@button type='submit' name='button_search' id='button_search' title='#i18n{blog.manage_blogs.search}' buttonIcon='search' class='w-100' />
+		</@tform>
+		<div class="lutece-insert-main">
+		<#if blog_list_filtered??>
+			<#if blog_list_filtered?size gt 0>
+			<@tform action=formActionInsertLink name='insertBlogLink' class='lutece-insert-main' id='blog_insert_link_form'>
 				<@input type='hidden' name='input' value=.data_model.input! />
-				<@fieldSet legend='#i18n{blog.insertService.blog.searchForBlog}'>
-					<@formGroup labelFor='search_text' labelKey='#i18n{blog.insertService.blog.searchByKeyWord}' helpKey='#i18n{blog.insertService.blog.searchByKeyWord.help}' rows=2>
-						<@inputGroup>
-							<@input type='text' id='search_text' name='search_text' placeHolder='#i18n{blog.insertService.blog.keyWord}' value='${search_text!\'\'}' />
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='selected_tags' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}' rows=2>
-						<@select id='selected_tags' name='selected_tags' multiple=1 class='input-sm'>
-							<#list tags_reference_list?sort as tagRef>
-								<#assign isSelected><#if tags?? && tags?seq_contains(tagRef.code)>true<#else>false</#if></#assign>
-								<@option value=tagRef.code! label=tagRef.name!?capitalize selected=isSelected?boolean />
+				<div class="lutece-insert-tools">
+					<label class="lutece-insert-search" for="blog_results_filter"><i class="ti ti-filter" aria-hidden="true"></i><span class="visually-hidden">#i18n{blog.insertService.blog.filterResults}</span><input type="search" id="blog_results_filter" placeholder="#i18n{blog.insertService.blog.filterResults}" autocomplete="off" data-lutece-insert-search data-target="#blog_list_result" data-count="#blog_results_count" data-nomatch="#blog_results_nomatch"></label>
+					<span class="lutece-insert-count" id="blog_results_count" aria-live="polite" data-text-one="#i18n{blog.insertService.blog.resultOne}" data-text-many="#i18n{blog.insertService.blog.resultMany}"></span>
+				</div>
+				<fieldset>
+					<legend class="visually-hidden">#i18n{blog.insertService.blog.selectItem}</legend>
+					<ul class="lutece-insert-rows lutece-insert-scroll" id="blog_list_result">
+					<#assign blog_item_id=1 />
+					<#list blog_list_filtered as blog>
+						<#if blog.docContent?size gt 0>
+						<li data-search="${(blog.name!'')?lower_case}<#list blog.docContent as document> ${(document.textValue!'')?lower_case}</#list>">
+							<div class="lutece-insert-row"><span class="lutece-insert-badge lutece-insert-tint-0" aria-hidden="true"><i class="ti ti-article"></i></span><span class="lutece-insert-text"><span class="lutece-insert-title">${blog.name!}</span></span></div>
+							<ul>
+							<#list blog.docContent as document>
+								<li>
+									<label class="lutece-insert-row" for="document_${document.id!}">
+										<input type="radio" class="form-check-input m-0" name="selected_document_id" id="document_${document.id!}" value="${document.id}" data-link-text="${document.textValue!}">
+										<span class="lutece-insert-text"><span class="lutece-insert-title">${document.textValue!}</span></span>
+									</label>
+								</li>
 							</#list>
-						</@select>
-					</@formGroup>
-					<@formGroup labelFor='date_blog_published_after' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}' rows=2>
-						<@inputGroup>
-							<@input type='date' name='date_blog_published_after' id='date_blog_published_after' value='' language=.lang format='d/m/Y' showFormat='d/m/Y' />
-							<@inputGroupItem type='text'>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='date_blog_published_before' labelKey='#i18n{blog.manage_blogs.labelBefore}' rows=2>
-						<@inputGroup>
-							<@input type='date' name='date_blog_published_before' id='date_blog_published_before' value='' language=.lang format='d/m/Y' showFormat='d/m/Y' />
-							<@inputGroupItem>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup>
-						<@button type='submit' name='button_search' id='button_search' title='#i18n{blog.manage_blogs.search}' buttonIcon='search' />
-					</@formGroup>
-				</@fieldSet>
-			</@tform>
-		</@columns>
-		<@columns md=8>
-			<#if blog_list_filtered??>
-				<#if blog_insert_service_type=="blog_resource_insert_service">
-					<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogResourceLink.jsp' />
-				<#elseif blog_insert_service_type=="blog_url_insert_service">
-					<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogUrlLink.jsp' />
-				<#else>
-					<#assign formActionInsertLink='jsp/admin/plugins/blog/DoInsertBlogPortletLink.jsp' />
-				</#if>
-				<@tform action=formActionInsertLink name='insertBlogLink' boxed=true class='flex-fill'>
-					<@input type='hidden' name='input' value=.data_model.input! />
-					<@fieldSet legend='#i18n{blog.insertService.blog.searchResult}'>
-						<#if blog_list_filtered?size gt 0>
-							<@formGroup labelFor='blog_list_result' labelKey='#i18n{blog.insertService.blog.selectItem}' mandatory=true>
-								<@listGroup id='blog_list_result' class='overflow-auto' params='style="max-height:300px"'>
-									<#assign blog_item_id=1 />
-									<#list blog_list_filtered as blog>
-										<#if blog.docContent?size gt 0>
-											<@box>
-												<@boxHeader title=blog.name! titleLevel='h6' />
-												<@boxBody class='p-2'>
-													<@listGroup id='blog_resource_list'>
-														<#list blog.docContent as document>
-															<@listGroupItem>
-																<@radioButton name='selected_document_id'
-																	id='document_${document.id!}'
-																	labelKey='${document.textValue!}'
-																	class='form-check-input' orientation='inline'
-																	value='${document.id}'
-																	params='onclick="javascript:setDefaultBlogLinkText(`${document.textValue}`);"' />
-															</@listGroupItem>
-														</#list>
-													</@listGroup>
-												</@boxBody>
-											</@box>
-										<#else>
-											<@listGroupItem>
-												<@radioButton name='selected_blog_id'
-													id='blog_${blog.id!}_${blog_item_id}'
-													labelKey='${blog.name!} - ${blog.updateDate!}'
-													class='form-check-input' orientation='inline' value='${blog.id}'
-													params='onclick="javascript:setDefaultBlogLinkText(\'${blog.name}\');"' />
-											</@listGroupItem>
-											<#assign blog_item_id=blog_item_id+1 />
-										</#if>
-									</#list>
-								</@listGroup>
-							</@formGroup>
-							<@formGroup labelFor='custom_link_text' labelKey='#i18n{blog.insertService.blog.linkText}' mandatory=true rows=2>
-								<@input type='text' id='custom_link_text' name='custom_link_text' placeHolder='#i18n{blog.insertService.blog.linkText.placeholder}' value='' />
-							</@formGroup>
-							<@formGroup labelFor='custom_link_title' labelKey='#i18n{blog.insertService.blog.linkTitle}' rows=2>
-								<@input type='text' id='custom_link_title' name='custom_link_title' placeHolder='#i18n{blog.insertService.blog.linkTitle.placeholder}' value='' />
-							</@formGroup>
-							<@formGroup>
-								<@button type='submit' title='#i18n{blog.publication_blog.buttonValidate}' buttonIcon='check' />
-							</@formGroup>
+							</ul>
+						</li>
 						<#else>
-							<@div class='card d-flex flex-fill justify-content-center align-items-center'>
-								<@empty class='d-flex justify-content-center flex-column align-items-center' subtitle='#i18n{blog.insertService.blog.relaunchSearch}' iconName='list-search' />
-							</@div>
+						<li data-search="${(blog.name!'')?lower_case}">
+							<label class="lutece-insert-row" for="blog_${blog.id!}_${blog_item_id}">
+								<input type="radio" class="form-check-input m-0" name="selected_blog_id" id="blog_${blog.id!}_${blog_item_id}" value="${blog.id}" data-link-text="${blog.name!}">
+								<span class="lutece-insert-badge lutece-insert-tint-0" aria-hidden="true"><i class="ti ti-article"></i></span>
+								<span class="lutece-insert-text"><span class="lutece-insert-title">${blog.name!}</span><span class="lutece-insert-date">${blog.updateDate!}</span></span>
+							</label>
+						</li>
+						<#assign blog_item_id=blog_item_id+1 />
 						</#if>
-					</@fieldSet>
-				</@tform>
+					</#list>
+					</ul>
+				</fieldset>
+				<p class="lutece-insert-nomatch" id="blog_results_nomatch" hidden>#i18n{blog.insertService.blog.noMatch}</p>
+				<div class="lutece-insert-form">
+					<div class="lutece-insert-fields">
+						<@formGroup labelFor='custom_link_text' labelKey='#i18n{blog.insertService.blog.linkText}' mandatory=true rows=2>
+							<@input type='text' id='custom_link_text' name='custom_link_text' placeHolder='#i18n{blog.insertService.blog.linkText.placeholder}' value='' />
+						</@formGroup>
+						<@formGroup labelFor='custom_link_title' labelKey='#i18n{blog.insertService.blog.linkTitle}' rows=2>
+							<@input type='text' id='custom_link_title' name='custom_link_title' placeHolder='#i18n{blog.insertService.blog.linkTitle.placeholder}' value='' />
+						</@formGroup>
+					</div>
+					<div class="lutece-insert-preview" aria-live="polite">
+						<span class="lutece-insert-label">#i18n{blog.insertService.blog.preview}</span>
+						<a href="#" class="link-primary text-decoration-underline" id="blog_link_preview" tabindex="-1" onclick="return false;"></a>
+						<dl>
+							<dt>#i18n{blog.insertService.blog.linkTitle}</dt><dd id="blog_link_preview_title">–</dd>
+							<dt>#i18n{blog.insertService.blog.previewTarget}</dt><dd>#i18n{blog.insertService.blog.previewNewWindow}</dd>
+						</dl>
+					</div>
+				</div>
+				<div class="lutece-insert-footer">
+					<span class="lutece-insert-selection" id="blog_selection" aria-live="polite" data-text-none="#i18n{blog.insertService.blog.noSelection}" data-text-selected="#i18n{blog.insertService.blog.selected}">#i18n{blog.insertService.blog.noSelection}</span>
+					<@button type='submit' id='blog_insert_submit' title='#i18n{blog.publication_blog.buttonValidate}' buttonIcon='check' disabled=true />
+				</div>
+			</@tform>
 			<#else>
-				<@div class='card flex-fill justify-content-center align-items-center'>
-					<@empty class='d-flex justify-content-center flex-column align-items-center' title='#i18n{blog.insertService.blog.launchSearch}' subtitle=' ' iconName='search' />
-				</@div>
+			<@empty subtitle='#i18n{blog.insertService.blog.relaunchSearch}' iconName='list-search' />
 			</#if>
-		</@columns>
-	</@row>
-</@boxBody>
+		<#else>
+			<@empty title='#i18n{blog.insertService.blog.launchSearch}' subtitle=' ' iconName='search' />
+		</#if>
+		</div>
+	</div>
+</div>
 <script src="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.js"></script>
 <link rel="stylesheet" href="themes/admin/shared/plugins/blog/js/slim-select/slimselect.min.css" />
 <script>
@@ -127,7 +129,37 @@
 	// Update the value of the link's text
 	function setDefaultBlogLinkText(linkText) {
 		inputLinkText.value = linkText;
+		inputLinkText.dispatchEvent( new Event( 'input' ) );
 	}
+
+	// The results are radio buttons: choosing one fills the text of the link, names the selection and allows the submission
+	( ( form ) => {
+		if ( !form ) {
+			return;
+		}
+		const selection = document.getElementById( 'blog_selection' );
+		const submit = document.getElementById( 'blog_insert_submit' );
+		const linkTitle = document.getElementById( 'custom_link_title' );
+		const preview = document.getElementById( 'blog_link_preview' );
+		const previewTitle = document.getElementById( 'blog_link_preview_title' );
+		const updatePreview = ( ) => {
+			preview.textContent = inputLinkText.value || '…';
+			previewTitle.textContent = linkTitle.value || '–';
+		};
+		form.querySelectorAll( 'input[type="radio"]' ).forEach( ( radio ) => {
+			radio.addEventListener( 'change', ( ) => {
+				setDefaultBlogLinkText( radio.dataset.linkText );
+				const name = document.createElement( 'b' );
+				name.textContent = radio.dataset.linkText;
+				selection.textContent = '';
+				selection.append( selection.dataset.textSelected + ' ', name );
+				submit.disabled = false;
+			} );
+		} );
+		inputLinkText.addEventListener( 'input', updatePreview );
+		linkTitle.addEventListener( 'input', updatePreview );
+		updatePreview( );
+	} )( document.getElementById( 'blog_insert_link_form' ) );
 
 	// Manage the Tags selection field
 	document.addEventListener("DOMContentLoaded", function () {

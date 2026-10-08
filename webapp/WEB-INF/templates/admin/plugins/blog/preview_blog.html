@@ -1,60 +1,76 @@
 <@pageContainer>
-    <@pageColumn>
-		<#assign pageTitle><@tag class='me-2'>#i18n{blog.manage_blogs.columnVersion} ${blog.version}</@tag>${blog.contentLabel}</#assign>
-        <@pageHeader title=pageTitle>
-			<@aButton class='me-1' href='jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}' title='#i18n{blog.preview_blog.labelShowPage}' target='_blank' buttonIcon='external-link me-2' size='' color='default ms-1' />
-			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' title='#i18n{blog.modify_blog.title}' buttonIcon='edit me-2' size='' />
-			<@aButton class='me-1' href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' title='#i18n{blog.publication_blog.pageTitle}' buttonIcon='globe me-2' size='' />
+	<@pageColumn>
+		<@pageHeader title=blog.contentLabel!'' description='#i18n{blog.preview_blog.title} · #i18n{blog.manage_blogs.columnVersion} ${blog.version}'>
+			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' color='' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' hideTitle=['all'] />
+			<@aButton href='jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}' target='_blank' color='' buttonIcon='external-link' title='#i18n{blog.preview_blog.labelShowPage}' hideTitle=['xs','sm','md','lg'] />
+			<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' color='' buttonIcon='world-upload' title='#i18n{blog.publication_blog.pageTitle}' hideTitle=['xs','sm','md','lg'] />
+			<@aButton href='jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}' color='primary' buttonIcon='edit' title='#i18n{blog.modify_blog.title}' hideTitle=['xs','sm'] />
 		</@pageHeader>
-		<@tabs>
+		<#-- Tabler "card-header-tabs": tabs on the left, device switcher pushed to the right (ms-auto) -->
+		<@tabs keepState=false>
 			<@tabList>
 				<@tabLink active=true href='#preview' title='#i18n{blog.modify_blog.labelPreview}' tabIcon='eye' />
-				<@tabLink href='#description' title='#i18n{blog.manage_blogs.columnDescription}' tabIcon='info-circle' />
+				<@tabLink href='#description' title='#i18n{blog.preview_blog.labelDescription}' tabIcon='info-circle' />
+				<@tabLink href='' tabClass='ms-auto d-none d-lg-flex align-items-center'>
+					<@btnGroup size='sm' ariaLabel='#i18n{blog.modify_blog.labelPreview}'>
+						<@button id='display-desktop' color='outline-secondary' class='btn-preview btn-icon active' buttonIcon='device-desktop' title='#i18n{blog.preview_blog.buttonXLargeScreen}' hideTitle=['all'] />
+						<@button id='display-laptop' color='outline-secondary' class='btn-preview btn-icon' buttonIcon='device-laptop' title='#i18n{blog.preview_blog.buttonLargeScreen}' hideTitle=['all'] />
+						<@button id='display-tablet' color='outline-secondary' class='btn-preview btn-icon' buttonIcon='device-tablet' title='#i18n{blog.preview_blog.buttonTablet}' hideTitle=['all'] />
+						<@button id='display-phone' color='outline-secondary' class='btn-preview btn-icon' buttonIcon='device-mobile' title='#i18n{blog.preview_blog.buttonSmartphone}' hideTitle=['all'] />
+					</@btnGroup>
+				</@tabLink>
 			</@tabList>
-			<@tabContent>
+			<@tabContent class='p-0'>
 				<@tabPanel id='preview' active=true>
-					<@div id='lutece-blog-page-preview' class='flex-column align-items-center'>
-						<@div id='lutece-blog-site-preview-wrapper' class="desktop">
-							<@div id='lutece-blog-site-preview-frame' class="desktop">
-								<iframe id='lutece-blog-site-preview' class="w-100 vh-100 border-0" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}"></iframe>
-							</@div>
+					<@div id='lutece-blog-page-preview' class='d-flex justify-content-center bg-body-tertiary'>
+						<@div id='lutece-blog-site-preview-frame' class='desktop'>
+							<iframe id="lutece-blog-site-preview" class="w-100 vh-100 border-0 d-block" title="#i18n{blog.modify_blog.labelPreview}" src="jsp/site/Portal.jsp?page=blog&id=${blog.id}&version=${blog.version}"></iframe>
 						</@div>
 					</@div>
 				</@tabPanel>
-				<@tabPanel id='description'>
-					<@btnGroup class='ms-3 me-2 d-none d-lg-block'>
-						<@button id='display-desktop' title='#i18n{blog.preview_blog.buttonXLargeScreen}' buttonIcon='device-desktop' color='primary' class='btn-preview active' hideTitle=['all'] />
-						<@button id='display-laptop' title='#i18n{blog.preview_blog.buttonLargeScreen}' buttonIcon='device-laptop' color='primary' class='btn-preview' hideTitle=['all'] />
-						<@button id='display-tablet' title='#i18n{blog.preview_blog.buttonTablet}' buttonIcon='device-tablet' color='primary' class='btn-preview' hideTitle=['all'] />
-						<@button id='display-phone' title='#i18n{blog.preview_blog.buttonSmartphone}' buttonIcon='device-mobile' color='primary' class='btn-preview' hideTitle=['all'] />
-					</@btnGroup>
-					<hr class="my-2">
-					<h3>#i18n{blog.manage_blogs.columnDescription}</h3>
-					<hr class="my-2">
-					<@p><@span class="font-weight-bold">#i18n{blog.preview_blog.createdBy} :</@span><br> ${blog.userCreator} ${blog.creationDate} </@p>
-					<@p><@span class="font-weight-bold">#i18n{blog.preview_blog.lastUpdate}:</@span><br> ${blog.updateDate} #i18n{blog.manage_blogs.labelBy} ${blog.user}</@p>
-					<hr class="my-2">
-					${blog.description!'RAS'}
-					<#if blog.url?? && blog.url !=''>
-						<@p><strong>#i18n{blog.manage_blogs.columnUrl}</strong><@link href=blog.url target='_blank' label='${blog.url}' /></@p>
-					</#if>
-					<#if blog.editComment?? && blog.editComment !=''>
-						<@p>#i18n{blog.manage_blogs.columnEditComment}</@p>
-						${blog.editComment}
-					</#if>
-					<@p>#i18n{blog.create_blog.labelImage}</@p>
-					<@img url="servlet/plugins/blogs/file?id_file=${blog.id}" class="img-fluid img-thumbnail" alt="" title="" />
-					<#if blog.tag?? && blog.tag?size gt 0>
-						<@p>#i18n{blog.manage_tags.title}</@p>
-						<#list blog.tag as tg>
-							<#list list_tag as tgName>
-								<#if tgName.code == tg.idTag?string >
-									<@tag>${tgName.name!}</@tag>
-									<#break>
+				<@tabPanel id='description' class='p-3'>
+					<@div class='datagrid'>
+						<@div class='datagrid-item'>
+							<@div class='datagrid-title'>#i18n{blog.preview_blog.createdBy}</@div>
+							<@div class='datagrid-content'>${blog.userCreator!}, ${blog.creationDate?datetime?string.short}</@div>
+						</@div>
+						<@div class='datagrid-item'>
+							<@div class='datagrid-title'>#i18n{blog.preview_blog.lastUpdate}</@div>
+							<@div class='datagrid-content'>${blog.updateDate?datetime?string.short} #i18n{blog.manage_blogs.labelBy} ${blog.user!}</@div>
+						</@div>
+						<@div class='datagrid-item'>
+							<@div class='datagrid-title'>#i18n{blog.manage_blogs.columnVersion}</@div>
+							<@div class='datagrid-content'><@tag color='' class='bg-secondary-lt'>${blog.version}</@tag></@div>
+						</@div>
+						<#if blog.url?has_content>
+							<@div class='datagrid-item'>
+								<@div class='datagrid-title'>#i18n{blog.manage_blogs.columnUrl}</@div>
+								<@div class='datagrid-content text-truncate'><@link href=blog.url target='_blank' label=blog.url /></@div>
+							</@div>
+						</#if>
+						<@div class='datagrid-item'>
+							<@div class='datagrid-title'>#i18n{blog.manage_tags.title}</@div>
+							<@div class='datagrid-content'>
+								<#if blog.tag?has_content>
+									<@div class='d-flex flex-wrap gap-1'>
+									<#list blog.tag as tg><#list list_tag as tgName><#if tgName.code == tg.idTag?string><@tag color='' class='bg-blue-lt' tagIcon='tag'>${tgName.name!}</@tag><#break></#if></#list></#list>
+									</@div>
+								<#else>
+									<@span class='text-secondary'>#i18n{blog.manage_tags.noTag}</@span>
 								</#if>
-							</#list>
-						</#list>
-					</#if>
+							</@div>
+						</@div>
+						<#if blog.editComment?has_content>
+							<@div class='datagrid-item'>
+								<@div class='datagrid-title'>#i18n{blog.manage_blogs.columnEditComment}</@div>
+								<@div class='datagrid-content fst-italic'>${blog.editComment}</@div>
+							</@div>
+						</#if>
+					</@div>
+					<@div class='mt-4'>
+						<@div class='datagrid-title'>#i18n{blog.preview_blog.labelDescription}</@div>
+						<@div class='text-body'>${blog.description!}</@div>
+					</@div>
 				</@tabPanel>
 			</@tabContent>
 		</@tabs>
@@ -68,17 +84,22 @@
 
 		const btnPreview = document.querySelectorAll( '.btn-preview' );
 
+        // The chosen device width is kept on resize; only the height follows the window
+        let previewWidth = '100%';
+
         function _resizePreview( ) {
             previewFrame.style.height = ( window.innerHeight - 30 ) + "px";
-            previewFrame.style.width = "100%";
+            previewFrame.style.width = previewWidth;
             previewIframe.style.height = ( window.innerHeight - 30 ) + "px";
             previewIframe.style.width = "100%";
         }
 
         function _setBtnPreview( el, w ) {
+            bootstrap.Tab.getOrCreateInstance( document.querySelector( 'a[href="#preview"]' ) ).show();
             btnPreview.forEach( btn => { btn.classList.remove('active') } );
+            previewWidth = w;
             previewFrame.style.width = w;
-            previewIframe.style.width = w - 50;
+            previewIframe.style.width = "100%";
             el.classList.add('active');
         }
 

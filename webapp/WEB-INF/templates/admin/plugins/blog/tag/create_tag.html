@@ -1,17 +1,22 @@
+<#assign tagsUrl='jsp/admin/plugins/blog/ManageTags.jsp' />
 <@pageContainer>
-    <@pageColumn>
-        <@pageHeader title='#i18n{blog.create_tag.title}' />
-		<@div id='add_tag'>
-			<@tform name='create_tag' action='jsp/admin/plugins/blog/ManageTags.jsp' boxed=true >
-				<@messages errors=errors />
-				<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' mandatory=true>
-					<@input type='text' name='name' value='' />
-				</@formGroup>
-				<@formGroup>
-					<@button type='submit' name='action_createTag' buttonIcon='check' title='#i18n{portal.admin.message.buttonValidate}' />
-					<@button type='submit' name='view_manageTags' buttonIcon='times' title='#i18n{portal.admin.message.buttonCancel}' color='secondary' cancel=true />
-				</@formGroup>
-			</@tform>
-		</@div>
+	<@pageColumn>
+		<@pageHeader title='#i18n{blog.create_tag.title}'>
+			<@aButton href=tagsUrl color='' buttonIcon='arrow-left' title='#i18n{portal.util.labelBack}' hideTitle=['all'] />
+		</@pageHeader>
+		<@messages errors=errors![] />
+		<@row>
+			<@columns lg=6>
+				<@tform name='create_tag' action=tagsUrl boxed=true>
+					<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' rows=2 mandatory=true>
+						<@input type='text' id='name' name='name' value='${(tags.name)!}' mandatory=true />
+					</@formGroup>
+					<@div class='d-flex justify-content-end gap-2'>
+						<@aButton href=tagsUrl color='light' buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
+						<@button type='submit' name='action_createTag' color='primary' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+					</@div>
+				</@tform>
+			</@columns>
+		</@row>
 	</@pageColumn>
 </@pageContainer>

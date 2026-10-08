@@ -86,3 +86,8 @@ ALTER TABLE blog_portlet DROP COLUMN id_page_template_document;
 -- preconditions onFail:MARK_RAN onError:WARN
 -- precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = database() AND table_name = 'blog_list_portlet' AND column_name = 'id_page_template_document'
 ALTER TABLE blog_list_portlet DROP COLUMN id_page_template_document;
+
+-- changeset blog:update_db_blog_4.0.1-4.0.2.sql-rev7.sql logicalFilePath:sql/plugins/blog/upgrade/update_db_blog_4.0.1-4.0.2.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- comment TinyMCE 5 is removed from the core and from the plugin: the blogs move to TinyMCE 6
+UPDATE core_datastore SET entity_value = 'tinymce6' WHERE entity_key = 'blog.advanced_parameters.editor' AND entity_value = 'tinymce5';

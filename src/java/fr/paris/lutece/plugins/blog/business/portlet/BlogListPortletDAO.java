@@ -300,6 +300,7 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
         strSQl.append( SQL_QUERY_SELECT_PORTLET_BY_TYPE );
 
         String strFilter = ( pFilter != null ) ? pFilter.getSQLFilter( ) : null;
+        String strPeriodFilter = ( pFilter != null ) ? pFilter.getSQLPublicationPeriodFilter( ) : null;
 
         if ( strFilter != null )
         {
@@ -307,36 +308,54 @@ public final class BlogListPortletDAO implements IBlogListPortletDAO
             strSQl.append( strFilter );
         }
 
+        if ( strPeriodFilter != null )
+        {
+            strSQl.append( "AND" );
+            strSQl.append( strPeriodFilter );
+        }
+
         strSQl.append( pOrder.getSQLOrderBy( ) );
 
         ReferenceList list = new ReferenceList( );
         try ( DAOUtil daoUtil = new DAOUtil( strSQl.toString( ) ) )
         {
-
-            daoUtil.setInt( 1, nDocumentId );
+            int nIndex = 1;
+            daoUtil.setInt( nIndex++, nDocumentId );
 
             if ( strFilter != null )
             {
                 if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_NAME ) )
                 {
-                    for ( int i = 0; i < pFilter.getPageName( ).length; i++ )
+                    for ( String strPageName : pFilter.getPageName( ) )
                     {
-                        daoUtil.setString( i + 2, "%" + pFilter.getPageName( ) [i] + "%" );
+                        daoUtil.setString( nIndex++, "%" + strPageName + "%" );
                     }
                 }
                 else
                     if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PORTLET_NAME ) )
                     {
-                        for ( int i = 0; i < pFilter.getPortletName( ).length; i++ )
+                        for ( String strPortletName : pFilter.getPortletName( ) )
                         {
-                            daoUtil.setString( i + 2, "%" + pFilter.getPortletName( ) [i] + "%" );
+                            daoUtil.setString( nIndex++, "%" + strPortletName + "%" );
                         }
                     }
                     else
                         if ( pFilter.getPortletFilterType( ).equals( PortletFilter.PAGE_ID ) )
                         {
-                            daoUtil.setInt( 2, pFilter.getIdPage( ) );
+                            daoUtil.setInt( nIndex++, pFilter.getIdPage( ) );
                         }
+            }
+
+            if ( strPeriodFilter != null )
+            {
+                if ( pFilter.getDateBeginPublishing( ) != null )
+                {
+                    daoUtil.setDate( nIndex++, pFilter.getDateBeginPublishing( ) );
+                }
+                if ( pFilter.getDateEndPublishing( ) != null )
+                {
+                    daoUtil.setDate( nIndex, pFilter.getDateEndPublishingExclusive( ) );
+                }
             }
 
             daoUtil.executeQuery( );

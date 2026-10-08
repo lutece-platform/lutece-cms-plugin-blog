@@ -14,9 +14,9 @@ INSERT INTO core_portlet_type (id_portlet_type,name,url_creation,url_update,home
 --
 DELETE FROM core_admin_right WHERE id_right IN ( 'BLOG_MANAGEMENT', 'BLOG_TAGS_MANAGEMENT');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url ) VALUES
-('BLOG_MANAGEMENT','blog.adminFeature.ManageBlogs.name',2,'jsp/admin/plugins/blog/ManageBlogs.jsp','blog.adminFeature.ManageBlogs.description',0,'blog','APPLICATIONS','ti ti-list-letters','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
+('BLOG_MANAGEMENT','blog.adminFeature.ManageBlogs.name',2,'jsp/admin/plugins/blog/ManageBlogs.jsp','blog.adminFeature.ManageBlogs.description',0,'blog','CONTENT','ti ti-list-letters','jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-blog');
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
-('BLOG_TAGS_MANAGEMENT','blog.adminFeature.ManageBlogsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageBlogsTags.description',0,'blog','APPLICATIONS','ti ti-tags',NULL,4);
+('BLOG_TAGS_MANAGEMENT','blog.adminFeature.ManageBlogsTags.name',2,'jsp/admin/plugins/blog/ManageTags.jsp','blog.adminFeature.ManageBlogsTags.description',0,'blog','CONTENT','ti ti-tags',NULL,4);
 
 --
 -- Data for table core_user_right
@@ -33,7 +33,7 @@ INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_para
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.accepted_file_types', 'image/*,.pdf,.xls,.doc,.docx,.xls,.xlsx,.odt,.ods,.ppt,.pptx,.odp');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
 INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.default_date_end_publishing', '01/01/2050');
-INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.editor', 'tinymce5');
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.editor', 'tinymce6');
 
 --
 -- Set blog resources management rights for admin account
