@@ -177,24 +177,24 @@
 									<#if nbPublications gt 0><@span class='badge bg-green text-green-fg badge-notification badge-pill'>${nbPublications}</@span></#if>
 								</@aButton>
 							</#if>
-							<@button type='button' color='' id='blog-actions-${blog.id}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
-								<@li><@link class='dropdown-item' href='jsp/site/Portal.jsp?page=blog&id=${blog.id}' target='_blank'><@icon style='external-link' class='me-2' />#i18n{portal.site.admin_page.labelShowPage}</@link></@li>
+							<@button type='button' id='blog-actions-${blog.id}' dropdownMenu=true buttonIcon='dots' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
+								<@link class='dropdown-item' href='jsp/site/Portal.jsp?page=blog&id=${blog.id}' target='_blank'><@icon style='external-link' class='me-2' />#i18n{portal.site.admin_page.labelShowPage}</@link>
 								<#if blog.version gt 1>
-									<@li><@link class='dropdown-item' href='${manageUrl}?view=historyBlog&id=${blog.id}'><@icon style='history' class='me-2' />#i18n{blog.manage_blogs.labelHistory}<@span class='badge bg-secondary-lt ms-auto'>${blog.version}</@span></@link></@li>
+									<@link class='dropdown-item' href='${manageUrl}?view=historyBlog&id=${blog.id}'><@icon style='history' class='me-2' />#i18n{blog.manage_blogs.labelHistory}<@span class='badge bg-secondary-lt ms-auto'>${blog.version}</@span></@link>
 								</#if>
 								<#if permission_manage_create_blog>
-									<@li><@link class='dropdown-item' href='${manageUrl}?action=duplicateBlog&id=${blog.id}'><@icon style='copy' class='me-2' />#i18n{blog.manage_blogs.labelDuplicateBlog}</@link></@li>
+									<@link class='dropdown-item' href='${manageUrl}?action=duplicateBlog&id=${blog.id}'><@icon style='copy' class='me-2' />#i18n{blog.manage_blogs.labelDuplicateBlog}</@link>
 								</#if>
 								<#if permission_manage_archive_blog>
-									<@li class='dropdown-divider' />
+									<@cBlock class='dropdown-divider'></@cBlock>
 									<#if blog.isArchived()>
-										<@li><@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&select_blog_action=1&select_blog_id=${blog.id}'><@icon style='archive-off' class='me-2' />#i18n{blog.manage_blog_archives.labelActionUnarchive}</@link></@li>
+										<@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&select_blog_action=1&select_blog_id=${blog.id}'><@icon style='archive-off' class='me-2' />#i18n{blog.manage_blog_archives.labelActionUnarchive}</@link>
 									<#else>
-										<@li><@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&select_blog_action=0&select_blog_id=${blog.id}'><@icon style='archive' class='me-2' />#i18n{blog.manage_blog_archives.labelActionArchive}</@link></@li>
+										<@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&select_blog_action=0&select_blog_id=${blog.id}'><@icon style='archive' class='me-2' />#i18n{blog.manage_blog_archives.labelActionArchive}</@link>
 									</#if>
 								</#if>
 								<#if permission_manage_delete_blog && blog.isArchived()>
-									<@li><@link class='dropdown-item text-danger' href='${manageUrl}?action=confirmRemoveBlog&id=${blog.id}'><@icon style='trash' class='me-2' />#i18n{portal.util.labelDelete}</@link></@li>
+									<@link class='dropdown-item text-danger' href='${manageUrl}?action=confirmRemoveBlog&id=${blog.id}'><@icon style='trash' class='me-2' />#i18n{portal.util.labelDelete}</@link>
 								</#if>
 							</@button>
 						</@manageFeatureItemColumn>

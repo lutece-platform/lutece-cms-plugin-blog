@@ -26,6 +26,7 @@
 </@initToast>
 <script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
 <script>
+var baseUrl = '${webapp_url!}';
 var numberOfTagsAssigned = '${blogTagSize}';
 var numberMandatoryTags = '${number_mandatory_tags}';
 
@@ -217,11 +218,11 @@ document.addEventListener( "DOMContentLoaded", function(){
 						</#if>
 					</@div>
 					<@button color='ghost-secondary' class='btn-icon' size='sm' id='doc-actions-${docContent.id}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
-						<@li><@link class='dropdown-item' href='#' params='onclick="doInsertContent( ${docContent.id}, \'${docContent.textValue!?js_string}\', ${(docContent.contentType.idContentType)!1} ); return false;"'><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link></@li>
-						<@li><@link class='dropdown-item btn-up' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\', ${blog.id} ); return false;"'><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link></@li>
-						<@li><@link class='dropdown-item btn-down' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\', ${blog.id} ); return false;"'><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link></@li>
-						<@li class='dropdown-divider' />
-						<@li><@link class='dropdown-item text-danger' href='#' params='onclick="deleteFileContent( ${docContent.id}, ${blog.id} ); return false;"'><@icon style='trash' class='me-2' />#i18n{blog.create_blog.labelRemove}</@link></@li>
+						<@link class='dropdown-item' href='#' params='onclick="doInsertContent( ${docContent.id}, \'${docContent.textValue!?js_string}\', ${(docContent.contentType.idContentType)!1} ); return false;"'><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link>
+						<@link class='dropdown-item btn-up' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\', ${blog.id} ); return false;"'><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link>
+						<@link class='dropdown-item btn-down' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\', ${blog.id} ); return false;"'><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link>
+						<hr class='dropdown-divider' />
+						<@link class='dropdown-item text-danger' href='#' params='onclick="deleteFileContent( ${docContent.id}, ${blog.id} ); return false;"'><@icon style='trash' class='me-2' />#i18n{blog.create_blog.labelRemove}</@link>
 					</@button>
 				</@listGroupItem>
 			</#list>
