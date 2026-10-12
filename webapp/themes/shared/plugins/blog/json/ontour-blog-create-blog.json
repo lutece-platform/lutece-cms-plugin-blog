@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "tours": [
+    {
+      "code": "blog-create-blog",
+      "lang": "fr",
+      "title": "Blog : rédiger un billet",
+      "description": "Création d’un billet (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "",
+      "pageSelector": "form[name=\"create_blog\"]",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Rédiger un billet",
+          "description": "Cette visite présente les champs du billet, ses propriétés et les deux façons de l’enregistrer."
+        },
+        {
+          "title": "Titre",
+          "description": "Le titre du billet, 75 caractères au plus.",
+          "element": "#content_label",
+          "side": "bottom"
+        },
+        {
+          "title": "Description",
+          "description": "Le chapô : un résumé affiché dans les listes de billets.",
+          "element": "#description",
+          "side": "bottom"
+        },
+        {
+          "title": "Contenu",
+          "description": "Le corps du billet, édité directement dans la page.",
+          "element": ".mb-3:has(> div > #html_content)",
+          "side": "top"
+        },
+        {
+          "title": "Commentaire de version",
+          "description": "Décrit la modification. Il apparaît dans l’historique des versions.",
+          "element": "#edit_comment",
+          "side": "top"
+        },
+        {
+          "title": "Tags",
+          "description": "Classent le billet et servent aux filtres du site et de la liste. Certains peuvent être obligatoires.",
+          "element": "#tag_doc",
+          "side": "left"
+        },
+        {
+          "title": "Pièces jointes",
+          "description": "Images et fichiers du billet. Une image peut servir de vignette.",
+          "element": "#btn-add-files",
+          "side": "left"
+        },
+        {
+          "title": "Options",
+          "description": "Sommaire, billets liés et lien externe du billet.",
+          "element": "#display_toc",
+          "side": "left"
+        },
+        {
+          "title": "Appliquer",
+          "description": "Crée le billet et reste dans l’éditeur.",
+          "element": "#apply_createBlog",
+          "side": "bottom"
+        },
+        {
+          "title": "Créer",
+          "description": "Crée le billet et revient à la liste. Il n’est visible sur le site qu’une fois publié.",
+          "element": "#action_createBlog",
+          "side": "bottom"
+        }
+      ]
+    },
+    {
+      "code": "blog-create-blog",
+      "lang": "en",
+      "title": "Blog: writing a post",
+      "description": "Creation of a post (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "",
+      "pageSelector": "form[name=\"create_blog\"]",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Writing a post",
+          "description": "This tour shows the fields of the post, its properties and the two ways to save it."
+        },
+        {
+          "title": "Title",
+          "description": "The title of the post, 75 characters at most.",
+          "element": "#content_label",
+          "side": "bottom"
+        },
+        {
+          "title": "Description",
+          "description": "The standfirst: a summary shown in the lists of posts.",
+          "element": "#description",
+          "side": "bottom"
+        },
+        {
+          "title": "Content",
+          "description": "The body of the post, edited directly in the page.",
+          "element": ".mb-3:has(> div > #html_content)",
+          "side": "top"
+        },
+        {
+          "title": "Version comment",
+          "description": "Describes the change. It shows in the version history.",
+          "element": "#edit_comment",
+          "side": "top"
+        },
+        {
+          "title": "Tags",
+          "description": "They classify the post and drive the filters of the site and of the list. Some may be mandatory.",
+          "element": "#tag_doc",
+          "side": "left"
+        },
+        {
+          "title": "Attachments",
+          "description": "Images and files of the post. An image can be used as the thumbnail.",
+          "element": "#btn-add-files",
+          "side": "left"
+        },
+        {
+          "title": "Options",
+          "description": "Table of contents, related posts and external link of the post.",
+          "element": "#display_toc",
+          "side": "left"
+        },
+        {
+          "title": "Apply",
+          "description": "Creates the post and stays in the editor.",
+          "element": "#apply_createBlog",
+          "side": "bottom"
+        },
+        {
+          "title": "Create",
+          "description": "Creates the post and goes back to the list. It shows on the site only once published.",
+          "element": "#action_createBlog",
+          "side": "bottom"
+        }
+      ]
+    }
+  ]
+}

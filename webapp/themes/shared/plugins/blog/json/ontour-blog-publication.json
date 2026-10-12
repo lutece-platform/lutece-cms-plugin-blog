@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "tours": [
+    {
+      "code": "blog-publication",
+      "lang": "fr",
+      "title": "Blog : publier un billet",
+      "description": "Publication d’un billet dans les rubriques du site (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManagePublicationBlogs.jsp",
+      "pageParameters": "",
+      "pageSelector": "#publication_blog",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Publier un billet",
+          "description": "Un billet apparaît sur le site à travers les rubriques « liste de billets » où il est publié."
+        },
+        {
+          "title": "Trouver une rubrique",
+          "description": "Recherche des rubriques par nom ou par période de publication, et tri.",
+          "element": "#form-portlet-search",
+          "side": "bottom"
+        },
+        {
+          "title": "Rubriques disponibles",
+          "description": "Choisissez la rubrique où publier le billet.",
+          "element": "#portlet-available",
+          "side": "right"
+        },
+        {
+          "title": "Période de publication",
+          "description": "Dates de début et de fin. Vides : publié dès maintenant, jusqu’à la date de fin par défaut.",
+          "element": "#dateBeginPublishing + input",
+          "side": "top"
+        },
+        {
+          "title": "Publier",
+          "description": "Publie le billet dans la rubrique choisie.",
+          "element": "#action_publishDocument",
+          "side": "top"
+        },
+        {
+          "title": "Déjà publié",
+          "description": "Les rubriques où le billet apparaît déjà : ouvrir la page ou retirer la publication.",
+          "element": "#portlet-published",
+          "side": "left"
+        }
+      ]
+    },
+    {
+      "code": "blog-publication",
+      "lang": "en",
+      "title": "Blog: publishing a post",
+      "description": "Publishing a post in the portlets of the site (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManagePublicationBlogs.jsp",
+      "pageParameters": "",
+      "pageSelector": "#publication_blog",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Publishing a post",
+          "description": "A post appears on the site through the \"list of posts\" portlets where it is published."
+        },
+        {
+          "title": "Find a portlet",
+          "description": "Search the portlets by name or publication period, and sort them.",
+          "element": "#form-portlet-search",
+          "side": "bottom"
+        },
+        {
+          "title": "Available portlets",
+          "description": "Choose the portlet where to publish the post.",
+          "element": "#portlet-available",
+          "side": "right"
+        },
+        {
+          "title": "Publication period",
+          "description": "Start and end dates. Empty: published from now, until the default end date.",
+          "element": "#dateBeginPublishing + input",
+          "side": "top"
+        },
+        {
+          "title": "Publish",
+          "description": "Publishes the post in the chosen portlet.",
+          "element": "#action_publishDocument",
+          "side": "top"
+        },
+        {
+          "title": "Already published",
+          "description": "The portlets where the post already appears: open the page or remove the publication.",
+          "element": "#portlet-published",
+          "side": "left"
+        }
+      ]
+    }
+  ]
+}

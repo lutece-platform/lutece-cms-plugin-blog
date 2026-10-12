@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "tours": [
+    {
+      "code": "blog-manage-blogs",
+      "lang": "fr",
+      "title": "Blog : gérer les billets",
+      "description": "Liste des billets du blog (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "view=manageBlogs|!",
+      "pageSelector": "#blog-search",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Les billets du blog",
+          "description": "Cet écran liste les billets du blog. Cette visite présente la recherche, la création et les actions sur un billet."
+        },
+        {
+          "title": "Filtrer",
+          "description": "Recherche par texte, tags, période de mise à jour ou vos seuls billets. Les filtres actifs restent affichés au-dessus de la liste.",
+          "element": "a[href=\"#blog-search\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Ajouter un billet",
+          "description": "Ouvre l'éditeur pour rédiger un nouveau billet.",
+          "element": "a[href$=\"view=createBlog\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Statut",
+          "description": "Tous les billets, les publiés, les non publiés et les archivés.",
+          "element": ".card-header-tabs",
+          "side": "bottom"
+        },
+        {
+          "title": "Un billet",
+          "description": "Statut, titre, auteur, dernière mise à jour et tags. Un clic sur le titre ouvre le billet, un clic sur un tag filtre la liste.",
+          "element": "#blogs-list",
+          "side": "top"
+        },
+        {
+          "title": "Publication",
+          "description": "Choisit les rubriques « liste de billets » où le billet apparaît sur le site. Le badge donne le nombre de publications.",
+          "element": "#blogs-list a[href*=\"ManagePublicationBlogs.jsp\"]",
+          "side": "left"
+        },
+        {
+          "title": "Autres actions",
+          "description": "Voir sur le site, historique des versions, dupliquer, archiver. Un billet archivé peut ensuite être supprimé.",
+          "element": "[id^=\"blog-actions-\"]",
+          "side": "left"
+        },
+        {
+          "title": "Actions groupées",
+          "description": "Sélectionnez plusieurs billets pour les archiver (ou les supprimer depuis l’onglet Archivés) en une fois.",
+          "element": "#select_all_blogs_id",
+          "side": "bottom"
+        }
+      ]
+    },
+    {
+      "code": "blog-manage-blogs",
+      "lang": "en",
+      "title": "Blog: managing the posts",
+      "description": "List of the blog posts (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "view=manageBlogs|!",
+      "pageSelector": "#blog-search",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "The blog posts",
+          "description": "This screen lists the blog posts. This tour shows the search, the creation and the actions on a post."
+        },
+        {
+          "title": "Filter",
+          "description": "Search by text, tags, update period or only your own posts. The active filters stay shown above the list.",
+          "element": "a[href=\"#blog-search\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Add a post",
+          "description": "Opens the editor to write a new post.",
+          "element": "a[href$=\"view=createBlog\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Status",
+          "description": "All the posts, the published ones, the unpublished ones and the archived ones.",
+          "element": ".card-header-tabs",
+          "side": "bottom"
+        },
+        {
+          "title": "A post",
+          "description": "Status, title, author, last update and tags. Click the title to open the post, click a tag to filter the list.",
+          "element": "#blogs-list",
+          "side": "top"
+        },
+        {
+          "title": "Publication",
+          "description": "Chooses the \"list of posts\" portlets where the post appears on the site. The badge gives the number of publications.",
+          "element": "#blogs-list a[href*=\"ManagePublicationBlogs.jsp\"]",
+          "side": "left"
+        },
+        {
+          "title": "More actions",
+          "description": "View on the site, version history, duplicate, archive. An archived post can then be deleted.",
+          "element": "[id^=\"blog-actions-\"]",
+          "side": "left"
+        },
+        {
+          "title": "Bulk actions",
+          "description": "Select several posts to archive them (or delete them from the Archived tab) at once.",
+          "element": "#select_all_blogs_id",
+          "side": "bottom"
+        }
+      ]
+    }
+  ]
+}

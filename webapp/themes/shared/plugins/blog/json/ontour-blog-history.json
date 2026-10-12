@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "tours": [
+    {
+      "code": "blog-history-blog",
+      "lang": "fr",
+      "title": "Blog : historique d’un billet",
+      "description": "Versions d’un billet (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "view=historyBlog",
+      "pageSelector": "#form-history-diff",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Historique des versions",
+          "description": "Chaque enregistrement du billet est une version, la plus récente en haut."
+        },
+        {
+          "title": "Une version",
+          "description": "Numéro, titre, date, auteur et commentaire de la version.",
+          "element": ".timeline-event-card",
+          "side": "bottom"
+        },
+        {
+          "title": "Comparer",
+          "description": "Choisissez une version A et une version B avec les boutons de chaque version, puis comparez-les.",
+          "element": "button[form=\"form-history-diff\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Prévisualiser",
+          "description": "Affiche cette version telle qu’elle apparaîtrait sur le site.",
+          "element": ".timeline a[href*=\"view=previewBlog\"]",
+          "side": "left"
+        },
+        {
+          "title": "Restaurer",
+          "description": "Rouvre cette version dans l’éditeur pour repartir d’elle, ou supprime-la.",
+          "element": "[id^=\"version-actions-\"]",
+          "side": "left"
+        }
+      ]
+    },
+    {
+      "code": "blog-history-blog",
+      "lang": "en",
+      "title": "Blog: history of a post",
+      "description": "Versions of a post (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "view=historyBlog",
+      "pageSelector": "#form-history-diff",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Version history",
+          "description": "Each save of the post is a version, the newest first."
+        },
+        {
+          "title": "A version",
+          "description": "Number, title, date, author and comment of the version.",
+          "element": ".timeline-event-card",
+          "side": "bottom"
+        },
+        {
+          "title": "Compare",
+          "description": "Pick a version A and a version B with the buttons of each version, then compare them.",
+          "element": "button[form=\"form-history-diff\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Preview",
+          "description": "Shows this version as it would appear on the site.",
+          "element": ".timeline a[href*=\"view=previewBlog\"]",
+          "side": "left"
+        },
+        {
+          "title": "Restore",
+          "description": "Reopens this version in the editor to start from it, or deletes it.",
+          "element": "[id^=\"version-actions-\"]",
+          "side": "left"
+        }
+      ]
+    }
+  ]
+}
