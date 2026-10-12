@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "tours": [
+    {
+      "code": "blog-manage-tags",
+      "lang": "fr",
+      "title": "Blog : gérer les tags",
+      "description": "Tags des billets (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageTags.jsp",
+      "pageParameters": "view=manageTags|!",
+      "pageSelector": "",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Les tags",
+          "description": "Les tags classent les billets. Ils servent aux filtres de la liste des billets et du site."
+        },
+        {
+          "title": "Créer un tag",
+          "description": "Un tag n’a qu’un nom : il se crée depuis une fenêtre.",
+          "element": "a[href=\"#tag-create\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Filtrer",
+          "description": "Filtre instantané des tags de la page.",
+          "element": "#search_tag",
+          "side": "bottom"
+        },
+        {
+          "title": "Un tag",
+          "description": "Modifier ou supprimer un tag.",
+          "element": "#tags-list",
+          "side": "top"
+        }
+      ]
+    },
+    {
+      "code": "blog-manage-tags",
+      "lang": "en",
+      "title": "Blog: managing the tags",
+      "description": "Tags of the posts (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageTags.jsp",
+      "pageParameters": "view=manageTags|!",
+      "pageSelector": "",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "The tags",
+          "description": "The tags classify the posts. They drive the filters of the list of posts and of the site."
+        },
+        {
+          "title": "Create a tag",
+          "description": "A tag only has a name: it is created from a dialog.",
+          "element": "a[href=\"#tag-create\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Filter",
+          "description": "Instant filter of the tags of the page.",
+          "element": "#search_tag",
+          "side": "bottom"
+        },
+        {
+          "title": "A tag",
+          "description": "Edit or delete a tag.",
+          "element": "#tags-list",
+          "side": "top"
+        }
+      ]
+    }
+  ]
+}

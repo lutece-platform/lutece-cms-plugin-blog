@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "tours": [
+    {
+      "code": "blog-modify-blog",
+      "lang": "fr",
+      "title": "Blog : modifier un billet",
+      "description": "Modification d’un billet et de ses versions (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "",
+      "pageSelector": "form[name=\"modify_blog\"]",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Modifier un billet",
+          "description": "Chaque enregistrement crée une nouvelle version du billet. Cette visite présente les actions de l’éditeur."
+        },
+        {
+          "title": "Contenu",
+          "description": "Le corps du billet, édité directement dans la page.",
+          "element": ".mb-3:has(> div > #html_content)",
+          "side": "top"
+        },
+        {
+          "title": "Commentaire de version",
+          "description": "Décrit la modification. Il apparaît dans l’historique des versions.",
+          "element": "#edit_comment",
+          "side": "top"
+        },
+        {
+          "title": "Prévisualiser",
+          "description": "Affiche le billet tel qu’il apparaîtra sur le site, dans un nouvel onglet.",
+          "element": "#blog-toolbar a[href*=\"view=previewBlog\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Publication",
+          "description": "Choisit les rubriques où le billet apparaît sur le site.",
+          "element": "#blog-toolbar a[href*=\"ManagePublicationBlogs.jsp\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Autres actions",
+          "description": "Historique des versions, voir sur le site, supprimer.",
+          "element": "#blog-more-actions",
+          "side": "bottom"
+        },
+        {
+          "title": "Actualiser",
+          "description": "Enregistre une nouvelle version de travail et reste dans l’éditeur.",
+          "element": "#action_modifyblog",
+          "side": "bottom"
+        },
+        {
+          "title": "Enregistrer",
+          "description": "Met à jour le billet en ligne. Réservé aux utilisateurs qui peuvent publier.",
+          "element": "#apply_modifyblog",
+          "side": "bottom"
+        }
+      ]
+    },
+    {
+      "code": "blog-modify-blog",
+      "lang": "en",
+      "title": "Blog: editing a post",
+      "description": "Editing a post and its versions (plugin-blog)",
+      "target": "BO",
+      "pagePath": "jsp/admin/plugins/blog/ManageBlogs.jsp",
+      "pageParameters": "",
+      "pageSelector": "form[name=\"modify_blog\"]",
+      "triggerMode": "first_visit",
+      "showLauncher": true,
+      "enabled": true,
+      "skipMissingElement": true,
+      "showProgress": true,
+      "steps": [
+        {
+          "title": "Editing a post",
+          "description": "Each save creates a new version of the post. This tour shows the actions of the editor."
+        },
+        {
+          "title": "Content",
+          "description": "The body of the post, edited directly in the page.",
+          "element": ".mb-3:has(> div > #html_content)",
+          "side": "top"
+        },
+        {
+          "title": "Version comment",
+          "description": "Describes the change. It shows in the version history.",
+          "element": "#edit_comment",
+          "side": "top"
+        },
+        {
+          "title": "Preview",
+          "description": "Shows the post as it will appear on the site, in a new tab.",
+          "element": "#blog-toolbar a[href*=\"view=previewBlog\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "Publication",
+          "description": "Chooses the portlets where the post appears on the site.",
+          "element": "#blog-toolbar a[href*=\"ManagePublicationBlogs.jsp\"]",
+          "side": "bottom"
+        },
+        {
+          "title": "More actions",
+          "description": "Version history, view on the site, delete.",
+          "element": "#blog-more-actions",
+          "side": "bottom"
+        },
+        {
+          "title": "Update",
+          "description": "Saves a new working version and stays in the editor.",
+          "element": "#action_modifyblog",
+          "side": "bottom"
+        },
+        {
+          "title": "Save",
+          "description": "Updates the live post. Only for the users allowed to publish.",
+          "element": "#apply_modifyblog",
+          "side": "bottom"
+        }
+      ]
+    }
+  ]
+}
