@@ -57,19 +57,19 @@ var numberMandatoryTags = '${number_mandatory_tags}';
 var all_tag = [<#list list_alltag as tag>['${tag.code}','${tag.name?js_string}' ],</#list>];
 var blog_tag = [<#list blog.tag as tag>'${tag.idTag}',</#list>];
 
-var msgErrorTagExist = '#i18n{blog.message.errorTagExist}'
-var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
-var msgErrorTagDeletion = '#i18n{blog.message.errorTagDeletion}' 
-var msgErrorTagTitleNotEmpty = '#i18n{blog.message.errorTagTitleNotEmpty}'
-var msgErrorTagNotSet = '#i18n{blog.message.errorTagNotSet}'
+var msgErrorTagExist = "#i18n{blog.message.errorTagExist}"
+var msgErrorTagUpdatePosition = "#i18n{blog.message.errorTagUpdatePosition}" 
+var msgErrorTagDeletion = "#i18n{blog.message.errorTagDeletion}" 
+var msgErrorTagTitleNotEmpty = "#i18n{blog.message.errorTagTitleNotEmpty}"
+var msgErrorTagNotSet = "#i18n{blog.message.errorTagNotSet}"
 
-var msgErrorBlogLocked = '#i18n{blog.message.blogLocked}' 
-var msgErrorBlogFileCannotBeDeleted = '#i18n{blog.message.blogFileCannotBeDeleted}' 
-var msgErrorBlogFileTypeNotUpdated = '#i18n{blog.message.blogFileTypeNotUpdated}'
-var msgErrorFileUpload = '#i18n{blog.message.blogFileUpload}'
+var msgErrorBlogLocked = "#i18n{blog.message.blogLocked}" 
+var msgErrorBlogFileCannotBeDeleted = "#i18n{blog.message.blogFileCannotBeDeleted}" 
+var msgErrorBlogFileTypeNotUpdated = "#i18n{blog.message.blogFileTypeNotUpdated}"
+var msgErrorFileUpload = "#i18n{blog.message.blogFileUpload}"
 
-var labelWarning='#i18n{portal.util.labelWarning}'
-var labelError='#i18n{portal.util.message.titleError}'
+var labelWarning= "#i18n{portal.util.labelWarning}"
+var labelError= "#i18n{portal.util.message.titleError}"
 
 function setBlogToast( toastType, toastTitle, toastContent ){
 	const toastBlog = document.querySelector('#blogToast');
@@ -91,7 +91,7 @@ document.addEventListener( "DOMContentLoaded", function(){
     if ( dHtml ) iHtml.value = dHtml.innerHTML.trim();
     
     if ( document.querySelectorAll( '#tag-list li' ).length < Number( numberMandatoryTags ) ) {
-      setBlogToast( 'warning' , '#i18n{blog.message.errorTagNotSet}', '' )
+      setBlogToast( 'warning' , msgErrorTagNotSet, '' )
       event.preventDefault();
       return false;
     }
