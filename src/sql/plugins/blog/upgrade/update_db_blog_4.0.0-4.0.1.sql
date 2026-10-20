@@ -5,14 +5,31 @@
 UPDATE core_admin_right SET icon_url='ti ti-list-letters' WHERE  id_right='BLOG_MANAGEMENT';
 UPDATE core_admin_right SET icon_url='ti ti-tags' WHERE  id_right='BLOG_TAGS_MANAGEMENT';
 
--- changeset blog:update_db_blog_4.0.1-4.0.2.sql logicalFilePath:sql/plugins/blog/upgrade/update_db_blog_4.0.1-4.0.2.sql
+--
+-- The changeset update_db_blog_4.0.1-4.0.2.sql of the 4.0.1 betas is split, without changing what it did: one changeset per column,
+-- each guarded by its own column, so that a column already there does not skip the others, and the author attributes apart.
+-- The databases of the betas keep the original changeset in DATABASECHANGELOG: the new ones skip what it already did.
+--
+
+-- changeset blog:update_db_blog_4.0.1-4.0.2.sql-display_toc.sql
 -- preconditions onFail:MARK_RAN onError:WARN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = database() AND table_name = 'blog_blog' AND column_name = 'display_toc'
-
 ALTER TABLE blog_blog ADD COLUMN display_toc boolean default false NOT NULL;
+
+-- changeset blog:update_db_blog_4.0.1-4.0.2.sql-display_related.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = database() AND table_name = 'blog_blog' AND column_name = 'display_related'
 ALTER TABLE blog_blog ADD COLUMN display_related boolean default false NOT NULL;
+
+-- changeset blog:update_db_blog_4.0.1-4.0.2.sql-max_related.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = database() AND table_name = 'blog_blog' AND column_name = 'max_related'
 ALTER TABLE blog_blog ADD COLUMN max_related int default 3 NOT NULL;
 
+-- changeset blog:update_db_blog_4.0.1-4.0.2.sql-author_attributes.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- comment The attributes 10 and 11 were set by the changeset update_db_blog_4.0.1-4.0.2.sql of the betas: not set again where it was executed, as a site may have changed them since (where it was only marked as ran, they were never set)
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM DATABASECHANGELOG WHERE ID = 'update_db_blog_4.0.1-4.0.2.sql' AND AUTHOR = 'blog' AND EXECTYPE = 'EXECUTED'
 DELETE FROM core_attribute WHERE id_attribute=10;
 INSERT INTO core_attribute (id_attribute, type_class_name, title, help_message, is_mandatory, is_shown_in_search, is_shown_in_result_list, is_field_in_line, attribute_position, plugin_name, anonymize) VALUES (10, 'fr.paris.lutece.portal.business.user.attribute.AttributeText', 'blog_author_title', 'Signature pour les articles  - utilisé dans le plugin Blog si rempli-', 0, 0, 0, 0, 1, NULL, NULL);
 DELETE FROM core_attribute WHERE id_attribute=11;
@@ -22,7 +39,6 @@ DELETE FROM core_attribute_field WHERE id_field=10;
 INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (10, 10, NULL, 'Ville de Paris', 0, 0, 50, 255, 0, 1);
 DELETE FROM core_attribute_field WHERE id_field=11;
 INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, is_DEFAULT_value, height, width, max_size_enter, is_multiple, field_position) VALUES (11, 11, NULL, 'Rédacteur - Ville de Paris', 0, 0, 50, 255, 0, 2);
-
 
 --
 -- The FreeMarker templates of the blog portlets are now managed by the core (core_portlet_template, core_portlet.id_template,
@@ -87,7 +103,7 @@ ALTER TABLE blog_portlet DROP COLUMN id_page_template_document;
 -- precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = database() AND table_name = 'blog_list_portlet' AND column_name = 'id_page_template_document'
 ALTER TABLE blog_list_portlet DROP COLUMN id_page_template_document;
 
--- changeset blog:update_db_blog_4.0.1-4.0.2.sql-rev7.sql logicalFilePath:sql/plugins/blog/upgrade/update_db_blog_4.0.1-4.0.2.sql
+-- changeset blog:update_db_blog_4.0.1-4.0.2.sql-rev7.sql
 -- preconditions onFail:MARK_RAN onError:WARN
 -- comment TinyMCE 5 is removed from the core and from the plugin: the blogs move to TinyMCE 6
 UPDATE core_datastore SET entity_value = 'tinymce6' WHERE entity_key = 'blog.advanced_parameters.editor' AND entity_value = 'tinymce5';

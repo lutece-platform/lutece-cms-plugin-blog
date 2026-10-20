@@ -2,4 +2,4 @@
 <%
 	LocalVariables.setLocal( config, request, response );
 %>
-${ BlogJspBean.updateContentType( pageContext.request ) }
+${ blogJspBean.updateContentType( pageContext.request ) }

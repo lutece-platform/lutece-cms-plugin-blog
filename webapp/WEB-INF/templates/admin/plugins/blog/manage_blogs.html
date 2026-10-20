@@ -109,9 +109,17 @@
 			<@tabPanel id='blogs-panel' active=true>
 			<@tform id='form_checkbox_action' name='form_checkbox_action' method='post' action=manageUrl>
 				<@input type='hidden' name='action' value='form_checkbox_action' />
-				<@manageFeature id='blogs-list' class='mt-0'>
+				<@manageFeature id='blogs-list' layout='list' class='mt-0'>
 				<#list blog_list as blog>
 					<#assign nbPublications=blog.blogPublication?size />
+					<#-- Published means a publication active today, the rule DefaultBlogIndexer applies to the status filter -->
+					<#assign nowMillis=.now?long />
+					<#assign isPublished=false />
+					<#list blog.blogPublication as pub>
+						<#if pub.dateBeginPublishing?? && pub.dateEndPublishing?? && nowMillis gt pub.dateBeginPublishing?long && nowMillis lt pub.dateEndPublishing?long>
+							<#assign isPublished=true /><#break>
+						</#if>
+					</#list>
 					<@manageFeatureItem>
 						<#if canSelect>
 							<@manageFeatureItemColumn auto=true>
@@ -123,7 +131,7 @@
 							<@div class='d-flex align-items-center gap-2 mb-1'>
 								<#if blog.isArchived()>
 									<@span class='status status-secondary'><@span class='status-dot' /> #i18n{blog.manage_blogs.labelArchived}</@span>
-								<#elseif nbPublications gt 0>
+								<#elseif isPublished>
 									<@span class='status status-green'><@span class='status-dot status-dot-animated' /> #i18n{blog.manage_blogs.labelPublished}</@span>
 								<#else>
 									<@span class='status status-yellow'><@span class='status-dot' /> #i18n{blog.manage_blogs.labelNotPublished}</@span>
@@ -174,7 +182,7 @@
 							</#if>
 							<#if permission_manage_publish_blog && !blog.isArchived()>
 								<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' color='' class='position-relative' buttonIcon='world-upload' title='#i18n{blog.manage_blogs.managePublication}' hideTitle=['all']>
-									<#if nbPublications gt 0><@span class='badge bg-green text-green-fg badge-notification badge-pill'>${nbPublications}</@span></#if>
+									<#if nbPublications gt 0><@span class='badge ${isPublished?then("bg-green text-green-fg","bg-secondary text-secondary-fg")} badge-notification badge-pill'>${nbPublications}</@span></#if>
 								</@aButton>
 							</#if>
 							<@button type='button' id='blog-actions-${blog.id}' dropdownMenu=true buttonIcon='dots' title='#i18n{portal.util.labelActions}' hideTitle=['all']>

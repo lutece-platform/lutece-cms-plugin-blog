@@ -2,13 +2,18 @@
 <#assign textEditorBlogName><#if !dskey('blog.advanced_parameters.editor')?starts_with('DS') || dskey('blog.advanced_parameters.editor')?starts_with('DS') !=''>${dskey('blog.advanced_parameters.editor')}</#if></#assign>
 <#assign textEditorName><#if textEditorBlogName !=''>${textEditorBlogName}<#else>${textEditorCoreName!}</#if></#assign>
 <#assign blogEditorFile=.get_optional_template('blog_${textEditorName}.html')>
-<#assign is_content_type><#if !dskey('blog.advanced_parameters.use_content_type')?starts_with('DS')>dskey('blog.advanced_parameters.use_content_type')?boolean<#else>false</#if></#assign>
+<#-- As BlogParameterService.isUseContentType( ): on when the advanced parameter is missing, otherwise only when it is true -->
+<#assign useContentTypeValue = dskey( 'blog.advanced_parameters.use_content_type' )!'' >
+<#assign is_content_type = useContentTypeValue?starts_with( 'DS Value' ) || useContentTypeValue == 'true' >
+<#-- The blog editor (blog_xxx.html) edits the contenteditable div #div_html_content, copied into the textarea on submit.
+     A core editor (editor_xxx.html: Autumn Note, Milkdown...) builds itself in place of a textarea and keeps it in sync. -->
+<#assign blogCoreEditor = false>
 <#if textEditorName?trim !=''>
   <#if blogEditorFile.exists>
     <@blogEditorFile.include />
   <#else>
       <#assign coreEditorFile=.get_optional_template('/admin/util/editor/editor_${textEditorName}.html')>
-      <#if coreEditorFile.exists><@coreEditorFile.include /></#if>
+      <#if coreEditorFile.exists><@coreEditorFile.include /><#assign blogCoreEditor = true></#if>
   </#if>
 <#else>
     <#macro initEditor >
@@ -20,6 +25,25 @@
     </@row>
     </#macro>
 </#if>
+<#-- The content field of the post, shared by create_blog.html and modify_blog.html -->
+<#macro blogHtmlContent labelKey>
+<#-- In the textarea the HTML of the post is text: escaped, a </textarea> or an entity it holds stays as it is -->
+<#local htmlContentText><#outputformat "HTML">${blog.htmlContent!}</#outputformat></#local>
+<#if blogCoreEditor>
+<@formGroup labelFor='html_content' labelKey=labelKey helpKey='#i18n{blog.edit_blog.message.help}' rows=2 class='mb-0'>
+	<@input type='textarea' name='html_content' id='html_content' value=htmlContentText />
+</@formGroup>
+<#else>
+<@formGroup labelFor='div_html_content' labelKey=labelKey helpKey='#i18n{blog.edit_blog.message.help}' rows=2 class='mb-0'>
+	<@input type='textarea' name='html_content' id='html_content' value=htmlContentText class='visually-hidden' />
+	<@div id='div_html_content' class='content-body vmin-dvh-50' params='contenteditable="true"'>${blog.htmlContent!}</@div>
+</@formGroup>
+</#if>
+</#macro>
+<#-- Starts the editor on the content field: a core editor is given the textarea, the blog editor finds its div by itself -->
+<#macro blogInitEditor>
+<#if blogCoreEditor><@initEditor selector='#html_content' /><#else><@initEditor /></#if>
+</#macro>
 <#macro blogJSInit requiredTags=0>
 <@initToast id='blogToastContainer' showAll=false >
 <@addToast id='blogToast' content='to change' />
@@ -32,8 +56,6 @@ var numberMandatoryTags = '${number_mandatory_tags}';
 
 var all_tag = [<#list list_alltag as tag>['${tag.code}','${tag.name?js_string}' ],</#list>];
 var blog_tag = [<#list blog.tag as tag>'${tag.idTag}',</#list>];
-var isContentType = ${is_content_type?c};
-var list_contentType = [<#list image_type as type>['${type.idContentType}','${type.label?js_string}' ],</#list>];
 
 var msgErrorTagExist = '#i18n{blog.message.errorTagExist}'
 var msgErrorTagUpdatePosition = '#i18n{blog.message.errorTagUpdatePosition}' 
@@ -67,15 +89,12 @@ document.addEventListener( "DOMContentLoaded", function(){
 
   formEditor.addEventListener( "submit", event => {
 
-    iHtml.value = dHtml.innerHTML.trim();
+    if ( dHtml ) iHtml.value = dHtml.innerHTML.trim();
     
-    if( document.querySelector("#tag-list li") != null ){
-      const tagsLen = document.querySelector("#tag-list li").length;
-      if ( tagsLen == 0  ){
-        setBlogToast( 'warning' , '#i18n{blog.message.message.errorTagNotSet}', '' )
-        event.preventDefault();
-        return false;
-      }
+    if ( document.querySelectorAll( '#tag-list li' ).length < Number( numberMandatoryTags ) ) {
+      setBlogToast( 'warning' , '#i18n{blog.message.message.errorTagNotSet}', '' )
+      event.preventDefault();
+      return false;
     }
   });
 
@@ -112,7 +131,7 @@ document.addEventListener( "DOMContentLoaded", function(){
      on a new post (id 0) they only live in the session until the post is created, so they do. */
   let blogFormDirty = false;
   const isNewBlog = idBlog === '0';
-  const isPropertyControl = el => el.closest( '#tag-list, .blog-resources' ) || [ 'tag_doc', 'fileType', 'attachment' ].includes( el.id ) || ( el.name || '' ).startsWith( 'fileType_' );
+  const isPropertyControl = el => el.closest( '#tag-list, .blog-resources' ) || [ 'tag_doc', 'fileType', 'attachment' ].includes( el.id );
   const markDirty = e => { if ( isNewBlog || !isPropertyControl( e.target ) ) blogFormDirty = true; };
   if ( isNewBlog ) {
     [ '#addTag', '#createTag' ].forEach( sel => document.querySelector( sel )?.addEventListener( 'click', () => { blogFormDirty = true; } ) );
@@ -141,14 +160,13 @@ document.addEventListener( "DOMContentLoaded", function(){
 <#if lastDotIndex != -1>
 <#return fileName?substring(lastDotIndex + 1) > 
 <#else>
-<#return x > 
+<#return '' >
 </#if>
 </#function>
 
 <#-- Tags and attachments cards of the editor side column, shared by create_blog.html and modify_blog.html.
      The ids (#tag-list, #tag_doc, #addTag, #content-list, #attachment, #fileType, #btn-add-files) are used by blog.js -->
 <#macro blogPropertiesCards>
-<#local is_content_type=dskey('blog.advanced_parameters.use_content_type')?boolean />
 <#local acceptedTypes=dskey('blog.advanced_parameters.accepted_file_types')!'image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp' />
 <#-- Tags -->
 <@box class='mb-0'>
@@ -190,46 +208,63 @@ document.addEventListener( "DOMContentLoaded", function(){
 		</#if>
 	</@boxHeader>
 	<@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='${acceptedTypes}' params='onchange="getFile(${blog.id})"' />
-	<#if is_content_type>
+	<#-- The type of the next upload, read by the crop upload only (getCroppedCanva): getFile takes it from the MIME type of the file -->
+	<#if is_content_type && is_crop_image>
 		<@boxBody class='py-2'>
+			<@formGroup labelFor='fileType' labelKey='#i18n{blog.create_blog.labelContentType}' rows=2 class='mb-0'>
 			<@select name='fileType' id='fileType' class='form-select form-select-sm'>
 				<#list image_type as type><@option value=type.idContentType label=type.label /></#list>
 			</@select>
+			</@formGroup>
 		</@boxBody>
 	</#if>
 	<@div class='blog-resources'>
 		<@listGroup id='content-list' class='list-group-flush'>
 			<#list blog.docContent![] as docContent>
-				<#assign isImage=docContent.textValue?lower_case?matches('.*\\.(png|jpe?g|gif|webp|svg)$') />
-				<@listGroupItem id='doc_${docContent.id}' class='blog-image d-flex align-items-center gap-2 py-2 ${isImage?then("blog-image-content","blog-file-content")}'>
-					<#if isImage>
-						<@img class='avatar avatar-md rounded object-fit-cover' url='servlet/plugins/blogs/file?id_file=${docContent.id}' alt='${docContent.textValue!}' title='${docContent.textValue!}' />
-					<#else>
-						<@img class='avatar avatar-md rounded' url='themes/admin/shared/plugins/blog/images/file-type-${getFileExtension(docContent.textValue)!}.svg' alt='' />
-					</#if>
-					<@div class='flex-fill text-truncate'>
-						<@link href='servlet/plugins/blogs/file?id_file=${docContent.id}' class='text-reset small' title='#i18n{portal.util.labelDownload} ${docContent.textValue!}'>${docContent.textValue!}</@link>
-						<#if is_content_type>
-							<@select name='fileType_${docContent.id}' class='form-select form-select-sm mt-1' params='onchange="doUpdateContentType( ${docContent.id}, this.value, ${blog.id} )"'>
-								<#list image_type as type>
-									<@option value=type.idContentType label=type.label selected=(type.idContentType == (docContent.contentType.idContentType)!0) />
-								</#list>
-							</@select>
-						</#if>
-					</@div>
-					<@button color='ghost-secondary' class='btn-icon' size='sm' id='doc-actions-${docContent.id}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
-						<@link class='dropdown-item' href='#' params='onclick="doInsertContent( ${docContent.id}, \'${docContent.textValue!?js_string}\', ${(docContent.contentType.idContentType)!1} ); return false;"'><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link>
-						<@link class='dropdown-item btn-up' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveUp\', ${blog.id} ); return false;"'><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link>
-						<@link class='dropdown-item btn-down' href='#' params='onclick="doUpdatePriorityContent( ${docContent.id}, \'moveDown\', ${blog.id} ); return false;"'><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link>
-						<hr class='dropdown-divider' />
-						<@link class='dropdown-item text-danger' href='#' params='onclick="deleteFileContent( ${docContent.id}, ${blog.id} ); return false;"'><@icon style='trash' class='me-2' />#i18n{blog.create_blog.labelRemove}</@link>
-					</@button>
-				</@listGroupItem>
+				<@blogDocContentItem docId='${docContent.id}' docName=docContent.textValue!'' contentTypeId=(docContent.contentType.idContentType)!0 />
 			</#list>
 		</@listGroup>
+		<template id='blog-doc-content-template'><@blogDocContentItem docId='__ID__' docName='__NAME__.__EXT__' contentTypeId=0 /></template>
 	</@div>
 </@box>
 
+</#macro>
+
+<#-- An attachment of the post. Also rendered in <template id='blog-doc-content-template'> with the placeholders __ID__, __NAME__ and __EXT__,
+     which setListFile (blog.js) fills for an attachment uploaded in the page: both rows are the same markup -->
+<#macro blogDocContentItem docId docName contentTypeId>
+<#local isImage=docName?lower_case?matches('.*\\.(png|jpe?g|gif|webp|svg)$') />
+<@listGroupItem id='doc_${docId}' class='blog-image d-flex align-items-center gap-2 py-2 ${isImage?then("blog-image-content","blog-file-content")}'>
+	<#if isImage>
+		<@img class='avatar avatar-md rounded object-fit-cover' url='servlet/plugins/blogs/file?id_file=${docId}' alt='${docName}' title='${docName}' />
+	<#else>
+		<@img class='avatar avatar-md rounded' url='themes/admin/shared/plugins/blog/images/file-type-${getFileExtension(docName)}.svg' alt='' />
+	</#if>
+	<@div class='flex-fill text-truncate'>
+		<@link href='servlet/plugins/blogs/file?id_file=${docId}' class='blog-doc-content-link text-reset small' title='#i18n{portal.util.labelDownload} ${docName}'>${docName}</@link>
+		<#if is_content_type>
+			<#local typeLabel = '' />
+			<#list image_type as type><#if type.idContentType == contentTypeId><#local typeLabel = type.label?trim /></#if></#list>
+			<@div><@span class='badge bg-secondary-lt blog-content-type-label'>${typeLabel}</@span></@div>
+		</#if>
+	</@div>
+	<@button color='ghost-secondary' class='btn-icon' size='sm' id='doc-actions-${docId}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
+		<@link class='dropdown-item' href='#' params='onclick="doInsertContent( ${docId}, this.closest( \'.blog-image\' ).querySelector( \'.blog-doc-content-link\' ).textContent.trim( ) ); return false;"'><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link>
+		<@link class='dropdown-item btn-up' href='#' params='onclick="doUpdatePriorityContent( ${docId}, \'moveUp\', ${blog.id} ); return false;"'><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link>
+		<@link class='dropdown-item btn-down' href='#' params='onclick="doUpdatePriorityContent( ${docId}, \'moveDown\', ${blog.id} ); return false;"'><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link>
+		<#-- The content type of the attachment: the current one checked, a click saves the one chosen (setContentType, blog.js) -->
+		<#if is_content_type>
+			<hr class='dropdown-divider' />
+			<h6 class='dropdown-header'>#i18n{blog.create_blog.labelContentType}</h6>
+			<#list image_type as type>
+				<#local isCurrent = type.idContentType == contentTypeId />
+				<@link class='dropdown-item blog-content-type' href='#' params='role="menuitemradio" aria-checked="${isCurrent?c}" data-content-type="${type.idContentType}" onclick="setContentType( this, ${docId}, ${type.idContentType}, ${blog.id} ); return false;"'><@icon style='check' class='me-2${isCurrent?then("", " invisible")}' />${type.label?trim}</@link>
+			</#list>
+		</#if>
+		<hr class='dropdown-divider' />
+		<@link class='dropdown-item text-danger' href='#' params='onclick="deleteFileContent( ${docId}, ${blog.id} ); return false;"'><@icon style='trash' class='me-2' />#i18n{blog.create_blog.labelRemove}</@link>
+	</@button>
+</@listGroupItem>
 </#macro>
 
 <#-- Display options and URL card of the editor side column, shared by create_blog.html and modify_blog.html -->
