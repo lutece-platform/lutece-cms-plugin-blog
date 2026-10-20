@@ -33,8 +33,11 @@
  */
 package fr.paris.lutece.plugins.blog.business;
 
-public class ContentType
+import java.io.Serializable;
+
+public class ContentType implements Serializable
 {
+    private static final long serialVersionUID = 1L;
 
     private int _nIdContentType;
     private String _strLabel;
