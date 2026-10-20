@@ -138,107 +138,75 @@ function setListTag( idTag, tgName, blogId ){
 	document.querySelector( "#tag-list" ).appendChild( li );
 }
 
-function setListFile( idFile, fileName, fileType, fileExt, blogId ){
-	let li = document.createElement( 'li' );
-    li.classList.add( 'list-group-item', 'list-group-item-action', 'blog-image', 'd-flex', 'justify-content-between', 'align-items-center');	li.setAttribute( 'id', `doc_${idFile}` );
-	if ( fileExt === 'png' || fileExt === 'jpg' ){
-		let imgFile = li.appendChild( document.createElement( 'img' ) );
-		imgFile.setAttribute('src', `servlet/plugins/blogs/file?id_file=${idFile}` );
-		imgFile.setAttribute('alt', `${fileName}` );
-		imgFile.setAttribute('title', `${fileName}` );
-		imgFile.classList.add( 'img-fluid', 'object-fit-cover', 'border', 'rounded');
-		imgFile.style.width = '48px';
-		imgFile.style.height = '48px';
-	} else {
-		let imgFile = li.appendChild( document.createElement( 'img' ) );
-		imgFile.setAttribute('src', `themes/admin/shared/plugins/blog/images/file-type-${fileExt}.svg` );
-		imgFile.setAttribute('alt', `${fileName}` );
-		imgFile.setAttribute('title', `${fileName}` );
-		imgFile.classList.add( 'img-fluid', 'object-fit-cover', 'border', 'rounded');
-		imgFile.style.width = '48px';
-		imgFile.style.height = '48px';
-		let linkFile = li.appendChild( document.createElement( 'a' ) );
-		linkFile.setAttribute('href', `servlet/plugins/blogs/file?id_file=${idFile}` );
-		linkFile.setAttribute('title', `${fileName}` );
-		linkFile.textContent = fileName;
+/*
+ * Adds an uploaded attachment to the list: a copy of the row rendered by the blogDocContentItem macro (blog_commons.html),
+ * from its <template>, its placeholders __ID__, __NAME__ and __EXT__ filled in. The extension is the one of the name,
+ * the id of the post the one the template was rendered with.
+ */
+function setListFile( idFile, fileName, fileType ){
+	fileName = String( fileName ?? '' );
+	const template = document.querySelector( '#blog-doc-content-template' );
+	const extension = fileName.includes( '.' ) ? fileName.split( '.' ).pop().toLowerCase() : '';
+	// One pass with a replacer function: a $ or a placeholder in the name is not read as a pattern
+	const values = { '__NAME__.__EXT__': fileName, '__EXT__': extension, '__ID__': String( idFile ) };
+	const fill = value => value.replace( /__NAME__\.__EXT__|__EXT__|__ID__/g, placeholder => values[ placeholder ] );
+	const li = template.content.firstElementChild.cloneNode( true );
+	// Set through the DOM, the name needs no HTML escaping. No event handler of the row holds the name: "Add to content" reads it from the link
+	[ li, ...li.querySelectorAll( '*' ) ].forEach( el => {
+		[ ...el.attributes ].forEach( attr => attr.value = fill( attr.value ) );
+	});
+	const walker = document.createTreeWalker( li, NodeFilter.SHOW_TEXT );
+	while ( walker.nextNode() ) walker.currentNode.nodeValue = fill( walker.currentNode.nodeValue );
+	if ( isImageFile( fileName ) ) {
+		const img = li.querySelector( 'img' );
+		img.src = `servlet/plugins/blogs/file?id_file=${idFile}`;
+		img.alt = img.title = fileName;
+		img.classList.add( 'object-fit-cover' );
+		li.classList.replace( 'blog-file-content', 'blog-image-content' );
 	}
-    if (isContentType)
-    {
-        let selectType = li.appendChild( document.createElement( 'select' ) );
-        selectType.classList.add('form-select');
-        if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
-            selectType.setAttribute('onchange', `doUpdateContentType( ${idFile}, this.value, ${blogId})` );
-        } else {
-            selectType.setAttribute('onchange', `doUpdateContentType( ${idFile}, this.value, 0)` );
-        }
-        list_contentType.forEach(function(item) {
-            let option = document.createElement('option');
-            option.value = item[0];
-            option.textContent = item[1];
-            if (parseInt(item[0]) == fileType) {
-                option.selected = true;
-            }
-            selectType.appendChild(option);
-        });
-    }
-	let div = li.appendChild( document.createElement( 'div' ) );
-	div.classList.add( 'btn-group' );
-	div.setAttribute( 'role', 'group' );
-	div.setAttribute('aria-label', `Manage ${fileName}` );
-	let btnInsert = div.appendChild( document.createElement( 'button' ) );
-	btnInsert.classList.add( 'btn','btn-none', 'text-primary');
-	btnInsert.setAttribute('title', 'Ajouter au contenu' );
-	btnInsert.setAttribute('type', 'button' );
-	btnInsert.setAttribute('onclick', `doInsertContent( ${idFile}, '${fileName}', '${fileExt}' )` );
-	let iconInsert = btnInsert.appendChild( document.createElement( 'i' ) );
-	iconInsert.classList.add( 'ti','ti-file-plus');
-	let btnDown = div.appendChild( document.createElement( 'button' ) );
-	btnDown.classList.add( 'btn','btn-none', 'btn-down', 'btn-sm' ,'text-primary');
-	btnDown.setAttribute('type', 'button' );
-	btnDown.setAttribute('title', 'Down' );
-	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
-		btnDown.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveDown', ${blogId})` );
-	} else {
-		btnDown.setAttribute('onclick', `doUpdatePriorityContentBis( ${idFile}, 'moveDown')` );
-	}
-	let iconDown = btnDown.appendChild( document.createElement( 'i' ) );
-	iconDown.classList.add( 'ti','ti-arrow-down');
-	let btnUp = div.appendChild( document.createElement( 'button' ) );
-	btnUp.classList.add( 'btn', 'btn-outline-secondary', 'btn-up', 'btn-sm', 'text-primary');
-	btnUp.setAttribute('type', 'button' );
-	btnUp.setAttribute('title', 'Up' );
-	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
-		btnUp.setAttribute('onclick', `doUpdatePriorityContent( ${idFile}, 'moveUp', ${blogId})` );
-	} else {
-		btnUp.setAttribute('onclick', `doUpdatePriorityContentBis( ${idFile}, 'moveUp')` );
-	}
-	let iconUp = btnUp.appendChild( document.createElement( 'i' ) );
-	iconUp.classList.add( 'ti','ti-arrow-up');
-	let btnRm = div.appendChild( document.createElement( 'button' ) );
-	btnRm.classList.add( 'btn', 'btn-outline-secondary', 'btn-sm', 'text-danger');
-	btnRm.setAttribute('id', idFile );
-	btnRm.setAttribute('type', 'button' );
-	if(blogId !== undefined && blogId !== null && blogId !== '' && blogId !== 0){
-		btnRm.setAttribute('onclick', `deleteFileContent( ${idFile}, ${blogId})` );
-	} else {
-		btnRm.setAttribute('onclick', `deleteFileContent( ${idFile})` );
-	}
-	let iconRm = btnRm.appendChild( document.createElement( 'i' ) );
-	iconRm.classList.add( 'ti','ti-x');
+	showContentType( li, fileType );
 	document.querySelector( '#content-list' ).appendChild( li );
+}
+
+/*
+ * Shows the content type of an attachment row: the label of its badge, the check of its item in the actions menu
+ */
+function showContentType( li, idType ){
+	li.querySelectorAll( '.blog-content-type' ).forEach( item => {
+		const isCurrent = item.dataset.contentType == idType;
+		item.setAttribute( 'aria-checked', isCurrent );
+		item.querySelector( '.ti-check' ).classList.toggle( 'invisible', !isCurrent );
+		if ( isCurrent ) {
+			const label = li.querySelector( '.blog-content-type-label' );
+			if ( label ) label.textContent = item.textContent.trim();
+		}
+	});
+}
+
+/*
+ * Saves the content type chosen in the actions menu of an attachment, then shows it
+ */
+async function setContentType( item, idContent, idType, idBlog ){
+	if ( await doUpdateContentType( idContent, idType, idBlog ) ) {
+		showContentType( item.closest( '.blog-image' ), idType );
+	}
+}
+
+function isImageFile( fileName ){
+	return /\.(png|jpe?g|gif|webp|svg)$/i.test( fileName );
 }
 
 function getFile( blogId ) {
 	const file =  document.querySelector('#attachment').files[0];
     const rgx = /image/g;
-    const fileType = rgx.test( file.type ) ? 1 : 2, extension = file.name.split('.').pop().toLowerCase()
+    const fileType = rgx.test( file.type ) ? 1 : 2
     doAddContent( file.name, file, fileType, blogId ).then( resp => {
         /* call the callback and populate the Title field with the file name */
         if ( resp.status == 'OK' ){
           if( resp.result == "BLOG_LOCKED" ){
             setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
           } else {
-            setListFile( resp.result[1], resp.result[0].replace(/'/g, "\\'"), fileType, extension, blogId )
+            setListFile( resp.result[1], resp.result[0], fileType )
           }
         }
     });
@@ -256,14 +224,13 @@ function getFile( blogId ) {
  	const resultCanva = $element.cropper('getCroppedCanvas', { width: currentdWidth, height: currentdHeight });
 
      resultCanva.toBlob((blob) => {
-         const extension = blob.type.split('/').pop().toLowerCase();
          doAddContent( fieldName+'.png', blob, currentfileType, currentIdBlog ).then( resp => {
            /* call the callback and populate the Title field with the file name */
            if ( resp.status == 'OK' ){
              if( resp.result == "BLOG_LOCKED" ){
                setBlogToast( 'warning', 'Attention', 'Billet verrouillé !' );
              } else {
-               setListFile( resp.result[1], resp.result[0], currentfileType, extension, currentIdBlog );
+               setListFile( resp.result[1], resp.result[0], currentfileType );
              }
            }
          });
@@ -327,17 +294,54 @@ function parseAdminMessageError( htmlContent ){
     }
 }
 
-function doInsertContent( idContent, titleContent, typeContent ) {
+function doInsertContent( idContent, titleContent ) {
 	let contentToInsert='', contentTag = 'p';
-	if ( typeContent === 'png' ) {
+	const title = titleContent.replace( /[&<>"]/g, c => ( { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } )[ c ] );
+	if ( isImageFile( titleContent ) ) {
 		contentTag = 'figure'
-		contentToInsert=`<img src="servlet/plugins/blogs/file?id_file=${idContent}" alt="${titleContent}" />`
+		contentToInsert=`<img src="servlet/plugins/blogs/file?id_file=${idContent}" alt="${title}" />`
 	} else {
 		contentTag = 'p'
-		contentToInsert=`<a title="${titleContent}" href="servlet/plugins/blogs/file?id_file=${idContent}">${titleContent}</a>`
+		contentToInsert=`<a title="${title}" href="servlet/plugins/blogs/file?id_file=${idContent}">${title}</a>`
 	}
-	const tinyCurrentNode = tinymce.activeEditor.selection.getNode() 
-	tinymce.activeEditor.dom.add( tinyCurrentNode, contentTag, {}, contentToInsert);
+	if ( window.tinymce && tinymce.activeEditor ) {
+		const tinyCurrentNode = tinymce.activeEditor.selection.getNode()
+		tinymce.activeEditor.dom.add( tinyCurrentNode, contentTag, {}, contentToInsert);
+		return;
+	}
+	insertIntoCoreEditor( `<${contentTag}>${contentToInsert}</${contentTag}>` );
+}
+
+/* A core editor (Autumn Note, Milkdown) is built in place of the textarea #html_content.
+   Clicking the attachment menu moves the page selection out of Autumn Note, so its last selection is kept here. */
+let autumnNoteBookmark = null;
+document.addEventListener( 'selectionchange', () => {
+	const editor = window.AutumnNote && AutumnNote.getInstance( '#html_content' );
+	const editable = editor && editor.layoutInfo && editor.layoutInfo.editable;
+	const selection = window.getSelection();
+	if ( editable && selection.rangeCount && editable.contains( selection.anchorNode ) ) {
+		autumnNoteBookmark = editor.getSelectionBookmark();
+	}
+});
+
+function insertIntoCoreEditor( html ) {
+	const autumnNote = window.AutumnNote && AutumnNote.getInstance( '#html_content' );
+	if ( autumnNote ) {
+		autumnNote.focus();
+		if ( autumnNoteBookmark ) autumnNote.restoreSelectionBookmark( autumnNoteBookmark );
+		// The zero-width space, which Autumn Note strips from its HTML, keeps the caret after the inserted link or figure rather than inside
+		autumnNote.insertHTML( html + '&#8203;' );
+		return;
+	}
+	// Milkdown (ProseMirror) exposes no instance: the HTML is pasted at the selection it keeps, through its own paste handling
+	const proseMirror = document.querySelector( '#html_content ~ .lutece-milkdown .ProseMirror' );
+	if ( proseMirror ) {
+		const data = new DataTransfer();
+		data.setData( 'text/html', html );
+		data.setData( 'text/plain', html.replace( /<[^>]*>/g, '' ) );
+		proseMirror.dispatchEvent( new ClipboardEvent( 'paste', { clipboardData: data, bubbles: true, cancelable: true } ) );
+		proseMirror.focus();
+	}
 }
 
 async function doDeleteContent( idContent, idBlog ) {
@@ -362,47 +366,37 @@ async function doDeleteContent( idContent, idBlog ) {
 	}
 }
 
+/*
+ * Saves the content type of an attachment. Returns true when it is saved
+ */
 async function doUpdateContentType( idContent, idTypeContent, idBlog ) {
-	let response;
 	const formData = new FormData();
-	if(idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0) {
-		formData.append('idType', idTypeContent);
-		formData.append('idContent', idContent);
-		formData.append('id', idBlog);
-
-		const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
-			method: 'POST',
-			body: formData,
-			cache: "no-cache",
-		});
-
-		if (!response.ok) {
-			setBlogToast(typeDanger, labelError, response.statusText);
-		} else {
-			const data = await response.json();
-			if (data.status != 'OK') {
-				setBlogToast(typeDanger, labelError, msgErrorBlogFileTypeNotUpdated);
-			}
-		}
-    }	else {
-		formData.append('idType', idTypeContent);
-		formData.append('idContent', idContent);
-		response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
-			method: 'POST',
-			body: formData,
-		});
-		if (!response.ok) {
-			setBlogToast(typeDanger, labelError, response.statusText);
-		} else {
-			const data = await response.json();
-			if (data.status != 'OK') {
-				setBlogToast(typeDanger, labelError, msgErrorBlogFileTypeNotUpdated);
-			}
-		}
+	formData.append( 'idType', idTypeContent );
+	formData.append( 'idContent', idContent );
+	if ( idBlog !== undefined && idBlog !== null && idBlog !== '' && idBlog !== 0 ) {
+		formData.append( 'id', idBlog );
 	}
-	
+	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoUpdateContentType.jsp?action=updateContentType`, {
+		method: 'POST',
+		body: formData,
+		cache: 'no-cache',
+	});
+	if ( !response.ok ) {
+		setBlogToast( typeDanger, labelError, response.statusText );
+		return false;
+	}
+	const data = await response.json();
+	if ( data.status != 'OK' ) {
+		setBlogToast( typeDanger, labelError, msgErrorBlogFileTypeNotUpdated );
+		return false;
+	}
+	if ( data.result == 'BLOG_LOCKED' ) {
+		setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked );
+		return false;
+	}
+	return true;
 }
- 
+
 async function doUpdatePriorityContent( idContent, action, idBlog ){
 	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoUpdatePriorityContent.jsp?contentAction=${action}&idContent=${idContent}&id=${idBlog}` );
 	if ( !response.ok ) {
@@ -421,32 +415,6 @@ async function doUpdatePriorityContent( idContent, action, idBlog ){
 		else
 		{
 		setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )	
-		}
-	}
-}
-
-/*
- * Duplicate of the function doUpdatePriorityContent without the idBlog parameter
- * Due to a parsing error in createBlog when calling the function, the idBlog parameter is not passed
- */
-async function doUpdatePriorityContentBis( idContent, action ){
-	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoUpdatePriorityContent.jsp?contentAction=${action}&idContent=${idContent}` );
-	if ( !response.ok ) {
-		setBlogToast( typeDanger , labelError, response.status )
-	} else {
-		const data = await response.json();
-		if ( data.status == 'OK' ){
-				if(data.result == "BLOG_LOCKED"){
-					setBlogToast( typeWarning, labelWarning, msgErrorBlogLocked )
-				}else if( action == "moveUp" ){
-					document.querySelector( `#doc_${idContent}`).after( document.querySelector( `#doc_${data.result}` ) );
-				} else if( action == "moveDown" ){
-					document.querySelector( `#doc_${data.result}` ).after( document.querySelector( `#doc_${idContent}` ) );
-				}
-		  }
-		else
-		{
-			setBlogToast( typeDanger , labelError, msgErrorTagUpdatePosition )
 		}
 	}
 }

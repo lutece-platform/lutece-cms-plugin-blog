@@ -57,6 +57,7 @@ import fr.paris.lutece.plugins.blog.business.portlet.PortletFilter;
 import fr.paris.lutece.plugins.blog.business.portlet.PortletOrder;
 import fr.paris.lutece.plugins.blog.service.BlogService;
 import fr.paris.lutece.plugins.blog.service.PublishingService;
+import fr.paris.lutece.plugins.blog.service.docsearch.BlogSearchService;
 import fr.paris.lutece.portal.business.portlet.Portlet;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletType;
@@ -254,6 +255,8 @@ public class BlogPublicationJspBean extends BlogJspBean
             BlogPublicationHome.create( _blogPublication );
 
             _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdBlog( ) );
+            // Reindex now so the published / not published filters of the blog list are up to date
+            BlogSearchService.getInstance( ).updateDocument( _blog );
         }
 
         return getManageBlogPublication( request );
@@ -275,6 +278,11 @@ public class BlogPublicationJspBean extends BlogJspBean
 
         BlogPublicationHome.remove( _blogPublication.getIdBlog( ), _blogPublication.getIdPortlet( ) );
         _blog = BlogService.getInstance( ).findByPrimaryKeyWithoutBinaries( _blogPublication.getIdBlog( ) );
+        if ( _blog != null )
+        {
+            // Reindex now so the published / not published filters of the blog list are up to date
+            BlogSearchService.getInstance( ).updateDocument( _blog );
+        }
 
         return getManageBlogPublication( request );
 

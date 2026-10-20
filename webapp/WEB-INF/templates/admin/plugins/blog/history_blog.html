@@ -22,19 +22,19 @@
 					<@input type='hidden' name='view' value='diffBlog' />
 					<@input type='hidden' name='id' value='${id}' />
 					<#-- Tabler timeline: one event per version, the newest first -->
-					<ul class="timeline">
+					<@ul class="timeline">
 					<#list versions as blog>
-						<li class="timeline-event">
+						<@li class="timeline-event">
 							<#if blog.version == 1>
-								<div class="timeline-event-icon bg-blue-lt"><@icon style='file-plus' /></div>
+								<@div class="timeline-event-icon bg-blue-lt"><@icon style='file-plus' /></@div>
 							<#else>
-								<div class="timeline-event-icon"><@icon style='git-commit' /></div>
+								<@div class="timeline-event-icon"><@icon style='git-commit' /></@div>
 							</#if>
-							<div class="card timeline-event-card">
+							<@div class="card timeline-event-card">
 								<@div class='card-body'>
 									<@div class='d-flex flex-wrap align-items-start gap-2'>
 										<@div class='flex-fill'>
-											<h4 class="mb-1"><@tag color='' class='bg-secondary-lt me-1'>v${blog.version}</@tag> ${blog.contentLabel!}</h4>
+											<@h level='4' class="mb-1"><@tag color='' class='bg-secondary-lt me-1'>v${blog.version}</@tag> ${blog.contentLabel!}</@h>
 											<@div class='text-secondary small'>
 												<@icon style='clock-edit' /> ${blog.updateDate?datetime?string.short} #i18n{blog.manage_blogs.labelBy} <strong>${blog.user!}</strong>
 											</@div>
@@ -57,19 +57,19 @@
 												<@aButton href='${manageUrl}?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' color='' size='sm' class='btn-icon' buttonIcon='git-compare' title='#i18n{blog.history_blog.labelDiffPrevious}' hideTitle=['all'] />
 											</#if>
 											<@button type='button' color='' size='sm' class='btn-icon' id='version-actions-${blog.version}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
-												<@li><@link class='dropdown-item' href='${manageUrl}?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}'><@icon style='arrow-back-up' class='me-2' />#i18n{blog.history_blog.labelReset} ${blog.version}</@link></@li>
+												<@link class='dropdown-item' href='${manageUrl}?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}'><@icon style='arrow-back-up' class='me-2' />#i18n{blog.history_blog.labelReset} ${blog.version}</@link>
 												<#if blog.version != 1>
-													<@li class='dropdown-divider' />
-													<@li><@link class='dropdown-item text-danger' href='${manageUrl}?action=confirmRemoveHistoryBlog&id=${blog.id}&blog_version=${blog.version}'><@icon style='trash' class='me-2' />#i18n{portal.util.labelDelete}</@link></@li>
+													<@div class='dropdown-divider' />
+													<@link class='dropdown-item text-danger' href='${manageUrl}?action=confirmRemoveHistoryBlog&id=${blog.id}&blog_version=${blog.version}'><@icon style='trash' class='me-2' />#i18n{portal.util.labelDelete}</@link>
 												</#if>
 											</@button>
 										</@div>
 									</@div>
 								</@div>
-							</div>
-						</li>
+							</@div>
+						</@li>
 					</#list>
-					</ul>
+					</@ul>
 				</@tform>
 			<#else>
 				<@empty title='#i18n{blog.manage_blogs.labelNoResult}' iconName='history-off' subtitle=' ' />

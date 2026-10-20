@@ -35,10 +35,7 @@
 							<@formGroup labelFor='description' labelKey='#i18n{blog.create_blog.labelDescription}' rows=2>
 								<@input type='textarea' name='description' id='description' rows=3 value='${blog.description!}' maxlength=300 />
 							</@formGroup>
-							<@formGroup labelFor='div_html_content' labelKey='#i18n{blog.create_blog.labelHtmlContent}' helpKey='#i18n{blog.edit_blog.message.help}' rows=2 class='mb-0'>
-								<@input type='textarea' name='html_content' id='html_content' value='${blog.htmlContent!}' class='visually-hidden' />
-								<@div id='div_html_content' class='content-body vmin-dvh-50' params='contenteditable="true"'>${blog.htmlContent!}</@div>
-							</@formGroup>
+							<@blogHtmlContent labelKey='#i18n{blog.create_blog.labelHtmlContent}' />
 						</@boxBody>
 						<@boxFooter>
 							<@formGroup labelFor='edit_comment' labelKey='#i18n{blog.create_blog.labelEditComment}' helpKey='#i18n{blog.create_blog.labelEditComment.help}' rows=2 class='mb-0'>
@@ -59,7 +56,7 @@
 		</@tform>
 	</@pageColumn>
 </@pageContainer>
-<@initEditor />
+<@blogInitEditor />
 <@blogJSInit />
 <#if is_crop_image>
 <@modal id='imageModal' size='xl'>

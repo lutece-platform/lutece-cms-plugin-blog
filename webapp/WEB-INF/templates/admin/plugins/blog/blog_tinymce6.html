@@ -80,7 +80,7 @@ const blogImgList = () => {
 }
 
 const blogFileList = () => {
-  const fileList = document.querySelectorAll('#content-list .blog-file-content a')
+  const fileList = document.querySelectorAll('#content-list .blog-file-content .blog-doc-content-link')
   if( fileList.length > 0 ){
     return generateArrayFromNodes( fileList, 'file' ) 
   } else {
@@ -122,7 +122,7 @@ const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve
       return;
     }
     <#noparse>const fileLocation = `servlet/plugins/blogs/file?id_file=${json.result[1]}`</#noparse>
-    setListFile( json.result[1], json.result[0], filetype, idBlog )
+    setListFile( json.result[1], json.result[0], filetype )
     resolve(fileLocation);
   };
 
@@ -217,13 +217,13 @@ const contentBodyConfig = {
       inputFile.setAttribute('type', 'file');
       inputFile.setAttribute('accept', '.pdf,.doc,.docx,.xls,.xlsx,.odt,.ods');
       inputFile.addEventListener('change', (e) => {
-        const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=2, extension = e.target.files[0].name.split('.').pop().toLowerCase()
+        const file = e.target.files[0], blogId = document.querySelector('#id').value, filetype=2
         doAddContent( file.name, file, filetype, blogId ).then( resp => {
           if ( resp.status == 'OK' ){
             if( resp.result == "BLOG_LOCKED" ){
               setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
             } else {
-              setListFile( resp.result[1], resp.result[0], filetype, extension, blogId )
+              setListFile( resp.result[1], resp.result[0], filetype )
               <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
               cb( fileResFile , { title: file.name, text: file.name });
             }
@@ -244,7 +244,7 @@ const contentBodyConfig = {
             if( resp.result == "BLOG_LOCKED" ){
              setBlogToast( 'warning', '#i18n{portal.util.labelDanger}', '#i18n{blog.message.blogLocked}' );
             } else {
-              setListFile( resp.result[1], resp.result[0], filetype, blogId )
+              setListFile( resp.result[1], resp.result[0], filetype )
               <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
               cb( fileResFile , { title: file.name, alt: file.name });
             }
