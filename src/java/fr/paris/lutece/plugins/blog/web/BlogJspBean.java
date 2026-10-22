@@ -1660,6 +1660,11 @@ public class BlogJspBean extends ManageBlogJspBean
             }
         }
 
+        if ( _blog == null )
+        {
+            return JsonUtil.buildJsonResponse( new JsonResponse( RESPONSE_FAILURE ) );
+        }
+
         for (DocContent content : _blog.getDocContent()) {
             if (strContentId != null && content.getId() == Integer.parseInt(strContentId)) {
 
