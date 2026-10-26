@@ -1,6 +1,9 @@
 <#macro initEditor editorCss='' editorWidth=0 cssFiles='' type='' insert='"library","pagelinkservice"' selector='.richtext' config={}>
 <script src="themes/admin/shared/plugins/blog/js/tinymce/tinymce.min.js"></script>
-<script src="themes/admin/shared/plugins/blog/js/tinymce/langs/${locale!'fr_FR'}.js"></script>
+<#assign blogEditorLocaleSource><#if locale??>${locale?string}<#else>${.locale}</#if></#assign>
+<#assign editorLocale='' />
+<#if (2 <= blogEditorLocaleSource?length) && (blogEditorLocaleSource?substring(0,2) == "fr")><#assign editorLocale='fr_FR' /></#if>
+<#if editorLocale?has_content><script src="themes/admin/shared/plugins/blog/js/tinymce/langs/${editorLocale}.js"></script></#if>
 <script>
 var baseUrl='${webapp_url}';
 
@@ -169,17 +172,16 @@ const contentBodyConfig = {
   quickbars_insert_toolbar: 'quicktable quickimage link media',
   quickbars_selection_toolbar: 'blocks | bold italic | alignleft aligncenter alignright | bullist numlist | blockquote | quicklink',
   contextmenu: 'link image | inserttable | cell row column deletetable',
-  content_css: "css/theme-parisfr-editor.min.css,css/page_template_styles.css",
+  content_css: "css/page_template_styles.css",
   extended_valid_elements : "iframe[style|src|width|height|name|align|frameborder|scrolling],script[src|type]",
-  paste_word_valid_elements: "b,strong,i,em,h2,h3,h4,h5,h6,p,br,blockquote",
-  fontsize_formats: fontsizes,
+  font_size_formats: fontsizes,
   target_list: [
     {title: 'None', value: ''},
     {title: 'Même page', value: '_self'},
     {title: 'Nouvelle page', value: '_blank'},
     {title: 'Fenêtre Parent', value: '_parent'}
   ],
-  language: '${lang!}',
+  language: '${editorLocale}',
   document_base_url: '${webapp_url!}',
   // fullscreen_native: true,
   color_map: colorMap,
@@ -259,7 +261,7 @@ const contentBodyConfig = {
 /* Description config */
 const contentDescConfig = {
   selector: '.content-desc',
-  language: 'fr_FR',
+  language: '${editorLocale}',
   height: 250,
   menubar: false,
   inline: true,
