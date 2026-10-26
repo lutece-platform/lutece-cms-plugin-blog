@@ -67,7 +67,7 @@ import fr.paris.lutece.util.url.UrlItem;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
+@Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT", securityTokenEnabled = true )
 public class TagJspBean extends ManageBlogJspBean
 {
     private static final long serialVersionUID = 3209382166137329118L;
@@ -125,7 +125,7 @@ public class TagJspBean extends ManageBlogJspBean
      *            The HTTP request
      * @return The page
      */
-    @View( value = VIEW_MANAGE_TAGS, defaultView = true )
+    @View( value = VIEW_MANAGE_TAGS, defaultView = true, securityTokenAction = ACTION_CREATE_TAG )
     public String getManageTags( HttpServletRequest request )
     {
         _tag = null;
@@ -233,7 +233,7 @@ public class TagJspBean extends ManageBlogJspBean
      * @return the html code to confirm
      * @throws AccessDeniedException
      */
-    @Action( ACTION_CONFIRM_REMOVE_TAG )
+    @Action( value = ACTION_CONFIRM_REMOVE_TAG, securityTokenAction = ACTION_REMOVE_TAG, securityTokenDisabled = true )
     public String getConfirmRemoveTag( HttpServletRequest request ) throws AccessDeniedException
     {
 

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.blog.web;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +73,7 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
     protected static final String MARK_PERMISSION_CREATE_TAG = "permission_manage_create_tag";
     protected static final String MARK_PERMISSION_MODIFY_TAG = "permission_manage_modify_tag";
     protected static final String MARK_PERMISSION_DELETE_TAG = "permission_manage_delete_tag";
+    protected static final String MARK_LINK_TOKENS = "link_tokens";
 
     // Variables
     private String _strCurrentPageIndex;
@@ -137,5 +139,25 @@ public abstract class ManageBlogJspBean extends MVCAdminJspBean
         model.put( strBookmark, paginator.getPageItems( ) );
 
         return model;
+    }
+
+    /**
+     * Put in the model a security token for each action called by a link of the page (GET), carried by the link as the parameter _csrftoken.
+     *
+     * @param request
+     *            the request
+     * @param model
+     *            the model of the page
+     * @param actions
+     *            the actions called by a link of the page (the securityTokenAction of the action when it declares one)
+     */
+    protected void putLinkTokens( HttpServletRequest request, Map<String, Object> model, String... actions )
+    {
+        Map<String, String> mapLinkTokens = new HashMap<>( );
+        for ( String strAction : actions )
+        {
+            mapLinkTokens.put( strAction, getSecurityTokenService( ).getToken( request, strAction ) );
+        }
+        model.put( MARK_LINK_TOKENS, mapLinkTokens );
     }
 }

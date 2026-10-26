@@ -168,7 +168,7 @@
 										</@div>
 									</@div>
 									<@aButton href='jsp/admin/site/AdminSite.jsp?page_id=${publication.portlet.pageId}' color='' size='sm' class='btn-icon' buttonIcon='external-link' title='#i18n{blog.publication_blog.labelShowInAdmin}' hideTitle=['all'] />
-									<@aButton href='${publicationUrl}?action=unPublishDocument&idBlog=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}&${listStateQuery}' color='' size='sm' class='btn-icon text-danger' buttonIcon='world-off' title='#i18n{blog.publication_blog.buttonUnPublish}' hideTitle=['all'] />
+									<@aButton href='${publicationUrl}?action=unPublishDocument&_csrftoken=${(link_tokens.publishDocument)!}&idBlog=${blog.id}&idPortlet=${publication.idPortlet}&id=${blog.id}&${listStateQuery}' color='' size='sm' class='btn-icon text-danger' buttonIcon='world-off' title='#i18n{blog.publication_blog.buttonUnPublish}' hideTitle=['all'] />
 								</@listGroupItem>
 							</#list>
 						</@listGroup>
