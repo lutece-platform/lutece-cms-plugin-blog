@@ -5,13 +5,27 @@
 UPDATE core_admin_right SET icon_url='ti ti-list-letters' WHERE  id_right='BLOG_MANAGEMENT';
 UPDATE core_admin_right SET icon_url='ti ti-tags' WHERE  id_right='BLOG_TAGS_MANAGEMENT';
 
+-- changeset blog:update_db_blog_4.0.0-4.0.1.sql-rev1.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_datastore WHERE entity_key = 'blog.advanced_parameters.use_content_type'
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.use_content_type', 'true');
+
+-- changeset blog:update_db_blog_4.0.0-4.0.1.sql-rev2.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_datastore WHERE entity_key = 'blog.advanced_parameters.accepted_file_types'
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.advanced_parameters.accepted_file_types', 'image/*,.pdf,.xls,.doc,.docx,.xls,.xlsx,.odt,.ods,.ppt,.pptx,.odp');
+
+-- changeset blog:update_db_blog_4.0.0-4.0.1.sql-rev3.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_datastore WHERE entity_key = 'blog.duration.lock'
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('blog.duration.lock', '600000');
+
+-- changeset blog:update_db_blog_4.0.1-4.0.2.sql-display_toc.sql
 --
 -- The changeset update_db_blog_4.0.1-4.0.2.sql of the 4.0.1 betas is split, without changing what it did: one changeset per column,
 -- each guarded by its own column, so that a column already there does not skip the others, and the author attributes apart.
 -- The databases of the betas keep the original changeset in DATABASECHANGELOG: the new ones skip what it already did.
 --
-
--- changeset blog:update_db_blog_4.0.1-4.0.2.sql-display_toc.sql
 -- preconditions onFail:MARK_RAN onError:WARN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = database() AND table_name = 'blog_blog' AND column_name = 'display_toc'
 ALTER TABLE blog_blog ADD COLUMN display_toc boolean default false NOT NULL;

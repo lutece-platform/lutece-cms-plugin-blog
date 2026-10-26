@@ -166,7 +166,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 <#-- Tags and attachments cards of the editor side column, shared by create_blog.html and modify_blog.html.
      The ids (#tag-list, #tag_doc, #addTag, #content-list, #attachment, #fileType, #btn-add-files) are used by blog.js -->
 <#macro blogPropertiesCards>
-<#local acceptedTypes=dskey('blog.advanced_parameters.accepted_file_types')!'image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp' />
+<#local acceptedTypes=dskey('blog.advanced_parameters.accepted_file_types')?starts_with('DS')?then('image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp', dskey('blog.advanced_parameters.accepted_file_types')) />
 <#-- Tags -->
 <@box class='mb-0'>
 	<@boxHeader title='#i18n{blog.modify_blog.TagsTitle}' titleActions=true>
