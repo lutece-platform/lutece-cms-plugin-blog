@@ -71,6 +71,7 @@ import fr.paris.lutece.util.ReferenceItem;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.outerj.daisy.diff.HtmlCleaner;
 import org.outerj.daisy.diff.html.HTMLDiffer;
 import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
@@ -284,6 +285,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
     private static final String ERROR_ACTION_EXECUTION_FAILED = "blog.message.error.action.executionFailed";
     private static final String ERROR_ACTION_NOT_FOUND = "blog.message.error.action.notFound";
+    private static final String ERROR_BLOG_NOT_FOUND = "blog.message.error.blogNotFound";
     // Filter Marks
     protected static final String MARK_BLOG_FILTER_LIST = "blog_filter_list";
     protected static final String MARK_BLOG_FILTER_NAME = "Nom";
@@ -489,7 +491,7 @@ public class BlogJspBean extends ManageBlogJspBean
 
         HttpSession session = request.getSession();
 
-        Map<String, Object> model = new HashMap<>( );
+        Map<String, Object> model = getModel( );
         if( session.getAttribute(PARAMETER_INFO_MESSAGE  ) != null )
         {
             Locale locale = request.getLocale( );
@@ -1027,7 +1029,13 @@ public class BlogJspBean extends ManageBlogJspBean
         }
 
         int nIdBlog = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
-        _blog = BlogService.getInstance( ).loadBlog( nIdBlog );
+        Blog blogToDuplicate = BlogService.getInstance( ).loadBlog( nIdBlog );
+        if ( blogToDuplicate == null )
+        {
+            addError( ERROR_BLOG_NOT_FOUND, getLocale( ) );
+            return redirectView( request, VIEW_MANAGE_BLOGS );
+        }
+        _blog = blogToDuplicate;
 
         Timestamp sqlDate = getSqlDate( );
 
@@ -1061,7 +1069,15 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             throw new AccessDeniedException( UNAUTHORIZED );
         }
-        int nId = Integer.parseInt( strId );
+        int nId;
+        try
+        {
+            nId = Integer.parseInt( strId );
+        }
+        catch ( NumberFormatException e )
+        {
+            return redirectBlogNotFound( request );
+        }
         String strResetVersion = request.getParameter( PARAMETER_VERSION_BLOG );
         String useCropImage = DatastoreService.getDataValue( PROPERTY_USE_UPLOAD_IMAGE_PLUGIN, "false" );
         String sessionId = request.getSession( ).getId( );
@@ -1071,7 +1087,12 @@ public class BlogJspBean extends ManageBlogJspBean
         if ( strResetVersion != null )
         {
             nVersion = Integer.parseInt( strResetVersion );
-            _blog = BlogHome.findVersion( nId, nVersion );
+            Blog blogVersion = BlogHome.findVersion( nId, nVersion );
+            if ( blogVersion == null )
+            {
+                return redirectBlogNotFound( request );
+            }
+            _blog = blogVersion;
             // display options are not versioned: copy them from the current blog_blog row
             Blog currentBlog = BlogService.getInstance( ).loadBlog( nId );
             if ( currentBlog != null )
@@ -1085,7 +1106,12 @@ public class BlogJspBean extends ManageBlogJspBean
         else
         {
             Blog actualBlog = BlogService.getInstance( ).loadBlog( nId );
-            Blog lastVersion = BlogHome.getLastBlogVersionsList( nId, 1 ).get( 0 );
+            List<Blog> listLastVersions = BlogHome.getLastBlogVersionsList( nId, 1 );
+            if ( actualBlog == null || CollectionUtils.isEmpty( listLastVersions ) )
+            {
+                return redirectBlogNotFound( request );
+            }
+            Blog lastVersion = listLastVersions.get( 0 );
 
             // compare if content title, description or content are differents from the last version and actual version (the version that visitors could see if the blog is published)
             if ( !actualBlog.getContentLabel( ).equals( lastVersion.getContentLabel( ) ) || !actualBlog.getDescription( ).equals( lastVersion.getDescription( ) ) )
@@ -1251,6 +1277,19 @@ public class BlogJspBean extends ManageBlogJspBean
     }
 
     /**
+     * Redirects to a stop message telling that the blog is not found
+     *
+     * @param request
+     *            The Http request
+     * @return The URL of the message
+     */
+    private String redirectBlogNotFound( HttpServletRequest request )
+    {
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, ERROR_BLOG_NOT_FOUND, getViewFullUrl( VIEW_MANAGE_BLOGS ), AdminMessage.TYPE_STOP );
+        return redirect( request, strMessageUrl );
+    }
+
+    /**
      * Returns the preview of an blog
      *
      * @param request
@@ -1260,12 +1299,20 @@ public class BlogJspBean extends ManageBlogJspBean
     @View( VIEW_PREVIEW_BLOG )
     public String getPreviewBlog( HttpServletRequest request )
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        int nId = NumberUtils.toInt( request.getParameter( PARAMETER_ID_BLOG ), -1 );
+        if ( nId < 0 )
+        {
+            return redirectBlogNotFound( request );
+        }
         String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
         int nVersion = -1;
         if ( strVersion != null )
         {
-            nVersion = Integer.parseInt( strVersion );
+            nVersion = NumberUtils.toInt( strVersion, -1 );
+            if ( nVersion < 0 )
+            {
+                return redirectBlogNotFound( request );
+            }
         }
 
         Blog blog;
@@ -1276,6 +1323,10 @@ public class BlogJspBean extends ManageBlogJspBean
         else
         {
             blog = BlogService.getInstance( ).loadBlog( nId );
+        }
+        if ( blog == null )
+        {
+            return redirectBlogNotFound( request );
         }
         blog.setBlogPublication( BlogPublicationHome.getDocPublicationByIdDoc( nId ) );
 
@@ -1299,12 +1350,20 @@ public class BlogJspBean extends ManageBlogJspBean
     @View( VIEW_DIFF_BLOG )
     public String getDiffBlog( HttpServletRequest request )
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        int nId = NumberUtils.toInt( request.getParameter( PARAMETER_ID_BLOG ), -1 );
+        if ( nId < 0 )
+        {
+            return redirectBlogNotFound( request );
+        }
         String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
         int nVersion = -1;
         if ( strVersion != null )
         {
-            nVersion = Integer.parseInt( strVersion );
+            nVersion = NumberUtils.toInt( strVersion, -1 );
+            if ( nVersion < 0 )
+            {
+                return redirectBlogNotFound( request );
+            }
         }
         String strVersion2 = request.getParameter( PARAMETER_VERSION_BLOG2 );
 
@@ -1317,11 +1376,19 @@ public class BlogJspBean extends ManageBlogJspBean
         {
             blog = BlogHome.findByPrimaryKey( nId );
         }
+        if ( blog == null )
+        {
+            return redirectBlogNotFound( request );
+        }
 
         int nVersion2 = blog.getVersion( ) - 1;
         if ( strVersion2 != null )
         {
-            nVersion2 = Integer.parseInt( strVersion2 );
+            nVersion2 = NumberUtils.toInt( strVersion2, -1 );
+            if ( nVersion2 < 0 )
+            {
+                return redirectBlogNotFound( request );
+            }
         }
 
         Blog blog2 = BlogHome.findVersion( nId, nVersion2 );

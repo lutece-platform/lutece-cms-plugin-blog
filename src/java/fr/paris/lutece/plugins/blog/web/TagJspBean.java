@@ -86,6 +86,7 @@ public class TagJspBean extends ManageBlogJspBean
 
     private static final String MESSAGE_ERROR_TAG_IS_AFFECTED = "blog.message.errorTagIsAffected";
     private static final String ERROR_TAG_EXIST = "blog.message.errorTagExist";
+    private static final String ERROR_TAG_NOT_FOUND = "blog.message.error.tagNotFound";
 
     // Markers
     private static final String MARK_TAG_LIST = "tag_list";
@@ -291,7 +292,15 @@ public class TagJspBean extends ManageBlogJspBean
     public String getModifyTag( HttpServletRequest request ) throws AccessDeniedException
     {
         String strId = request.getParameter( PARAMETER_ID_TAG );
-        int nId = Integer.parseInt( strId );
+        int nId;
+        try
+        {
+            nId = Integer.parseInt( strId );
+        }
+        catch ( NumberFormatException e )
+        {
+            return redirectTagNotFound( request );
+        }
 
         if ( !RBACService.isAuthorized( Tag.PROPERTY_RESOURCE_TYPE, strId, Tag.PERMISSION_MODIFY, (User) getUser( ) ) )
         {
@@ -303,12 +312,29 @@ public class TagJspBean extends ManageBlogJspBean
             _tag = TagHome.findByPrimaryKey( nId );
 
         }
+        if ( _tag == null )
+        {
+            return redirectTagNotFound( request );
+        }
 
         Map<String, Object> model = getModel( );
         model.put( MARK_TAG, _tag );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_TAGS, TEMPLATE_MODIFY_TAG, model );
+    }
+
+    /**
+     * Redirects to a stop message telling that the tag is not found
+     *
+     * @param request
+     *            The Http request
+     * @return The URL of the message
+     */
+    private String redirectTagNotFound( HttpServletRequest request )
+    {
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, ERROR_TAG_NOT_FOUND, getViewFullUrl( VIEW_MANAGE_TAGS ), AdminMessage.TYPE_STOP );
+        return redirect( request, strMessageUrl );
     }
 
     /**
