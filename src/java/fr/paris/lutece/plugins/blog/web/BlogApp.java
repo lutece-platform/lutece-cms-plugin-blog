@@ -39,6 +39,9 @@ import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
+import fr.paris.lutece.portal.service.message.SiteMessage;
+import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
@@ -49,6 +52,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -75,6 +80,7 @@ public class BlogApp extends MVCApplication
     // Messages
     protected static final String MESSAGE_PAGE_TITLE = "blog.xpage.blog.view.pageTitle";
     protected static final String MESSAGE_PATH = "blog.xpage.blog.view.pagePathLabel";
+    private static final String MESSAGE_BLOG_NOT_FOUND = "blog.xpage.blog.message.blogNotFound";
     // Templates
 
     private static final String TEMPLATE_VIEW_BLOG = "skin/plugins/blog/view_blog.html";
@@ -112,25 +118,41 @@ public class BlogApp extends MVCApplication
      * @param request
      *            The HTTP request
      * @return The view
+     * @throws SiteMessageException
+     *             if the post is missing or unknown
      */
     @View( value = VIEW_DETAILS, defaultView = true )
-    public XPage getBlogDetails( HttpServletRequest request )
+    public XPage getBlogDetails( HttpServletRequest request ) throws SiteMessageException
     {
         int nVersion = -1;
         List<BlogPublication> listBlogPub = new ArrayList<>( );
 
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
+        int nId = NumberUtils.toInt( request.getParameter( PARAMETER_ID_BLOG ), -1 );
+        if ( nId < 0 )
+        {
+            SiteMessageService.setMessage( request, MESSAGE_BLOG_NOT_FOUND, SiteMessage.TYPE_ERROR );
+        }
 
         String strVersion = request.getParameter( PARAMETER_VERSION_BLOG );
         if ( strVersion != null )
         {
-            nVersion = Integer.parseInt( strVersion );
+            nVersion = NumberUtils.toInt( strVersion, -1 );
+            if ( nVersion < 0 )
+            {
+                SiteMessageService.setMessage( request, MESSAGE_BLOG_NOT_FOUND, SiteMessage.TYPE_ERROR );
+            }
         }
 
         String idPortlet = request.getParameter( PARAMETER_ID_PORTLET );
+        int nIdPortlet = -1;
         if ( idPortlet != null && !idPortlet.isEmpty( ) )
         {
-            listBlogPub = BlogPublicationHome.getDocPublicationByPortlet( Integer.parseInt( idPortlet ) );
+            nIdPortlet = NumberUtils.toInt( idPortlet, -1 );
+            if ( nIdPortlet < 0 )
+            {
+                SiteMessageService.setMessage( request, MESSAGE_BLOG_NOT_FOUND, SiteMessage.TYPE_ERROR );
+            }
+            listBlogPub = BlogPublicationHome.getDocPublicationByPortlet( nIdPortlet );
         }
         List<Blog> listBlogs = new ArrayList<>( );
 
@@ -140,7 +162,7 @@ public class BlogApp extends MVCApplication
             {
                 if ( doc.getId( ) == pub.getIdBlog( ) )
                 {
-                    doc.setAttachedPortletId( Integer.parseInt( idPortlet ) );
+                    doc.setAttachedPortletId( nIdPortlet );
                     listBlogs.add( doc );
 
                 }
@@ -156,6 +178,11 @@ public class BlogApp extends MVCApplication
         else
         {
             blog = BlogService.getInstance( ).loadBlog( nId );
+        }
+
+        if ( blog == null )
+        {
+            SiteMessageService.setMessage( request, MESSAGE_BLOG_NOT_FOUND, SiteMessage.TYPE_ERROR );
         }
 
         model.put( MARK_BLOG, blog );
