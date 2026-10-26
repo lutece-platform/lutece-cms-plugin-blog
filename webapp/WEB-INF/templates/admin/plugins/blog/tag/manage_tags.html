@@ -56,7 +56,7 @@
 				<@modalBody>
 					<@tform id='form-create-tag' name='create_tag' action=tagsUrl>
 						<@formGroup labelFor='tag_create_name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' rows=2 mandatory=true>
-							<@input type='text' id='tag_create_name' name='name' value='' mandatory=true />
+							<@input type='text' id='tag_create_name' name='name' value='' mandatory=true maxlength=50 />
 						</@formGroup>
 					</@tform>
 				</@modalBody>

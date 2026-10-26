@@ -9,7 +9,7 @@
 			<@columns lg=6>
 				<@tform name='create_tag' action=tagsUrl boxed=true>
 					<@formGroup labelFor='name' labelKey='#i18n{blog.create_tag.labelTagName}' helpKey='#i18n{blog.create_tag.labelTagName.help}' rows=2 mandatory=true>
-						<@input type='text' id='name' name='name' value='${(tags.name)!}' mandatory=true />
+						<@input type='text' id='name' name='name' value='${(tags.name)!}' mandatory=true maxlength=50 />
 					</@formGroup>
 					<@div class='d-flex justify-content-end gap-2'>
 						<@aButton href=tagsUrl color='light' buttonIcon='x' title='#i18n{portal.util.labelCancel}' />
