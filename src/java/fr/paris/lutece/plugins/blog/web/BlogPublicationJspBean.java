@@ -84,7 +84,7 @@ import fr.paris.lutece.portal.web.util.LocalizedPaginator;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = "ManagePublicationBlogs.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT" )
+@Controller( controllerJsp = "ManagePublicationBlogs.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT", securityTokenEnabled = true )
 public class BlogPublicationJspBean extends BlogJspBean
 {
 
@@ -158,7 +158,7 @@ public class BlogPublicationJspBean extends BlogJspBean
      *            The HTTP request
      * @return The page
      */
-    @View( value = VIEW_MANAGE_PUBLICATION )
+    @View( value = VIEW_MANAGE_PUBLICATION, securityTokenAction = ACTION_PUBLISHE_DOCUMENT )
     public String getManageBlogPublication( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_BLOG ) );
@@ -225,6 +225,7 @@ public class BlogPublicationJspBean extends BlogJspBean
         model.put( MARK_ORDER_PORTLET, nOrderPortlet );
         model.put( MARK_ORDER_PORTLET_ASC, nOrderPortletAsc );
         model.put( MARK_PORTLET_FILTER, portletFilter );
+        putLinkTokens( request, model, ACTION_PUBLISHE_DOCUMENT );
         return getPage( PROPERTY_PAGE_TITLE_PUBLICATION_HTMLDOC, TEMPLATE_PUBLICATION_HTMLDOC, model );
     }
 
@@ -270,7 +271,7 @@ public class BlogPublicationJspBean extends BlogJspBean
      *            The request
      * @return view manage blog publication
      */
-    @Action( ACTION_UNPUBLISHE_DOCUMENT )
+    @Action( value = ACTION_UNPUBLISHE_DOCUMENT, securityTokenAction = ACTION_PUBLISHE_DOCUMENT )
     public String doUnPublishDocument( HttpServletRequest request )
     {
         _blogPublication = new BlogPublication( );

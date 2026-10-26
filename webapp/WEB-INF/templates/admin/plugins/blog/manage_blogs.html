@@ -191,14 +191,14 @@
 									<@link class='dropdown-item' href='${manageUrl}?view=historyBlog&id=${blog.id}'><@icon style='history' class='me-2' />#i18n{blog.manage_blogs.labelHistory}<@span class='badge bg-secondary-lt ms-auto'>${blog.version}</@span></@link>
 								</#if>
 								<#if permission_manage_create_blog>
-									<@link class='dropdown-item' href='${manageUrl}?action=duplicateBlog&id=${blog.id}'><@icon style='copy' class='me-2' />#i18n{blog.manage_blogs.labelDuplicateBlog}</@link>
+									<@link class='dropdown-item' href='${manageUrl}?action=duplicateBlog&_csrftoken=${(link_tokens.duplicateBlog)!}&id=${blog.id}'><@icon style='copy' class='me-2' />#i18n{blog.manage_blogs.labelDuplicateBlog}</@link>
 								</#if>
 								<#if permission_manage_archive_blog>
 									<@cBlock class='dropdown-divider'></@cBlock>
 									<#if blog.isArchived()>
-										<@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&select_blog_action=1&select_blog_id=${blog.id}'><@icon style='archive-off' class='me-2' />#i18n{blog.manage_blog_archives.labelActionUnarchive}</@link>
+										<@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&_csrftoken=${(link_tokens.form_checkbox_action)!}&select_blog_action=1&select_blog_id=${blog.id}'><@icon style='archive-off' class='me-2' />#i18n{blog.manage_blog_archives.labelActionUnarchive}</@link>
 									<#else>
-										<@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&select_blog_action=0&select_blog_id=${blog.id}'><@icon style='archive' class='me-2' />#i18n{blog.manage_blog_archives.labelActionArchive}</@link>
+										<@link class='dropdown-item' href='${manageUrl}?action=form_checkbox_action&_csrftoken=${(link_tokens.form_checkbox_action)!}&select_blog_action=0&select_blog_id=${blog.id}'><@icon style='archive' class='me-2' />#i18n{blog.manage_blog_archives.labelActionArchive}</@link>
 									</#if>
 								</#if>
 								<#if permission_manage_delete_blog && blog.isArchived()>
