@@ -35,6 +35,9 @@ package fr.paris.lutece.plugins.blog.business;
 
 import java.io.Serializable;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 
 public class Tag implements RBACResource, Serializable
@@ -44,6 +47,9 @@ public class Tag implements RBACResource, Serializable
     public static final String PROPERTY_RESOURCE_TYPE = "TAG";
 
     private int _nIdTag;
+
+    @NotBlank( message = "#i18n{blog.validation.tag.Name.notEmpty}" )
+    @Size( max = 50, message = "#i18n{blog.validation.tag.Name.size}" )
     private String _strName;
     private int _nPriority;
 
