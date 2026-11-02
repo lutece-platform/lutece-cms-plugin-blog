@@ -1,10 +1,8 @@
 <#assign textEditorCoreName = richTextEditorBackOffice() >
-<#assign textEditorBlogName><#if !dskey('blog.advanced_parameters.editor')?starts_with('DS') || dskey('blog.advanced_parameters.editor')?starts_with('DS') !=''>${dskey('blog.advanced_parameters.editor')}</#if></#assign>
+<#assign textEditorBlogName = blog_editor!'' >
 <#assign textEditorName><#if textEditorBlogName !=''>${textEditorBlogName}<#else>${textEditorCoreName!}</#if></#assign>
 <#assign blogEditorFile=.get_optional_template('blog_${textEditorName}.html')>
-<#-- As BlogParameterService.isUseContentType( ): on when the advanced parameter is missing, otherwise only when it is true -->
-<#assign useContentTypeValue = dskey( 'blog.advanced_parameters.use_content_type' )!'' >
-<#assign is_content_type = useContentTypeValue?starts_with( 'DS Value' ) || useContentTypeValue == 'true' >
+<#assign is_content_type = use_content_type!true >
 <#-- The blog editor (blog_xxx.html) edits the contenteditable div #div_html_content, copied into the textarea on submit.
      A core editor (editor_xxx.html: Autumn Note, Milkdown...) builds itself in place of a textarea and keeps it in sync. -->
 <#assign blogCoreEditor = false>
@@ -166,7 +164,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 <#-- Tags and attachments cards of the editor side column, shared by create_blog.html and modify_blog.html.
      The ids (#tag-list, #tag_doc, #addTag, #content-list, #attachment, #fileType, #btn-add-files) are used by blog.js -->
 <#macro blogPropertiesCards>
-<#local acceptedTypes=dskey('blog.advanced_parameters.accepted_file_types')?starts_with('DS')?then('image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp', dskey('blog.advanced_parameters.accepted_file_types')) />
+<#local acceptedTypes = accepted_file_types!'image/*,.pdf,.xls,.doc,.docx,.xlsx,.odt,.ods,.ppt,.pptx,.odp' />
 <#-- Tags -->
 <@box class='mb-0'>
 	<@boxHeader title='#i18n{blog.modify_blog.TagsTitle}' titleActions=true>

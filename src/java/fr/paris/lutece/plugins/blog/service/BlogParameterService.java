@@ -25,6 +25,7 @@ public class BlogParameterService
     public static final String MARK_DEFAULT_NUMBER_MANDATORY_TAGS = "number_mandatory_tags";
     public static final String MARK_DEFAULT_DATE_END_PUBLISHING = "default_date_end_publishing";
     public static final String MARK_DEFAULT_EDITOR = "default_editor";
+    public static final String MARK_BLOG_EDITOR = "blog_editor";
     public static final String MARK_USE_UPLOAD_IMAGE_PLUGIN = "use_upload_image_plugin";
     public static final String MARK_USE_CONTENT_TYPE = "use_content_type";
     public static final String MARK_ACCEPTED_FILE_TYPES = "accepted_file_types";
@@ -167,6 +168,16 @@ public class BlogParameterService
             return strDefaultEditor;
         }
              
+    }
+
+    /**
+     * Get the editor set in the advanced parameters of the plugin
+     *
+     * @return the editor name, empty when none is set
+     */
+    public String getBlogEditor( )
+    {
+        return DatastoreService.getDataValue( DSKEY_DEFAULT_EDITOR, "" );
     }
 
     /**

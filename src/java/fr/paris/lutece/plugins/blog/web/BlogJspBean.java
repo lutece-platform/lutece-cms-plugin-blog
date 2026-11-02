@@ -709,6 +709,7 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_LIST_TAG, tagList );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
+        fillEditorParameters( model );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_BLOG, TEMPLATE_CREATE_BLOG, model );
     }
@@ -1175,10 +1176,25 @@ public class BlogJspBean extends ManageBlogJspBean
         model.put( MARK_USE_UPLOAD_IMAGE_PLUGIN, Boolean.parseBoolean( useCropImage ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put(BlogParameterService.MARK_DEFAULT_NUMBER_MANDATORY_TAGS, BlogParameterService.getInstance().getNumberMandatoryTags() );
+        fillEditorParameters( model );
 
         ExtendableResourcePluginActionManager.fillModel( request, getUser( ), model, String.valueOf( nId ), Blog.PROPERTY_RESOURCE_TYPE );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_BLOG, TEMPLATE_MODIFY_BLOG, model );
+    }
+
+    /**
+     * Put the editor parameters of the plugin in the model of the blog editing screens
+     *
+     * @param model
+     *            The model
+     */
+    private void fillEditorParameters( Map<String, Object> model )
+    {
+        BlogParameterService parameterService = BlogParameterService.getInstance( );
+        model.put( BlogParameterService.MARK_BLOG_EDITOR, parameterService.getBlogEditor( ) );
+        model.put( BlogParameterService.MARK_USE_CONTENT_TYPE, parameterService.isUseContentType( ) );
+        model.put( BlogParameterService.MARK_ACCEPTED_FILE_TYPES, parameterService.getAcceptedFileTypes( ) );
     }
 
     /**
