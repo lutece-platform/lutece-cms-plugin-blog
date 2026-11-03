@@ -172,7 +172,9 @@ const contentBodyConfig = {
   quickbars_insert_toolbar: 'quicktable quickimage link media',
   quickbars_selection_toolbar: 'blocks | bold italic | alignleft aligncenter alignright | bullist numlist | blockquote | quicklink',
   contextmenu: 'link image | inserttable | cell row column deletetable',
-  content_css: "css/page_template_styles.css",
+<#if cssFiles?has_content>
+  content_css: '${cssFiles}',
+</#if>
   extended_valid_elements : "iframe[style|src|width|height|name|align|frameborder|scrolling],script[src|type]",
   font_size_formats: fontsizes,
   target_list: [
