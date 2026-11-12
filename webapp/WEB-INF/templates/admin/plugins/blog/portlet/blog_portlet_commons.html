@@ -155,12 +155,12 @@ document.addEventListener( "DOMContentLoaded", function(){
 
   docAvailable.addEventListener('dblclick', (e => {
       const postId = moveItem( docAvailable, docPublished )
-      let docId= 1
-      if( docPublished.querySelectorAll('li').length === 1 ){ 
-        docId = 0 
+      // the post is appended at the end of the published list: its order is its index there
+      const nbPublished = docPublished.querySelectorAll('li').length;
+      if( nbPublished === 1 ){ 
         docPublished.classList.remove('no-blog');
       }
-      doAddDocument( postId, docId );
+      doAddDocument( postId, nbPublished - 1 );
   }))
   
   docPublished.addEventListener('dblclick', (e => {
