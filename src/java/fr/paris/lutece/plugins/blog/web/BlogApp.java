@@ -39,9 +39,12 @@ import fr.paris.lutece.plugins.blog.business.TagHome;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublication;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogPublicationHome;
 import fr.paris.lutece.plugins.blog.service.BlogService;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
@@ -50,6 +53,7 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,6 +85,7 @@ public class BlogApp extends MVCApplication
     protected static final String MESSAGE_PAGE_TITLE = "blog.xpage.blog.view.pageTitle";
     protected static final String MESSAGE_PATH = "blog.xpage.blog.view.pagePathLabel";
     private static final String MESSAGE_BLOG_NOT_FOUND = "blog.xpage.blog.message.blogNotFound";
+    private static final String RIGHT_MANAGE_BLOG = "BLOG_MANAGEMENT";
     // Templates
 
     private static final String TEMPLATE_VIEW_BLOG = "skin/plugins/blog/view_blog.html";
@@ -180,7 +185,8 @@ public class BlogApp extends MVCApplication
             blog = BlogService.getInstance( ).loadBlog( nId );
         }
 
-        if ( blog == null )
+        // A visitor sees the current version of a published blog only; the back office previews the others
+        if ( blog == null || ( !isPreviewAllowed( request, blog ) && ( nVersion > -1 || !isPublished( blog ) ) ) )
         {
             SiteMessageService.setMessage( request, MESSAGE_BLOG_NOT_FOUND, SiteMessage.TYPE_ERROR );
         }
@@ -231,4 +237,37 @@ public class BlogApp extends MVCApplication
         return getXPage( TEMPLATE_VIEW_BLOG, getLocale( request ), model );
     }
 
+    /**
+     * Tells whether a blog is published: not archived, with a publication begun and not ended
+     *
+     * @param blog
+     *            the blog
+     * @return true if the blog is published
+     */
+    private static boolean isPublished( Blog blog )
+    {
+        if ( blog.isArchived( ) || blog.getBlogPublication( ) == null )
+        {
+            return false;
+        }
+        Date now = new Date( );
+        return blog.getBlogPublication( ).stream( )
+                .anyMatch( pub -> pub.getDateBeginPublishing( ) != null && !pub.getDateBeginPublishing( ).after( now )
+                        && ( pub.getDateEndPublishing( ) == null || pub.getDateEndPublishing( ).after( now ) ) );
+    }
+
+    /**
+     * Tells whether the request comes from a back office user allowed to preview the blog
+     *
+     * @param request
+     *            the request
+     * @param blog
+     *            the blog
+     * @return true if the user manages the blogs and may view this one
+     */
+    private static boolean isPreviewAllowed( HttpServletRequest request, Blog blog )
+    {
+        AdminUser user = AdminUserService.getAdminUser( request );
+        return user != null && user.checkRight( RIGHT_MANAGE_BLOG ) && RBACService.isAuthorized( blog, Blog.PERMISSION_VIEW, user );
+    }
 }
