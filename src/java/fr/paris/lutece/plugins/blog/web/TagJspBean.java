@@ -67,7 +67,7 @@ import fr.paris.lutece.util.url.UrlItem;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_MANAGEMENT", securityTokenEnabled = true )
+@Controller( controllerJsp = "ManageTags.jsp", controllerPath = "jsp/admin/plugins/blog/", right = "BLOG_TAGS_MANAGEMENT", securityTokenEnabled = true )
 public class TagJspBean extends ManageBlogJspBean
 {
     private static final long serialVersionUID = 3209382166137329118L;
