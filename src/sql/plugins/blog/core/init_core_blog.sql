@@ -68,3 +68,9 @@ INSERT INTO core_attribute_field (id_field, id_attribute, title, DEFAULT_value, 
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM core_portlet_template WHERE id_portlet_type IN ('BLOG_PORTLET', 'BLOG_LIST_PORTLET')
 INSERT INTO core_portlet_template (id_portlet_type, description, template_path) VALUES ('BLOG_PORTLET', 'Post template', 'skin/plugins/blog/portlet/default_portlet_blog.html');
 INSERT INTO core_portlet_template (id_portlet_type, description, template_path) VALUES ('BLOG_LIST_PORTLET', 'Posts list template', 'skin/plugins/blog/portlet/default_portlet_list_blog.html');
+
+-- changeset blog:init_core_blog.sql-rev2.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+-- comment The tags screens are given by their own right: the administrator gets it with the right of the posts
+DELETE FROM core_user_right WHERE id_right = 'BLOG_TAGS_MANAGEMENT' AND id_user = 1;
+INSERT INTO core_user_right (id_right,id_user) VALUES ('BLOG_TAGS_MANAGEMENT',1);

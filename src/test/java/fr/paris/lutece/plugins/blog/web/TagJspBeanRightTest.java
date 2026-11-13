@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.test.LuteceTestCase;
 
@@ -49,5 +50,14 @@ public class TagJspBeanRightTest extends LuteceTestCase
     public void testTagsNeedTheTagsRight( )
     {
         assertEquals( "BLOG_TAGS_MANAGEMENT", TagJspBean.class.getAnnotation( Controller.class ).right( ) );
+    }
+
+    /**
+     * The administrator installed with the plugin has the right of the tags screens
+     */
+    @Test
+    public void testAdministratorHasTheTagsRight( )
+    {
+        assertTrue( "right of the administrator", AdminUserHome.getRightsListForUser( 1 ).containsKey( "BLOG_TAGS_MANAGEMENT" ) );
     }
 }
