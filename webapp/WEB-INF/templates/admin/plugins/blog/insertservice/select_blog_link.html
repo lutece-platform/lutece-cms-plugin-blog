@@ -34,8 +34,7 @@
 			<@formGroup labelFor='selected_tags' labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}' rows=2>
 				<@select id='selected_tags' name='selected_tags' multiple=1 class='input-sm'>
 					<#list tags_reference_list?sort as tagRef>
-						<#assign isSelected><#if tags?? && tags?seq_contains(tagRef.code)>true<#else>false</#if></#assign>
-						<@option value=tagRef.code! label=tagRef.name!?capitalize selected=isSelected?boolean />
+						<@option value=tagRef.code! label=tagRef.name!?capitalize selected=(tags?? && tags?seq_contains(tagRef.code)) />
 					</#list>
 				</@select>
 			</@formGroup>
@@ -100,7 +99,7 @@
 					</div>
 					<div class="lutece-insert-preview" aria-live="polite">
 						<span class="lutece-insert-label">#i18n{blog.insertService.blog.preview}</span>
-						<a href="#" class="link-primary text-decoration-underline" id="blog_link_preview" tabindex="-1" onclick="return false;"></a>
+						<a class="link-primary text-decoration-underline" id="blog_link_preview"></a>
 						<dl>
 							<dt>#i18n{blog.insertService.blog.linkTitle}</dt><dd id="blog_link_preview_title">–</dd>
 							<dt>#i18n{blog.insertService.blog.previewTarget}</dt><dd>#i18n{blog.insertService.blog.previewNewWindow}</dd>
@@ -168,10 +167,10 @@
 			settings: {
 				// Below are a list of optional fields
 				// their values are the defaults
-				searchPlaceholder: '#i18n{blog.manage_blogs.search}',
-				searchText: '#i18n{blog.manage_blogs.labelNoResult}',
-				searchingText: '#i18n{blog.manage_blogs.labelSearch}...',
-				placeholderText: '#i18n{blog.manage_blogs.labelChooseValue}',
+				searchPlaceholder: '${i18n('blog.manage_blogs.search')?js_string?no_esc}',
+				searchText: '${i18n('blog.manage_blogs.labelNoResult')?js_string?no_esc}',
+				searchingText: '${i18n('blog.manage_blogs.labelSearch')?js_string?no_esc}...',
+				placeholderText: '${i18n('blog.manage_blogs.labelChooseValue')?js_string?no_esc}',
 				timeoutDelay: 200,
 				searchHighlight: true,
 				allowDeselect: true,

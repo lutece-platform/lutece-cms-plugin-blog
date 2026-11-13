@@ -100,11 +100,13 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.service.editor.RichTextContentService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.resource.ExtendableResourceRemovalListenerService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.upload.MultipartItem;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -1433,12 +1435,15 @@ public class BlogJspBean extends ManageBlogJspBean
             result.setResult( new StreamResult( resultWriter ) );
             Locale locale = getLocale( );
 
+            // The contents are rich text typed by the editors: sanitized as richText() writes them, the diff built from them is markup
             DomTreeBuilder oldHandler = new DomTreeBuilder( );
-            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( blog2.getHtmlContent( ).getBytes( StandardCharsets.UTF_8 ) ) ), oldHandler );
+            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( RichTextContentService.getContent( blog2.getHtmlContent( ) ).getBytes( StandardCharsets.UTF_8 ) ) ),
+                    oldHandler );
             TextNodeComparator leftComparator = new TextNodeComparator( oldHandler, locale );
 
             DomTreeBuilder newHandler = new DomTreeBuilder( );
-            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( blog.getHtmlContent( ).getBytes( StandardCharsets.UTF_8 ) ) ), newHandler );
+            cleaner.cleanAndParse( new InputSource( new ByteArrayInputStream( RichTextContentService.getContent( blog.getHtmlContent( ) ).getBytes( StandardCharsets.UTF_8 ) ) ),
+                    newHandler );
             TextNodeComparator rightComparator = new TextNodeComparator( newHandler, locale );
 
             HtmlSaxDiffOutput output = new HtmlSaxDiffOutput( result, "" );
@@ -1457,7 +1462,7 @@ public class BlogJspBean extends ManageBlogJspBean
         Map<String, Object> model = getModel( );
         model.put( MARK_BLOG, blog );
         model.put( MARK_BLOG2, blog2 );
-        model.put( MARK_DIFF, strDiff );
+        model.put( MARK_DIFF, HtmlMarkup.of( strDiff ) );
         model.put( MARK_BLOG_VERSION_LIST, listBlogsVersions );
 
         return getPage( PROPERTY_PAGE_TITLE_DIFF_BLOG, TEMPLATE_DIFF_BLOG, model );

@@ -41,7 +41,7 @@
 				</@alert>
 			</#if>
 			<#if number_mandatory_tags gt 0>
-				<#assign alertClass><#if number_mandatory_tags lte blogTagSize>visually-hidden</#if></#assign>
+				<#assign alertClass = (number_mandatory_tags lte blogTagSize)?then('visually-hidden', '')>
 				<@alert id='required-tag' color='warning' iconTitle='tags' class=alertClass title=i18n("blog.mandatoryTags.assign.mandatory.tags", number_mandatory_tags) />
 			</#if>
 
@@ -80,7 +80,7 @@
 	</@pageColumn>
 </@pageContainer>
 <#if extendableResourceActionsHtml?? && extendableResourceActionsHtml?has_content>
-<@div id='extend-group' params='hidden'>
+<@div id='extend-group' params={"hidden": true}>
 	${extendableResourceActionsHtml!}
 </@div>
 </#if>

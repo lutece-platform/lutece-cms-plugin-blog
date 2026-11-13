@@ -7,13 +7,15 @@
 <#assign orderPortletAsc=order_portlet_asc!-1 />
 <#assign publications=(blog.blogPublication![])?sort_by('idPortlet') />
 <#-- Current portlet filter and sort, carried by publish and unpublish so the list stays as the user left it -->
-<#assign listStateQuery>is_display_latest_portlets=${(!hasFilter)?c}<#if hasFilter>&portlet_filter_type=${(portlet_filter.portletFilterType!)?url('UTF-8')}&portlet_filter_value=${(portlet_filter.searchValue!)?url('UTF-8')}&filter_date_begin_publishing=${filterDateBegin}&filter_date_end_publishing=${filterDateEnd}</#if><#if orderPortlet gte 0 && orderPortletAsc gte 0>&order_portlet=${orderPortlet}&order_portlet_asc=${orderPortletAsc}</#if></#assign>
+<#assign listStateQuery = 'is_display_latest_portlets=' + (!hasFilter)?c>
+<#if hasFilter><#assign listStateQuery = listStateQuery + '&portlet_filter_type=' + (portlet_filter.portletFilterType!)?url('UTF-8') + '&portlet_filter_value=' + (portlet_filter.searchValue!)?url('UTF-8') + '&filter_date_begin_publishing=' + filterDateBegin + '&filter_date_end_publishing=' + filterDateEnd></#if>
+<#if orderPortlet gte 0 && orderPortletAsc gte 0><#assign listStateQuery = listStateQuery + '&order_portlet=' + orderPortlet?c + '&order_portlet_asc=' + orderPortletAsc?c></#if>
 <#-- Hidden fields carrying the current filter and sort, so that publishing or paging keeps the list as the user left it -->
 <#macro listStateFields>
 	<@input type='hidden' name='is_display_latest_portlets' value='${(!hasFilter)?c}' />
 	<#if hasFilter>
-		<@input type='hidden' name='portlet_filter_type' value='${(portlet_filter.portletFilterType!)?html}' />
-		<@input type='hidden' name='portlet_filter_value' value='${(portlet_filter.searchValue!)?html}' />
+		<@input type='hidden' name='portlet_filter_type' value=portlet_filter.portletFilterType! />
+		<@input type='hidden' name='portlet_filter_value' value=portlet_filter.searchValue! />
 		<@input type='hidden' name='filter_date_begin_publishing' value='${filterDateBegin}' />
 		<@input type='hidden' name='filter_date_end_publishing' value='${filterDateEnd}' />
 	</#if>
@@ -52,7 +54,7 @@
 												<@option value='portlet_name' selected=(hasFilter && portlet_filter.portletFilterType == 'portlet_name') label='#i18n{blog.publication_blog.labelSearchByPortletName}' />
 												<@option value='page_id' selected=(hasFilter && portlet_filter.portletFilterType == 'page_id') label='#i18n{blog.publication_blog.labelSearchByIdPage}' />
 											</@select>
-											<@input type='text' id='portlet_filter_value' name='portlet_filter_value' value=((portlet_filter.searchValue)!'')?html placeHolder='#i18n{blog.portlet.blogsBlogsPortlet.labelFilterPlaceholder}' />
+											<@input type='text' id='portlet_filter_value' name='portlet_filter_value' value=(portlet_filter.searchValue)!'' placeHolder='#i18n{blog.portlet.blogsBlogsPortlet.labelFilterPlaceholder}' />
 										</@inputGroup>
 									</@formGroup>
 								</@columns>
@@ -95,7 +97,7 @@
 							<@input type='hidden' name='id' value='${blog.id}' />
 							<@listStateFields />
 							<#-- Native radios: the selection is submitted as idPortlet, no hidden select nor JS validation -->
-							<@div id='portlet-available' class='list-group list-group-flush list-group-hoverable overflow-auto border-top' params='style="max-height:22rem" role="radiogroup" aria-label="#i18n{blog.publication_blog.labelAvailablePortlet}"'>
+							<@div id='portlet-available' class='list-group list-group-flush list-group-hoverable overflow-auto border-top blog-list-max-h' params={"role": "radiogroup", "aria-label": "#i18n{blog.publication_blog.labelAvailablePortlet}"}>
 								<#list document_list_portlet_list as portlet>
 									<label class="list-group-item list-group-item-action d-flex align-items-center gap-3" data-portlet="${portlet.code!}">
 										<input class="form-check-input m-0 flex-shrink-0" type="radio" name="idPortlet" value="${portlet.code!}"<#if portlet?is_first> required</#if>>

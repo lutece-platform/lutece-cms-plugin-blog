@@ -48,6 +48,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.blog.service.BlogParameterService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortlet;
 import fr.paris.lutece.plugins.blog.business.portlet.BlogListPortletHome;
@@ -535,7 +536,8 @@ public class BlogPublicationJspBean extends BlogJspBean
                 subModel.put( MARK_PORTLET, item );
 
                 HtmlTemplate subTemplate = AppTemplateService.getTemplate( TEMPLATE_PORTLET_PAGE_PATH, getLocale( ), subModel );
-                item.setName( subTemplate.getHtml( ) );
+                // The path is a label, written escaped by the page: the HTML the template escaped is decoded once
+                item.setName( StringEscapeUtils.unescapeHtml4( subTemplate.getHtml( ) ) );
 
                 listFilteredPortlets.add( item );
 

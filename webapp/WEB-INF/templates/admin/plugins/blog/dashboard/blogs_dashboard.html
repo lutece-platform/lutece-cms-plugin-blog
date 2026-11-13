@@ -8,7 +8,7 @@
 	<div class="list-group-item">
 		<div class="row align-items-center g-2">
 			<#-- The first image of the post as its thumbnail -->
-			<div class="col-auto"><#if blog.docContent?has_content><span class="avatar avatar-sm" style="background-image: url(servlet/plugins/blogs/file?id_file=${blog.docContent[0].id})" aria-hidden="true"></span><#else><span class="avatar avatar-sm bg-pink-lt" aria-hidden="true"><i class="ti ti-photo-off"></i></span></#if></div>
+			<div class="col-auto"><#if blog.docContent?has_content><span class="avatar avatar-sm" style="background-image: url('${cssUrl('servlet/plugins/blogs/file?id_file=' + blog.docContent[0].id?c)}')" aria-hidden="true"></span><#else><span class="avatar avatar-sm bg-pink-lt" aria-hidden="true"><i class="ti ti-photo-off"></i></span></#if></div>
 			<div class="col text-truncate">
 				<#if permission_manage_modify_blog>
 				<a href="jsp/admin/plugins/blog/ManageBlogs.jsp?view=modifyBlog&id=${blog.id}" class="text-reset fw-semibold" title="#i18n{blog.modify_blog.title} ${blog.name}">${blog.name}</a>

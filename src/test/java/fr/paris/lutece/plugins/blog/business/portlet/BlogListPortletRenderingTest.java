@@ -66,6 +66,10 @@ public class BlogListPortletRenderingTest extends LuteceTestCase
     private static final String PORTLET_NAME = "BlogListPortletRenderingTest heading";
     private static final String MARKER_PORTLET = "portlet-blog-list";
     private static final int UNKNOWN_TEMPLATE_ID = 99999;
+    private static final String TITLE_WITH_MARKUP = "Horaires <b>\"l'accueil\"</b>";
+    private static final String TITLE_ESCAPED = "Horaires &lt;b&gt;&quot;l&#39;accueil&quot;&lt;/b&gt;";
+    private static final String URL_HTTPS = "https://www.paris.fr/pages/a?b=1&c=2";
+    private static final String URL_SCRIPT = "javascript:alert(1)";
 
     private Blog _blog;
     private BlogListPortlet _portlet;
@@ -156,6 +160,41 @@ public class BlogListPortletRenderingTest extends LuteceTestCase
             assertTrue( strContent.contains( PORTLET_NAME ), "template " + template.getTemplatePath( ) + " should render the portlet title" );
             assertTrue( strContent.contains( _blog.getContentLabel( ) ), "template " + template.getTemplatePath( ) + " should render the published blog" );
             assertTrue( strContent.contains( "d-md-block" ), "template " + template.getTemplatePath( ) + " should render the device classes" );
+        }
+    }
+
+    /**
+     * Under HTML auto-escaping (LUT-33153) the title of a post is written as text, and the URL typed for a post is written in the link only
+     * when it is a web address: a script URL is replaced by #.
+     */
+    @Test
+    public void testRenderEscapesTheTitleAndChecksTheUrl( )
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest( );
+        LocalVariables.setLocal( null, request, new MockHttpServletResponse( ) );
+        _blog.setContentLabel( TITLE_WITH_MARKUP );
+        _blog.setUrl( URL_HTTPS );
+        BlogHome.update( _blog );
+
+        for ( PortletTemplate template : PortletTemplateHome.findByPortletType( BlogListPortletHome.getInstance( ).getPortletTypeId( ) ) )
+        {
+            _portlet.setIdTemplate( template.getId( ) );
+            String strContent = _portlet.getHtmlContent( request );
+            String strMessage = template.getTemplatePath( ) + " : " + strContent;
+
+            assertTrue( strContent.contains( TITLE_ESCAPED ), strMessage );
+            assertFalse( strContent.contains( TITLE_WITH_MARKUP ), strMessage );
+            assertTrue( strContent.contains( "href=\"https://www.paris.fr/pages/a?b=1&amp;c=2\"" ), strMessage );
+        }
+
+        _blog.setUrl( URL_SCRIPT );
+        BlogHome.update( _blog );
+        for ( PortletTemplate template : PortletTemplateHome.findByPortletType( BlogListPortletHome.getInstance( ).getPortletTypeId( ) ) )
+        {
+            _portlet.setIdTemplate( template.getId( ) );
+            String strContent = _portlet.getHtmlContent( request );
+
+            assertFalse( strContent.contains( "javascript:" ), template.getTemplatePath( ) + " : " + strContent );
         }
     }
 

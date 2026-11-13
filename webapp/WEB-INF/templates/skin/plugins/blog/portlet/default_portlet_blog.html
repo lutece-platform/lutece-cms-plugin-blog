@@ -13,10 +13,10 @@
                 <@cInline>·</@cInline>
                 <#if blog.updateDate??>
                     <#assign updateDateIso = blog.updateDate?string('yyyy-MM-dd')>
-                    <@cInline type='time' params='datetime="${updateDateIso}"'>${blog.updateDate?string('d MMMM yyyy')}</@cInline>
+                    <@cInline type='time' params={"datetime": updateDateIso}>${blog.updateDate?string('d MMMM yyyy')}</@cInline>
                 </#if>
                 <@cInline>·</@cInline>
-                <@cInline class='blog-reading-time' params='data-reading-time-label="${readingTimeLabel}"'></@cInline>
+                <@cInline class='blog-reading-time' params={"data-reading-time-label": readingTimeLabel}></@cInline>
             </@cBlock>
             <@cTitle level=1 class='blog-title'>${blog.contentLabel}</@cTitle>
             <@cText class='blog-lede'>${blog.description!}</@cText>
@@ -31,8 +31,8 @@
                         <#if creatorFields?? && creatorFields?size gt 0>
                             <#list creatorFields as field>
                                 <#if field.attribute??>
-                                    <#if field.attribute.title='blog_author_title'><#assign blogAuthor>${field.value!}</#assign></#if>
-                                    <#if field.attribute.title='blog_author_role'><#assign blogAuthorRole>${field.value!}</#assign></#if>
+                                    <#if field.attribute.title='blog_author_title'><#assign blogAuthor = field.value!></#if>
+                                    <#if field.attribute.title='blog_author_role'><#assign blogAuthorRole = field.value!></#if>
                                 </#if>
                             </#list>
                         </#if>
@@ -46,7 +46,7 @@
             <#list blog.docContent?sort_by('priority') as docContent>
                 <#if docContent.contentType.idContentType=1>
                     <@cFigure class='blog-heroimg' caption=blog.contentLabel>
-                        <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=blog.contentLabel params='title="${blog.contentLabel}"' />
+                        <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=blog.contentLabel params={"title": blog.contentLabel} />
                     </@cFigure>
                     <#break>
                 </#if>
@@ -64,7 +64,7 @@
                 </@cBlock>
             </#if>
             <@cBlock class='blog-article'>
-                ${blog.htmlContent}
+                ${richText(blog.htmlContent!)}
             </@cBlock>
         </@cBlock>
     </@cBlock>

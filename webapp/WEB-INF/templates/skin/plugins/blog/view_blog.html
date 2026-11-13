@@ -23,10 +23,10 @@
                             <@cInline>·</@cInline>
                             <#if blog.updateDate??>
                                 <#assign updateDateIso = blog.updateDate?string('yyyy-MM-dd')>
-                                <@cInline type='time' params='datetime="${updateDateIso}"'>${blog.updateDate?string('d MMMM yyyy')}</@cInline>
+                                <@cInline type='time' params={"datetime": updateDateIso}>${blog.updateDate?string('d MMMM yyyy')}</@cInline>
                             </#if>
                             <@cInline>·</@cInline>
-                            <@cInline class='blog-reading-time' params='data-reading-time-label="${readingTimeLabel}"'></@cInline>
+                            <@cInline class='blog-reading-time' params={"data-reading-time-label": readingTimeLabel}></@cInline>
                         </@cBlock>
                         <@cTitle level=1 class='blog-title'>${blog.contentLabel}</@cTitle>
                         <@cText class='blog-lede'>${blog.description!}</@cText>
@@ -41,8 +41,8 @@
                                     <#if creatorFields?? && creatorFields?size gt 0>
                                        <#list creatorFields as field>
                                            <#if field.attribute??>
-                                             <#if field.attribute.title='blog_author_title'><#assign blogAuthor>${field.value!}</#assign></#if>
-                                             <#if field.attribute.title='blog_author_role'><#assign blogAuthorRole>${field.value!}</#assign></#if>
+                                             <#if field.attribute.title='blog_author_title'><#assign blogAuthor = field.value!></#if>
+                                             <#if field.attribute.title='blog_author_role'><#assign blogAuthorRole = field.value!></#if>
                                            </#if>
                                         </#list>
                                     </#if>
@@ -56,7 +56,7 @@
                         <#list blog.docContent?sort_by('priority') as docContent>
                             <#if docContent.contentType.idContentType=1>
                                 <@cFigure class='blog-heroimg' caption=blog.contentLabel>
-                                    <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=blog.contentLabel params='title="${blog.contentLabel}"' />
+                                    <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=blog.contentLabel params={"title": blog.contentLabel} />
                                 </@cFigure>
                                 <#break>
                             </#if>
@@ -74,7 +74,7 @@
                             </@cBlock>
                         </#if>
                         <@cBlock class='bl-article'>
-                            ${blog.htmlContent}
+                            ${richText(blog.htmlContent!)}
                         </@cBlock>
                     </@cBlock>
                 </@cBlock>
@@ -86,13 +86,14 @@
                     </@cBlock>
                     <@cBlock class='blog-cards'>
                         <#list related_blogs as relBlog>
-                            <#assign relUrl>jsp/site/Portal.jsp?page=blog&id=${relBlog.id}<#if blog.attachedPortletId gt 0>&portlet_id=${blog.attachedPortletId}</#if></#assign>
+                            <#assign relUrl = 'jsp/site/Portal.jsp?page=blog&id=' + relBlog.id?c>
+                            <#if blog.attachedPortletId gt 0><#assign relUrl = relUrl + '&portlet_id=' + blog.attachedPortletId?c></#if>
                             <@cLink href=relUrl class='blog-rcard' label=''>
                                 <@cBlock class='blog-rcard__img'>
                                     <#if relBlog.docContent?? && relBlog.docContent?size!=0>
                                         <#list relBlog.docContent?sort_by('priority') as docContent>
                                             <#if docContent.contentType.idContentType=1>
-                                                <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=relBlog.contentLabel params='title="${relBlog.contentLabel}"' />
+                                                <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id!}' alt=relBlog.contentLabel params={"title": relBlog.contentLabel} />
                                                 <#break>
                                             </#if>
                                         </#list>
@@ -107,7 +108,7 @@
                                     <#if relBlog.updateDate??>
                                         <#assign relUpdateIso = relBlog.updateDate?string('yyyy-MM-dd')>
                                         <@cBlock class='blog-rcard__foot'>
-                                            <@cInline type='time' params='datetime="${relUpdateIso}"'>${relBlog.updateDate?string('d MMMM yyyy')}</@cInline>
+                                            <@cInline type='time' params={"datetime": relUpdateIso}>${relBlog.updateDate?string('d MMMM yyyy')}</@cInline>
                                         </@cBlock>
                                     </#if>
                                 </@cBlock>

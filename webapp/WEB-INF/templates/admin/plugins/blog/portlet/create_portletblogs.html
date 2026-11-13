@@ -5,7 +5,7 @@
 		<@tform type='inline'>
 			<@formGroup labelFor='search_post' labelKey='#i18n{portal.system.manage_plugins.buttonFilter}' hideLabel=['all'] formStyle='inline'>
 				<@inputGroup>
-					<@input type='text' name='search_post' id='search_post' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' params='autocomplete="off"' size='' />
+					<@input type='text' name='search_post' id='search_post' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' autoComplete="off" size='' />
 					<@button type='button' title='#i18n{portal.system.manage_plugins.buttonFilter}' buttonIcon='filter' hideTitle=['all'] size='' />
 				</@inputGroup>
 			</@formGroup>
@@ -15,15 +15,16 @@
 </@row>
 <@row>
 	<@columns sm=12 md=6 class='mb-3'>
-		<@listGroup params='style="height:40vh;overflow-y: auto"'>
+		<link rel="stylesheet" href="themes/admin/shared/plugins/blog/css/blog.min.css" />
+		<@listGroup class='blog-list-scroll'>
 			<#list blog_list?sort_by('updateDate')?reverse as blog>
-				<@listGroupItem class='d-flex justify-content-between vh-50' params='data-post="${blog.id} ${blog.contentLabel}" data-blog="${blog.id}"'>
+				<@listGroupItem class='d-flex justify-content-between vh-50' params={"data-post": "${blog.id?c} ${blog.contentLabel}", "data-blog": blog.id?c}>
 					<@span class='searchable mx-2 pt-1'>${blog.id}</@span>
 					<@span class='searchable mx-2 pt-1 w-50'>${blog.contentLabel}</@span>
 				</@listGroupItem>
 			</#list>
 		</@listGroup>
-		<@select name='blog_selected' id='blog_selected' mandatory=true params='hidden'>
+		<@select name='blog_selected' id='blog_selected' mandatory=true params={"hidden": true}>
 			<@option value='' label='' />
 			<#list blog_list?sort_by('contentLabel') as blog>
 				<@option value=blog.id label='${blog.contentLabel} - ${blog.id}' />

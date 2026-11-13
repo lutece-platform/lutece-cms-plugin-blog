@@ -1,7 +1,7 @@
 
 
 async function doUpdateBlogList( baseUrl, searchText, itemPerPage ) {
-    const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoSearchPortletList.jsp?search_text=${searchText}&items_per_page=${itemPerPage}&button_search=true`)
+    const response = await fetch(`${baseUrl}jsp/admin/plugins/blog/DoSearchPortletList.jsp?search_text=${encodeURIComponent( searchText )}&items_per_page=${encodeURIComponent( itemPerPage )}&button_search=true`)
     if ( !response.ok ) {
         return;
     } else {

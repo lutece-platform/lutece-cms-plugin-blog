@@ -3,7 +3,7 @@
   <@columns sm=6>
     <@box>
       <@boxHeader title='#i18n{blog.portlet.blogsListBlogsPortlet.titleNotPublishedPostList}' boxTools=true >
-        <@button buttonIcon='layout-navbar-expand' id='btn-toggle-search' size='sm' color='default' title='#i18n{portal.util.labelMore}' hideTitle=['all'] params='aria-expanded="false"'/>
+        <@button buttonIcon='layout-navbar-expand' id='btn-toggle-search' size='sm' color='default' title='#i18n{portal.util.labelMore}' hideTitle=['all'] params={"aria-expanded": "false"}/>
       </@boxHeader>
       <@boxBody class='p-3'>
         <@formGroup labeFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' >
@@ -25,8 +25,7 @@
             <@formGroup labelFor='tag_doc' labelKey='#i18n{blog.manage_blogs.labelTag}' rows=2>
               <@select id='tag_doc' multiple=1 name='tag_doc' class='form-control'>
                 <#list list_tag?sort as tgName>
-                  <#assign isSelected><#if tags?? && tags?seq_contains(tgName.code)>true<#else>false</#if></#assign> 
-                  <@option value=tgName.code! label=tgName.name!?capitalize selected=isSelected?boolean />
+                  <@option value=tgName.code! label=tgName.name!?capitalize selected=(tags?? && tags?seq_contains(tgName.code)) />
                 </#list>
               </@select>
               <@link href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs' title='#i18n{blog.manage_tags.title}' target='_blank' />
@@ -60,9 +59,9 @@
         <@box>
           <@boxHeader title='#i18n{blog.portlet.blog.titleListNotPublished}' />
           <@boxBody class='p-2'>
-          <@listGroup id='doc-available' params='style="min-height:15rem;"'>
+          <@listGroup id='doc-available' class='blog-list-min-h'>
             <#list blog_list as doc>
-              <@listGroupItem id=doc.id!?string class='bg-gray-100 border border-gray-300 min-h-40 d-flex justify-content-between' params='draggable="true" tabindex="0"'>
+              <@listGroupItem id=doc.id!?string class='bg-gray-100 border border-gray-300 min-h-40 d-flex justify-content-between' params={"draggable": "true", "tabindex": "0"}>
                 <@span>${doc.contentLabel}</@span> <@icon style='arrows-move ms-auto' />
               </@listGroupItem>
             </#list>
@@ -71,7 +70,7 @@
             <@columns sm=4 offsetSm=8>
             <@formGroup labelFor='${paginator.itemsPerPageParameterName!}' labelKey='#i18n{blog.portlet.blog.lableNbPost!}' rows=2>
               <@inputGroup>
-                <@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='w-25' params='data-max-item="${paginator.itemsCount}"'>
+                <@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='w-25' params={"data-max-item": paginator.itemsCount?c}>
                   <#list [ "10" , "20" , "50" , "100" ] as nb><@option value=nb?string label=nb?string selected=nb_items_per_page=nb /></#list>
                 </@select>
                 <@inputGroupItem type=''>
@@ -95,9 +94,9 @@
           <@boxBody class='p-2'>
             <#assign docPublishedClass=''>
             <#if blog_list_published?size == 0><#assign docPublishedClass=' no-blog'></#if>
-            <@listGroup id='doc-published' class='w-100${docPublishedClass}' params='style="min-height:15rem;"'>
+            <@listGroup id='doc-published' class='w-100 blog-list-min-h${docPublishedClass}'>
             <#list blog_list_published as doc>
-            <@listGroupItem id=doc.id!?string class='bg-gray-100 border border-gray-300 min-h-40 d-flex justify-content-between' params='draggable="true" tabindex="0"'>
+            <@listGroupItem id=doc.id!?string class='bg-gray-100 border border-gray-300 min-h-40 d-flex justify-content-between' params={"draggable": "true", "tabindex": "0"}>
               <@span>${doc.contentLabel}</@span> <@icon style='arrows-move ms-auto' />
             </@listGroupItem>
             </#list>
@@ -219,11 +218,11 @@ document.addEventListener( "DOMContentLoaded", function(){
 		settings: {
 			// Below are a list of optional fields
 			// their values are the defaults
-			searchPlaceholder: '#i18n{blog.manage_blogs.search}',
-			searchText: '#i18n{blog.manage_blogs.labelNoResult}',
-			searchingText: '#i18n{blog.manage_blogs.labelSearch}...',
+			searchPlaceholder: '${i18n('blog.manage_blogs.search')?js_string?no_esc}',
+			searchText: '${i18n('blog.manage_blogs.labelNoResult')?js_string?no_esc}',
+			searchingText: '${i18n('blog.manage_blogs.labelSearch')?js_string?no_esc}...',
 			searchHighlight: true,
-			placeholderText: '#i18n{blog.manage_blogs.labelChooseValue}',
+			placeholderText: '${i18n('blog.manage_blogs.labelChooseValue')?js_string?no_esc}',
 			timeoutDelay: 200,
 		},
 	});

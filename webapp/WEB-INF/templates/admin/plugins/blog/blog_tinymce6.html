@@ -1,11 +1,11 @@
 <#macro initEditor editorCss='' editorWidth=0 cssFiles='' type='' insert='"library","pagelinkservice"' selector='.richtext' config={}>
 <script src="themes/admin/shared/plugins/blog/js/tinymce/tinymce.min.js"></script>
-<#assign blogEditorLocaleSource><#if locale??>${locale?string}<#else>${.locale}</#if></#assign>
+<#assign blogEditorLocaleSource = (locale??)?then(locale?string, .locale?string)>
 <#assign editorLocale='' />
 <#if (2 <= blogEditorLocaleSource?length) && (blogEditorLocaleSource?substring(0,2) == "fr")><#assign editorLocale='fr_FR' /></#if>
 <#if editorLocale?has_content><script src="themes/admin/shared/plugins/blog/js/tinymce/langs/${editorLocale}.js"></script></#if>
 <script>
-var baseUrl='${webapp_url}';
+var baseUrl='${webapp_url?js_string?no_esc}';
 
 /* List of potential user options on editor*/
 const userEditorInline = localStorage.getItem('lutece-blog-user-editor-inline') != null ? true : false
@@ -103,7 +103,7 @@ const blogLangList = () => {
 const blog_image_upload_handler = ( blobInfo, progress) => new Promise( (resolve, reject) => {
   const xhr = new XMLHttpRequest();
   xhr.withCredentials = false;
-  xhr.open('POST', '${webapp_url}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent');
+  xhr.open('POST', '${webapp_url?js_string?no_esc}jsp/admin/plugins/blog/DoCreateImage.jsp?action=addContent');
   xhr.upload.onprogress = (e) => {
     progress(e.loaded / e.total * 100);
   };
@@ -173,7 +173,7 @@ const contentBodyConfig = {
   quickbars_selection_toolbar: 'blocks | bold italic | alignleft aligncenter alignright | bullist numlist | blockquote | quicklink',
   contextmenu: 'link image | inserttable | cell row column deletetable',
 <#if cssFiles?has_content>
-  content_css: '${cssFiles}',
+  content_css: '${cssFiles?js_string?no_esc}',
 </#if>
   extended_valid_elements : "iframe[style|src|width|height|name|align|frameborder|scrolling],script[src|type]",
   font_size_formats: fontsizes,
@@ -183,8 +183,8 @@ const contentBodyConfig = {
     {title: 'Nouvelle page', value: '_blank'},
     {title: 'Fenêtre Parent', value: '_parent'}
   ],
-  language: '${editorLocale}',
-  document_base_url: '${webapp_url!}',
+  language: '${editorLocale?js_string?no_esc}',
+  document_base_url: '${(webapp_url!)?js_string?no_esc}',
   // fullscreen_native: true,
   color_map: colorMap,
   branding: false,
@@ -225,7 +225,7 @@ const contentBodyConfig = {
         doAddContent( file.name, file, filetype, blogId ).then( resp => {
           if ( resp.status == 'OK' ){
             if( resp.result == "BLOG_LOCKED" ){
-              setBlogToast( 'warning', '#i18n{portal.util.labelWarning}', '#i18n{blog.message.blogLocked}' );
+              setBlogToast( 'warning', labelWarning, msgErrorBlogLocked );
             } else {
               setListFile( resp.result[1], resp.result[0], filetype )
               <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
@@ -246,7 +246,7 @@ const contentBodyConfig = {
         doAddContent( file.name, file, filetype, blogId ).then( resp => {
           if ( resp.status == 'OK' ){
             if( resp.result == "BLOG_LOCKED" ){
-             setBlogToast( 'warning', '#i18n{portal.util.labelWarning}', '#i18n{blog.message.blogLocked}' );
+             setBlogToast( 'warning', labelWarning, msgErrorBlogLocked );
             } else {
               setListFile( resp.result[1], resp.result[0], filetype )
               <#noparse>const fileResFile = `servlet/plugins/blogs/file?id_file=${resp.result[1]}`</#noparse>;
@@ -263,7 +263,7 @@ const contentBodyConfig = {
 /* Description config */
 const contentDescConfig = {
   selector: '.content-desc',
-  language: '${editorLocale}',
+  language: '${editorLocale?js_string?no_esc}',
   height: 250,
   menubar: false,
   inline: true,

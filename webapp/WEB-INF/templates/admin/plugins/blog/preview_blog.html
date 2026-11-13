@@ -45,7 +45,7 @@
 						<#if blog.url?has_content>
 							<@div class='datagrid-item'>
 								<@div class='datagrid-title'>#i18n{blog.manage_blogs.columnUrl}</@div>
-								<@div class='datagrid-content text-truncate'><@link href=blog.url target='_blank' label=blog.url /></@div>
+								<@div class='datagrid-content text-truncate'><@link href=safeUrl(blog.url) target='_blank' label=blog.url /></@div>
 							</@div>
 						</#if>
 						<@div class='datagrid-item'>
