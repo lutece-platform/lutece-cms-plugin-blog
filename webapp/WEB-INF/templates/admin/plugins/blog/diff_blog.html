@@ -42,13 +42,13 @@
 				<@tabLink href='#diff' tabIcon='layout-columns' title='#i18n{blog.diff_blog.latestVersion}' />
 				<#-- Legend of the diff colours, pushed to the right like Tabler's secondary tab item -->
 				<@tabLink href='' tabClass='ms-auto d-none d-md-flex align-items-center gap-2'>
-					<@tag color='' class='bg-red-lt'>${blog2.version}</@tag><@icon style='arrow-right' class='text-secondary' /><@tag color='' class='bg-green-lt'>${blog.version}</@tag>
+					<@tag color='' class='bg-red-lt'>#i18n{blog.manage_blogs.columnVersion} ${blog2.version}</@tag><@icon style='arrow-right' class='text-secondary' /><@span class='visually-hidden'>#i18n{blog.diff_blog.labelTo}</@span><@tag color='' class='bg-green-lt'>#i18n{blog.manage_blogs.columnVersion} ${blog.version}</@tag>
 				</@tabLink>
 			</@tabList>
 			<@tabContent>
 				<@tabPanel id='current' active=true>
-					<h2><span<#if blog.contentLabel! != blog2.contentLabel!> class="diff-html-added"</#if>>${blog.contentLabel!}</span><#if blog.contentLabel! != blog2.contentLabel!> <span class="diff-html-removed">${blog2.contentLabel!}</span></#if></h2>
-					<p class="text-secondary"><span<#if blog.description! != blog2.description!> class="diff-html-added"</#if>>${blog.description!}</span><#if blog.description! != blog2.description!> <span class="diff-html-removed">${blog2.description!}</span></#if></p>
+					<h2><#if blog.contentLabel! != blog2.contentLabel!><ins class="diff-html-added">${blog.contentLabel!}</ins> <del class="diff-html-removed">${blog2.contentLabel!}</del><#else>${blog.contentLabel!}</#if></h2>
+					<p class="text-secondary"><#if blog.description! != blog2.description!><ins class="diff-html-added">${blog.description!}</ins> <del class="diff-html-removed">${blog2.description!}</del><#else>${blog.description!}</#if></p>
 					${blog_diff!}
 				</@tabPanel>
 				<@tabPanel id='diff'>

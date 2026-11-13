@@ -31,7 +31,7 @@
                         <@cTitle level=1 class='blog-title'>${blog.contentLabel}</@cTitle>
                         <@cText class='blog-lede'>${blog.description!}</@cText>
                         <@cBlock class='blog-author'>
-                            <@cBlock class='blog-author__avatar'>${blog.userCreator[0]?upper_case!}</@cBlock>
+                            <@cBlock class='blog-author__avatar' params={"aria-hidden": "true"}>${blog.userCreator[0]?upper_case!}</@cBlock>
                             <@cBlock>
                                 <#assign blogAuthor=blog.userCreator />
                                 <#assign blogAuthorRole='' />
@@ -69,7 +69,7 @@
                     <@cBlock class=bodyClass>
                         <#if blog.displayToc>
                             <@cBlock type='aside' class='blog-toc'>
-                                <@cBlock class='blog-toc__title'>#i18n{blog.view_blog.tocTitle}</@cBlock>
+                                <@cTitle level=2 class='blog-toc__title'>#i18n{blog.view_blog.tocTitle}</@cTitle>
                                 <@chList id='bl-toc'></@chList>
                             </@cBlock>
                         </#if>
@@ -82,7 +82,7 @@
             <#if blog.displayRelated && related_blogs?? && related_blogs?size gt 0>
                 <@cSection class='blog-related'>
                     <@cBlock class='blog-related__head'>
-                        <@cBlock class='blog-related__title'>#i18n{blog.view_blog.relatedTitle}</@cBlock>
+                        <@cTitle level=2 class='blog-related__title'>#i18n{blog.view_blog.relatedTitle}</@cTitle>
                     </@cBlock>
                     <@cBlock class='blog-cards'>
                         <#list related_blogs as relBlog>

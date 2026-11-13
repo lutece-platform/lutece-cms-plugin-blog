@@ -186,15 +186,15 @@
 						<#-- Actions: two direct buttons, the rest in a dropdown -->
 						<@manageFeatureItemColumn align='end' class='gap-1'>
 							<#if permission_manage_modify_blog>
-								<@aButton href='${manageUrl}?view=modifyBlog&id=${blog.id}' color='' buttonIcon='edit' title='#i18n{portal.util.labelModify}' hideTitle=['all'] />
+								<@aButton href='${manageUrl}?view=modifyBlog&id=${blog.id}' color='' buttonIcon='edit' title='#i18n{portal.util.labelModify}' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelModify} " + (blog.contentLabel!'')} />
 							</#if>
 							<#if permission_manage_publish_blog && !blog.isArchived()>
-								<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' color='' class='position-relative' buttonIcon='world-upload' title='#i18n{blog.manage_blogs.managePublication}' hideTitle=['all']>
+								<@aButton href='jsp/admin/plugins/blog/ManagePublicationBlogs.jsp?view=manageBlogsPublication&id=${blog.id}' color='' class='position-relative' buttonIcon='world-upload' title='#i18n{blog.manage_blogs.managePublication}' hideTitle=['all'] params={"aria-label": "#i18n{blog.manage_blogs.managePublication} " + (blog.contentLabel!'')}>
 									<#if nbPublications gt 0><@span class='badge ${isPublished?then("bg-green text-green-fg","bg-secondary text-secondary-fg")} badge-notification badge-pill'>${nbPublications}</@span></#if>
 								</@aButton>
 							</#if>
-							<@button type='button' id='blog-actions-${blog.id}' dropdownMenu=true buttonIcon='dots' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
-								<@link class='dropdown-item' href='jsp/site/Portal.jsp?page=blog&id=${blog.id}' target='_blank'><@icon style='external-link' class='me-2' />#i18n{portal.site.admin_page.labelShowPage}</@link>
+							<@button type='button' id='blog-actions-${blog.id}' dropdownMenu=true buttonIcon='dots' title='#i18n{portal.util.labelActions}' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelActions} " + (blog.contentLabel!'')}>
+								<@link class='dropdown-item' href='jsp/site/Portal.jsp?page=blog&id=${blog.id}' target='_blank'><@icon style='external-link' class='me-2' />#i18n{portal.site.admin_page.labelShowPage}<@span class='visually-hidden'> #i18n{blog.manage_blogs.labelNewWindow}</@span></@link>
 								<#if blog.version gt 1>
 									<@link class='dropdown-item' href='${manageUrl}?view=historyBlog&id=${blog.id}'><@icon style='history' class='me-2' />#i18n{blog.manage_blogs.labelHistory}<@span class='badge bg-secondary-lt ms-auto'>${blog.version}</@span></@link>
 								</#if>

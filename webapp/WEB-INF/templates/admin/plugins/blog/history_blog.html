@@ -48,16 +48,16 @@
 												<#-- Versions A and B to compare: by default the newest and the oldest of the page -->
 												<@div class='btn-group btn-group-sm me-2' params={"role": "group", "aria-label": "#i18n{blog.history_blog.columnDiffSelect}"}>
 													<input type="radio" class="btn-check" name="blog_version" id="blog_version_${blog.version}" value="${blog.version}" autocomplete="off"<#if blog?is_first> checked</#if>>
-													<label class="btn" for="blog_version_${blog.version}" title="#i18n{blog.manage_blogs.columnVersion} A">A</label>
+													<label class="btn" for="blog_version_${blog.version}" title="#i18n{blog.manage_blogs.columnVersion} A">A<span class="visually-hidden"> #i18n{blog.manage_blogs.columnVersion} ${blog.version}</span></label>
 													<input type="radio" class="btn-check" name="blog_version2" id="blog_version2_${blog.version}" value="${blog.version}" autocomplete="off"<#if blog?is_last> checked</#if>>
-													<label class="btn" for="blog_version2_${blog.version}" title="#i18n{blog.manage_blogs.columnVersion} B">B</label>
+													<label class="btn" for="blog_version2_${blog.version}" title="#i18n{blog.manage_blogs.columnVersion} B">B<span class="visually-hidden"> #i18n{blog.manage_blogs.columnVersion} ${blog.version}</span></label>
 												</@div>
 											</#if>
-											<@aButton href='${manageUrl}?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' color='' size='sm' class='btn-icon' buttonIcon='eye' title='#i18n{blog.history_blog.labelPreview}' hideTitle=['all'] />
+											<@aButton href='${manageUrl}?view=previewBlog&id=${blog.id}&blog_version=${blog.version}' color='' size='sm' class='btn-icon' buttonIcon='eye' title='#i18n{blog.history_blog.labelPreview}' hideTitle=['all'] params={"aria-label": "#i18n{blog.history_blog.labelPreview} ${blog.version}"} />
 											<#if blog.version != 1>
-												<@aButton href='${manageUrl}?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' color='' size='sm' class='btn-icon' buttonIcon='git-compare' title='#i18n{blog.history_blog.labelDiffPrevious}' hideTitle=['all'] />
+												<@aButton href='${manageUrl}?view=diffBlog&id=${blog.id}&blog_version=${blog.version}' color='' size='sm' class='btn-icon' buttonIcon='git-compare' title='#i18n{blog.history_blog.labelDiffPrevious}' hideTitle=['all'] params={"aria-label": "#i18n{blog.history_blog.labelDiffPrevious} ${blog.version}"} />
 											</#if>
-											<@button type='button' color='' size='sm' class='btn-icon' id='version-actions-${blog.version}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
+											<@button type='button' color='' size='sm' class='btn-icon' id='version-actions-${blog.version}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelActions} #i18n{blog.manage_blogs.columnVersion} ${blog.version}"}>
 												<@link class='dropdown-item' href='${manageUrl}?view=modifyBlog&id=${blog.id}&blog_version=${blog.version}'><@icon style='arrow-back-up' class='me-2' />#i18n{blog.history_blog.labelReset} ${blog.version}</@link>
 												<#if blog.version != 1>
 													<@div class='dropdown-divider' />

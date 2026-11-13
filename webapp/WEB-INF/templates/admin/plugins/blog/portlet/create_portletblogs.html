@@ -18,7 +18,7 @@
 		<link rel="stylesheet" href="themes/admin/shared/plugins/blog/css/blog.min.css" />
 		<@listGroup class='blog-list-scroll'>
 			<#list blog_list?sort_by('updateDate')?reverse as blog>
-				<@listGroupItem class='d-flex justify-content-between vh-50' params={"data-post": "${blog.id?c} ${blog.contentLabel}", "data-blog": blog.id?c}>
+				<@listGroupItem class='d-flex justify-content-between vh-50' params={"data-post": "${blog.id?c} ${blog.contentLabel}", "data-blog": blog.id?c, "tabindex": "0", "role": "button", "aria-pressed": "false"}>
 					<@span class='searchable mx-2 pt-1'>${blog.id}</@span>
 					<@span class='searchable mx-2 pt-1 w-50'>${blog.contentLabel}</@span>
 				</@listGroupItem>
@@ -50,8 +50,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	listPost.forEach( post => {
 		post.addEventListener( 'click', (e) => {
 			blog.value = post.dataset.blog
-			listPost.forEach( p => { p.classList.remove('active') })
+			listPost.forEach( p => { p.classList.remove('active'); p.setAttribute( 'aria-pressed', 'false' ) })
 			post.classList.toggle('active')
+			post.setAttribute( 'aria-pressed', 'true' )
+		})
+		post.addEventListener( 'keydown', (e) => {
+			if ( e.key === 'Enter' || e.key === ' ' ) {
+				e.preventDefault()
+				post.click()
+			}
 		})
 	});
 

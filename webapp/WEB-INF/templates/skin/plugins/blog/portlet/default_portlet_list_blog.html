@@ -2,7 +2,7 @@
 <@cSection class='portlet portlet-blog-list blog-posts ${device_class!}' id='portlet_${portlet_id?c}'>
     <@cBlock class='section-head'>
         <#if portlet_name??><@cTitle level=2 class='my-3 section-title'>${portlet_name}</@cTitle></#if>
-        <@cBtn id='toggle-grid' type='button' class='secondary btn-sm' label='Grid' />
+        <@cBtn id='toggle-grid' type='button' class='secondary btn-sm' label='#i18n{blog.view_blog.labelGrid}' params={"aria-pressed": "false"} />
     </@cBlock>
     <#if blog_list_published??>
         <@chList class='posts list-unstyled'>
@@ -39,7 +39,7 @@
                                         <@cInline class='post__cat me-2'>${tg.name!}</@cInline>
                                     </#list>
                                 </#if>
-                                <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+                                <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
                                     <g fill="rgba(255,255,255,0.18)">
                                         <rect x="40" y="60" width="320" height="180" rx="8"></rect>
                                     </g>
@@ -76,7 +76,7 @@
                                             </#list>
                                         </#if>
                                     </#if>
-                                    <@cBlock class='av-sm'>${blogAuthor[0]?upper_case!}</@cBlock>
+                                    <@cBlock class='av-sm' params={"aria-hidden": "true"}>${blogAuthor[0]?upper_case!}</@cBlock>
                                     <@cBlock class='blog-author__name'>${blogAuthor}</@cBlock>
                                     <#if blog.updateDate??>
                                         <#assign updateDateIso = blog.updateDate?string('yyyy-MM-dd')>
@@ -98,7 +98,8 @@ document.getElementById('toggle-grid').addEventListener('click', function() {
     document.querySelectorAll('.post').forEach(function(post) {
         post.classList.toggle('post--wide');
     });
-    this.textContent = this.textContent === 'Grid' ? 'List' : 'Grid';
+    const isGrid = this.getAttribute('aria-pressed') !== 'true';
+    this.setAttribute('aria-pressed', String(isGrid));
 });
 </script>
 </@cTpl>

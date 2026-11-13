@@ -6,7 +6,7 @@
         <@button buttonIcon='layout-navbar-expand' id='btn-toggle-search' size='sm' color='default' title='#i18n{portal.util.labelMore}' hideTitle=['all'] params={"aria-expanded": "false"}/>
       </@boxHeader>
       <@boxBody class='p-3'>
-        <@formGroup labeFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' >
+        <@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.search}' >
           <@inputGroup>
             <@input id='search_text' name='search_text' value=search_text!'' />
             <@inputGroupItem type='btn'>
@@ -28,7 +28,7 @@
                   <@option value=tgName.code! label=tgName.name!?capitalize selected=(tags?? && tags?seq_contains(tgName.code)) />
                 </#list>
               </@select>
-              <@link href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs' title='#i18n{blog.manage_tags.title}' target='_blank' />
+              <@link href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blogs' title='#i18n{blog.manage_tags.title}' target='_blank'>#i18n{blog.manage_blogs.labelManageTags}<@span class='visually-hidden'> #i18n{blog.manage_blogs.labelNewWindow}</@span></@link>
             </@formGroup>
           </@columns>
           <@columns sm=5>
@@ -68,7 +68,7 @@
           </@listGroup>
           <@row>
             <@columns sm=4 offsetSm=8>
-            <@formGroup labelFor='${paginator.itemsPerPageParameterName!}' labelKey='#i18n{blog.portlet.blog.lableNbPost!}' rows=2>
+            <@formGroup labelFor='${paginator.itemsPerPageParameterName!}' labelKey='#i18n{blog.portlet.blog.lableNbPost}' rows=2>
               <@inputGroup>
                 <@select name='${paginator.itemsPerPageParameterName}' id='${paginator.itemsPerPageParameterName}' title='${paginator.labelItemCountPerPage}' class='w-25' params={"data-max-item": paginator.itemsCount?c}>
                   <#list [ "10" , "20" , "50" , "100" ] as nb><@option value=nb?string label=nb?string selected=nb_items_per_page=nb /></#list>

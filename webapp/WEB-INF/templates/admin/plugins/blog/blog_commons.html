@@ -172,7 +172,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 <#-- Tags -->
 <@box class='mb-0'>
 	<@boxHeader title='#i18n{blog.modify_blog.TagsTitle}' titleActions=true>
-		<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blog' target='_blank' color='' class='btn-action' buttonIcon='settings' title='#i18n{blog.manage_blogs.labelManageTags}' hideTitle=['all'] />
+		<@aButton href='jsp/admin/plugins/blog/ManageTags.jsp?plugin_name=blog' target='_blank' color='' class='btn-action' buttonIcon='settings' title='#i18n{blog.manage_blogs.labelManageTags}' hideTitle=['all'] params={"aria-label": "#i18n{blog.manage_blogs.labelManageTags} #i18n{blog.manage_blogs.labelNewWindow}"} />
 	</@boxHeader>
 	<@boxBody>
 		<#if number_mandatory_tags gt 0>
@@ -231,9 +231,9 @@ document.addEventListener( "DOMContentLoaded", function(){
 <@listGroupItem id='tag_${tagId}' class='d-flex align-items-center justify-content-between py-2'>
 	<@span class='badge bg-blue-lt text-truncate'><@icon style='tag' /> ${tagName}</@span>
 	<@btnGroup size='sm' ariaLabel='#i18n{portal.util.labelActions}'>
-		<@button color='ghost-secondary' class='btn-icon btn-down' size='sm' buttonIcon='arrow-down' title='#i18n{blog.create_blog.labelDown}' hideTitle=['all'] params={"data-blog-command": "tag-move", "data-direction": "moveDown", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
-		<@button color='ghost-secondary' class='btn-icon btn-up' size='sm' buttonIcon='arrow-up' title='#i18n{blog.create_blog.labelUp}' hideTitle=['all'] params={"data-blog-command": "tag-move", "data-direction": "moveUp", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
-		<@button color='ghost-danger' class='btn-icon' size='sm' name='removeTag' value='removeTag' buttonIcon='x' title='#i18n{blog.create_blog.labelRemove}' hideTitle=['all'] params={"data-blog-command": "tag-remove", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
+		<@button color='ghost-secondary' class='btn-icon btn-down' size='sm' buttonIcon='arrow-down' title='#i18n{blog.create_blog.labelDown}' hideTitle=['all'] params={"aria-label": "#i18n{blog.create_blog.labelDown} " + tagName, "data-blog-command": "tag-move", "data-direction": "moveDown", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
+		<@button color='ghost-secondary' class='btn-icon btn-up' size='sm' buttonIcon='arrow-up' title='#i18n{blog.create_blog.labelUp}' hideTitle=['all'] params={"aria-label": "#i18n{blog.create_blog.labelUp} " + tagName, "data-blog-command": "tag-move", "data-direction": "moveUp", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
+		<@button color='ghost-danger' class='btn-icon' size='sm' name='removeTag' value='removeTag' buttonIcon='x' title='#i18n{blog.create_blog.labelRemove}' hideTitle=['all'] params={"aria-label": "#i18n{blog.create_blog.labelRemove} " + tagName, "data-blog-command": "tag-remove", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
 	</@btnGroup>
 </@listGroupItem>
 </#macro>
@@ -256,7 +256,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 			<@div><@span class='badge bg-secondary-lt blog-content-type-label'>${typeLabel}</@span></@div>
 		</#if>
 	</@div>
-	<@button color='ghost-secondary' class='btn-icon' size='sm' id='doc-actions-${docId}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
+	<@button color='ghost-secondary' class='btn-icon' size='sm' id='doc-actions-${docId}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelActions} " + docName}>
 		<@link class='dropdown-item' href='#' params={"data-blog-command": "content-insert", "data-doc-id": docId}><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link>
 		<@link class='dropdown-item btn-up' href='#' params={"data-blog-command": "content-move", "data-direction": "moveUp", "data-doc-id": docId, "data-blog-id": blog.id?c}><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link>
 		<@link class='dropdown-item btn-down' href='#' params={"data-blog-command": "content-move", "data-direction": "moveDown", "data-doc-id": docId, "data-blog-id": blog.id?c}><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link>
