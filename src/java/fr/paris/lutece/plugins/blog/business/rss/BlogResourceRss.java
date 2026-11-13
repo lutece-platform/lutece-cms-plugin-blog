@@ -43,6 +43,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.DocContent;
@@ -252,7 +253,8 @@ public class BlogResourceRss extends ResourceRss
             model.put( MARK_RSS_FILE_LANGUAGE, strRssFileLanguage );
 
             HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_RSS_BLOG_ITEM_TITLE, locale, model );
-            String strTitle = template.getHtml( );
+            // The title is text, escaped by the feed: the HTML the template escaped is decoded once
+            String strTitle = StringEscapeUtils.unescapeHtml4( template.getHtml( ) );
 
             item.setTitle( strTitle );
             String url = strSiteUrl + JSP_PAGE_BLOG + "&id=" + blog.getId( );

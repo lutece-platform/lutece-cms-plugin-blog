@@ -7,7 +7,15 @@
     <#if blog_list_published??>
         <@chList class='posts list-unstyled'>
             <#list blog_list_published as blog>
-                <#assign blogUrl><#if (blog.url!'')?trim != ''>${blog.url}<#else>jsp/site/Portal.jsp?page=blog&id=${blog.id?c}&portlet_id=${portlet_id?c}<#if portlet_name?has_content>&from_name=${portlet_name?url('UTF-8')}</#if><#if page_name?has_content>&from_page_name=${page_name?url('UTF-8')}</#if><#if page_id??>&from_page_id=${page_id?c}</#if></#if></#assign>
+                <#-- The URL typed for the post (safeUrl keeps http, https, mailto and tel), else its page -->
+                <#if (blog.url!'')?trim != ''>
+                    <#assign blogUrl = safeUrl(blog.url?trim)>
+                <#else>
+                    <#assign blogUrl = 'jsp/site/Portal.jsp?page=blog&id=' + blog.id?c + '&portlet_id=' + portlet_id?c>
+                    <#if portlet_name?has_content><#assign blogUrl = blogUrl + '&from_name=' + portlet_name?url('UTF-8')></#if>
+                    <#if page_name?has_content><#assign blogUrl = blogUrl + '&from_page_name=' + page_name?url('UTF-8')></#if>
+                    <#if page_id??><#assign blogUrl = blogUrl + '&from_page_id=' + page_id?c></#if>
+                </#if>
                 <@chItem>
                     <@cArticle class='card post post--wide'>
                         <#if blog.docContent?? && blog.docContent?size!=0>
@@ -19,13 +27,13 @@
                                 </#if>
                                 <#list blog.docContent as docContent>
                                     <#if docContent.contentType.idContentType=1>
-                                        <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id}' alt=blog.contentLabel class='media-object img-fluid' params='title="${blog.contentLabel}"' />
+                                        <@cImg src='servlet/plugins/blogs/file?id_file=${docContent.id}' alt=blog.contentLabel class='media-object img-fluid' params={"title": blog.contentLabel} />
                                         <#break>
                                     </#if>
                                 </#list>
                             </@cBlock>
                         <#else>
-                            <@cBlock class='post__media' params='style="background:linear-gradient(135deg, #FF442A 0%, #F87C97 100%);"'>
+                            <@cBlock class='post__media blog-post-media-default'>
                                 <#if blog.tag?has_content>
                                     <#list blog.tag as tg>
                                         <@cInline class='post__cat me-2'>${tg.name!}</@cInline>
@@ -52,7 +60,7 @@
                         <@cBlock class='card-body post__body'>
                             <@cBlock class='media-body pl-3'>
                                 <@cTitle level=3 class='post__title'>
-                                    <@cLink href=blogUrl?trim label=blog.contentLabel></@cLink>
+                                    <@cLink href=blogUrl label=blog.contentLabel></@cLink>
                                 </@cTitle>
                                 <@cText class='post__desc'>${blog.description!}</@cText>
                                 <@cBlock class='post__meta'>
@@ -63,7 +71,7 @@
                                         <#if creatorFields?? && creatorFields?size gt 0>
                                             <#list creatorFields as field>
                                                 <#if field.attribute??>
-                                                    <#if field.attribute.title='blog_author_title'><#assign blogAuthor>${field.value!}</#assign></#if>
+                                                    <#if field.attribute.title='blog_author_title'><#assign blogAuthor = field.value!></#if>
                                                 </#if>
                                             </#list>
                                         </#if>
@@ -73,7 +81,7 @@
                                     <#if blog.updateDate??>
                                         <#assign updateDateIso = blog.updateDate?string('yyyy-MM-dd')>
                                         <@cInline class='sep'>·</@cInline>
-                                        <@cInline type='time' params='datetime="${updateDateIso}"'>${blog.updateDate?string('dd/MM/yyyy')}</@cInline>
+                                        <@cInline type='time' params={"datetime": updateDateIso}>${blog.updateDate?string('dd/MM/yyyy')}</@cInline>
                                     </#if>
                                 </@cBlock>
                             </@cBlock>

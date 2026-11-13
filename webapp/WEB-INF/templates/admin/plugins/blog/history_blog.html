@@ -1,6 +1,7 @@
 <#assign manageUrl='jsp/admin/plugins/blog/ManageBlogs.jsp' />
 <#assign versions=(blog_list![])?reverse />
-<#assign pageTitle><#if versions?has_content>${versions[0].contentLabel!}<#else>#i18n{blog.history_blog.pageTitle}</#if></#assign>
+<#assign pageTitle = '#i18n{blog.history_blog.pageTitle}'>
+<#if versions?has_content><#assign pageTitle = versions[0].contentLabel!></#if>
 <@pageContainer>
 	<@pageColumn>
 		<@pageHeader title=pageTitle description='#i18n{blog.manage_blogs.labelHistory} · ${paginator.itemsCount} #i18n{blog.manage_blogs.labelVersions}'>
@@ -45,7 +46,7 @@
 										<@div class='d-flex align-items-center gap-1'>
 											<#if versions?size gt 1>
 												<#-- Versions A and B to compare: by default the newest and the oldest of the page -->
-												<@div class='btn-group btn-group-sm me-2' params='role="group" aria-label="#i18n{blog.history_blog.columnDiffSelect}"'>
+												<@div class='btn-group btn-group-sm me-2' params={"role": "group", "aria-label": "#i18n{blog.history_blog.columnDiffSelect}"}>
 													<input type="radio" class="btn-check" name="blog_version" id="blog_version_${blog.version}" value="${blog.version}" autocomplete="off"<#if blog?is_first> checked</#if>>
 													<label class="btn" for="blog_version_${blog.version}" title="#i18n{blog.manage_blogs.columnVersion} A">A</label>
 													<input type="radio" class="btn-check" name="blog_version2" id="blog_version2_${blog.version}" value="${blog.version}" autocomplete="off"<#if blog?is_last> checked</#if>>

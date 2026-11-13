@@ -6,12 +6,20 @@
 <#assign hasFilter=(hasTextFilter || selectedTags?has_content || is_checked!false || hasDateFilter) />
 <#assign canSelect=(permission_manage_archive_blog || (permission_manage_delete_blog && statusFilter == 3)) />
 <#-- Current criteria, reused by the status tabs (all criteria) and by the tag badges (all but the tags) -->
-<#assign criteriaQuery>button_search=1<#if hasTextFilter>&search_text=${search_text?url('UTF-8')}</#if><#if is_checked!false>&current_user=true</#if><#if dateUpdateBlogAfter?has_content>&dateUpdateBlogAfter=${dateUpdateBlogAfter?url('UTF-8')}</#if><#if dateUpdateBlogBefor?has_content>&dateUpdateBlogBefor=${dateUpdateBlogBefor?url('UTF-8')}</#if></#assign>
-<#assign filterQuery>button_search=1<#if hasTextFilter>&search_text=${search_text?url('UTF-8')}</#if><#if is_checked!false>&current_user=true</#if><#list selectedTags as t>&tag_doc=${t?url('UTF-8')}</#list><#if dateUpdateBlogAfter?has_content>&dateUpdateBlogAfter=${dateUpdateBlogAfter?url('UTF-8')}</#if><#if dateUpdateBlogBefor?has_content>&dateUpdateBlogBefor=${dateUpdateBlogBefor?url('UTF-8')}</#if></#assign>
+<#assign criteriaQuery = 'button_search=1'>
+<#if hasTextFilter><#assign criteriaQuery = criteriaQuery + '&search_text=' + search_text?url('UTF-8')></#if>
+<#if is_checked!false><#assign criteriaQuery = criteriaQuery + '&current_user=true'></#if>
+<#assign dateQuery = ''>
+<#if dateUpdateBlogAfter?has_content><#assign dateQuery = dateQuery + '&dateUpdateBlogAfter=' + dateUpdateBlogAfter?url('UTF-8')></#if>
+<#if dateUpdateBlogBefor?has_content><#assign dateQuery = dateQuery + '&dateUpdateBlogBefor=' + dateUpdateBlogBefor?url('UTF-8')></#if>
+<#assign filterQuery = criteriaQuery>
+<#list selectedTags as t><#assign filterQuery = filterQuery + '&tag_doc=' + t?url('UTF-8')></#list>
+<#assign criteriaQuery = criteriaQuery + dateQuery>
+<#assign filterQuery = filterQuery + dateQuery>
 <@pageContainer>
 	<@pageColumn>
 		<@pageHeader title='#i18n{blog.manage_blogs.title}' description='${paginator.itemsCount} #i18n{blog.manage_blogs.labelDisplays}'>
-			<@aButton href='#blog-search' color='' class='me-1' buttonIcon='filter' title='#i18n{blog.manage_blogs.labelFilter}' hideTitle=['xs','sm'] params='data-bs-toggle="modal"' />
+			<@aButton href='#blog-search' color='' class='me-1' buttonIcon='filter' title='#i18n{blog.manage_blogs.labelFilter}' hideTitle=['xs','sm'] params={"data-bs-toggle": "modal"} />
 			<#if permission_manage_create_blog>
 				<@aButton href='${manageUrl}?view=createBlog' color='primary' buttonIcon='plus' title='#i18n{blog.manage_blogs.buttonAdd}' hideTitle=['xs','sm'] />
 			</#if>
@@ -23,7 +31,7 @@
 				<@tform id='form-blog-search' name='form-manage' method='get' action=manageUrl>
 					<@input type='hidden' name='unpublished' value='${statusFilter}' />
 					<@formGroup labelFor='search_text' labelKey='#i18n{blog.manage_blogs.labelSearchText}' helpKey='#i18n{blog.manage_blogs.search.help}'>
-						<@input type='text' id='search_text' name='search_text' placeHolder='paris vil*' value='${(search_text!)?html}' />
+						<@input type='text' id='search_text' name='search_text' placeHolder='paris vil*' value=search_text! />
 					</@formGroup>
 					<@formGroup labelKey='#i18n{blog.manage_blogs.labelTag}' helpKey='#i18n{blog.manage_blogs.labelTag.help}'>
 						<#if list_tag?has_content>
@@ -42,12 +50,12 @@
 					<@row>
 						<@columns md=6>
 							<@formGroup labelFor='dateUpdateBlogAfter' labelKey='#i18n{blog.manage_blogs.labelAfter}' helpKey='#i18n{blog.manage_blogs.labelAfter.help}'>
-								<@input type='html5date' id='dateUpdateBlogAfter' name='dateUpdateBlogAfter' value='${(dateUpdateBlogAfter!)?html}' />
+								<@input type='html5date' id='dateUpdateBlogAfter' name='dateUpdateBlogAfter' value=dateUpdateBlogAfter! />
 							</@formGroup>
 						</@columns>
 						<@columns md=6>
 							<@formGroup labelFor='dateUpdateBlogBefor' labelKey='#i18n{blog.manage_blogs.labelBefore}'>
-								<@input type='html5date' id='dateUpdateBlogBefor' name='dateUpdateBlogBefor' value='${(dateUpdateBlogBefor!)?html}' />
+								<@input type='html5date' id='dateUpdateBlogBefor' name='dateUpdateBlogBefor' value=dateUpdateBlogBefor! />
 							</@formGroup>
 						</@columns>
 					</@row>
@@ -77,10 +85,10 @@
 				<#if hasFilter>
 					<@span class='me-2'>
 						<@span class='text-secondary'><@icon style='filter' /> #i18n{blog.manage_blogs.labelFilter} :</@span>
-						<#if hasTextFilter><@tag color='' class='bg-azure-lt' tagIcon='search'>${search_text?html}</@tag></#if>
+						<#if hasTextFilter><@tag color='' class='bg-azure-lt' tagIcon='search'>${search_text}</@tag></#if>
 						<#list list_tag as tg><#if selectedTags?seq_contains(tg.code)><@tag color='' class='bg-blue-lt' tagIcon='tag'>${tg.name!}</@tag></#if></#list>
 						<#if is_checked!false><@tag color='' class='bg-purple-lt' tagIcon='user'>#i18n{blog.manage_blogs.sortByUtilisateurButton}</@tag></#if>
-						<#if hasDateFilter><@tag color='' class='bg-teal-lt' tagIcon='calendar'>${(dateUpdateBlogAfter!'…')?html} → ${(dateUpdateBlogBefor!'…')?html}</@tag></#if>
+						<#if hasDateFilter><@tag color='' class='bg-teal-lt' tagIcon='calendar'>${dateUpdateBlogAfter!'…'} → ${dateUpdateBlogBefor!'…'}</@tag></#if>
 						<@link href='${manageUrl}?button_reset=1' class='link-danger ms-1'><@icon style='filter-off' /> #i18n{blog.manage_blogs.labelRemoveFilter}</@link>
 					</@span>
 				</#if>
@@ -88,7 +96,7 @@
 					<#-- Bulk controls sit outside the list form and submit it through the form attribute -->
 					<@checkBox orientation='switch' wrapperClass='mb-0' id='select_all_blogs_id' name='select_all_blogs_id' labelKey='#i18n{blog.manage_blogs.labelSelectUnselectAll}' />
 					<@inputGroup class='w-auto mb-1'>
-						<@select id='select_blog_action' class='form-select form-select-sm ms-2' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' disabled=true params='form="form_checkbox_action"'>
+						<@select id='select_blog_action' class='form-select form-select-sm ms-2' name='select_blog_action' title='#i18n{blog.manage_blogs.selectActionToApply}' disabled=true params={"form": "form_checkbox_action"}>
 						<#if permission_manage_archive_blog>
 							<#if statusFilter == 3>
 								<@option value='1' label='#i18n{blog.manage_blogs.labelUnarchive}' />
@@ -168,8 +176,8 @@
 								<#list contributorList as c><#if c != creatorCode><#assign contributors=contributors + [ c ] /></#if></#list>
 							</#if></#list>
 							<#if contributors?has_content>
-								<@span class='avatar-list avatar-list-stacked' params='title="#i18n{blog.manage_blogs.labelContributors}"'>
-									<#list contributors as c><#if c?index lt 4><@span class='avatar avatar-xs rounded' params='title="${c}"'>${c[0..*2]?upper_case}</@span></#if></#list>
+								<@span class='avatar-list avatar-list-stacked' params={"title": "#i18n{blog.manage_blogs.labelContributors}"}>
+									<#list contributors as c><#if c?index lt 4><@span class='avatar avatar-xs rounded' params={"title": c}>${c[0..*2]?upper_case}</@span></#if></#list>
 									<#if contributors?size gt 4><@span class='avatar avatar-xs rounded'>+${contributors?size - 4}</@span></#if>
 								</@span>
 							</#if>

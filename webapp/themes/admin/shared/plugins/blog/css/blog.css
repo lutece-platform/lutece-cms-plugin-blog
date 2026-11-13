@@ -46,3 +46,19 @@
 .diff-added-image { 
 	background-color: var(--tblr-success); 
 }
+
+/*
+* Heights of the lists of posts (portlets, publication)
+*/
+.blog-list-min-h {
+	min-height: 15rem;
+}
+
+.blog-list-scroll {
+	height: 40vh;
+	overflow-y: auto;
+}
+
+.blog-list-max-h {
+	max-height: 22rem;
+}

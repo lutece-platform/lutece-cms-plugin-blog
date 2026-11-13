@@ -1,6 +1,6 @@
 <#assign textEditorCoreName = richTextEditorBackOffice() >
 <#assign textEditorBlogName = blog_editor!'' >
-<#assign textEditorName><#if textEditorBlogName !=''>${textEditorBlogName}<#else>${textEditorCoreName!}</#if></#assign>
+<#assign textEditorName = (textEditorBlogName != '')?then(textEditorBlogName, textEditorCoreName!'') >
 <#assign blogEditorFile=.get_optional_template('blog_${textEditorName}.html')>
 <#assign is_content_type = use_content_type!true >
 <#-- The blog editor (blog_xxx.html) edits the contenteditable div #div_html_content, copied into the textarea on submit.
@@ -25,16 +25,16 @@
 </#if>
 <#-- The content field of the post, shared by create_blog.html and modify_blog.html -->
 <#macro blogHtmlContent labelKey>
-<#-- In the textarea the HTML of the post is text: escaped, a </textarea> or an entity it holds stays as it is -->
-<#local htmlContentText><#outputformat "HTML">${blog.htmlContent!}</#outputformat></#local>
+<#-- In the textarea the HTML of the post is text: the macro escapes it, a </textarea> or an entity it holds stays as it is.
+     In the editable div it is rich text: richText() writes it sanitized -->
 <#if blogCoreEditor>
 <@formGroup labelFor='html_content' labelKey=labelKey helpKey='#i18n{blog.edit_blog.message.help}' rows=2 class='mb-0'>
-	<@input type='textarea' name='html_content' id='html_content' value=htmlContentText />
+	<@input type='textarea' name='html_content' id='html_content' value=blog.htmlContent! />
 </@formGroup>
 <#else>
 <@formGroup labelFor='div_html_content' labelKey=labelKey helpKey='#i18n{blog.edit_blog.message.help}' rows=2 class='mb-0'>
-	<@input type='textarea' name='html_content' id='html_content' value=htmlContentText class='visually-hidden' />
-	<@div id='div_html_content' class='content-body vmin-dvh-50' params='contenteditable="true"'>${blog.htmlContent!}</@div>
+	<@input type='textarea' name='html_content' id='html_content' value=blog.htmlContent! class='visually-hidden' />
+	<@div id='div_html_content' class='content-body vmin-dvh-50' params={"contenteditable": "true"}>${richText(blog.htmlContent!)}</@div>
 </@formGroup>
 </#if>
 </#macro>
@@ -48,33 +48,37 @@
 </@initToast>
 <script src="themes/admin/shared/plugins/blog/js/blog.js"></script>
 <script>
-var baseUrl = '${webapp_url!}';
-var numberOfTagsAssigned = '${blogTagSize}';
-var numberMandatoryTags = '${number_mandatory_tags}';
+var baseUrl = '${(webapp_url!)?js_string?no_esc}';
+var numberOfTagsAssigned = '${blogTagSize?c}';
+var numberMandatoryTags = '${number_mandatory_tags?c}';
 
-var all_tag = [<#list list_alltag as tag>['${tag.code}','${tag.name?js_string}' ],</#list>];
-var blog_tag = [<#list blog.tag as tag>'${tag.idTag}',</#list>];
+var all_tag = [<#list list_alltag as tag>['${tag.code?js_string?no_esc}','${tag.name?js_string?no_esc}' ],</#list>];
+var blog_tag = [<#list blog.tag as tag>'${tag.idTag?c}',</#list>];
 
-var msgErrorTagExist = "#i18n{blog.message.errorTagExist}"
-var msgErrorTagUpdatePosition = "#i18n{blog.message.errorTagUpdatePosition}" 
-var msgErrorTagDeletion = "#i18n{blog.message.errorTagDeletion}" 
-var msgErrorTagTitleNotEmpty = "#i18n{blog.message.errorTagTitleNotEmpty}"
-var msgErrorTagNotSet = "#i18n{blog.message.errorTagNotSet}"
+var msgErrorTagExist = '${i18n('blog.message.errorTagExist')?js_string?no_esc}'
+var msgErrorTagUpdatePosition = '${i18n('blog.message.errorTagUpdatePosition')?js_string?no_esc}'
+var msgErrorTagDeletion = '${i18n('blog.message.errorTagDeletion')?js_string?no_esc}'
+var msgErrorTagTitleNotEmpty = '${i18n('blog.message.errorTagTitleNotEmpty')?js_string?no_esc}'
+var msgErrorTagNotSet = '${i18n('blog.message.errorTagNotSet')?js_string?no_esc}'
 
-var msgErrorBlogLocked = "#i18n{blog.message.blogLocked}" 
-var msgErrorBlogFileCannotBeDeleted = "#i18n{blog.message.blogFileCannotBeDeleted}" 
-var msgErrorBlogFileTypeNotUpdated = "#i18n{blog.message.blogFileTypeNotUpdated}"
-var msgErrorFileUpload = "#i18n{blog.message.blogFileUpload}"
+var msgErrorBlogLocked = '${i18n('blog.message.blogLocked')?js_string?no_esc}'
+var msgErrorBlogFileCannotBeDeleted = '${i18n('blog.message.blogFileCannotBeDeleted')?js_string?no_esc}'
+var msgErrorBlogFileTypeNotUpdated = '${i18n('blog.message.blogFileTypeNotUpdated')?js_string?no_esc}'
+var msgErrorFileUpload = '${i18n('blog.message.blogFileUpload')?js_string?no_esc}'
 
-var labelWarning= "#i18n{portal.util.labelWarning}"
-var labelError= "#i18n{portal.util.message.titleError}"
+var labelWarning = '${i18n('portal.util.labelWarning')?js_string?no_esc}'
+var labelError = '${i18n('portal.util.message.titleError')?js_string?no_esc}'
 
+/* The title and the message are text (an i18n label, a status, a message read from the server): written with textContent */
 function setBlogToast( toastType, toastTitle, toastContent ){
 	const toastBlog = document.querySelector('#blogToast');
   const toastBlogItem = bootstrap.Toast.getOrCreateInstance('#blogToast');
-  if( toastType !='' ){ <#noparse>toastBlog.classList.add( `text-bg-warning` );</#noparse> }
+  if( toastType !='' ){ toastBlog.classList.add( 'text-bg-warning' ); }
 	const blogToastBody = document.querySelector( '#blogToast .toast-body' );
-  blogToastBody.innerHTML = <#noparse>`<h2>${toastTitle}</h2><p>${toastContent}</p>`</#noparse>
+  const title = document.createElement( 'h2' ), content = document.createElement( 'p' );
+  title.textContent = toastTitle;
+  content.textContent = toastContent;
+  blogToastBody.replaceChildren( title, content );
 	toastBlogItem.show()
 }
 
@@ -121,7 +125,7 @@ document.addEventListener( "DOMContentLoaded", function(){
       document.querySelector('#attachment').click();
     });
   }
-  var number_mandatory_tags=<#if requiredTags gt 0>${requiredTags}<#else>0</#if>
+  var number_mandatory_tags=<#if requiredTags gt 0>${requiredTags?c}<#else>0</#if>
 
   /* Unsaved changes guard: leaving the editor (back, publication, history...) asks before losing edits.
      On an existing post, tags and attachments are saved at once through AJAX, so they do not count;
@@ -183,28 +187,22 @@ document.addEventListener( "DOMContentLoaded", function(){
 	</@boxBody>
 	<@listGroup id='tag-list' class='list-group-flush'>
 		<#list blog.tag as tg>
-			<@listGroupItem id='tag_${tg.idTag}' class='d-flex align-items-center justify-content-between py-2'>
-				<@span class='badge bg-blue-lt text-truncate'><@icon style='tag' /> ${tg.name!}</@span>
-				<@btnGroup size='sm' ariaLabel='#i18n{portal.util.labelActions}'>
-					<@button color='ghost-secondary' class='btn-icon btn-down' size='sm' buttonIcon='arrow-down' title='#i18n{blog.create_blog.labelDown}' hideTitle=['all'] params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveDown\', ${blog.id} );"' />
-					<@button color='ghost-secondary' class='btn-icon btn-up' size='sm' buttonIcon='arrow-up' title='#i18n{blog.create_blog.labelUp}' hideTitle=['all'] params='onclick="doUpdatePriorityTag( ${tg.idTag}, \'moveUp\', ${blog.id} );"' />
-					<@button color='ghost-danger' class='btn-icon' size='sm' name='removeTag' value='removeTag' buttonIcon='x' title='#i18n{blog.create_blog.labelRemove}' hideTitle=['all'] params='onclick="doDeleteTag( ${tg.idTag}, \'${tg.name!?js_string}\', ${blog.id} );"' />
-				</@btnGroup>
-			</@listGroupItem>
+			<@blogTagItem tagId=tg.idTag?c tagName=tg.name!'' />
 		</#list>
 	</@listGroup>
+	<template id='blog-tag-template'><@blogTagItem tagId='__ID__' tagName='__NAME__' /></template>
 </@box>
 
 <#-- Attachments -->
 <@box class='mb-0'>
 	<@boxHeader title='#i18n{blog.modify_blog.labelAttachment}' titleActions=true>
 		<#if is_crop_image>
-			<@button color='action' buttonIcon='upload' title='#i18n{blog.modify_blog.labelAttachment}' hideTitle=['all'] params='data-bs-toggle="modal" data-bs-target="#imageModal"' />
+			<@button color='action' buttonIcon='upload' title='#i18n{blog.modify_blog.labelAttachment}' hideTitle=['all'] params={"data-bs-toggle": "modal", "data-bs-target": "#imageModal"} />
 		<#else>
 			<@button id='btn-add-files' color='action' buttonIcon='upload' title='#i18n{blog.modify_blog.labelAttachment}' hideTitle=['all'] />
 		</#if>
 	</@boxHeader>
-	<@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='${acceptedTypes}' params='onchange="getFile(${blog.id})"' />
+	<@input class='visually-hidden' name='attachment' id='attachment' type='file' accept='${acceptedTypes}' params={"data-blog-id": blog.id?c} />
 	<#-- The type of the next upload, read by the crop upload only (getCroppedCanva): getFile takes it from the MIME type of the file -->
 	<#if is_content_type && is_crop_image>
 		<@boxBody class='py-2'>
@@ -218,13 +216,26 @@ document.addEventListener( "DOMContentLoaded", function(){
 	<@div class='blog-resources'>
 		<@listGroup id='content-list' class='list-group-flush'>
 			<#list blog.docContent![] as docContent>
-				<@blogDocContentItem docId='${docContent.id}' docName=docContent.textValue!'' contentTypeId=(docContent.contentType.idContentType)!0 />
+				<@blogDocContentItem docId=docContent.id?c docName=docContent.textValue!'' contentTypeId=(docContent.contentType.idContentType)!0 />
 			</#list>
 		</@listGroup>
 		<template id='blog-doc-content-template'><@blogDocContentItem docId='__ID__' docName='__NAME__.__EXT__' contentTypeId=0 /></template>
 	</@div>
 </@box>
 
+</#macro>
+
+<#-- A tag of the post. Also rendered in <template id='blog-tag-template'> with the placeholders __ID__ and __NAME__, which setListTag (blog.js)
+     fills for a tag added in the page. The buttons are run by the click listener of blog.js (data-blog-command) -->
+<#macro blogTagItem tagId tagName>
+<@listGroupItem id='tag_${tagId}' class='d-flex align-items-center justify-content-between py-2'>
+	<@span class='badge bg-blue-lt text-truncate'><@icon style='tag' /> ${tagName}</@span>
+	<@btnGroup size='sm' ariaLabel='#i18n{portal.util.labelActions}'>
+		<@button color='ghost-secondary' class='btn-icon btn-down' size='sm' buttonIcon='arrow-down' title='#i18n{blog.create_blog.labelDown}' hideTitle=['all'] params={"data-blog-command": "tag-move", "data-direction": "moveDown", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
+		<@button color='ghost-secondary' class='btn-icon btn-up' size='sm' buttonIcon='arrow-up' title='#i18n{blog.create_blog.labelUp}' hideTitle=['all'] params={"data-blog-command": "tag-move", "data-direction": "moveUp", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
+		<@button color='ghost-danger' class='btn-icon' size='sm' name='removeTag' value='removeTag' buttonIcon='x' title='#i18n{blog.create_blog.labelRemove}' hideTitle=['all'] params={"data-blog-command": "tag-remove", "data-tag-id": tagId, "data-blog-id": blog.id?c} />
+	</@btnGroup>
+</@listGroupItem>
 </#macro>
 
 <#-- An attachment of the post. Also rendered in <template id='blog-doc-content-template'> with the placeholders __ID__, __NAME__ and __EXT__,
@@ -246,20 +257,20 @@ document.addEventListener( "DOMContentLoaded", function(){
 		</#if>
 	</@div>
 	<@button color='ghost-secondary' class='btn-icon' size='sm' id='doc-actions-${docId}' dropdownMenu=true buttonIcon='dots-vertical' title='#i18n{portal.util.labelActions}' hideTitle=['all']>
-		<@link class='dropdown-item' href='#' params='onclick="doInsertContent( ${docId}, this.closest( \'.blog-image\' ).querySelector( \'.blog-doc-content-link\' ).textContent.trim( ) ); return false;"'><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link>
-		<@link class='dropdown-item btn-up' href='#' params='onclick="doUpdatePriorityContent( ${docId}, \'moveUp\', ${blog.id} ); return false;"'><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link>
-		<@link class='dropdown-item btn-down' href='#' params='onclick="doUpdatePriorityContent( ${docId}, \'moveDown\', ${blog.id} ); return false;"'><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link>
+		<@link class='dropdown-item' href='#' params={"data-blog-command": "content-insert", "data-doc-id": docId}><@icon style='file-plus' class='me-2' />#i18n{blog.create_blog.labelAddToContent}</@link>
+		<@link class='dropdown-item btn-up' href='#' params={"data-blog-command": "content-move", "data-direction": "moveUp", "data-doc-id": docId, "data-blog-id": blog.id?c}><@icon style='arrow-up' class='me-2' />#i18n{blog.create_blog.labelUp}</@link>
+		<@link class='dropdown-item btn-down' href='#' params={"data-blog-command": "content-move", "data-direction": "moveDown", "data-doc-id": docId, "data-blog-id": blog.id?c}><@icon style='arrow-down' class='me-2' />#i18n{blog.create_blog.labelDown}</@link>
 		<#-- The content type of the attachment: the current one checked, a click saves the one chosen (setContentType, blog.js) -->
 		<#if is_content_type>
 			<hr class='dropdown-divider' />
 			<h6 class='dropdown-header'>#i18n{blog.create_blog.labelContentType}</h6>
 			<#list image_type as type>
 				<#local isCurrent = type.idContentType == contentTypeId />
-				<@link class='dropdown-item blog-content-type' href='#' params='role="menuitemradio" aria-checked="${isCurrent?c}" data-content-type="${type.idContentType}" onclick="setContentType( this, ${docId}, ${type.idContentType}, ${blog.id} ); return false;"'><@icon style='check' class='me-2${isCurrent?then("", " invisible")}' />${type.label?trim}</@link>
+				<@link class='dropdown-item blog-content-type' href='#' params={"role": "menuitemradio", "aria-checked": isCurrent?c, "data-content-type": type.idContentType?c, "data-blog-command": "content-type", "data-doc-id": docId, "data-blog-id": blog.id?c}><@icon style='check' class='me-2${isCurrent?then("", " invisible")}' />${type.label?trim}</@link>
 			</#list>
 		</#if>
 		<hr class='dropdown-divider' />
-		<@link class='dropdown-item text-danger' href='#' params='onclick="deleteFileContent( ${docId}, ${blog.id} ); return false;"'><@icon style='trash' class='me-2' />#i18n{blog.create_blog.labelRemove}</@link>
+		<@link class='dropdown-item text-danger' href='#' params={"data-blog-command": "content-remove", "data-doc-id": docId, "data-blog-id": blog.id?c}><@icon style='trash' class='me-2' />#i18n{blog.create_blog.labelRemove}</@link>
 	</@button>
 </@listGroupItem>
 </#macro>
@@ -272,7 +283,7 @@ document.addEventListener( "DOMContentLoaded", function(){
 	<@boxBody>
 		<@checkBox orientation='switch' id='display_toc' name='display_toc' value='true' checked=blog.displayToc labelKey='#i18n{blog.modify_blog.labelDisplayToc}' />
 		<@checkBox orientation='switch' id='display_related' name='display_related' value='true' checked=blog.displayRelated labelKey='#i18n{blog.modify_blog.labelDisplayRelated}' />
-		<#assign maxRelatedWrapperClass><#if !blog.displayRelated>visually-hidden</#if></#assign>
+		<#assign maxRelatedWrapperClass = blog.displayRelated?then('', 'visually-hidden')>
 		<@formGroup id='max_related_wrapper' labelFor='max_related' labelKey='#i18n{blog.modify_blog.labelMaxRelated}' helpKey='#i18n{blog.modify_blog.labelMaxRelated.help}' rows=2 class=maxRelatedWrapperClass>
 			<@input type='number' name='max_related' id='max_related' value='${blog.maxRelated?c}' min=1 max=20 />
 		</@formGroup>

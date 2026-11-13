@@ -51,7 +51,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
 import fr.paris.lutece.plugins.blog.service.BlogPlugin;
@@ -223,8 +222,8 @@ public final class BlogUtils
 
         model.put( "url", customLinkUrl );
         model.put( "target", targetedWindow );
-        model.put( "title", StringEscapeUtils.escapeHtml4( customLinkTitle ) );
-        model.put( "text", StringEscapeUtils.escapeHtml4( customLinkText ) );
+        model.put( "title", customLinkTitle );
+        model.put( "text", customLinkText );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_INSERT_BLOG_LINK, null, model );
 

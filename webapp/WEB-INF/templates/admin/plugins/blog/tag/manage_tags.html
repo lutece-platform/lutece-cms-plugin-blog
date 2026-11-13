@@ -3,18 +3,19 @@
 	<@pageColumn>
 		<@pageHeader title='#i18n{blog.manage_tags.title}'>
 			<#if permission_manage_create_tag>
-				<@aButton href='#tag-create' color='primary' buttonIcon='plus' title='#i18n{blog.manage_tags.buttonAdd}' hideTitle=['xs','sm'] params='data-bs-toggle="modal"' />
+				<@aButton href='#tag-create' color='primary' buttonIcon='plus' title='#i18n{blog.manage_tags.buttonAdd}' hideTitle=['xs','sm'] params={"data-bs-toggle": "modal"} />
 			</#if>
 		</@pageHeader>
 		<@messages infos=infos![] errors=errors![] />
 
 		<@box>
-			<@boxHeader title='#i18n{blog.manage_tags.title} <span class="badge bg-blue-lt ms-1">${paginator.itemsCount}</span>' titleActions=true>
+			<#assign tagsTitle>#i18n{blog.manage_tags.title} <span class="badge bg-blue-lt ms-1">${paginator.itemsCount}</span></#assign>
+			<@boxHeader title=tagsTitle titleActions=true>
 				<#if tag_list?has_content>
 					<#-- Live filter of the tags shown on this page -->
 					<@inputGroup class='input-group-flat w-auto' size='sm'>
 						<@inputGroupItem pos='prepend'><@icon style='search' /></@inputGroupItem>
-						<@input type='text' id='search_tag' name='search_tag' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' params='autocomplete="off" aria-label="#i18n{portal.system.manage_plugins.buttonFilter}"' />
+						<@input type='text' id='search_tag' name='search_tag' placeHolder='#i18n{portal.system.manage_plugins.buttonFilter}' autoComplete="off" params={"aria-label": "#i18n{portal.system.manage_plugins.buttonFilter}"} />
 					</@inputGroup>
 				</#if>
 			</@boxHeader>
@@ -61,7 +62,7 @@
 					</@tform>
 				</@modalBody>
 				<@modalFooter>
-					<@button type='button' color='light' buttonIcon='x' title='#i18n{portal.util.labelCancel}' params='data-bs-dismiss="modal"' />
+					<@button type='button' color='light' buttonIcon='x' title='#i18n{portal.util.labelCancel}' params={"data-bs-dismiss": "modal"} />
 					<@button type='submit' formId='form-create-tag' name='action_createTag' color='primary' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
 				</@modalFooter>
 			</@modal>

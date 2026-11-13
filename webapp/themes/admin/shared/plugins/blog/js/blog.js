@@ -3,7 +3,7 @@ const typeDanger = 'danger'
 let defaultImgFileType='file-x'
 
 async function doAddTag( idTag, tgName, blogId ) {
-	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc=${idTag}&tag_name=${tgName}&id=${blogId}` );
+	const response = await fetch( `${baseUrl}jsp/admin/plugins/blog/DoAddTag.jsp?action=addTag&tag_doc=${encodeURIComponent( idTag )}&tag_name=${encodeURIComponent( tgName )}&id=${blogId}` );
 	if ( !response.ok ) {
 		setBlogToast( typeDanger , labelError, response.statusText )		
 	} else {
@@ -103,40 +103,68 @@ function refreshMandatoryTagInfo( ){
 	}
 }
 
+/*
+ * Adds a tag to the list: a copy of the row rendered by the blogTagItem macro (blog_commons.html), from its <template>,
+ * its placeholders __ID__ and __NAME__ filled in through the DOM. Its buttons are run by the click listener below.
+ */
 function setListTag( idTag, tgName, blogId ){
-	let li = document.createElement( 'li' );
-	li.classList.add( 'list-group-item', 'list-group-item-action', 'd-flex', 'justify-content-between');
-	li.setAttribute('id', `tag_${idTag}` );
-	li.textContent = tgName;
-	let div = li.appendChild( document.createElement( 'div' ) );
-	div.classList.add( 'btn-group' );
-	div.setAttribute( 'role', 'group' );
-	div.setAttribute('aria-label', `Tag ${tgName}`);
-	let btnDown = div.appendChild( document.createElement( 'button' ) );
-	btnDown.classList.add( 'btn', 'btn-none' ,'btn-down' ,'text-primary');
-	btnDown.setAttribute('type', 'button' );
-	btnDown.setAttribute('title', 'Down' );
-	btnDown.setAttribute('onclick', `doUpdatePriorityTag( ${idTag}, 'moveDown', ${blogId})` );
-	let iconDown = btnDown.appendChild( document.createElement( 'i' ) );
-	iconDown.classList.add( 'ti','ti-arrow-down');
-	let btnUp = div.appendChild( document.createElement( 'button' ) );
-	btnUp.classList.add( 'btn', 'btn-none' ,'btn-up', 'text-primary');
-	btnUp.setAttribute('type', 'button' );
-	btnUp.setAttribute('title', 'Down' );
-	btnUp.setAttribute('onclick', `doUpdatePriorityTag( ${idTag}, 'moveUp', ${blogId})` );
-	let iconUp = btnUp.appendChild( document.createElement( 'i' ) );
-	iconUp.classList.add( 'ti','ti-arrow-up');
-	let btnRm = div.appendChild( document.createElement( 'button' ) );
-	btnRm.classList.add( 'btn', 'btn-none' ,'text-danger');
-	btnRm.setAttribute('id', idTag );
-	btnRm.setAttribute('type', 'button' );
-	btnRm.setAttribute('value', 'removeTag' );
-	btnRm.setAttribute('name', 'removeTag' );
-	btnRm.setAttribute('onclick', `doDeleteTag( ${idTag}, '${tgName}', ${blogId})` );
-	let iconRm = btnRm.appendChild( document.createElement( 'i' ) );
-	iconRm.classList.add( 'ti','ti-x');
+	const li = fillTemplate( '#blog-tag-template', { '__ID__': String( idTag ), '__NAME__': String( tgName ?? '' ) } );
 	document.querySelector( "#tag-list" ).appendChild( li );
 }
+
+/*
+ * Copies the first element of a <template>, its placeholders replaced in the attribute values and the texts. One pass with
+ * a replacer function: a $ or a placeholder in a value is not read as a pattern. Set through the DOM, a value needs no HTML escaping.
+ */
+function fillTemplate( selector, values ){
+	const pattern = new RegExp( Object.keys( values ).map( key => key.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ) ).join( '|' ), 'g' );
+	const fill = value => value.replace( pattern, placeholder => values[ placeholder ] );
+	const element = document.querySelector( selector ).content.firstElementChild.cloneNode( true );
+	[ element, ...element.querySelectorAll( '*' ) ].forEach( el => {
+		[ ...el.attributes ].forEach( attr => attr.value = fill( attr.value ) );
+	});
+	const walker = document.createTreeWalker( element, NodeFilter.SHOW_TEXT );
+	while ( walker.nextNode() ) walker.currentNode.nodeValue = fill( walker.currentNode.nodeValue );
+	return element;
+}
+
+/*
+ * The actions of the tags and attachments rows (blogTagItem and blogDocContentItem macros), declared with data-blog-command
+ */
+document.addEventListener( 'click', e => {
+	const el = e.target.closest( '[data-blog-command]' );
+	if ( !el ) return;
+	const data = el.dataset, blogId = Number( data.blogId );
+	switch ( data.blogCommand ) {
+		case 'tag-move':
+			doUpdatePriorityTag( data.tagId, data.direction, blogId );
+			break;
+		case 'tag-remove':
+			doDeleteTag( data.tagId, '', blogId );
+			break;
+		case 'content-insert':
+			e.preventDefault();
+			doInsertContent( data.docId, el.closest( '.blog-image' ).querySelector( '.blog-doc-content-link' ).textContent.trim( ) );
+			break;
+		case 'content-move':
+			e.preventDefault();
+			doUpdatePriorityContent( data.docId, data.direction, blogId );
+			break;
+		case 'content-type':
+			e.preventDefault();
+			setContentType( el, data.docId, data.contentType, blogId );
+			break;
+		case 'content-remove':
+			e.preventDefault();
+			deleteFileContent( data.docId, blogId );
+			break;
+	}
+});
+
+/* The file chosen in the attachment field is uploaded at once */
+document.addEventListener( 'change', e => {
+	if ( e.target.id === 'attachment' ) getFile( Number( e.target.dataset.blogId ) );
+});
 
 /*
  * Adds an uploaded attachment to the list: a copy of the row rendered by the blogDocContentItem macro (blog_commons.html),
@@ -145,18 +173,9 @@ function setListTag( idTag, tgName, blogId ){
  */
 function setListFile( idFile, fileName, fileType ){
 	fileName = String( fileName ?? '' );
-	const template = document.querySelector( '#blog-doc-content-template' );
 	const extension = fileName.includes( '.' ) ? fileName.split( '.' ).pop().toLowerCase() : '';
-	// One pass with a replacer function: a $ or a placeholder in the name is not read as a pattern
-	const values = { '__NAME__.__EXT__': fileName, '__EXT__': extension, '__ID__': String( idFile ) };
-	const fill = value => value.replace( /__NAME__\.__EXT__|__EXT__|__ID__/g, placeholder => values[ placeholder ] );
-	const li = template.content.firstElementChild.cloneNode( true );
-	// Set through the DOM, the name needs no HTML escaping. No event handler of the row holds the name: "Add to content" reads it from the link
-	[ li, ...li.querySelectorAll( '*' ) ].forEach( el => {
-		[ ...el.attributes ].forEach( attr => attr.value = fill( attr.value ) );
-	});
-	const walker = document.createTreeWalker( li, NodeFilter.SHOW_TEXT );
-	while ( walker.nextNode() ) walker.currentNode.nodeValue = fill( walker.currentNode.nodeValue );
+	// No event handler of the row holds the name: "Add to content" reads it from the link
+	const li = fillTemplate( '#blog-doc-content-template', { '__NAME__.__EXT__': fileName, '__EXT__': extension, '__ID__': String( idFile ) } );
 	if ( isImageFile( fileName ) ) {
 		const img = li.querySelector( 'img' );
 		img.src = `servlet/plugins/blogs/file?id_file=${idFile}`;
@@ -431,7 +450,7 @@ async function refreshListTag(){
     	{
     	    const opt = document.createElement('option');
     	    opt.value = tag[0];
-    	    opt.innerHTML = tag[1];
+    	    opt.textContent = tag[1];
     	    tagSelect.appendChild(opt);
     	}
     }

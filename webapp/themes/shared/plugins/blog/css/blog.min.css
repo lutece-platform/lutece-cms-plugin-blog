@@ -1,2 +1,4 @@
 /* Blog styles */
 #body-page-blog #main > .banner{ display: none;}
+/* Image of a post without picture (default_portlet_list_blog.html) */
+.blog-post-media-default{ background: linear-gradient(135deg, #FF442A 0%, #F87C97 100%); }
