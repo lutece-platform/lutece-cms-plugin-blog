@@ -26,10 +26,10 @@
 							<@span class='avatar avatar-sm bg-blue-lt'><@icon style='tag' /></@span>
 							<@div class='flex-fill searchable fw-medium text-truncate'>${tag.name!}</@div>
 							<#if permission_manage_modify_tag>
-								<@aButton href='${tagsUrl}?view=modifyTag&id=${tag.idTag}' color='' size='sm' class='btn-icon' buttonIcon='edit' title='#i18n{portal.util.labelModify}' hideTitle=['all'] />
+								<@aButton href='${tagsUrl}?view=modifyTag&id=${tag.idTag}' color='' size='sm' class='btn-icon' buttonIcon='edit' title='#i18n{portal.util.labelModify}' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelModify} " + (tag.name!'')} />
 							</#if>
 							<#if permission_manage_delete_tag>
-								<@aButton href='${tagsUrl}?action=confirmRemoveTag&id=${tag.idTag}' color='' size='sm' class='btn-icon text-danger' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] />
+								<@aButton href='${tagsUrl}?action=confirmRemoveTag&id=${tag.idTag}' color='' size='sm' class='btn-icon text-danger' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] params={"aria-label": "#i18n{portal.util.labelDelete} " + (tag.name!'')} />
 							</#if>
 						</@listGroupItem>
 					</#list>
