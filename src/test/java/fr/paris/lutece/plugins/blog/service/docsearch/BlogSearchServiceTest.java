@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.blog.service.docsearch;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import fr.paris.lutece.plugins.blog.TestUtils;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
@@ -47,6 +50,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.index.LiveIndexWriterConfig;
+import org.apache.lucene.index.LogDocMergePolicy;
+import org.apache.lucene.index.MergePolicy;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -140,9 +147,55 @@ public class BlogSearchServiceTest extends LuteceTestCase
     }
 
     /**
+     * The update of a document must use the writer configuration built from the properties (merge policy and merge
+     * factor, open mode), not a default configuration.
+     */
+    @Test
+    void testUpdateDocumentUsesConfiguredWriter( ) throws Exception
+    {
+        BlogSearchService instance = BlogSearchService.getInstance( );
+        Field fieldIndexer = BlogSearchService.class.getDeclaredField( "_indexer" );
+        fieldIndexer.setAccessible( true );
+        Field fieldMergeFactor = BlogSearchService.class.getDeclaredField( "_nWriterMergeFactor" );
+        fieldMergeFactor.setAccessible( true );
+        IBlogSearchIndexer indexer = (IBlogSearchIndexer) fieldIndexer.get( instance );
+        int nMergeFactor = fieldMergeFactor.getInt( instance );
+        LiveIndexWriterConfig [ ] usedConfig = new LiveIndexWriterConfig [ 1];
+        try
+        {
+            instance.processIndexing( true );
+            fieldIndexer.set( instance, new SlowIndexer( indexer, new CountDownLatch( 0 ) )
+            {
+                @Override
+                public void updateDocument( IndexWriter indexWriter, Blog blog ) throws IOException
+                {
+                    usedConfig [0] = indexWriter.getConfig( );
+                    super.updateDocument( indexWriter, blog );
+                }
+            } );
+            instance.updateDocument( BlogHome.findByPrimaryKey( _nIdBlog ) );
+        }
+        finally
+        {
+            fieldIndexer.set( instance, indexer );
+        }
+
+        assertNotNull( usedConfig [0], "the indexer was not called" );
+        MergePolicy mergePolicy = usedConfig [0].getMergePolicy( );
+        assertTrue( mergePolicy instanceof LogDocMergePolicy, "configured merge policy not used: " + mergePolicy );
+        assertEquals( nMergeFactor, ( (LogDocMergePolicy) mergePolicy ).getMergeFactor( ) );
+        assertEquals( OpenMode.CREATE_OR_APPEND, usedConfig [0].getOpenMode( ) );
+
+        // the updated post is still searchable
+        List<Integer> listIdBlog = new ArrayList<>( );
+        instance.getSearchResults( new BlogSearchFilter( ), listIdBlog );
+        assertTrue( listIdBlog.contains( _nIdBlog ) );
+    }
+
+    /**
      * Indexer that keeps the writer open during the first update
      */
-    private static final class SlowIndexer implements IBlogSearchIndexer
+    private static class SlowIndexer implements IBlogSearchIndexer
     {
         private final IBlogSearchIndexer _delegate;
         private final CountDownLatch _writerOpen;

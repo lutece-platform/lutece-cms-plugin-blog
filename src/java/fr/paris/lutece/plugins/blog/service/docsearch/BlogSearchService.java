@@ -307,13 +307,14 @@ public final class BlogSearchService
      */
     private void doUpdateDocument( Blog blog )
     {
-        try ( IndexWriter writer = new IndexWriter( FSDirectory.open( Paths.get( _strIndex ) ), new IndexWriterConfig( _analyzer ) ) )
+        IndexWriterConfig conf = new IndexWriterConfig( _analyzer );
+        LogMergePolicy mergePolicy = new LogDocMergePolicy( );
+        mergePolicy.setMergeFactor( _nWriterMergeFactor );
+        conf.setMergePolicy( mergePolicy );
+        conf.setOpenMode( OpenMode.CREATE_OR_APPEND );
+
+        try ( IndexWriter writer = new IndexWriter( FSDirectory.open( Paths.get( _strIndex ) ), conf ) )
         {
-            IndexWriterConfig conf = new IndexWriterConfig( _analyzer );
-            LogMergePolicy mergePolicy = new LogDocMergePolicy( );
-            mergePolicy.setMergeFactor( _nWriterMergeFactor );
-            conf.setMergePolicy( mergePolicy );
-            conf.setOpenMode( OpenMode.CREATE_OR_APPEND );
             _indexer.updateDocument( writer, blog );
         }
         catch( Exception e )
