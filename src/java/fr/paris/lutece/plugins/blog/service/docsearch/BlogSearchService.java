@@ -99,6 +99,9 @@ public final class BlogSearchService
     // Constants corresponding to the variables defined in the lutece.properties file
     private static BlogSearchService _singleton;
 
+    // Lucene allows one IndexWriter per index: every write to the index is serialized on this lock
+    private static final Object INDEX_WRITE_LOCK = new Object( );
+
     private Analyzer _analyzer;
     private IBlogSearchIndexer _indexer;
     private int _nWriterMergeFactor;
@@ -194,6 +197,21 @@ public final class BlogSearchService
      */
     public String processIndexing( boolean bCreate )
     {
+        synchronized( INDEX_WRITE_LOCK )
+        {
+            return doProcessIndexing( bCreate );
+        }
+    }
+
+    /**
+     * Process indexing, the caller holds the index write lock
+     *
+     * @param bCreate
+     *            true for start full indexing false for begin incremental indexing
+     * @return the log
+     */
+    private String doProcessIndexing( boolean bCreate )
+    {
         StringBuilder sbLogs = new StringBuilder( );
         IndexWriter writer = null;
         boolean bCreateIndex = bCreate;
@@ -267,7 +285,28 @@ public final class BlogSearchService
 
         return sbLogs.toString( );
     }
-    public void updateDocument ( Blog blog) {
+    /**
+     * Update the document of a blog post in the index
+     *
+     * @param blog
+     *            the blog post
+     */
+    public void updateDocument( Blog blog )
+    {
+        synchronized( INDEX_WRITE_LOCK )
+        {
+            doUpdateDocument( blog );
+        }
+    }
+
+    /**
+     * Update the document of a blog post in the index, the caller holds the index write lock
+     *
+     * @param blog
+     *            the blog post
+     */
+    private void doUpdateDocument( Blog blog )
+    {
         try ( IndexWriter writer = new IndexWriter( FSDirectory.open( Paths.get( _strIndex ) ), new IndexWriterConfig( _analyzer ) ) )
         {
             IndexWriterConfig conf = new IndexWriterConfig( _analyzer );

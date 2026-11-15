@@ -37,9 +37,16 @@ import fr.paris.lutece.plugins.blog.TestUtils;
 import fr.paris.lutece.plugins.blog.business.Blog;
 import fr.paris.lutece.plugins.blog.business.BlogHome;
 import fr.paris.lutece.plugins.blog.business.BlogSearchFilter;
+import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.test.LuteceTestCase;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.lucene.index.IndexWriter;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,4 +93,113 @@ public class BlogSearchServiceTest extends LuteceTestCase
 
     }
 
+    /**
+     * Two concurrent index updates (e.g. two posts archived at the same time) must both reach the index: the second
+     * update must wait for the first writer instead of failing on the index write lock.
+     */
+    @Test
+    void testConcurrentUpdateDocumentKeepsBothUpdates( ) throws Exception
+    {
+        int nIdBlog2 = TestUtils.createTestBlog( ).getId( );
+        BlogSearchService instance = BlogSearchService.getInstance( );
+        Field fieldIndexer = BlogSearchService.class.getDeclaredField( "_indexer" );
+        fieldIndexer.setAccessible( true );
+        IBlogSearchIndexer indexer = (IBlogSearchIndexer) fieldIndexer.get( instance );
+        CountDownLatch firstWriterOpen = new CountDownLatch( 1 );
+        try
+        {
+            instance.processIndexing( true );
+            BlogHome.updateBlogArchiveId( true, _nIdBlog );
+            BlogHome.updateBlogArchiveId( true, nIdBlog2 );
+            Blog blog1 = BlogHome.findByPrimaryKey( _nIdBlog );
+            Blog blog2 = BlogHome.findByPrimaryKey( nIdBlog2 );
+
+            // The first update keeps its writer open for a while, the second one starts meanwhile
+            fieldIndexer.set( instance, new SlowIndexer( indexer, firstWriterOpen ) );
+            Thread first = new Thread( ( ) -> instance.updateDocument( blog1 ) );
+            first.start( );
+            assertTrue( firstWriterOpen.await( 10, TimeUnit.SECONDS ) );
+            Thread second = new Thread( ( ) -> instance.updateDocument( blog2 ) );
+            second.start( );
+            first.join( 30000 );
+            second.join( 30000 );
+            fieldIndexer.set( instance, indexer );
+
+            BlogSearchFilter filter = new BlogSearchFilter( );
+            filter.setIsArchived( true );
+            List<Integer> listIdBlog = new ArrayList<>( );
+            instance.getSearchResults( filter, listIdBlog );
+            assertTrue( listIdBlog.contains( _nIdBlog ), "first archived post missing from the index" );
+            assertTrue( listIdBlog.contains( nIdBlog2 ), "second archived post missing from the index" );
+        }
+        finally
+        {
+            fieldIndexer.set( instance, indexer );
+            BlogHome.remove( nIdBlog2 );
+        }
+    }
+
+    /**
+     * Indexer that keeps the writer open during the first update
+     */
+    private static final class SlowIndexer implements IBlogSearchIndexer
+    {
+        private final IBlogSearchIndexer _delegate;
+        private final CountDownLatch _writerOpen;
+
+        SlowIndexer( IBlogSearchIndexer delegate, CountDownLatch writerOpen )
+        {
+            _delegate = delegate;
+            _writerOpen = writerOpen;
+        }
+
+        @Override
+        public void updateDocument( IndexWriter indexWriter, Blog blog ) throws IOException
+        {
+            _delegate.updateDocument( indexWriter, blog );
+            if ( _writerOpen.getCount( ) > 0 )
+            {
+                _writerOpen.countDown( );
+                try
+                {
+                    Thread.sleep( 1000 );
+                }
+                catch( InterruptedException e )
+                {
+                    Thread.currentThread( ).interrupt( );
+                }
+            }
+        }
+
+        @Override
+        public void processIndexing( IndexWriter indexWriter, boolean bCreate, StringBuilder sbLog )
+                throws IOException, InterruptedException, SiteMessageException
+        {
+            _delegate.processIndexing( indexWriter, bCreate, sbLog );
+        }
+
+        @Override
+        public String getName( )
+        {
+            return _delegate.getName( );
+        }
+
+        @Override
+        public String getVersion( )
+        {
+            return _delegate.getVersion( );
+        }
+
+        @Override
+        public String getDescription( )
+        {
+            return _delegate.getDescription( );
+        }
+
+        @Override
+        public boolean isEnable( )
+        {
+            return _delegate.isEnable( );
+        }
+    }
 }
