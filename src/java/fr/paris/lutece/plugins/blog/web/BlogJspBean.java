@@ -1968,8 +1968,8 @@ public class BlogJspBean extends ManageBlogJspBean
             {
                 BlogPublicationHome.removeByBlogId( blogId );
             }
-            BlogHome.removeVersions( blogId );
-            BlogHome.remove( blogId );
+            // as the deletion of one post: tags, attachments, versions and index too
+            BlogService.getInstance( ).deleteBlog( blogId );
         }
     }
     /**
