@@ -123,6 +123,22 @@ public class BlogPortletRenderingTest extends LuteceTestCase
         super.tearDown( );
     }
 
+    /**
+     * Modify the portlet of a post unpublished from it (or archived): no publication, the update keeps it unpublished
+     */
+    @Test
+    public void testUpdateOfAnUnpublishedPortlet( )
+    {
+        BlogPublicationHome.removeByIdPortlet( _portlet.getId( ) );
+        _portlet.setBlogPublication( BlogPublicationHome.findDocPublicationByPimaryKey( _portlet.getId( ), _blog.getId( ) ) );
+        _portlet.setPortletName( PORTLET_NAME + " modified" );
+
+        _portlet.update( );
+
+        assertEquals( null, BlogPublicationHome.findDocPublicationByPimaryKey( _portlet.getId( ), _blog.getId( ) ) );
+        assertEquals( PORTLET_NAME + " modified", ( (BlogPortlet) PortletHome.findByPrimaryKey( _portlet.getId( ) ) ).getPortletName( ) );
+    }
+
     @Test
     public void testShippedTemplateRegistered( )
     {

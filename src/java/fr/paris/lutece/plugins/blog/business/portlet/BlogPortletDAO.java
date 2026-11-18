@@ -119,7 +119,12 @@ public final class BlogPortletDAO implements IBlogPortletDAO
         }
 
         BlogPublicationHome.removeByIdPortlet( p.getId( ) );
-        insertBlogPublicationOnUpdate( p );
+
+        // a post unpublished from the portlet (or archived) has no publication: it stays unpublished
+        if ( p.getBlogPublication( ) != null )
+        {
+            insertBlogPublicationOnUpdate( p );
+        }
 
     }
 
