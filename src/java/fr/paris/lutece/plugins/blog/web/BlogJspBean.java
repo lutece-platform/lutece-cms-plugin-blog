@@ -1052,6 +1052,15 @@ public class BlogJspBean extends ManageBlogJspBean
         _blog.setVersion( 1 );
         _blog.setAttachedPortletId( 0 );
 
+        // the copy gets its own attachments: a shared row would be deleted for both posts when one of them removes it
+        if ( _blog.getDocContent( ) != null )
+        {
+            for ( DocContent docContent : _blog.getDocContent( ) )
+            {
+                DocContentHome.create( docContent );
+            }
+        }
+
         BlogService.getInstance( ).createBlog( _blog, _blog.getDocContent( ) );
 
         return redirectView( request, VIEW_MANAGE_BLOGS );
