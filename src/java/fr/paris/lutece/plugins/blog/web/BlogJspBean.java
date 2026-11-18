@@ -754,8 +754,7 @@ public class BlogJspBean extends ManageBlogJspBean
             int nNumberMandatoryTags = BlogParameterService.getInstance().getNumberMandatoryTags();
             if (nNumberMandatoryTags  > _blog.getTag( ).size( ) )
             {
-                String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));
-                addError( strMessage, getLocale( ) );
+                addError( MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ) );
                 return redirectView( request, VIEW_CREATE_BLOG );
             }
 
@@ -1276,9 +1275,8 @@ public class BlogJspBean extends ManageBlogJspBean
             int nNumberMandatoryTags = BlogParameterService.getInstance().getNumberMandatoryTags();
             if (nNumberMandatoryTags > _blog.getTag( ).size( ) )
             {
-                String strMessage = I18nService.getLocalizedString(MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ));
-                addError( strMessage, getLocale( ) );
-                return redirectView( request, VIEW_CREATE_BLOG );
+                addError( MESSAGE_ERROR_MANDATORY_TAGS, getLocale( ) );
+                return redirect( request, VIEW_MODIFY_BLOG, PARAMETER_ID_BLOG, _blog.getId( ) );
             }
 
             if ( strAction != null && strAction.equals( PARAMETER_UPDATE ) && RBACService.isAuthorized( Blog.PROPERTY_RESOURCE_TYPE, strId, Blog.PERMISSION_PUBLISH, (User) getUser( ) ) )
