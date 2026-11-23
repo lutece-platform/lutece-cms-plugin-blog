@@ -10,7 +10,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-blog</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>3.0.8</version>
+    <version>3.0.9-SNAPSHOT</version>
     <name>Lutece blog plugin</name>
 
     <repositories>
