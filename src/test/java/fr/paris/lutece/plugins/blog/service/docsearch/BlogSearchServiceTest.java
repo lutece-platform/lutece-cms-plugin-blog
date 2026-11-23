@@ -79,6 +79,7 @@ public class BlogSearchServiceTest extends LuteceTestCase
 
         System.out.println( "searchResults" );
         BlogSearchFilter filter = new BlogSearchFilter( );
+        filter.setIsArchived( false );
         List<Integer> listIdBlog = new ArrayList<>( );
         int nSearchResultCount = instance.getSearchResults( filter, listIdBlog );
         assertTrue( nSearchResultCount >= 1 );

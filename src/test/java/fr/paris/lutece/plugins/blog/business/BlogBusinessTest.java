@@ -57,6 +57,8 @@ public class BlogBusinessTest extends LuteceTestCase
     private final static String USER4 = "User4";
     private final static String EDITCOMMENT1 = "EditComment1";
     private final static String EDITCOMMENT2 = "EditComment2";
+    private final static String DESCRIPTION1 = "Description1";
+    private final static String DESCRIPTION2 = "Description2";
 
     public void testBusiness( )
     {
@@ -64,6 +66,7 @@ public class BlogBusinessTest extends LuteceTestCase
         Blog blog = new Blog( );
         blog.setVersion( VERSION1 );
         blog.setContentLabel( CONTENTLABEL1 );
+        blog.setDescription( DESCRIPTION1 );
         blog.setCreationDate( CREATIONDATE1 );
         blog.setUpdateDate( UPDATEDATE1 );
         blog.setHtmlContent( HTMLCONTENT1 );
@@ -87,6 +90,7 @@ public class BlogBusinessTest extends LuteceTestCase
         // Update test
         blog.setVersion( VERSION2 );
         blog.setContentLabel( CONTENTLABEL2 );
+        blog.setDescription( DESCRIPTION2 );
         blog.setCreationDate( CREATIONDATE2 );
         blog.setUpdateDate( UPDATEDATE2 );
         blog.setHtmlContent( HTMLCONTENT2 );
