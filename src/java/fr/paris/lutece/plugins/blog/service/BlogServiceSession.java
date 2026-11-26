@@ -78,8 +78,9 @@ public class BlogServiceSession
         catch( IllegalStateException e )
         {
 
-            AppLogService.error( e.getMessage( ), e );
-            BlogSessionListner.remove( session.getId( ) );
+            // the session was invalidated: it is dropped from the kept sessions, nothing to report
+            AppLogService.debug( e.getMessage( ) );
+            BlogSessionListner.remove( session );
         }
     }
 
@@ -149,8 +150,9 @@ public class BlogServiceSession
         catch( IllegalStateException e )
         {
 
-            AppLogService.error( e.getMessage( ), e );
-            BlogSessionListner.remove( session.getId( ) );
+            // the session was invalidated: it is dropped from the kept sessions, nothing to report
+            AppLogService.debug( e.getMessage( ) );
+            BlogSessionListner.remove( session );
             return null;
         }
     }
@@ -179,8 +181,9 @@ public class BlogServiceSession
         catch( IllegalStateException e )
         {
 
-            AppLogService.error( e.getMessage( ), e );
-            BlogSessionListner.remove( session.getId( ) );
+            // the session was invalidated: it is dropped from the kept sessions, nothing to report
+            AppLogService.debug( e.getMessage( ) );
+            BlogSessionListner.remove( session );
             return null;
         }
     }
@@ -203,8 +206,9 @@ public class BlogServiceSession
         catch( IllegalStateException e )
         {
 
-            AppLogService.error( e.getMessage( ), e );
-            BlogSessionListner.remove( session.getId( ) );
+            // the session was invalidated: it is dropped from the kept sessions, nothing to report
+            AppLogService.debug( e.getMessage( ) );
+            BlogSessionListner.remove( session );
         }
     }
 
@@ -226,8 +230,9 @@ public class BlogServiceSession
         catch( IllegalStateException e )
         {
 
-            AppLogService.error( e.getMessage( ), e );
-            BlogSessionListner.remove( session.getId( ) );
+            // the session was invalidated: it is dropped from the kept sessions, nothing to report
+            AppLogService.debug( e.getMessage( ) );
+            BlogSessionListner.remove( session );
         }
     }
 
@@ -283,8 +288,9 @@ public class BlogServiceSession
         catch( IllegalStateException e )
         {
 
-            AppLogService.error( e.getMessage( ), e );
-            BlogSessionListner.remove( session.getId( ) );
+            // the session was invalidated: it is dropped from the kept sessions, nothing to report
+            AppLogService.debug( e.getMessage( ) );
+            BlogSessionListner.remove( session );
         }
         return null;
     }
@@ -315,8 +321,9 @@ public class BlogServiceSession
         catch( IllegalStateException e )
         {
 
-            AppLogService.error( e.getMessage( ), e );
-            BlogSessionListner.remove( session.getId( ) );
+            // the session was invalidated: it is dropped from the kept sessions, nothing to report
+            AppLogService.debug( e.getMessage( ) );
+            BlogSessionListner.remove( session );
         }
     }
 

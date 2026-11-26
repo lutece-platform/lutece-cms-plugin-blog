@@ -89,4 +89,20 @@ public class BlogSessionListner implements HttpSessionListener
 
     }
 
+
+    /**
+     * Drop a session from the kept sessions, whatever the key it was stored under: the id of an invalidated session is not always the
+     * id given by the creation event (Open Liberty), so it is also found by identity.
+     *
+     * @param session
+     *            the session
+     */
+    public static void remove( HttpSession session )
+    {
+        if ( session != null )
+        {
+            _mapSession.values( ).removeIf( s -> s == session );
+        }
+    }
+
 }
